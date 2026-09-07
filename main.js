@@ -1,4 +1,4 @@
-/* Istante Original 1.1 - built from the first minimal edition. */
+/* Istante Original 1.2 - built from the first minimal edition. */
 (function () {
 'use strict';
 const C = window.IstanteCore;
@@ -6,37 +6,7 @@ const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAl
 const KEY = 'istante.original1.';
 // Import only user content once. Old experimental appearance settings stay separate.
 try{if(localStorage.getItem(KEY+'migrated')!=='1'){for(const key of ['collection','favorites','photo']){const old=localStorage.getItem('istante.v2.'+key);if(old!==null&&localStorage.getItem(KEY+key)===null)localStorage.setItem(KEY+key,old);}localStorage.setItem(KEY+'migrated','1');}}catch(_){}
-const icons = {
- moon:'<path d="M20.5 13.2A8.5 8.5 0 0 1 10.8 3.5 8.5 8.5 0 1 0 20.5 13.2Z"/>',
- sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"/>',
- sunrise:'<path d="M2 17h20M4 21h16M7 17a5 5 0 0 1 10 0M12 3v6M9 6l3-3 3 3M3 10l2 2m14 0 2-2"/>',
- clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
- heart:'<path d="m12 20-8.2-8.1A5 5 0 0 1 11 5l1 1 1-1a5 5 0 0 1 7.2 6.9Z"/>',
- shuffle:'<path d="M3 6h3c5 0 7 12 12 12h3m-4-4 4 4-4 4M3 18h3c2 0 3.4-1.8 4.6-4M13.4 10C14.8 7.7 16.2 6 18 6h3m-4-4 4 4-4 4"/>',
- copy:'<rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h3"/>',
- expand:'<path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/>',
- collapse:'<path d="M3 8h5V3m8 0v5h5M8 21v-5H3m13 5v-5h5"/>',
- settings:'<path d="M4 6h16M4 12h16M4 18h16"/><circle cx="8" cy="6" r="2" fill="var(--surface)"/><circle cx="16" cy="12" r="2" fill="var(--surface)"/><circle cx="10" cy="18" r="2" fill="var(--surface)"/>',
- collection:'<rect x="3" y="5" width="5" height="15" rx="1"/><rect x="10" y="5" width="5" height="15" rx="1"/><path d="m18 4 3 15"/>',
- close:'<path d="m6 6 12 12M6 18 18 6"/>',
- contrast:'<circle cx="12" cy="12" r="9"/><path d="M12 3v18A9 9 0 0 0 12 3Z" fill="currentColor" stroke="none"/>',
- image:'<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1.5"/><path d="m21 15-6-6L3 21"/>',
- shield:'<path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6Z"/><path d="m8 12 3 3 5-6"/>',
- arrow:'<path d="M4 12h16m-6-6 6 6-6 6"/>',
- search:'<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/>',
- chevron:'<path d="m6 9 6 6 6-6"/>',
- upload:'<path d="M12 16V3m-5 5 5-5 5 5M4 16v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4"/>',
- download:'<path d="M12 3v13m-5-5 5 5 5-5M4 16v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4"/>',
- location:'<circle cx="12" cy="12" r="6"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/>',
- cloud:'<path d="M6 18h12a4 4 0 0 0 0-8h-1a6 6 0 0 0-11-2 5 5 0 0 0 0 10Z"/>',
- partly:'<circle cx="8" cy="7" r="3"/><path d="M8 1v1M1 7h1m2-5 1 1M13 2l-1 1M8 20h10a4 4 0 0 0 0-8h-1a5 5 0 0 0-9 1 3.5 3.5 0 0 0 0 7Z"/>',
- rain:'<path d="M5 14a4 4 0 0 1 0-8 6 6 0 0 1 11 0h2a4 4 0 0 1 0 8M7 17l-1 3m6-3-1 3m6-3-1 3"/>',
- snow:'<path d="M12 2v20M3.3 7l17.4 10M3.3 17 20.7 7M9 4l3 3 3-3M9 20l3-3 3 3M3 10l4-1-1-4M18 19l-1-4 4-1M3 14l4 1-1 4M18 5l-1 4 4 1"/>',
- fog:'<path d="M4 11a4 4 0 0 1 1-8 6 6 0 0 1 11 2h2a4 4 0 0 1 3 6M3 16h18M6 21h12"/>',
- storm:'<path d="M5 14a4 4 0 0 1 0-8 6 6 0 0 1 11 0h2a4 4 0 0 1 0 8M12 12l-4 6h5l-2 5"/>',
- play:'<path d="m9 5 11 7-11 7Z"/>'
-};
-function icon(name) { return '<svg viewBox="0 0 24 24" aria-hidden="true">' + (icons[name] || icons.clock) + '</svg>'; }
+const icon = name => window.IstanteIcons.render(name);
 $$('[data-icon]').forEach(el => { el.innerHTML = icon(el.dataset.icon); });
 let storageFailed = false;
 const store = {
@@ -63,7 +33,9 @@ const dateFormatter = new Intl.DateTimeFormat('it-IT', { weekday:'long', day:'nu
 const goalDateFormatter = new Intl.DateTimeFormat('it-IT', { day:'numeric', month:'long', year:'numeric' });
 const pad = n => String(n).padStart(2, '0');
 const modeNames = { twice:'Mattina & sera', daily:'Una al giorno', opening:'A ogni apertura' };
-const X=window.IstanteExperience.create({getSettings:()=>settings,getPhoto:()=>photo,store,icon,notify:toast,onChange:()=>applyAppearance(new Date())});
+const FX=window.IstanteEffects.create({getSettings:()=>settings});
+const radio=window.IstanteRadio.create({getSettings:()=>settings,save:(key,value)=>{settings[key]=value;saveNotice(store.write('settings',settings));},icon,notify:toast});
+const X=window.IstanteExperience.create({getSettings:()=>settings,getPhoto:()=>photo,store,icon,effects:FX,notify:toast,onChange:()=>applyAppearance(new Date())});
 let appearanceReady=false;
 
 function toast(message) {
@@ -72,7 +44,7 @@ function toast(message) {
  clearTimeout(toastTimer); toastTimer = setTimeout(() => { el.hidden = true; }, 4100);
 }
 function saveNotice(ok) { if (!ok) toast('Memoria del browser non disponibile o piena: le modifiche restano solo in questa sessione.'); }
-function isPanelOpen() { return !!$('dialog[open]'); }
+function isPanelOpen() { return !!$('dialog[open]')||$('#radio-mini').classList.contains('is-open'); }
 function activity() {
  document.body.classList.remove('is-idle');
  if (Date.now() - lastActivity < 250) return;
@@ -156,8 +128,6 @@ function applyAppearance(now) {
  document.body.classList.toggle('no-motion',!settings.motion);document.body.classList.toggle('no-clock',!settings.showClock);
  document.body.style.setProperty('--photo-dim',String(settings.photoDim/100));$('#clock-seconds').hidden=!settings.showSeconds;
  $('#mode-label').textContent=settings.mode==='interval'?'Ogni '+settings.interval+' minuti':modeNames[settings.mode];
- let greeting=!lightTime?(min<360?'Buonanotte':'Buonasera'):min<720?'Buongiorno':'Buon pomeriggio';
- if($('#greeting').textContent!==greeting){$('#greeting').textContent=greeting;$('.greeting .icon').innerHTML=icon(lightTime?'sun':'moon');}
  X.update(now);
 }
 function syncGoal(now, force) {
@@ -238,11 +208,11 @@ function updateSettingsFields() {
  f.morning.required=false;f.evening.required=false;
  $('#schedule-times').hidden=!['twice','daily'].includes(mode);$('#evening-field').hidden=mode!=='twice';$('#interval-field').hidden=mode!=='interval';$('#goal-fields').hidden=f.goalMode.value!=='custom';$('#photo-fields').hidden=f.background.value!=='photo';
  const notes={twice:'La frase non cambia ricaricando la pagina. La sera continua anche dopo mezzanotte, fino al mattino.',daily:'Un pensiero dal cambio mattutino fino alla stessa ora del giorno dopo, anche ricaricando la pagina.',interval:'Il cambio segue intervalli regolari dell\'orologio, non il tempo trascorso dall\'apertura.',opening:'La frase cambia a ogni apertura o ricaricamento della pagina. Non cambia da sola mentre resti qui.'};
- $('#schedule-note').textContent=notes[mode];$('#picsum-fields').hidden=f.background.value!=='picsum';$('#photo-options').hidden=!['photo','picsum'].includes(f.background.value);$('#typing-fields').hidden=!f.typing.checked;window.IstanteControls.refresh();
+ $('#schedule-note').textContent=notes[mode];$('#picsum-fields').hidden=f.background.value!=='picsum';$('#photo-options').hidden=!['photo','picsum'].includes(f.background.value);$('#typing-fields').hidden=!f.typing.checked;$('#effects-fields').hidden=!f.effectsEnabled.checked;$('#radio-fields').hidden=!f.radioEnabled.checked;window.IstanteControls.refresh();
 }
 function openDialog(which) {
  const dialog=$('#'+which+'-dialog');if(!dialog)return;previousFocus=document.activeElement;
- X.pause();if(which==='settings')fillSettings();else renderLibrary(true);
+ radio.close();X.pause();if(which==='settings')fillSettings();else renderLibrary(true);
  clearTimeout(idleTimer);document.body.classList.remove('is-idle');document.body.classList.add('has-panel');document.body.style.overflow='hidden';dialog.showModal();
  if(which==='library')$('#phrase-search').focus({preventScroll:true});else $('#settings-dialog .close-button').focus({preventScroll:true});
 }
@@ -256,16 +226,17 @@ $$('[data-close]').forEach(b=>b.addEventListener('click',()=>closeDialog(b.close
 $('#settings-form').addEventListener('change',updateSettingsFields);
 $('#settings-form').addEventListener('submit',event=>{
  event.preventDefault();const f=event.currentTarget,values=Object.fromEntries(new FormData(f));
- for(const key of ['showClock','showSeconds','motion','hideControls','wakeLock','typing','solarTimes','weather','transitionFX','photoMotion','breathe'])values[key]=f.elements[key].checked;
+ for(const key of ['showClock','showSeconds','motion','hideControls','wakeLock','typing','solarTimes','weather','transitionFX','photoMotion','breathe','typingErase','effectsEnabled','effectSunSync','radioEnabled'])values[key]=f.elements[key].checked;
  values.interval=Number(values.interval);values.photoDim=Number(values.photoDim);let error='';if(!f.reportValidity())return;
  if(values.mode==='twice'&&C.minutes(values.morning,-1)>=C.minutes(values.evening,-1))error='L\'inizio della sera deve essere successivo all\'inizio della mattina.';
  if(values.goalMode==='custom'&&(!values.goalStart||!values.goalEnd||new Date(values.goalEnd)<=new Date(values.goalStart)))error='Inserisci una data finale successiva alla data di inizio.';
  if(values.background==='photo'&&!draftPhoto)error='Scegli una fotografia oppure un altro tipo di sfondo.';
  if(error){$('#settings-error').textContent=error;$('#settings-error').hidden=false;return;}
  const scheduleChanged=['mode','morning','evening','interval'].some(k=>settings[k]!==values[k]);
+ if(values.theme==='solar'&&!X.draftHasPlace())values.theme='auto';
  settings=C.cleanSettings(values);let ok=store.write('settings',settings);
  if(draftPhoto!==photo){photo=draftPhoto;ok=store.write('photo',photo)&&ok;}
- X.commitSettings();applyAppearance(new Date());syncGoal(new Date(),true);if(scheduleChanged)syncSchedule(new Date(),true);
+ X.commitSettings();radio.apply();applyAppearance(new Date());syncGoal(new Date(),true);if(scheduleChanged)syncSchedule(new Date(),true);
  closeDialog($('#settings-dialog'));lastActivity=0;activity();
  toast(ok?'Tutto pronto. Questo momento \u00e8 tuo.':'Preferenze applicate solo per questa sessione: memoria del browser non disponibile.');updateWakeLock();
 });
@@ -325,7 +296,7 @@ document.addEventListener('pointermove',activity,{passive:true});document.addEve
 document.addEventListener('visibilitychange',()=>{clearTimeout(clockTimer);if(!document.hidden){startClock();lastActivity=0;activity();}updateWakeLock();});
 window.addEventListener('pageshow',()=>{startClock();});window.addEventListener('pagehide',()=>{clearTimeout(clockTimer);if(wakeSentinel)wakeSentinel.release().catch(()=>{});});
 window.addEventListener('storage',event=>{if(event.key===KEY+'favorites'){const next=store.read('favorites',[]);favorites.clear();if(Array.isArray(next))next.filter(v=>typeof v==='string').forEach(v=>favorites.add(v));updateFavoriteButton();updateLibraryCounts();if($('#library-dialog').open)renderLibrary();}});
-window.IstanteControls.enhance($('#settings-form'));applyAppearance(new Date());updateLibraryCounts();startClock();activity();updateWakeLock();
+window.IstanteControls.enhance($('#settings-form'));window.IstanteControls.enhance($('#radio-panel'));applyAppearance(new Date());updateLibraryCounts();startClock();activity();updateWakeLock();
 let collectionReady=Promise.resolve();
 if(storageFailed)toast('Il browser non consente il salvataggio locale. La pagina funziona comunque in questa sessione.');
 // The JS copy supports file://. On a web server the JSON file is authoritative.
