@@ -1,4 +1,4 @@
-/* Istante v3.1.0 - application and local preferences. */
+/* Istante v3.2.0 - application and local preferences. */
 (function () {
 'use strict';
 const C = window.IstanteCore;
@@ -39,11 +39,12 @@ const effectHub={sync(context){FX.sync(context);previewFX.sync(context);}};
 const radio=window.IstanteRadio.create({getSettings:()=>settings,save:(key,value)=>{settings[key]=value;saveNotice(store.write('settings',settings));},icon,notify:toast});
 const X=window.IstanteExperience.create({getSettings:()=>settings,getPhoto:()=>photo,store,icon,effects:effectHub,notify:toast,onChange:()=>applyAppearance(new Date())});
 let appearanceReady=false;
+const moments=window.IstanteMoments.create({getSettings:()=>settings,getDraft:readDraftSettings,radio,notify:toast,openTimer:()=>openDialog('timer'),icon});
 
 function toast(message) {
- const el = $('#toast'); ($('dialog[open]') || document.body).append(el);
- el.textContent = message; el.hidden = false;
- clearTimeout(toastTimer); toastTimer = setTimeout(() => { el.hidden = true; }, 4100);
+ const el = $('#toast'); ($('dialog[open]:not(.is-leaving)') || document.body).append(el);
+ el.textContent = message; window.IstanteMotion.show(el);
+ clearTimeout(toastTimer); toastTimer = setTimeout(() => window.IstanteMotion.hide(el), 4100);
 }
 function saveNotice(ok) { if (!ok) toast('Memoria del browser non disponibile o piena: le modifiche restano solo in questa sessione.'); }
 function isPanelOpen() { return !!$('dialog[open]')||$('#radio-mini').classList.contains('is-open'); }
@@ -195,18 +196,18 @@ function renderLibrary(reset) {
 function dateInput(date) { return date.getFullYear()+'-'+pad(date.getMonth()+1)+'-'+pad(date.getDate())+'T'+pad(date.getHours())+':'+pad(date.getMinutes()); }
 function readDraftSettings(){
  const form=$('#settings-form');if(!$('#settings-dialog').open)return settings;
- const values=Object.fromEntries(new FormData(form));
+ const values={...settings,...Object.fromEntries(new FormData(form))};
  for(const key of Object.keys(C.DEFAULTS))if(typeof C.DEFAULTS[key]==='boolean'&&form.elements[key])values[key]=form.elements[key].checked;
  return C.cleanSettings(values);
 }
 function sectionSummaries(){
  const f=$('#settings-form').elements,choice=name=>f[name]?.selectedOptions?.[0]?.textContent||'';
  const themes={dark:'Notte',light:'Carta',auto:'Tema del dispositivo',solar:'Segui il sole'};
- const data={appearance:(themes[f.theme.value]||'Tema')+' \u00b7 '+choice('background'),phrases:(modeNames[f.mode.value]||choice('mode'))+(f.typing.checked?' \u00b7 Macchina da scrivere':''),sky:$('#place-name').textContent,effects:f.effectsEnabled.checked?choice('effect')+(f.weatherFX.value!=='off'?' \u00b7 '+choice('weatherFX'):''):'Disattivati',radio:f.radioEnabled.checked?choice('radioStation').replace(/^\d+\s+/,''):'Player nascosto',goal:choice('goalMode'),screen:f.hideControls.checked?'Comandi a scomparsa':'Comandi sempre visibili'};
+ const data={appearance:(themes[f.theme.value]||'Tema')+' \u00b7 '+choice('background'),phrases:(modeNames[f.mode.value]||choice('mode'))+(f.typing.checked?' \u00b7 Macchina da scrivere':''),sky:$('#place-name').textContent,effects:f.effectsEnabled.checked?choice('effect')+(f.weatherFX.value!=='off'?' \u00b7 '+choice('weatherFX'):''):'Disattivati',radio:f.radioEnabled.checked?choice('radioStation').replace(/^\d+\s+/,''):'Player nascosto',timer:f.timerEnabled.checked?f.timerMinutes.value+' min \u00b7 '+choice('timerAction'):'Disattivato',goal:choice('goalMode'),screen:f.hideControls.checked?'Comandi a scomparsa':'Comandi sempre visibili'};
  for(const [key,value]of Object.entries(data)){const el=$('[data-summary="'+key+'"]');if(el)el.textContent=value;}
 }
 function expandSection(target){
- const section=target?.closest('.settings-section');if(section){$$('.settings-section').forEach(el=>el.open=el===section);section.querySelector('summary').scrollIntoView({block:'nearest'});}
+ const section=target?.closest('.settings-section');if(section){$$('.settings-section').forEach(el=>el._setOpen?el._setOpen(el===section):el.open=el===section);section.querySelector('summary').scrollIntoView({block:'nearest'});}
 }
 function validateSettings(form){
  for(const input of [...form.elements]){
@@ -232,19 +233,36 @@ function fillSettings() {
 }
 function updateSettingsFields() {
  const f=$('#settings-form').elements,mode=f.mode.value;
+ function group(id,enabled){const box=$(id);const wasHidden=box.hidden;box.hidden=!enabled;if(enabled&&wasHidden&&$('#settings-dialog').open)window.IstanteMotion.flash(box);box.querySelectorAll('input,select,button').forEach(el=>el.disabled=!enabled);}
  f.morning.required=false;f.evening.required=false;
- $('#schedule-times').hidden=!['twice','daily'].includes(mode);$('#evening-field').hidden=mode!=='twice';$('#interval-field').hidden=mode!=='interval';$('#goal-fields').hidden=f.goalMode.value!=='custom';$('#photo-fields').hidden=f.background.value!=='photo';
+ group('#schedule-times',['twice','daily'].includes(mode));group('#evening-field',mode==='twice');$('#interval-field').hidden=mode!=='interval';f.interval.disabled=mode!=='interval';
+ group('#goal-fields',f.goalMode.value==='custom');group('#photo-fields',f.background.value==='photo');
  const notes={twice:'La frase non cambia ricaricando la pagina. La sera continua anche dopo mezzanotte, fino al mattino.',daily:'Un pensiero dal cambio mattutino fino alla stessa ora del giorno dopo, anche ricaricando la pagina.',interval:'Il cambio segue intervalli regolari dell\'orologio, non il tempo trascorso dall\'apertura.',opening:'La frase cambia a ogni apertura o ricaricamento della pagina. Non cambia da sola mentre resti qui.'};
- $('#schedule-note').textContent=notes[mode];$('#picsum-fields').hidden=f.background.value!=='picsum';$('#photo-options').hidden=!['photo','picsum'].includes(f.background.value);$('#typing-fields').hidden=!f.typing.checked;$('#effects-fields').hidden=!f.effectsEnabled.checked;$('#radio-fields').hidden=!f.radioEnabled.checked;window.IstanteControls.refresh();sectionSummaries();previewFX.sync();
+ $('#schedule-note').textContent=notes[mode];group('#picsum-fields',f.background.value==='picsum');group('#photo-options',['photo','picsum'].includes(f.background.value));group('#typing-fields',f.typing.checked);group('#effects-fields',f.effectsEnabled.checked);group('#radio-fields',f.radioEnabled.checked);
+ group('#radio-schedule-fields',f.radioEnabled.checked&&f.radioScheduleEnabled.checked);f.radioScheduleEnabled.disabled=!f.radioEnabled.checked;
+ group('#timer-settings-fields',f.timerEnabled.checked);const radioOption=[...f.timerAction.options].find(o=>o.value==='radio');radioOption.disabled=!f.radioEnabled.checked;
+ if(!f.radioEnabled.checked&&f.timerAction.value==='radio')f.timerAction.value='sound';
+ $('#timer-radio-note').hidden=!f.timerEnabled.checked||f.radioEnabled.checked;group('#timer-sound-fields',f.timerEnabled.checked&&f.timerAction.value==='sound');
+ f.showSeconds.disabled=!f.showClock.checked;f.showSeconds.closest('label').classList.toggle('is-dependent-disabled',!f.showClock.checked);
+ f.photoMotion.disabled=!['photo','picsum'].includes(f.background.value)||!f.motion.checked;
+ f.typing.disabled=!f.motion.checked;f.typing.closest('label').classList.toggle('is-dependent-disabled',!f.motion.checked);
+ if(!f.motion.checked)$('#typing-fields').querySelectorAll('input,select,button').forEach(el=>el.disabled=true);
+ f.transitionFX.disabled=!f.motion.checked;f.breathe.disabled=!f.motion.checked;
+ f.effectSunSync.disabled=!f.effectsEnabled.checked||f.effect.value==='none';
+ const meteoOption=[...f.weatherFX.options].find(o=>o.value==='auto');meteoOption.disabled=!X.draftHasPlace();
+ if(meteoOption.disabled&&f.weatherFX.value==='auto')f.weatherFX.value='off';
+ const selectedDays=new Set(f.radioDays.value.split(','));$$('[data-weekday]').forEach(b=>b.setAttribute('aria-pressed',String(selectedDays.has(b.dataset.weekday))));
+ window.IstanteControls.refresh();sectionSummaries();previewFX.sync();
 }
 function openDialog(which) {
  const dialog=$('#'+which+'-dialog');if(!dialog)return;previousFocus=document.activeElement;
- radio.close();X.pause();if(which==='settings')fillSettings();else renderLibrary(true);
- clearTimeout(idleTimer);document.body.classList.remove('is-idle');document.body.classList.add('has-panel');document.body.style.overflow='hidden';dialog.showModal();
- if(which==='library')$('#phrase-search').focus({preventScroll:true});else $('#settings-dialog .close-button').focus({preventScroll:true});
+ radio.close();X.pause();if(which==='settings')fillSettings();else if(which==='library')renderLibrary(true);
+ clearTimeout(idleTimer);document.body.classList.remove('is-idle');document.body.classList.add('has-panel');document.body.style.overflow='hidden';window.IstanteMotion.present(dialog);
+ if(which==='library')$('#phrase-search').focus({preventScroll:true});else dialog.querySelector('.close-button').focus({preventScroll:true});
 }
-function closeDialog(dialog) { dialog.close(); }
+function closeDialog(dialog) { window.IstanteMotion.dismiss(dialog); }
 $$('dialog').forEach(dialog=>{
+ dialog.addEventListener('cancel',event=>{event.preventDefault();closeDialog(dialog);});
  dialog.addEventListener('close',()=>{document.body.classList.remove('has-panel');document.body.style.overflow='';if(previousFocus&&previousFocus.isConnected)previousFocus.focus({preventScroll:true});lastActivity=0;activity();X.resume();});
  dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)closeDialog(dialog);});
 });
@@ -252,29 +270,26 @@ $$('[data-open]').forEach(b=>b.addEventListener('click',()=>openDialog(b.dataset
 $$('[data-close]').forEach(b=>b.addEventListener('click',()=>closeDialog(b.closest('dialog'))));
 $('#settings-form').addEventListener('change',updateSettingsFields);
 $('#settings-form').addEventListener('input',()=>{sectionSummaries();previewFX.sync();});
-$$('.settings-section').forEach(section=>{
- section.querySelector('summary').addEventListener('click',()=>{if(!section.open)$$('.settings-section').forEach(other=>{if(other!==section)other.open=false;});});
- section.addEventListener('toggle',()=>{
- if(section.open){$$('.settings-section').forEach(other=>{if(other!==section)other.open=false;});}
- previewFX.sync();
-});});
-new MutationObserver(sectionSummaries).observe($('#place-name'),{childList:true,subtree:true,characterData:true});
+$$('.settings-section').forEach(section=>{window.IstanteMotion.accordion(section);section.addEventListener('toggle',()=>previewFX.sync());});
+$$('[data-weekday]').forEach(b=>b.addEventListener('click',()=>{const field=$('#settings-form').elements.radioDays,set=new Set(field.value.split(',').filter(Boolean));if(set.has(b.dataset.weekday))set.delete(b.dataset.weekday);else set.add(b.dataset.weekday);field.value=[...set].sort().join(',');updateSettingsFields();}));
+new MutationObserver(()=>{sectionSummaries();if($('#settings-dialog').open)updateSettingsFields();}).observe($('#place-name'),{childList:true,subtree:true,characterData:true});
 document.addEventListener('selectstart',event=>event.preventDefault());
 document.addEventListener('dragstart',event=>{if(!event.target.closest('input[type=file]'))event.preventDefault();});
 document.addEventListener('keydown',event=>{if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='a')event.preventDefault();},{capture:true});
 $('#settings-form').addEventListener('submit',event=>{
- event.preventDefault();const f=event.currentTarget,values=Object.fromEntries(new FormData(f));
- for(const key of ['showClock','showSeconds','motion','hideControls','wakeLock','typing','solarTimes','weather','transitionFX','photoMotion','breathe','typingErase','effectsEnabled','effectSunSync','radioEnabled'])values[key]=f.elements[key].checked;
+ event.preventDefault();const f=event.currentTarget,values={...settings,...Object.fromEntries(new FormData(f))};
+ for(const key of ['showClock','showSeconds','motion','hideControls','wakeLock','typing','solarTimes','weather','transitionFX','photoMotion','breathe','typingErase','effectsEnabled','effectSunSync','radioEnabled','radioScheduleEnabled','timerEnabled'])values[key]=f.elements[key].checked;
  values.interval=Number(values.interval);values.photoDim=Number(values.photoDim);let error='';if(!validateSettings(f))return;
  if(values.mode==='twice'&&C.minutes(values.morning,-1)>=C.minutes(values.evening,-1))error='L\'inizio della sera deve essere successivo all\'inizio della mattina.';
  if(values.goalMode==='custom'&&(!values.goalStart||!values.goalEnd||new Date(values.goalEnd)<=new Date(values.goalStart)))error='Inserisci una data finale successiva alla data di inizio.';
+ if(values.radioEnabled&&values.radioScheduleEnabled&&(C.minutes(values.radioStart,-1)<0||C.minutes(values.radioStop,-1)<0||values.radioStart===values.radioStop||!values.radioDays))error='Scegli giorni e orari diversi di avvio e spegnimento della radio.';
  if(values.background==='photo'&&!draftPhoto)error='Scegli una fotografia oppure un altro tipo di sfondo.';
- if(error){expandSection(values.background==='photo'&&!draftPhoto?f.elements.background:values.goalMode==='custom'?f.elements.goalEnd:f.elements.morning);$('#settings-error').textContent=error;$('#settings-error').hidden=false;return;}
+ if(error){expandSection(values.background==='photo'&&!draftPhoto?f.elements.background:values.goalMode==='custom'?f.elements.goalEnd:values.radioEnabled&&values.radioScheduleEnabled?f.elements.radioStart:f.elements.morning);$('#settings-error').textContent=error;$('#settings-error').hidden=false;return;}
  const scheduleChanged=['mode','morning','evening','interval'].some(k=>settings[k]!==values[k]);
  if(values.theme==='solar'&&!X.draftHasPlace())values.theme='auto';
  settings=C.cleanSettings(values);let ok=store.write('settings',settings);
  if(draftPhoto!==photo){photo=draftPhoto;ok=store.write('photo',photo)&&ok;}
- X.commitSettings();radio.apply();applyAppearance(new Date());syncGoal(new Date(),true);if(scheduleChanged)syncSchedule(new Date(),true);
+ X.commitSettings();radio.apply();moments.apply();applyAppearance(new Date());syncGoal(new Date(),true);if(scheduleChanged)syncSchedule(new Date(),true);
  closeDialog($('#settings-dialog'));lastActivity=0;activity();
  toast(ok?'Tutto pronto. Questo momento \u00e8 tuo.':'Preferenze applicate solo per questa sessione: memoria del browser non disponibile.');updateWakeLock();
 });
@@ -327,8 +342,8 @@ $('#photo-input').addEventListener('change',async event=>{
 document.addEventListener('keydown',event=>{
  activity();const target=event.target;
  if(event.ctrlKey||event.metaKey||event.altKey||event.repeat||target.closest('input,textarea,select,[contenteditable=true]')||isPanelOpen())return;
- const key=event.key.toLowerCase();if(['f','n','l','s'].includes(key))event.preventDefault();
- if(key==='f')toggleFullscreen();if(key==='n')nextPhrase();if(key==='l')openDialog('library');if(key==='s')openDialog('settings');
+ const key=event.key.toLowerCase();if(['f','n','l','s','t'].includes(key))event.preventDefault();
+ if(key==='f')toggleFullscreen();if(key==='n')nextPhrase();if(key==='l')openDialog('library');if(key==='s')openDialog('settings');if(key==='t')moments.open();
 });
 document.addEventListener('pointermove',activity,{passive:true});document.addEventListener('pointerdown',activity,{passive:true,capture:true});
 document.addEventListener('visibilitychange',()=>{clearTimeout(clockTimer);if(!document.hidden){startClock();lastActivity=0;activity();}updateWakeLock();});
