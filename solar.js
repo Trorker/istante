@@ -1,0 +1,22 @@
+/* Solar-only adaptation of SunCalc 1.9.0, Vladimir Agafonkin.
+ * See vendor/SUNCALC-LICENSE.txt. Original: github.com/mourner/suncalc.
+ * No network dependency. Astronomical estimates: unobstructed horizon, sea level.
+ */
+(function(root,factory){if(typeof module==='object'&&module.exports)module.exports=factory();else root.IstanteSolar=factory();})(typeof globalThis!=='undefined'?globalThis:this,function(){
+'use strict';
+const PI=Math.PI,rad=PI/180,DAY=86400000,J1970=2440588,J2000=2451545;
+const sin=Math.sin,cos=Math.cos,atan=Math.atan2;
+const toDays=d=>d.valueOf()/DAY-0.5+J1970-J2000;
+const fromJulian=j=>new Date((j+0.5-J1970)*DAY);
+function solar(d){const M=rad*(357.5291+0.98560028*d),L=M+rad*(1.9148*sin(M)+.02*sin(2*M)+.0003*sin(3*M))+rad*102.9372+PI;return{M,L,dec:Math.asin(sin(L)*sin(rad*23.4397)),ra:atan(sin(L)*cos(rad*23.4397),cos(L))};}
+function transit(ds,M,L){return J2000+ds+.0053*sin(M)-.0069*sin(2*L);}
+function times(date,lat,lon){const lw=-lon*rad,phi=lat*rad,n=Math.round(toDays(date)-.0009-lw/(2*PI)),ds=.0009+lw/(2*PI)+n,c=solar(ds),noon=transit(ds,c.M,c.L),h=-.833*rad,v=(sin(h)-sin(phi)*sin(c.dec))/(cos(phi)*cos(c.dec)),w=Math.acos(v),set=transit(.0009+(w+lw)/(2*PI)+n,c.M,c.L);return{sunrise:fromJulian(noon-(set-noon)),sunset:fromJulian(set),solarNoon:fromJulian(noon),polar:v>1?'night':v< -1?'day':null};}
+function altitude(date,lat,lon){const d=toDays(date),c=solar(d),H=rad*(280.16+360.9856235*d)+lon*rad-c.ra,phi=lat*rad;return Math.asin(sin(phi)*sin(c.dec)+cos(phi)*cos(c.dec)*cos(H));}
+function validPlace(p){return !!p&&typeof p.lat==='number'&&typeof p.lon==='number'&&Number.isFinite(p.lat)&&Number.isFinite(p.lon)&&Math.abs(p.lat)<=90&&Math.abs(p.lon)<=180;}
+function validZone(zone){try{new Intl.DateTimeFormat('en',{timeZone:zone}).format(new Date());return zone;}catch(_){return Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC';}}
+function dayKey(d,zone){const parts=new Intl.DateTimeFormat('en-CA',{timeZone:validZone(zone),year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(d);return ['year','month','day'].map(t=>parts.find(p=>p.type===t).value).join('-');}
+function localTimes(now,place){if(!validPlace(place))return null;const zone=validZone(place.zone),key=dayKey(now,zone);let best=times(now,place.lat,place.lon);for(let i=-2;i<=2;i++){const t=times(new Date(+now+i*DAY),place.lat,place.lon);if(dayKey(t.solarNoon,zone)===key){best=t;break;}}const good=Number.isFinite(+best.sunrise)&&Number.isFinite(+best.sunset);return{rise:good?+best.sunrise:null,set:good?+best.sunset:null,isDay:good?(+now>=+best.sunrise&&+now<+best.sunset):altitude(now,place.lat,place.lon)>-.833*rad,polar:best.polar,zone,source:'calcolo locale',key};}
+function fromForecast(now,place,record){const fallback=localTimes(now,place);if(!fallback||!record||record.placeKey!==place.lat+','+place.lon||!record.data)return fallback;const data=record.data,d=data.daily,zone=validZone(data.timezone||place.zone);if(!d||!Array.isArray(d.time)||!Array.isArray(d.sunrise)||!Array.isArray(d.sunset))return fallback;const key=dayKey(now,zone);const i=d.time.findIndex(t=>Number.isFinite(t)&&dayKey(new Date(t*1000),zone)===key);if(i<0)return fallback;const rise=d.sunrise[i],set=d.sunset[i];if(typeof rise!=='number'||typeof set!=='number'||!Number.isFinite(rise)||!Number.isFinite(set)||rise<=0||set<=rise)return fallback;return{rise:rise*1000,set:set*1000,isDay:+now>=rise*1000&&+now<set*1000,zone,key,source:'Open-Meteo',polar:null};}
+function weather(code,isDay){const map={0:['Sereno',isDay?'sun':'moon'],1:['Quasi sereno',isDay?'sun':'moon'],2:['Parzialmente nuvoloso','partly'],3:['Nuvoloso','cloud'],45:['Nebbia','fog'],48:['Nebbia gelata','fog'],51:['Pioviggine','rain'],53:['Pioviggine','rain'],55:['Pioviggine','rain'],56:['Pioviggine gelata','rain'],57:['Pioviggine gelata','rain'],61:['Pioggia','rain'],63:['Pioggia','rain'],65:['Pioggia intensa','rain'],66:['Pioggia gelata','rain'],67:['Pioggia gelata','rain'],71:['Neve','snow'],73:['Neve','snow'],75:['Neve intensa','snow'],77:['Nevischio','snow'],80:['Rovesci','rain'],81:['Rovesci','rain'],82:['Rovesci intensi','rain'],85:['Rovesci di neve','snow'],86:['Rovesci di neve','snow'],95:['Temporale','storm'],96:['Temporale con grandine','storm'],99:['Temporale con grandine','storm']};return typeof code==='number'&&Object.hasOwn(map,code)?map[code]:['Meteo non disponibile','cloud'];}
+return{times,altitude,validPlace,validZone,dayKey,localTimes,fromForecast,weather};
+});
