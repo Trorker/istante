@@ -1,4 +1,4 @@
-/* Istante Original 1.2 - built from the first minimal edition. */
+/* Istante v3.1.0 - application and local preferences. */
 (function () {
 'use strict';
 const C = window.IstanteCore;
@@ -34,8 +34,10 @@ const goalDateFormatter = new Intl.DateTimeFormat('it-IT', { day:'numeric', mont
 const pad = n => String(n).padStart(2, '0');
 const modeNames = { twice:'Mattina & sera', daily:'Una al giorno', opening:'A ogni apertura' };
 const FX=window.IstanteEffects.create({getSettings:()=>settings});
+const previewFX=window.IstanteEffects.create({getSettings:readDraftSettings,element:$('#preview-fx'),preview:true,statusNode:$('#effects-status')});
+const effectHub={sync(context){FX.sync(context);previewFX.sync(context);}};
 const radio=window.IstanteRadio.create({getSettings:()=>settings,save:(key,value)=>{settings[key]=value;saveNotice(store.write('settings',settings));},icon,notify:toast});
-const X=window.IstanteExperience.create({getSettings:()=>settings,getPhoto:()=>photo,store,icon,effects:FX,notify:toast,onChange:()=>applyAppearance(new Date())});
+const X=window.IstanteExperience.create({getSettings:()=>settings,getPhoto:()=>photo,store,icon,effects:effectHub,notify:toast,onChange:()=>applyAppearance(new Date())});
 let appearanceReady=false;
 
 function toast(message) {
@@ -145,7 +147,7 @@ function syncGoal(now, force) {
 function tick(force) {
  const now = new Date(), hhmm = pad(now.getHours())+':'+pad(now.getMinutes());
  if (hhmm !== lastClock) {
-  lastClock = hhmm; $('#clock').innerHTML = pad(now.getHours())+'<span class="clock-colon">:</span>'+pad(now.getMinutes());
+  lastClock = hhmm; const h=now.getHours(); $('#moment-greeting').textContent=h<5||h>=22?'Buonanotte.':h<12?'Buongiorno.':h<18?'Buon pomeriggio.':'Buonasera.'; $('#clock').innerHTML = pad(now.getHours())+'<span class="clock-colon">:</span>'+pad(now.getMinutes());
   $('#clock').setAttribute('datetime',hhmm); $('#clock').setAttribute('aria-label','Sono le '+hhmm); document.title = hhmm+' | Istante'; applyAppearance(now);
  }
  $('#clock-seconds').textContent = pad(now.getSeconds());
@@ -191,6 +193,31 @@ function renderLibrary(reset) {
  scroller.scrollTop=reset?0:scrollTop; updateLibraryCounts();
 }
 function dateInput(date) { return date.getFullYear()+'-'+pad(date.getMonth()+1)+'-'+pad(date.getDate())+'T'+pad(date.getHours())+':'+pad(date.getMinutes()); }
+function readDraftSettings(){
+ const form=$('#settings-form');if(!$('#settings-dialog').open)return settings;
+ const values=Object.fromEntries(new FormData(form));
+ for(const key of Object.keys(C.DEFAULTS))if(typeof C.DEFAULTS[key]==='boolean'&&form.elements[key])values[key]=form.elements[key].checked;
+ return C.cleanSettings(values);
+}
+function sectionSummaries(){
+ const f=$('#settings-form').elements,choice=name=>f[name]?.selectedOptions?.[0]?.textContent||'';
+ const themes={dark:'Notte',light:'Carta',auto:'Tema del dispositivo',solar:'Segui il sole'};
+ const data={appearance:(themes[f.theme.value]||'Tema')+' \u00b7 '+choice('background'),phrases:(modeNames[f.mode.value]||choice('mode'))+(f.typing.checked?' \u00b7 Macchina da scrivere':''),sky:$('#place-name').textContent,effects:f.effectsEnabled.checked?choice('effect')+(f.weatherFX.value!=='off'?' \u00b7 '+choice('weatherFX'):''):'Disattivati',radio:f.radioEnabled.checked?choice('radioStation').replace(/^\d+\s+/,''):'Player nascosto',goal:choice('goalMode'),screen:f.hideControls.checked?'Comandi a scomparsa':'Comandi sempre visibili'};
+ for(const [key,value]of Object.entries(data)){const el=$('[data-summary="'+key+'"]');if(el)el.textContent=value;}
+}
+function expandSection(target){
+ const section=target?.closest('.settings-section');if(section){$$('.settings-section').forEach(el=>el.open=el===section);section.querySelector('summary').scrollIntoView({block:'nearest'});}
+}
+function validateSettings(form){
+ for(const input of [...form.elements]){
+  if(!input.willValidate||input.validity.valid)continue;
+  if(input.closest('[hidden]:not(input):not(select)'))continue;
+  expandSection(input);const focus=input.hidden?input.nextElementSibling:input;focus?.focus({preventScroll:true});
+  $('#settings-error').textContent=input.validationMessage||'Controlla il valore inserito.';$('#settings-error').hidden=false;
+  return false;
+ }
+ return true;
+}
 function fillSettings() {
  const form=$('#settings-form');
  for (const [key,value] of Object.entries(settings)) {
@@ -208,7 +235,7 @@ function updateSettingsFields() {
  f.morning.required=false;f.evening.required=false;
  $('#schedule-times').hidden=!['twice','daily'].includes(mode);$('#evening-field').hidden=mode!=='twice';$('#interval-field').hidden=mode!=='interval';$('#goal-fields').hidden=f.goalMode.value!=='custom';$('#photo-fields').hidden=f.background.value!=='photo';
  const notes={twice:'La frase non cambia ricaricando la pagina. La sera continua anche dopo mezzanotte, fino al mattino.',daily:'Un pensiero dal cambio mattutino fino alla stessa ora del giorno dopo, anche ricaricando la pagina.',interval:'Il cambio segue intervalli regolari dell\'orologio, non il tempo trascorso dall\'apertura.',opening:'La frase cambia a ogni apertura o ricaricamento della pagina. Non cambia da sola mentre resti qui.'};
- $('#schedule-note').textContent=notes[mode];$('#picsum-fields').hidden=f.background.value!=='picsum';$('#photo-options').hidden=!['photo','picsum'].includes(f.background.value);$('#typing-fields').hidden=!f.typing.checked;$('#effects-fields').hidden=!f.effectsEnabled.checked;$('#radio-fields').hidden=!f.radioEnabled.checked;window.IstanteControls.refresh();
+ $('#schedule-note').textContent=notes[mode];$('#picsum-fields').hidden=f.background.value!=='picsum';$('#photo-options').hidden=!['photo','picsum'].includes(f.background.value);$('#typing-fields').hidden=!f.typing.checked;$('#effects-fields').hidden=!f.effectsEnabled.checked;$('#radio-fields').hidden=!f.radioEnabled.checked;window.IstanteControls.refresh();sectionSummaries();previewFX.sync();
 }
 function openDialog(which) {
  const dialog=$('#'+which+'-dialog');if(!dialog)return;previousFocus=document.activeElement;
@@ -224,14 +251,25 @@ $$('dialog').forEach(dialog=>{
 $$('[data-open]').forEach(b=>b.addEventListener('click',()=>openDialog(b.dataset.open)));
 $$('[data-close]').forEach(b=>b.addEventListener('click',()=>closeDialog(b.closest('dialog'))));
 $('#settings-form').addEventListener('change',updateSettingsFields);
+$('#settings-form').addEventListener('input',()=>{sectionSummaries();previewFX.sync();});
+$$('.settings-section').forEach(section=>{
+ section.querySelector('summary').addEventListener('click',()=>{if(!section.open)$$('.settings-section').forEach(other=>{if(other!==section)other.open=false;});});
+ section.addEventListener('toggle',()=>{
+ if(section.open){$$('.settings-section').forEach(other=>{if(other!==section)other.open=false;});}
+ previewFX.sync();
+});});
+new MutationObserver(sectionSummaries).observe($('#place-name'),{childList:true,subtree:true,characterData:true});
+document.addEventListener('selectstart',event=>event.preventDefault());
+document.addEventListener('dragstart',event=>{if(!event.target.closest('input[type=file]'))event.preventDefault();});
+document.addEventListener('keydown',event=>{if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='a')event.preventDefault();},{capture:true});
 $('#settings-form').addEventListener('submit',event=>{
  event.preventDefault();const f=event.currentTarget,values=Object.fromEntries(new FormData(f));
  for(const key of ['showClock','showSeconds','motion','hideControls','wakeLock','typing','solarTimes','weather','transitionFX','photoMotion','breathe','typingErase','effectsEnabled','effectSunSync','radioEnabled'])values[key]=f.elements[key].checked;
- values.interval=Number(values.interval);values.photoDim=Number(values.photoDim);let error='';if(!f.reportValidity())return;
+ values.interval=Number(values.interval);values.photoDim=Number(values.photoDim);let error='';if(!validateSettings(f))return;
  if(values.mode==='twice'&&C.minutes(values.morning,-1)>=C.minutes(values.evening,-1))error='L\'inizio della sera deve essere successivo all\'inizio della mattina.';
  if(values.goalMode==='custom'&&(!values.goalStart||!values.goalEnd||new Date(values.goalEnd)<=new Date(values.goalStart)))error='Inserisci una data finale successiva alla data di inizio.';
  if(values.background==='photo'&&!draftPhoto)error='Scegli una fotografia oppure un altro tipo di sfondo.';
- if(error){$('#settings-error').textContent=error;$('#settings-error').hidden=false;return;}
+ if(error){expandSection(values.background==='photo'&&!draftPhoto?f.elements.background:values.goalMode==='custom'?f.elements.goalEnd:f.elements.morning);$('#settings-error').textContent=error;$('#settings-error').hidden=false;return;}
  const scheduleChanged=['mode','morning','evening','interval'].some(k=>settings[k]!==values[k]);
  if(values.theme==='solar'&&!X.draftHasPlace())values.theme='auto';
  settings=C.cleanSettings(values);let ok=store.write('settings',settings);
@@ -258,7 +296,7 @@ $('#favorite-current').addEventListener('click',()=>{if(current){toggleFavorite(
 $('#copy-phrase').addEventListener('click',async()=>{
  if(!current)return;
  try{if(!navigator.clipboard||!window.isSecureContext)throw new Error('fallback');await navigator.clipboard.writeText(current.text);toast('Frase copiata.');}
- catch(_){const area=document.createElement('textarea');area.value=current.text;area.style.cssText='position:fixed;left:-9999px;top:0';document.body.append(area);area.select();let success=false;try{success=document.execCommand('copy');}catch(_){}area.remove();$('#copy-phrase').focus();toast(success?'Frase copiata.':'Copia non consentita. Puoi selezionare direttamente il testo della frase.');}
+ catch(_){const area=document.createElement('textarea');area.value=current.text;area.style.cssText='position:fixed;left:-9999px;top:0';document.body.append(area);area.select();let success=false;try{success=document.execCommand('copy');}catch(_){}area.remove();$('#copy-phrase').focus();toast(success?'Frase copiata.':'Copia non consentita da questo browser. Puoi esportare la raccolta in JSON.');}
 });
 $('#filter-all').addEventListener('click',()=>{favoriteOnly=false;renderLibrary(true);});$('#filter-favorites').addEventListener('click',()=>{favoriteOnly=true;renderLibrary(true);});
 $('#phrase-search').addEventListener('input',()=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>renderLibrary(true),100);});$('#load-more').addEventListener('click',()=>{visibleLimit+=40;renderLibrary();});
@@ -297,18 +335,15 @@ document.addEventListener('visibilitychange',()=>{clearTimeout(clockTimer);if(!d
 window.addEventListener('pageshow',()=>{startClock();});window.addEventListener('pagehide',()=>{clearTimeout(clockTimer);if(wakeSentinel)wakeSentinel.release().catch(()=>{});});
 window.addEventListener('storage',event=>{if(event.key===KEY+'favorites'){const next=store.read('favorites',[]);favorites.clear();if(Array.isArray(next))next.filter(v=>typeof v==='string').forEach(v=>favorites.add(v));updateFavoriteButton();updateLibraryCounts();if($('#library-dialog').open)renderLibrary();}});
 window.IstanteControls.enhance($('#settings-form'));window.IstanteControls.enhance($('#radio-panel'));applyAppearance(new Date());updateLibraryCounts();startClock();activity();updateWakeLock();
-let collectionReady=Promise.resolve();
+// The complete collection is local. No redundant fetch is needed during startup.
 if(storageFailed)toast('Il browser non consente il salvataggio locale. La pagina funziona comunque in questa sessione.');
-// The JS copy supports file://. On a web server the JSON file is authoritative.
-if(/^https?:$/.test(location.protocol)){
- const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),1100);
- collectionReady=fetch('./data/frasi_motivazionali_700.json',{cache:'no-store',signal:controller.signal})
- .then(response=>{if(!response.ok)throw new Error('HTTP '+response.status);return response.json();})
- .then(payload=>{const validated=C.parsePhrases(payload);originalPayload=payload;if(!customPayload&&C.buildDeck(validated).signature!==deck.signature)activateCollection(payload);})
- .catch(()=>{/* Complete bundled collection remains available. */}).finally(()=>clearTimeout(timeout));
- if('serviceWorker' in navigator&&window.isSecureContext){const register=()=>navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).catch(()=>{});if(document.readyState==='complete')register();else window.addEventListener('load',register,{once:true});}
+if(/^https?:$/.test(location.protocol)&&'serviceWorker' in navigator&&window.isSecureContext){
+ const hadController=!!navigator.serviceWorker.controller;let reloading=false;
+ navigator.serviceWorker.addEventListener('controllerchange',()=>{if(hadController&&!reloading){reloading=true;location.reload();}});
+ const register=()=>navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).catch(()=>{});
+ if(document.readyState==='complete')register();else window.addEventListener('load',register,{once:true});
 }
-Promise.all([collectionReady,X.boot(),new Promise(resolve=>setTimeout(resolve,550))]).catch(()=>{}).finally(()=>{
+Promise.all([X.boot(),new Promise(resolve=>setTimeout(resolve,550))]).catch(()=>{}).finally(()=>{
  clearTimeout(window.ISTANTE_FAILSAFE);tick(false);applyAppearance(new Date());
  requestAnimationFrame(()=>{document.documentElement.classList.remove('is-loading');$('#app-shell').inert=false;$('#boot-screen').classList.add('is-done');X.reveal();setTimeout(()=>$('#boot-screen').remove(),500);});
 });

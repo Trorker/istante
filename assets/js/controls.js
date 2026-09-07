@@ -17,15 +17,23 @@ function makePopup(input,kind){
  const head=el('div','control-head');head.append(el('span','section-label',fieldLabel(input)),button('\u00d7','control-close',close));head.lastChild.innerHTML=window.IstanteIcons.render('close');head.lastChild.setAttribute('aria-label','Chiudi selettore');d.append(head);
  d.addEventListener('close',()=>{const b=opener;if(b)b.setAttribute('aria-expanded','false');d.remove();if(popup===d){popup=null;activeInput=null;}if(b?.isConnected)b.focus({preventScroll:true});});
  d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)close();}});
+ d.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();e.stopPropagation();d.close();}});
  document.body.append(d);return d;
 }
 function openSelect(input){
- const d=makePopup(input,'select-popup'),list=el('div','custom-options');list.setAttribute('role','listbox');list.setAttribute('aria-label',fieldLabel(input));let opts=[];
+ const d=makePopup(input,'select-popup'),list=el('div','custom-options');list.setAttribute('role','listbox');list.setAttribute('aria-label',fieldLabel(input));let opts=[],search=null;
+ if(input.dataset.search==='true'||input.options.length>12){
+  search=el('input','select-search');search.type='search';search.placeholder='Cerca una stazione...';search.setAttribute('aria-label','Cerca nel catalogo');search.autocomplete='off';d.append(search);
+ }
  for(const o of input.options){const b=button(o.textContent,'custom-option',()=>{setValue(input,o.value);close();});b.setAttribute('role','option');b.setAttribute('aria-selected',String(o.selected));b.disabled=o.disabled;list.append(b);opts.push(b);}
- list.addEventListener('keydown',e=>{let i=opts.indexOf(document.activeElement);if(['ArrowDown','ArrowUp','Home','End'].includes(e.key)){e.preventDefault();i=e.key==='Home'?0:e.key==='End'?opts.length-1:(i+(e.key==='ArrowDown'?1:-1)+opts.length)%opts.length;opts[i].focus();}else if(e.key.length===1&&!e.ctrlKey&&!e.metaKey){const target=opts.find((b,j)=>j>i&&b.textContent.toLowerCase().startsWith(e.key.toLowerCase()))||opts.find(b=>b.textContent.toLowerCase().startsWith(e.key.toLowerCase()));target?.focus();}});
- d.append(list);
+ const available=()=>opts.filter(b=>!b.hidden&&!b.disabled);
+ list.addEventListener('keydown',e=>{const a=available();if(!a.length)return;let i=a.indexOf(document.activeElement);if(['ArrowDown','ArrowUp','Home','End'].includes(e.key)){e.preventDefault();i=e.key==='Home'?0:e.key==='End'?a.length-1:(i+(e.key==='ArrowDown'?1:-1)+a.length)%a.length;a[i].focus();}else if(e.key.length===1&&!e.ctrlKey&&!e.metaKey){const target=a.find((b,j)=>j>i&&b.textContent.replace(/^\d+\s+/,'').toLowerCase().startsWith(e.key.toLowerCase()))||a.find(b=>b.textContent.replace(/^\d+\s+/,'').toLowerCase().startsWith(e.key.toLowerCase()));target?.focus();}});
+ d.append(list);const empty=el('p','select-empty','Nessuna stazione trovata.');empty.hidden=true;d.append(empty);
+ if(search){search.addEventListener('input',()=>{const q=search.value.trim().toLocaleLowerCase('it');for(const b of opts)b.hidden=!b.textContent.toLocaleLowerCase('it').includes(q);empty.hidden=available().length>0;});search.addEventListener('keydown',e=>{if(e.key==='ArrowDown'){e.preventDefault();available()[0]?.focus();}else if(e.key==='Enter'){e.preventDefault();if(available().length===1)available()[0].click();}});}
  if(input.dataset.customUnit){const section=el('div','custom-number'),label=el('label',null,'Oppure imposta '+input.dataset.customUnit),n=el('input');n.type='number';n.min=input.dataset.customMin;n.max=input.dataset.customMax;n.step='1';n.inputMode='numeric';n.value=Number(input.value)>0?input.value:n.min;label.append(n);const error=el('p','form-error');error.setAttribute('role','alert');const apply=()=>{const v=Number(n.value);if(!n.value||!Number.isInteger(v)||v<+n.min||v>+n.max){error.textContent='Inserisci un valore da '+n.min+' a '+n.max+'.';return;}setValue(input,String(v));close();};section.append(label,button('Applica','secondary-button',apply),error);n.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();apply();}});d.append(section);}
- d.showModal();(opts.find(b=>b.getAttribute('aria-selected')==='true')||opts[0])?.focus({preventScroll:true});
+
+ d.showModal();const selected=opts.find(b=>b.getAttribute('aria-selected')==='true')||opts[0];
+ (search||selected)?.focus({preventScroll:true});if(!search)selected?.scrollIntoView({block:'nearest'});
 }
 function openDate(input){
  const isTime=input.type==='time',hasTime=input.type==='datetime-local'||isTime,d=makePopup(input,'date-popup');
