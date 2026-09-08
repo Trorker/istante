@@ -2,7 +2,7 @@
 (function(){'use strict';
  function create({getSnapshot,open,notify}){
   const $=id=>document.getElementById(id),card=window.IstanteShareCard;
-  let format='square',snapshot=null,file=null,previewURL='',generation=0,busy=false;
+  let format='screen',snapshot=null,file=null,previewURL='',generation=0,busy=false;
   const status=text=>$('share-status').textContent=text;
   function download(){if(!file)return;const a=document.createElement('a'),url=URL.createObjectURL(file);a.href=url;a.download=file.name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);status('Immagine pronta. Aggiungi il link quando la pubblichi.');}
   function canShareFile(){try{return !!file&&typeof navigator.share==='function'&&!!navigator.canShare?.({files:[file]});}catch(_){return false;}}

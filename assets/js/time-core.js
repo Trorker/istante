@@ -42,7 +42,7 @@
   return new Intl.DateTimeFormat(format==='12'?'en-GB':'it-IT',options).format(date).replace(/am/i,'AM').replace(/pm/i,'PM');
  }
  function remaining(timer,now=Date.now()){if(timer.state==='running')return Math.max(0,timer.deadline-now);return Math.max(0,timer.remaining||0);}
- function timerOptions(raw={}){raw=raw&&typeof raw==='object'?raw:{};return{timerDuring:['silent','radio'].includes(raw.timerDuring)?raw.timerDuring:'silent',timerAction:['sound','radio','silent'].includes(raw.timerAction)?raw.timerAction:'sound',timerSound:['chime','bell','pulse'].includes(raw.timerSound)?raw.timerSound:'chime',timerVolume:Number.isFinite(Number(raw.timerVolume))?Math.max(0,Math.min(100,Number(raw.timerVolume))):65};}
+ function timerOptions(raw={}){raw=raw&&typeof raw==='object'?raw:{};return{timerDuring:['silent','radio','ambient'].includes(raw.timerDuring)?raw.timerDuring:'silent',timerAction:['sound','radio','silent'].includes(raw.timerAction)?raw.timerAction:'sound',timerSound:['chime','bell','pulse'].includes(raw.timerSound)?raw.timerSound:'chime',timerVolume:Number.isFinite(Number(raw.timerVolume))?Math.max(0,Math.min(100,Number(raw.timerVolume))):65};}
  function cleanTimer(raw){
   const base={state:'idle',duration:1500000,remaining:1500000,deadline:0,id:''};
   if(!raw||typeof raw!=='object'||!['idle','running','paused','done'].includes(raw.state))return base;

@@ -1,5 +1,28 @@
 # Changelog di Istante
 
+## 3.10.1 — 8 settembre 2026
+
+- Qualità delle animazioni spostata in Aspetto e schermo, accanto alla grana; gli effetti mantengono il proprio pannello.
+- Timer più chiaro: Silenzio / Radio / Suono relax e riepilogo della sorgente, senza cambiare il layout della sessione.
+- Calendario interno verificato con tre sorgenti Outlook: cinque viste, swipe, indicatori, attivazione e ritorno automatico; aree touch dei punti migliorate e normalizzazione dei fusi più tollerante.
+- Catalogo delle raccolte: ricerca anche nella descrizione e attivazione direttamente dalla scheda appena scaricata. Conservati i 500 nuovi pensieri, 60 testi poetici e 10 citazioni della 3.10.0 senza duplicarli.
+- Condivisione: formato Come lo schermo e nuova cattura dei gradienti e canvas visibili prima di aprire la modale. Posizioni, opacità e trasformazioni correnti; nessuna fotografia di sfondo.
+- Versioni e cache con verifica di integrità aggiornate, documentazione e note storiche conservate.
+
+Vedi le [note complete](docs/release/v3.10.1.md) per uso, controlli e limiti.
+
+## 3.10.0 — 8 settembre 2026
+
+- Calendario integrato nella stessa istanza, swipe, pulsanti e due indicatori. Attivazione facoltativa, prossimo impegno sulla hero e ritorno automatico configurabile.
+- Fino a 8 calendari ICS simultanei, festività italiane offline e riconoscimento dei principali fusi Windows/Outlook, incluso W. Europe Standard Time.
+- Timer con scelta Silenzio / Radio / Relax durante la pausa; dipendenze dalle sorgenti attive e gestione di pausa/fine senza lasciare il generatore in riproduzione.
+- Grana in Aspetto e schermo; qualità in Effetti ambientali, indipendente dall'interruttore degli effetti.
+- Biblioteca modale con ricerca e catalogo installabile: 500 nuovi pensieri motivazionali, 60 testi poetici e 10 citazioni classiche documentate. Le 1.000 frasi iniziali restano la raccolta predefinita.
+- Condivisione basata sul fotogramma decorativo corrente, incluse posizione degli astri e particelle, senza fotografie.
+- CSS del calendario isolato dai selettori data/ora, viste adattive e sospensione degli effetti non visibili. Cache aggiornata con tutte le risorse locali e documenti.
+
+Vedi le [note complete](docs/release/v3.10.0.md) per comportamento, limiti e verifiche.
+
 ## 3.9.0 — 8 settembre 2026
 
 Calendario ICS con cinque viste, biblioteca JSON persistente, QR con frase e modale di ricezione, rintocco orario, grana analogica, cielo circolare più caldo, riga ambientale riordinata e countdown in mesi/anni. Modalità leggera per tablet, meno ridisegni e backup esteso. Vedi [note complete](docs/release/v3.9.0.md) per limiti ICS, rete, audio e verifiche.

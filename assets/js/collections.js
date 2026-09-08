@@ -5,7 +5,7 @@ function normalize(payload,core,fallback){
  let source=Array.isArray(payload)?payload:payload?.phrases;
  if(!Array.isArray(source))throw Error('Serve un elenco di testi oppure un oggetto con "title" e "phrases".');
  source=source.map(x=>typeof x==='string'?x:x&&typeof x.text==='string'?x.text+(typeof x.author==='string'&&x.author.trim()?' \u2014 '+x.author.trim():''):x);
- const texts=core.parsePhrases(source).map(x=>x.text);return{title,category,phrases:texts};
+ const texts=core.parsePhrases(source).map(x=>x.text);return{title,category,description:String(payload?.description||'').slice(0,400),phrases:texts};
 }
 function clean(value,core){
  const raw=value&&typeof value==='object'?value:{},items=[];if(raw.items!=null&&(!Array.isArray(raw.items)||raw.items.length>30))throw Error("La biblioteca deve contenere al massimo 30 raccolte.");
@@ -24,16 +24,33 @@ function create({store,core,original,legacy,notify,onChange}){
  const builtin={id:'original',title:'Pensieri di Istante',category:'Motivazionali',phrases:original.phrases||original};
  function selected(){return state.items.find(x=>x.id===state.selected)||builtin;}
  function persist(next){if(JSON.stringify(next).length>2200000)throw Error('La biblioteca supera lo spazio previsto. Esporta o elimina una raccolta prima di aggiungerne altre.');if(!store.write('phrase-collections.v1',next))throw Error('Memoria piena o non disponibile: la raccolta non \u00e8 stata modificata.');state=next;}
+ let tab='mine';
+ const catalog=()=>root.ISTANTE_COLLECTION_CATALOG||[];
+ const installed=id=>state.items.some(x=>x.id==='c-lib-'+id);
+ function exportItem(item){const u=URL.createObjectURL(new Blob([JSON.stringify(item,null,2)+'\n'],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download=(item.id||'raccolta')+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),5000);}
  function render(){
   const box=document.getElementById('collection-shelf');if(!box)return;box.replaceChildren();document.getElementById('collection-active-name').textContent=selected().title;
-  for(const item of [builtin,...state.items]){
-   const row=document.createElement('div');row.className='collection-row';
-   const b=document.createElement('button');b.type='button';b.className='collection-choice';b.setAttribute('aria-pressed',String(item.id===state.selected));
-   const name=document.createElement('strong'),meta=document.createElement('small');name.textContent=item.title;meta.textContent=item.category+' \u00b7 '+item.phrases.length+' frasi';b.append(name,meta);b.onclick=()=>select(item.id);row.append(b);
-   if(item.id!=='original'){const del=document.createElement('button');del.type='button';del.className='icon-button';del.innerHTML=root.IstanteIcons.render('trash');del.setAttribute('aria-label','Elimina '+item.title);del.title='Elimina raccolta';del.onclick=()=>{if(!confirm('Eliminare "'+item.title+'" da questo dispositivo? Puoi prima esportarla.'))return;try{const active=state.selected===item.id;persist({...state,selected:active?'original':state.selected,items:state.items.filter(x=>x.id!==item.id)});if(active)onChange(null);render();notify('Raccolta eliminata. Le altre sono rimaste nella biblioteca.');}catch(e){notify(e.message);}};row.append(del);}
-   box.append(row);
+  const query=core.normalized(document.getElementById('collection-search').value);
+  document.querySelectorAll('[data-collection-tab]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.collectionTab===tab)));
+  document.getElementById('collection-library-note').textContent=tab==='mine'?'Scegli una raccolta da usare. Puoi esportare i JSON e rimuovere quelli aggiunti.':'Scarica nella tua biblioteca: i testi sono inclusi in Istante e disponibili anche senza connessione. Il download non cambia la raccolta attiva.';
+  const list=tab==='mine'?[builtin,...state.items]:catalog();
+  for(const item of list.filter(x=>!query||core.normalized(x.title+' '+x.category+' '+(x.description||'')).includes(query))){
+   const row=document.createElement('article');row.className='collection-card'+(item.id===state.selected?' is-selected':'');
+   const name=document.createElement('strong'),meta=document.createElement('small'),desc=document.createElement('p'),actions=document.createElement('div');actions.className='collection-card-actions';
+   name.textContent=item.title;meta.textContent=item.category+' \u00b7 '+item.phrases.length+' frasi';desc.textContent=item.description||(item.id==='original'?'I mille pensieri originali di Istante. La tua raccolta di partenza.':'Una raccolta conservata su questo dispositivo.');
+   const btn=(label,fn)=>{const b=document.createElement('button');b.type='button';b.className='secondary-button';b.textContent=label;b.onclick=fn;actions.append(b);return b;};
+   if(tab==='catalog'){
+    if(installed(item.id)){const id='c-lib-'+item.id;if(state.selected===id){const active=document.createElement('span');active.textContent='In uso';actions.append(active);}else btn('Usa questa raccolta',()=>select(id));}
+    else btn('Scarica raccolta',()=>{try{if(state.items.length>=30)throw Error('Massimo 30 raccolte aggiunte.');persist({...state,items:[...state.items,{id:'c-lib-'+item.id,...normalize(item,core)}]});render();notify('Raccolta salvata. Premi Usa questa raccolta per attivarla.');}catch(e){notify(e.message);}});
+   }else if(item.id===state.selected){const n=document.createElement('span');n.textContent='In uso';actions.append(n);}else btn('Usa questa raccolta',()=>select(item.id));
+   const ex=document.createElement('button');ex.type='button';ex.className='icon-button';ex.innerHTML=root.IstanteIcons.render('download');ex.title='Esporta JSON';ex.setAttribute('aria-label','Esporta '+item.title);ex.onclick=()=>exportItem(item);actions.append(ex);
+   if(tab==='mine'&&item.id!=='original'){const del=document.createElement('button');del.type='button';del.className='icon-button';del.innerHTML=root.IstanteIcons.render('trash');del.setAttribute('aria-label','Elimina '+item.title);del.title='Elimina raccolta';del.onclick=()=>{if(!confirm('Eliminare "'+item.title+'" da questo dispositivo?'))return;try{const active=state.selected===item.id;persist({...state,selected:active?'original':state.selected,items:state.items.filter(x=>x.id!==item.id)});if(active)onChange(null);render();notify('Raccolta rimossa. I preferiti restano salvati e le raccolte del catalogo si possono riscaricare.');}catch(e){notify(e.message);}};actions.append(del);}
+   row.append(meta,name,desc,actions);box.append(row);
   }
+  document.getElementById('collection-library-empty').hidden=box.children.length>0;
  }
+ document.getElementById('collection-search').addEventListener('input',render);
+ document.querySelectorAll('[data-collection-tab]').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.collectionTab;render();}));
  function select(id){try{if(id!=='original'&&!state.items.some(x=>x.id===id))return;persist({...state,selected:id});onChange(id==='original'?null:selected());render();}catch(e){notify(e.message);}}
  function add(payload,fallback,mergeReceived=false){
   const item=normalize(payload,core,fallback);

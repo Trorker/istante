@@ -1,6 +1,6 @@
 # Istante
 
-**Versione attuale: 3.9.0**  
+**Versione attuale: 3.10.1**  
 **Un momento, per te.** Un progetto di **Ruslan Dzyuba**.  
 [Sito ufficiale: istante.ruslan-dzyuba.it](https://istante.ruslan-dzyuba.it/)
 
@@ -37,12 +37,24 @@ casuale, con storico locale: prima di ripetere un pensiero il sorteggio percorre
 la raccolta attiva. Una scelta manuale può invece ripetere una frase. Ricaricare
 la pagina o riscrivere il testo non cambia il pensiero della stessa fascia.
 
-Apri la raccolta in basso a sinistra: il selettore in alto contiene la raccolta
-originale e i tuoi JSON personali. Puoi conservarne fino a 30, scegliere quella
-attiva, esportarla o eliminare una raccolta personale. Quella originale resta
-sempre disponibile. Le raccolte sono locali a questo browser, non sincronizzate
-tra dispositivi. La scrittura lettera per lettera, con pause e piccole correzioni,
-è facoltativa e indipendente dalla frequenza di cambio della frase.
+Apri la raccolta in basso a sinistra e premi **La tua biblioteca**: si apre
+una finestra con **Le mie raccolte**, **Da scoprire** e una ricerca per titolo o
+categoria (la ricerca considera anche la descrizione). La raccolta originale resta quella iniziale. Il catalogo aggiunge
+**Passi nuovi** (500 nuovi pensieri motivazionali), **Tra luce e silenzio**
+(60 brevi testi poetici originali) e **Voci dei classici** (10 citazioni con
+attribuzione e fonte, da Dante, Leopardi, Pascoli e Carducci).
+
+**Scarica raccolta** la aggiunge alla biblioteca di questo browser, anche offline:
+i testi sono già compresi nel sito, senza un download da servizi esterni. Il comando
+non cambia la selezione; premi **Usa questa raccolta**, anche direttamente in
+**Da scoprire**, per attivarla. Puoi importare,
+esportare ed eliminare raccolte personali, fino a 30, senza cancellare i preferiti
+conservati dalle altre. La raccolta originale non si elimina. Le fonti dei classici
+sono in [Fonti delle citazioni](docs/FONTI-CITAZIONI.md).
+
+La scrittura lettera per lettera, con pause e piccole correzioni, resta facoltativa
+e indipendente dalla frequenza di cambio della frase. La biblioteca non viene
+sincronizzata tra dispositivi: per trasferirla usa il backup JSON.
 
 Un JSON può essere un semplice elenco di testi, oppure avere questo formato:
 
@@ -65,10 +77,29 @@ I preferiti di una raccolta non attiva non vengono cancellati.
 
 ## I tuoi giorni, con calma
 
-Il pulsante calendario apre **calendario.html**, una seconda pagina con viste
-**anno, mese, settimana, giorno e agenda**. Tocca un giorno o un appuntamento per
-vederne i dettagli. Più calendari possono essere mostrati insieme e nascosti
-singolarmente senza essere cancellati.
+Il calendario è una **vista interna della stessa pagina**: scorrendo verso
+sinistra dalla dashboard lo apri, verso destra torni al tuo istante. Due punti
+in basso indicano la vista attiva. Restano il pulsante Calendario, il pulsante
+Indietro e i punti cliccabili per chi usa mouse e tastiera. Il player e il timer
+mantengono la stessa istanza e non vengono ricaricati.
+
+In **Impostazioni > Spazio per i tuoi giorni** puoi disabilitare del tutto il
+calendario, mostrare il prossimo impegno sotto la frase, attivare le festività
+italiane e scegliere il ritorno automatico allo screensaver. Il valore iniziale
+è **2 minuti di inattività**; puoi scegliere Mai o un intervallo personalizzato
+da 10 secondi a un'ora. Durante modali, interazioni e scheda nascosta non si
+viene rimandati improvvisamente alla dashboard. Il prossimo impegno è facoltativo
+e inizialmente nascosto: considera la privacy su uno schermo condiviso. Mostra
+il primo evento in corso o futuro nei successivi 90 giorni dei calendari abilitati,
+non le festività. Toccalo per i dettagli.
+
+Le viste sono **anno, mese, settimana, giorno e agenda**, con scorrimento interno
+al calendario, mai dell'intera dashboard. Puoi mostrare insieme **fino a 8 calendari
+personali o condivisi**, ciascuno con colore, interruttore e rimozione. Le festività
+non occupano uno degli 8 posti. Il calendario festivo italiano funziona offline:
+comprende Pasqua, lunedì dell'Angelo e le festività nazionali, incluso San Francesco
+d'Assisi dal 2026; non include feste patronali locali, vacanze scolastiche o
+chiusure aziendali. [Riferimenti](docs/TERZE-PARTI.md).
 
 In **I tuoi calendari** importa un file `.ics` o collega un indirizzo HTTPS/webcal.
 Sono calendari in **sola lettura**: Istante non modifica gli appuntamenti sul
@@ -84,10 +115,11 @@ Non sono gestiti login OAuth o accessi che richiedano cookie del fornitore.
 
 Limiti: 8 calendari, 1 MB per file, circa 2 milioni di caratteri complessivi e
 5.000 eventi di origine per calendario. Le viste espandono fino a 10.000 istanze.
-Sono supportati eventi giornalieri o con orario, UTC, orari locali e fusi IANA,
+Sono supportati eventi giornalieri o con orario, UTC, orari locali, fusi IANA e
+i nomi Windows/Outlook più comuni, incluso **W. Europe Standard Time** (Europe/Rome),
 ricorrenze comuni giornaliere/settimanali/mensili/annuali, date aggiuntive,
 esclusioni ed eccezioni singole. È un lettore mirato, non l'intero standard ICS:
-regole avanzate, fusi proprietari/VTIMEZONE personalizzati, allarmi ICS e attività
+regole avanzate, fusi proprietari non mappati/VTIMEZONE personalizzati, allarmi ICS e attività
 non sono gestiti. La pagina segnala le ricorrenze e i fusi non interpretabili;
 per regole non supportate mostra soltanto la prima data e le RDATE esplicite.
 Gli orari sono visualizzati nel fuso del dispositivo. Controlla sempre gli
@@ -100,10 +132,20 @@ marrone, pioggia o vento sintetizzati offline. Avviare una sorgente ferma l'altr
 Il catalogo radio ha preferiti, stazioni personali, scelta casuale e fasce orarie
 multiple. La radio richiede Internet; Ambiente non scarica registrazioni.
 
-Il timer rimane semplice: imposta la durata e scegli la radio durante la pausa.
-Le preferenze principali e l'avviso finale sono in **Impostazioni > Un tempo per
-te**. Una pausa avviata conserva le proprie scelte. La musica avviata manualmente
-resta distinta da quella avviata dal timer.
+Nel timer imposta la durata e scegli **Silenzio**, **Radio** o **Suono relax** durante
+la pausa. Il riepilogo sotto i tre pulsanti mostra la sorgente scelta. Suono relax usa il suono ambientale selezionato nel player (rumore rosa,
+marrone, pioggia o vento); non richiede rete. Le sorgenti disabilitate nella
+configurazione non sono selezionabili. Le preferenze principali, il valore
+iniziale e l'avviso finale sono in **Impostazioni > Un tempo per te**.
+
+Una pausa avviata conserva le proprie scelte. L'audio avviato dal timer si ferma
+in pausa, all'annullamento o alla fine; può ripartire alla ripresa. La musica già
+avviata manualmente resta distinta e non viene fermata come se appartenesse al
+timer. Le azioni manuali nel player hanno precedenza. Radio e Ambiente sono
+alternativi, non due flussi sovrapposti. Il timer continua durante la vista
+calendario. L'avviso finale mantiene la scelta separata: suono, radio o avviso
+visivo. Il browser deve autorizzare l'audio con un'interazione e la pagina deve
+restare attiva: non si tratta di una sveglia di sistema.
 
 Il **Rintocco consapevole** è facoltativo, disattivato all'inizio. Scegli campana
 morbida o diapason, volume e fascia di silenzio, anche a cavallo della mezzanotte.
@@ -117,7 +159,21 @@ di sistema e non va usato per scadenze critiche.
 
 Il comando Condividi genera una cartolina locale con logo, frase e firma laterale
 con il sito ufficiale. Puoi includere orologio, data, cielo, obiettivo, stazione
-e QR. Gli effetti del tempo vengono disegnati anche nel PNG esportato.
+e QR. All'apertura della condivisione viene fermato un fotogramma degli **effetti
+attuali**: posizione relativa di sole/luna, fase lunare, stelle, pioggia/neve,
+aloni, luce calda e grana, quando visibili e attivi. Il cielo non viene ricostruito
+in una posizione fissa. Il formato iniziale **Come lo schermo** conserva il
+rapporto della schermata nei formati comuni di telefono, tablet e desktop;
+restano Quadrato, Storia e Orizzontale. Nei formati diversi dal dispositivo le
+posizioni sono proporzionali e il disco rimane circolare. I formati estremamente
+allungati sono limitati per mantenere una cartolina leggibile. Il fotogramma
+è acquisito prima di aprire la modale, non dopo aver nascosto i suoi livelli. I livelli CSS sfumati sono
+ridisegnati su canvas, quindi il risultato non è uno screenshot pixel per pixel.
+
+**Le fotografie di sfondo non vengono mai incluse**, neanche quelle personali o
+Picsum. La cartolina usa la base cromatica del tema e i livelli decorativi locali.
+I controlli e il calendario non entrano nell'immagine. Per catturare un nuovo
+momento chiudi e riapri Condividi.
 
 **Il QR e il link contengono la frase**, in dati testuali codificati nel frammento
 `#p=`. Chi li apre vede una modale con il pensiero ricevuto e può conservarlo
@@ -134,7 +190,11 @@ condividere il link invece del QR. Non applicare filtri al codice e non ritaglia
 
 ## Movimento e prestazioni
 
-In **Impostazioni > Lo schermo** trovi qualità Automatica, Leggera e Completa.
+In **Impostazioni > Aspetto e schermo** trovi **Qualità delle animazioni**,
+accanto a **Grana analogica**: Automatica, Leggera e Completa. La qualità
+riguarda il rendering dell’intero schermo, non soltanto gli effetti aggiuntivi,
+e resta regolabile anche quando questi sono disattivati. In **Effetti ambientali**
+rimangono invece la scelta di aloni, particelle e meteo, con la loro intensità.
 Automatica sceglie la modalità leggera sui dispositivi touch o con poca memoria
 segnalata dal browser. Questa riduce particelle, risoluzione canvas, sfocature e
 animazioni decorative; puoi selezionarla anche manualmente.
@@ -142,8 +202,8 @@ animazioni decorative; puoi selezionarla anche manualmente.
 Gli effetti canvas sono limitati a 20 fotogrammi al secondo in Leggera e 30 in
 Completa. Il cielo non viene ridisegnato a ogni secondo: posizione e fase sono
 aggiornate quando necessario e il movimento è interpolato con trasformazioni.
-Le animazioni non necessarie si fermano in background. La preferenza di sistema
-per movimento ridotto viene rispettata. **Grana analogica** aggiunge una trama
+Le animazioni non necessarie si fermano in background e durante la vista calendario. La preferenza di sistema
+per movimento ridotto viene rispettata. In **Aspetto e schermo**, **Grana analogica** aggiunge una trama
 SVG statica e regolabile, senza generare rumore nuovo a ogni fotogramma.
 
 La modalità leggera non rende compatibile un browser obsoleto: occorre un browser
@@ -190,9 +250,9 @@ meteo può restare indicato come salvato fino a tre ore.
 
 ## File, autore e condizioni
 
-- `index.html`: screensaver. `calendario.html`: calendari. `leggi.html`: documenti Markdown.
-- `assets/`: logica e interfaccia; `data/`: raccolta originale e stazioni.
-- `README.md`: il progetto; `CHANGELOG.md`: storico; `docs/release/v3.9.0.md`: questa release.
+- `index.html`: dashboard e calendario virtuale. `calendario.html`: compatibilità per i vecchi link. `leggi.html`: documenti Markdown.
+- `assets/`: logica e interfaccia; `data/`: raccolta originale, catalogo delle raccolte e stazioni.
+- `README.md`: il progetto; `CHANGELOG.md`: storico; `docs/release/v3.10.1.md`: questa release.
 - `docs/LICENZA.md`, `docs/TERZE-PARTI.md`, `docs/licenses/`: condizioni e attribuzioni.
 
 **Istante — Ruslan Dzyuba**. Sorgente disponibile per uso non commerciale, con

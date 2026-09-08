@@ -1,14 +1,14 @@
 /* Timer, local alarm sounds and authorized radio schedule. No server or polling APIs. */
 (function(){
  'use strict';
- function create({getSettings,getDraft,radio,notify,openTimer,icon}){
+ function create({getSettings,getDraft,radio,ambient,notify,openTimer,icon}){
   const T=window.IstanteTime,$=s=>document.querySelector(s),M=window.IstanteMotion;
   const key='istante.original1.timer.v1';let state;
   try{state=T.cleanTimer(JSON.parse(sessionStorage.getItem(key)||'null'));}catch(_){state=T.cleanTimer(null);}
   let draftOptions=T.timerOptions(getSettings()),defaultsStamp='';
-  function timerSettings(){const s={...getSettings(),...(state.state==='idle'?draftOptions:state.options||draftOptions)};if(!s.radioEnabled||!radio.station().id){s.timerDuring='silent';if(s.timerAction==='radio')s.timerAction='sound';}return s;}
+  function timerSettings(){const s={...getSettings(),...(state.state==='idle'?draftOptions:state.options||draftOptions)};if(!s.radioEnabled||!radio.station().id){if(s.timerDuring==='radio')s.timerDuring='silent';if(s.timerAction==='radio')s.timerAction='sound';}if(!s.ambientEnabled&&s.timerDuring==='ambient')s.timerDuring='silent';return s;}
   let context=null,nodes=new Set(),endSoundTimeout=0,armed=false,previousWindow=null,attempted='',signature='',scheduleOwned=false,alarmRadio=false,restored=state.state==='running',lastView='',destroyed=false;
-  let soundToken=0,soundBus=[],duringOwned=false,duringSuppressed=false;
+  let soundToken=0,soundBus=[],duringOwned=false,ambientOwned=false,duringSuppressed=false;
   const save=()=>{try{sessionStorage.setItem(key,JSON.stringify(state));}catch(_){/* Session still works without browser storage. */}};
   function setDuration(ms){const secs=Math.floor(ms/1000);$('#timer-hours').value=Math.floor(secs/3600);$('#timer-minutes').value=Math.floor(secs/60)%60;$('#timer-seconds').value=secs%60;document.querySelectorAll('[data-duration]').forEach(b=>b.classList.toggle('active',Number(b.dataset.duration)*60000===ms));}
   function readDuration(){const h=+$('#timer-hours').value,m=+$('#timer-minutes').value,s=+$('#timer-seconds').value;if(![h,m,s].every(Number.isInteger)||h<0||h>24||m<0||m>59||s<0||s>59)return 0;const ms=(h*3600+m*60+s)*1000;return ms>=1000&&ms<=86400000?ms:0;}
@@ -34,15 +34,20 @@
   }
   function hint(text){$('#timer-audio-hint').textContent=text;$('#timer-audio-hint').hidden=!text;}
   function startDuring(){
-   const s=timerSettings();if(s.timerDuring!=='radio'||!s.radioEnabled||!radio.station().id||duringSuppressed)return;
-   // Already playing music belongs to its original owner, not to this timer.
+   const s=timerSettings();if(duringSuppressed)return;
+   if(s.timerDuring==='ambient'&&s.ambientEnabled){
+    const a=ambient.inspect();if(a.playing||a.loading)return;
+    ambientOwned=true;duringOwned=false;scheduleOwned=false;
+    void ambient.start('timer').then(ok=>{if(!ok&&state.state==='running')hint('Il suono non e stato autorizzato. Il timer continua.');});return;
+   }
+   if(s.timerDuring!=='radio'||!s.radioEnabled||!radio.station().id)return;
    if(radio.getState().wantsPlay)return;
-   duringOwned=true;scheduleOwned=false;void radio.start('timer-during');
+   duringOwned=true;ambientOwned=false;scheduleOwned=false;void radio.start('timer-during');
   }
   function stopDuring(keep=false){
+   if(ambientOwned){ambientOwned=false;ambient.stop(true);}
    if(!duringOwned)return;duringOwned=false;
    if(keep)return;
-   // A still-active, explicitly authorized schedule may take over without a cut.
    if(armed&&T.windowAt(new Date(),getSettings())){scheduleOwned=true;attempted='active';return;}
    radio.stop('paused','La musica della tua pausa si ferma con il timer.');
   }
@@ -74,16 +79,16 @@
    else {const played=playSound(s.timerSound,s.timerVolume);result(played?'Il tuo momento \u00e8 terminato. Prenditi ancora un respiro.':'Il tempo \u00e8 terminato. Tocca per ascoltare l\u2019avviso.',!played);}
   }
   function renderOptions(active){
-   const current=timerSettings(),available=getSettings().radioEnabled&&!!radio.station().id,el=$('#timer-during');
-   el.checked=current.timerDuring==='radio';el.disabled=active||!available;
-   const row=$('#timer-radio-choice');row.classList.toggle('is-dependent-disabled',!available);
-   row.title=!available?'Attiva la radio nelle impostazioni per usarla durante la pausa.':active?'Scelta confermata all\u2019avvio del timer.':radio.station().name;
-   $('#timer-dialog').dataset.state=state.state;
+   const s=timerSettings();document.querySelectorAll('[data-timer-during]').forEach(b=>{
+    const kind=b.dataset.timerDuring,available=kind==='silent'||kind==='radio'&&getSettings().radioEnabled&&!!radio.station().id||kind==='ambient'&&getSettings().ambientEnabled;
+    b.disabled=active||!available;b.setAttribute('aria-pressed',String(kind===s.timerDuring));
+    b.title=!available?'Attiva questa sorgente nelle impostazioni.':active?'Scelta confermata per questo timer.':kind==='ambient'?ambient.label():kind==='radio'?radio.station().name:'Nessun avvio automatico';
+   });$('#timer-dialog').dataset.state=state.state;
+   const source=$('#timer-source-description');
+   const note=s.timerDuring==='ambient'?ambient.label()+' \u00b7 disponibile offline':s.timerDuring==='radio'?radio.station().name+' \u00b7 richiede Internet':'Solo il timer. Un audio gi\u00e0 avviato a mano non viene interrotto.';
+   if(source&&source.textContent!==note)source.textContent=note;
   }
-  $('#timer-during').addEventListener('change',e=>{
-   if(state.state!=='idle')return;
-   draftOptions=T.timerOptions({...draftOptions,timerDuring:e.target.checked?'radio':'silent'});render();
-  });
+  document.querySelectorAll('[data-timer-during]').forEach(b=>b.addEventListener('click',()=>{if(state.state!=='idle')return;draftOptions=T.timerOptions({...draftOptions,timerDuring:b.dataset.timerDuring});render();}));
   function render(){
    const s=getSettings(),ms=T.remaining(state),active=state.state!=='idle';$('#timer-open').hidden=!s.timerEnabled;$('#timer-chip').hidden=!s.timerEnabled||!active;$('#timer-chip').dataset.state=state.state;
    $('#timer-duration').hidden=active;$('#timer-presets').hidden=false;document.querySelectorAll('[data-duration]').forEach(b=>b.disabled=active);$('#timer-running').hidden=!active;$('#timer-reset').hidden=!active;$('#timer-reset').textContent=state.state==='done'?'Chiudi':'Annulla';
@@ -109,7 +114,7 @@
    }
    if(previousWindow&&(!current||current.start>=previousWindow.end)){if(scheduleOwned&&!duringOwned)radio.stop('paused','La fascia programmata \u00e8 terminata.');scheduleOwned=false;attempted='';}
    if(!current)attempted='';previousWindow=current;
-   if(current&&armed&&!attempted&&!duringOwned){attempted='active';scheduleOwned=true;void radio.start('schedule');}
+   if(current&&armed&&!attempted&&!duringOwned&&!ambientOwned){attempted='active';scheduleOwned=true;void radio.start('schedule');}
    $('#radio-program-info').hidden=!s.radioEnabled||!s.radioScheduleEnabled;
    const text=scheduleText(now,current);if($('#radio-program-status').textContent!==text)$('#radio-program-status').textContent=text;
    const hint=text+(!armed?' Le modifiche alle fasce vanno salvate.':' Il browser pu\u00f2 comunque richiedere Play.');
@@ -119,7 +124,7 @@
   function apply(){
    const s=getSettings(),stamp=JSON.stringify([s.timerMinutes,T.timerOptions(s)]),changed=stamp!==defaultsStamp;
    if(state.state==='idle'&&changed){draftOptions=T.timerOptions(s);setDuration(s.timerMinutes*60000);}defaultsStamp=stamp;
-   if(!s.timerEnabled&&state.state!=='idle')reset();if(!s.radioEnabled||!radio.station().id)stopDuring();if(!s.radioEnabled){armed=false;if(alarmRadio){alarmRadio=false;result('Radio disattivata. Resta l\u2019avviso visivo.');}}render();evaluate();
+   if(!s.timerEnabled&&state.state!=='idle')reset();if((!s.radioEnabled||!radio.station().id)&&duringOwned)stopDuring();if(!s.ambientEnabled&&ambientOwned)stopDuring();if(!s.radioEnabled){armed=false;if(alarmRadio){alarmRadio=false;result('Radio disattivata. Resta l\u2019avviso visivo.');}}render();evaluate();
   }
   function tick(){if(destroyed)return;if(state.state==='running'&&T.remaining(state)<=0){finish(restored);restored=false;}else restored=false;if(state.state!=='idle')render();evaluate();}
   function open(){if(!getSettings().timerEnabled)return;render();openTimer();}
@@ -128,12 +133,13 @@
   $('#timer-retry-audio').addEventListener('click',async()=>{const s=timerSettings();if(s.timerAction==='radio'&&s.radioEnabled){alarmRadio=true;void radio.start('timer');}else if(s.timerAction==='silent'){result('Il timer prevede soltanto un avviso visivo.');}else{const ok=await unlockSound();const played=ok&&playSound(s.timerSound,s.timerVolume);result(played?'Prenditi ancora un respiro.':'Audio non disponibile in questo browser.',!played);}});
   $('#timer-sound-preview').addEventListener('click',async()=>{const s=getDraft();if(!s.timerEnabled||s.timerAction!=='sound')return;const ok=await unlockSound();if(!ok||!playSound(s.timerSound,s.timerVolume))notify('Il browser non ha autorizzato il suono.');else if(s.timerVolume===0)notify('Il volume del suono finale \u00e8 a zero.');});
   $('#schedule-authorize').addEventListener('click',()=>void prepare(true));$('#radio-program-enable').addEventListener('click',()=>void prepare(true));
-  document.addEventListener('istante:radio-manual',e=>{duringOwned=false;if(state.state==='running'||state.state==='paused')duringSuppressed=true;const current=T.windowAt(new Date(),getSettings());if(e.detail.playing)armed=true;if(current){attempted='active';scheduleOwned=true;}evaluate();});
+  document.addEventListener('istante:ambient-manual',()=>{ambientOwned=false;duringOwned=false;if(state.state==='running'||state.state==='paused')duringSuppressed=true;});
+  document.addEventListener('istante:radio-manual',e=>{duringOwned=false;ambientOwned=false;if(state.state==='running'||state.state==='paused')duringSuppressed=true;const current=T.windowAt(new Date(),getSettings());if(e.detail.playing)armed=true;if(current){attempted='active';scheduleOwned=true;}evaluate();});
   document.addEventListener('istante:radio-state',e=>{if(duringOwned&&state.state==='running'&&['error','offline','blocked'].includes(e.detail.state))hint('Radio non disponibile. Il timer continua.');if(!alarmRadio||state.state!=='done')return;const r=e.detail;if(r.state==='playing'){alarmRadio=false;result('Il tuo momento \u00e8 terminato. La radio ti fa compagnia.');}else if(['error','offline','blocked'].includes(r.state)){alarmRadio=false;const s=timerSettings();playSound(s.timerSound,s.timerVolume);result(r.state==='blocked'?'Il tempo \u00e8 terminato. Tocca per avviare la radio.':'Radio non disponibile. Il timer \u00e8 terminato; puoi riprovare.',true);}});
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)tick();});window.addEventListener('pageshow',()=>tick());
   window.addEventListener('pagehide',()=>{save();clearSound();});
   setDuration(state.state==='idle'?getSettings().timerMinutes*60000:state.duration);apply();tick();const interval=setInterval(tick,500);
-  return{apply,open,prepare,clearSound,inspect:()=>({timer:{...state},armed,attempted,window:previousWindow,duringOwned,duringSuppressed}),destroy(){destroyed=true;clearInterval(interval);clearSound();}};
+  return{apply,open,prepare,clearSound,inspect:()=>({timer:{...state},armed,attempted,window:previousWindow,duringOwned,ambientOwned,duringSuppressed}),destroy(){destroyed=true;clearInterval(interval);stopDuring();clearSound();}};
  }
  window.IstanteMoments={create};
 })();

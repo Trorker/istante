@@ -1,3 +1,3 @@
 /* Recurrences are expanded away from the UI, with bounds and a caller timeout. */
-importScripts('calendar-core.js?v=3.9.0');
+importScripts('calendar-core.js?v=3.10.1');
 self.onmessage=function(e){const {id,sources,from,to}=e.data;try{self.postMessage({id,...self.IstanteCalendarCore.expand(sources,from,to)});}catch(error){self.postMessage({id,error:error.message});}};
