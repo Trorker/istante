@@ -1,6 +1,6 @@
 # Istante
 
-**Versione corrente: **3.10.2**.
+**Versione corrente: 3.10.3.**
 **Un momento, per te.** Un progetto di **Ruslan Dzyuba**.  
 [Sito ufficiale: istante.ruslan-dzyuba.it](https://istante.ruslan-dzyuba.it/)
 
@@ -162,9 +162,7 @@ con il sito ufficiale. Puoi includere orologio, data, cielo, obiettivo, stazione
 e QR. All'apertura della condivisione viene fermato un fotogramma degli **effetti
 attuali**: posizione relativa di sole/luna, fase lunare, stelle, pioggia/neve,
 aloni, luce calda e grana, quando visibili e attivi. Il cielo non viene ricostruito
-in una posizione fissa. Il formato iniziale **Come lo schermo** conserva il
-rapporto della schermata nei formati comuni di telefono, tablet e desktop;
-restano Quadrato, Storia e Orizzontale. Nei formati diversi dal dispositivo le
+in una posizione fissa. I formati disponibili sono **Quadrato**, **Storia** e **Orizzontale**. Nei formati diversi dal dispositivo le
 posizioni sono proporzionali e il disco rimane circolare. I formati estremamente
 allungati sono limitati per mantenere una cartolina leggibile. Il fotogramma
 è acquisito prima di aprire la modale, non dopo aver nascosto i suoi livelli. I livelli CSS sfumati sono
@@ -252,7 +250,7 @@ meteo può restare indicato come salvato fino a tre ore.
 
 - `index.html`: dashboard e calendario virtuale. `calendario.html`: compatibilità per i vecchi link. `leggi.html`: documenti Markdown.
 - `assets/`: logica e interfaccia; `data/`: raccolta originale, catalogo delle raccolte e stazioni.
-- `README.md`: il progetto; `CHANGELOG.md`: storico; `docs/release/v3.10.2.md`: questa release.
+- `README.md`: il progetto; `CHANGELOG.md`: storico; `docs/release/v3.10.3.md`: questa release.
 - `docs/LICENZA.md`, `docs/TERZE-PARTI.md`, `docs/licenses/`: condizioni e attribuzioni.
 
 **Istante — Ruslan Dzyuba**. Sorgente disponibile per uso non commerciale, con

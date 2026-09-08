@@ -16,7 +16,7 @@ html[data-theme=light]{color-scheme:light;--bg:#f1eee7;--surface:#f8f6f0;--surfa
 @media(max-height:700px) and (max-width:740px){.app-shell{padding-top:18px}.main-stage{min-height:330px;padding:26px 0}.clock{font-size:96px}.thought-block{margin-top:25px}.quote-wrap{min-height:85px;margin-top:15px}.quote-wrap blockquote{font-size:26px}.phrase-meta{margin-top:15px}.goal-strip{padding:15px 0;margin-bottom:6px}.date-label{margin-bottom:7px}}
 @media(max-height:480px) and (orientation:landscape){.app-shell{padding:15px 25px 10px;min-height:100svh}.topbar{min-height:24px}.main-stage{display:grid;grid-template-columns:1fr 1.6fr;gap:30px;min-height:205px;padding:25px 0}.thought-block{margin-top:0}.clock{font-size:90px}.quote-wrap blockquote{font-size:25px}.quote-wrap{min-height:60px}.phrase-meta{margin-top:12px}.goal-strip{display:none}.bottom-bar{min-height:40px}.date-label{font-size:8px}.no-clock .main-stage{display:flex;min-height:200px}.panel{max-height:calc(100dvh - 14px)}.panel-head{padding-top:15px;padding-bottom:14px}.panel-head h2{font-size:27px}}
 @media(max-width:740px){.toolbar .icon-button{width:44px;height:44px}}
-@media(max-width:380px){#copy-phrase{display:none}}
+
 @media(max-height:600px) and (max-width:740px) and (orientation:portrait){.main-stage{min-height:250px;padding:18px 0}.clock{font-size:76px}.thought-block{margin-top:19px}.quote-wrap{margin-top:13px;min-height:72px}.quote-wrap blockquote{font-size:23px}.phrase-meta{margin-top:13px}.date-label{font-size:8px}.goal-strip{padding:12px 0}.goal-heading h2{font-size:15px}.countdown strong{font-size:21px}}
 
 /* Original composition, restrained enhancements. This is not the 2.3 stylesheet. */

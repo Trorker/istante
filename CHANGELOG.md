@@ -1,6 +1,16 @@
 # Changelog
 
-## 3.10.2
+## 3.10.3 — 9 settembre 2026
+
+- Condivisione semplificata: rimossa misura schermo, QR più piccolo e coerente con la palette, eliminato Copia frase.
+- Note e microtesti accorciati, con larghezza completa nelle configurazioni.
+- Agenda corretta e calendario adattivo: nessuno scroll della pagina, scroll interno sui display piccoli e nelle liste lunghe.
+- Cache offline e risorsa social riallineate alla versione.
+
+Vedi le [note complete](docs/release/v3.10.3.md).
+
+## 3.10.2 — 8 settembre 2026
+
 - Calendario bloccato nel viewport: niente scroll della pagina.
 - Supporto per `Western/Central Europe` e varianti nei file ICS.
 - Traguardo impostabile rapidamente anche in mesi o anni.
@@ -8,10 +18,6 @@
 - Stazione selezionata evidenziata senza spunta in conflitto con i preferiti.
 - Pulsante elimina direttamente nella chip del timer.
 - Microtesti delle impostazioni semplificati.
-
- di Istante
-
-## 3.10.2 — 8 settembre 2026
 
 - Qualità delle animazioni spostata in Aspetto e schermo, accanto alla grana; gli effetti mantengono il proprio pannello.
 - Timer più chiaro: Silenzio / Radio / Suono relax e riepilogo della sorgente, senza cambiare il layout della sessione.

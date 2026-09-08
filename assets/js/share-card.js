@@ -148,15 +148,14 @@
  function draw(snapshot,format='square',options=true){
   snapshot=snapshot||{};
   const opt=typeof options==='boolean'?{clock:options,qr:true,date:true,sky:true}:options||{};
-  const capture=snapshot.sky?.capture,ratio=capture?capture.width/capture.height:1;
-  const screenSize=ratio>=1?[1920,Math.max(540,Math.round(1920/ratio))]:[1080,Math.min(2400,Math.round(1080/ratio))];
-  const [w,h]=format==='screen'?screenSize:sizes[format]||sizes.square,canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
+  const [w,h]=sizes[format]||sizes.square,canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
   const c=canvas.getContext('2d');if(!c)throw Error('Canvas non disponibile');
   const scale=w/1080,W=1080,H=h/scale,land=w>h,story=h>w*1.5,pad=72,light=snapshot.theme==='light';
   const P=palette(light,opt.sky&&snapshot.sky?!!snapshot.sky.isDay:true);
   if(opt.sky&&snapshot.sky?.capture)P.background=snapshot.sky.capture.background;
-  const qrMatrix=opt.qr?window.IstanteQR.matrix(snapshot.shareURL||URL):null,qrTotal=qrMatrix?qrMatrix.length+8:0,qrCell=qrMatrix?Math.max(2,Math.floor((land?146*scale:180)/qrTotal)):0,qrSide=qrTotal*qrCell;
-  if(land&&qrSide/scale>230)throw Error('Per questa frase lunga scegli il formato quadrato o storia, oppure disattiva il QR.');
+  const qrMatrix=opt.qr?window.IstanteQR.matrix(snapshot.shareURL||URL):null,qrTotal=qrMatrix?qrMatrix.length+8:0;
+  const qrTarget=(format==='landscape'?112:format==='square'?128:156)*scale;
+  const qrCell=qrMatrix?Math.max(2,Math.floor(qrTarget/qrTotal)):0,qrSide=qrTotal*qrCell;
   c.scale(scale,scale);c.fillStyle=P.background;c.fillRect(0,0,W,H);
   if(!snapshot.sky?.capture){haze(c,W*.04,H*.05,650,light?'#b5c8a137':'#6d91552c',W,H);haze(c,W*.88,H*.92,540,light?'#d7c39732':'#9d845221',W,H);}
   if(opt.sky&&snapshot.sky){sky(c,snapshot.sky,P,W,H,land,story);if(!snapshot.sky.capture&&snapshot.sky.warmth>0){c.save();c.globalAlpha=Math.min(1,snapshot.sky.warmth)*.6;haze(c,W*.85,H*.5,W*.55,light?'#e7984c66':'#ee792f66',W,H);c.restore();}}

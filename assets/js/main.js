@@ -1,4 +1,4 @@
-/* Istante v3.10.2 - application and local preferences. */
+/* Istante v3.10.3 - application and local preferences. */
 (function () {
 'use strict';
 const C = window.IstanteCore;
@@ -352,11 +352,6 @@ function syncFullscreenButton(){const full=!!(document.fullscreenElement||docume
 $('#fullscreen').addEventListener('click',toggleFullscreen);document.addEventListener('fullscreenchange',syncFullscreenButton);document.addEventListener('webkitfullscreenchange',syncFullscreenButton);
 $('#next-phrase').addEventListener('click',nextPhrase);
 $('#favorite-current').addEventListener('click',()=>{if(current){toggleFavorite(current);toast(favorites.has(current.text)?'Un pensiero da ritrovare. Salvato nei preferiti.':'Frase rimossa dai preferiti.');}});
-$('#copy-phrase').addEventListener('click',async()=>{
- if(!current)return;
- try{if(!navigator.clipboard||!window.isSecureContext)throw new Error('fallback');await navigator.clipboard.writeText(current.text);toast('Frase copiata.');}
- catch(_){const area=document.createElement('textarea');area.value=current.text;area.style.cssText='position:fixed;left:-9999px;top:0';document.body.append(area);area.select();let success=false;try{success=document.execCommand('copy');}catch(_){}area.remove();$('#copy-phrase').focus();toast(success?'Frase copiata.':'Copia non consentita da questo browser. Puoi esportare la raccolta in JSON.');}
-});
 $('#filter-all').addEventListener('click',()=>{favoriteOnly=false;renderLibrary(true);});$('#filter-favorites').addEventListener('click',()=>{favoriteOnly=true;renderLibrary(true);});
 $('#phrase-search').addEventListener('input',()=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>renderLibrary(true),100);});$('#load-more').addEventListener('click',()=>{visibleLimit+=40;renderLibrary();});
 function activateCollection(payload){const parsed=C.parsePhrases(payload);phrases=parsed;deck=C.buildDeck(phrases);slotKey='';syncSchedule(new Date(),true);updateLibraryCounts();renderLibrary(true);}
