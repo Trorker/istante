@@ -62,20 +62,27 @@
    const view=state.state+':'+s.timerEnabled;if(lastView!==view){lastView=view;const label=state.state==='running'?'Metti in pausa':state.state==='paused'?'Riprendi il tuo momento':state.state==='done'?'Un nuovo momento':'Inizia il tuo momento';$('#timer-start').innerHTML='<span class="icon">'+icon(state.state==='running'?'pause':'play')+'</span><span>'+label+'</span>';$('#timer-start').disabled=!s.timerEnabled;}
    describe();
   }
-  function scheduleText(now,window){
+  function scheduleText(now,current){
    const s=getSettings();if(!s.radioEnabled||!s.radioScheduleEnabled)return 'Programmazione disattivata.';
-   if(!armed)return 'Programma '+s.radioStart+' \u2192 '+s.radioStop+'. Tocca Abilita per questa sessione.';
-   if(window)return 'Fascia attiva fino alle '+s.radioStop+'.';
-   const next=T.nextStart(now,s);return next?'Prossimo avvio: '+new Intl.DateTimeFormat('it-IT',{weekday:'short',hour:'2-digit',minute:'2-digit'}).format(new Date(next))+'.':'Nessun giorno selezionato.';
+   const count=T.rows(s).filter(r=>r.enabled).length;
+   if(!armed)return count+(count===1?' fascia salvata.':' fasce salvate.')+' Tocca Abilita per questa sessione.';
+   if(current)return 'In programma fino alle '+T.formatTime(current.end,s.timeFormat)+'.';
+   const next=T.nextStart(now,s);return next?'Prossimo avvio: '+new Intl.DateTimeFormat('it-IT',{weekday:'short'}).format(new Date(next))+' '+T.formatTime(next,s.timeFormat)+'.':'Nessuna fascia attiva.';
   }
   function evaluate(){
-   const s=getSettings(),now=new Date(),current=T.windowAt(now,s),nextSignature=[s.radioEnabled,s.radioScheduleEnabled,s.radioStart,s.radioStop,s.radioDays].join('|');
-   if(signature!==nextSignature){if(scheduleOwned&&(!s.radioEnabled||!s.radioScheduleEnabled||!current)){radio.stop('paused','Programmazione disattivata o fascia modificata.');scheduleOwned=false;}signature=nextSignature;attempted='';previousWindow=null;}
-   if(previousWindow&&(!current||previousWindow.key!==current.key)){radio.stop('paused','La fascia programmata \u00e8 terminata.');scheduleOwned=false;}
-   previousWindow=current;
-   if(current&&armed&&attempted!==current.key){attempted=current.key;scheduleOwned=true;void radio.start('schedule');}
-   $('#radio-program-info').hidden=!s.radioEnabled||!s.radioScheduleEnabled;const text=scheduleText(now,current);if($('#radio-program-status').textContent!==text)$('#radio-program-status').textContent=text;const hint=text+(!armed?' Le modifiche agli orari vanno salvate.':' Il browser pu\u00f2 comunque richiedere Play.');if($('#schedule-settings-status').textContent!==hint)$('#schedule-settings-status').textContent=hint;$('#radio-program-enable').hidden=armed;
-   $('#schedule-authorize').textContent=armed?'Audio preparato \u00b7 riabilita':'Abilita audio per questa sessione';
+   const s=getSettings(),now=new Date(),current=T.windowAt(now,s),nextSignature=JSON.stringify([s.radioEnabled,s.radioScheduleEnabled,s.radioSchedules]);
+   if(signature!==nextSignature){
+    if(scheduleOwned&&!current){radio.stop('paused','Programmazione disattivata o fascia modificata.');scheduleOwned=false;}
+    signature=nextSignature;attempted=current&&radio.getState().wantsPlay?'active':'';
+   }
+   if(previousWindow&&(!current||current.start>=previousWindow.end)){if(scheduleOwned)radio.stop('paused','La fascia programmata \u00e8 terminata.');scheduleOwned=false;attempted='';}
+   if(!current)attempted='';previousWindow=current;
+   if(current&&armed&&!attempted){attempted='active';scheduleOwned=true;void radio.start('schedule');}
+   $('#radio-program-info').hidden=!s.radioEnabled||!s.radioScheduleEnabled;
+   const text=scheduleText(now,current);if($('#radio-program-status').textContent!==text)$('#radio-program-status').textContent=text;
+   const hint=text+(!armed?' Le modifiche alle fasce vanno salvate.':' Il browser pu\u00f2 comunque richiedere Play.');
+   if($('#schedule-settings-status').textContent!==hint)$('#schedule-settings-status').textContent=hint;
+   $('#radio-program-enable').hidden=armed;$('#schedule-authorize').textContent=armed?'Audio preparato \u00b7 riabilita':'Abilita audio per questa sessione';
   }
   function apply(){
    const s=getSettings();if(!s.timerEnabled&&state.state!=='idle')reset();if(!s.radioEnabled){armed=false;if(alarmRadio){alarmRadio=false;result('Radio disattivata. Resta l\u2019avviso visivo.');}}if(state.state==='idle')setDuration(s.timerMinutes*60000);render();evaluate();
@@ -87,7 +94,7 @@
   $('#timer-retry-audio').addEventListener('click',async()=>{const s=getSettings();if(s.timerAction==='radio'&&s.radioEnabled){alarmRadio=true;void radio.start('timer');}else if(s.timerAction==='silent'){result('Il timer prevede soltanto un avviso visivo.');}else{const ok=await unlockSound();const played=ok&&playSound(s.timerSound,s.timerVolume);result(played?'Prenditi ancora un respiro.':'Audio non disponibile in questo browser.',!played);}});
   $('#timer-sound-preview').addEventListener('click',async()=>{const s=getDraft();if(!s.timerEnabled||s.timerAction!=='sound')return;const ok=await unlockSound();if(!ok||!playSound(s.timerSound,s.timerVolume))notify('Il browser non ha autorizzato il suono.');else if(s.timerVolume===0)notify('Il volume del suono finale \u00e8 a zero.');});
   $('#schedule-authorize').addEventListener('click',()=>void prepare(true));$('#radio-program-enable').addEventListener('click',()=>void prepare(true));
-  document.addEventListener('istante:radio-manual',e=>{if(e.detail.playing){armed=true;const current=T.windowAt(new Date(),getSettings());if(current)attempted=current.key;}evaluate();});
+  document.addEventListener('istante:radio-manual',e=>{const current=T.windowAt(new Date(),getSettings());if(e.detail.playing)armed=true;if(current){attempted='active';scheduleOwned=true;}evaluate();});
   document.addEventListener('istante:radio-state',e=>{if(!alarmRadio||state.state!=='done')return;const r=e.detail;if(r.state==='playing'){alarmRadio=false;result('Il tuo momento \u00e8 terminato. La radio ti fa compagnia.');}else if(['error','offline','blocked'].includes(r.state)){alarmRadio=false;const s=getSettings();playSound(s.timerSound,s.timerVolume);result(r.state==='blocked'?'Il tempo \u00e8 terminato. Tocca per avviare la radio.':'Radio non disponibile. Il timer \u00e8 terminato; puoi riprovare.',true);}});
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)tick();});window.addEventListener('pageshow',()=>tick());
   window.addEventListener('pagehide',()=>{save();clearSound();});

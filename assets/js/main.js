@@ -1,4 +1,4 @@
-/* Istante v3.2.0 - application and local preferences. */
+/* Istante v3.3.0 - application and local preferences. */
 (function () {
 'use strict';
 const C = window.IstanteCore;
@@ -28,7 +28,7 @@ let favoriteOnly = false, visibleLimit = 40, searchTimer, previousFocus = null;
 let wakeSentinel = null, acquiringWake = false, lastClock = '', lastDate = '', lastGoalMinute = '';
 let draftPhoto = photo, lastActivity = 0;
 const openingSession = Date.now() + ':' + Math.random().toString(36).slice(2);
-const timeFormatter = new Intl.DateTimeFormat('it-IT', { hour:'2-digit', minute:'2-digit', hour12:false });
+const timeFormatter = {format:value=>window.IstanteTime.formatTime(value,settings.timeFormat)};
 const dateFormatter = new Intl.DateTimeFormat('it-IT', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
 const goalDateFormatter = new Intl.DateTimeFormat('it-IT', { day:'numeric', month:'long', year:'numeric' });
 const pad = n => String(n).padStart(2, '0');
@@ -36,8 +36,11 @@ const modeNames = { twice:'Mattina & sera', daily:'Una al giorno', opening:'A og
 const FX=window.IstanteEffects.create({getSettings:()=>settings});
 const previewFX=window.IstanteEffects.create({getSettings:readDraftSettings,element:$('#preview-fx'),preview:true,statusNode:$('#effects-status')});
 const effectHub={sync(context){FX.sync(context);previewFX.sync(context);}};
-const radio=window.IstanteRadio.create({getSettings:()=>settings,save:(key,value)=>{settings[key]=value;saveNotice(store.write('settings',settings));},icon,notify:toast});
+const stationLibrary=window.IstanteStationLibrary.create(window.IstanteStations||[],toast);window.IstanteRadioLibrary=stationLibrary;
+const radio=window.IstanteRadio.create({library:stationLibrary,getSettings:()=>settings,save:(key,value)=>{settings[key]=value;saveNotice(store.write('settings',settings));},icon,notify:toast});
 const X=window.IstanteExperience.create({getSettings:()=>settings,getPhoto:()=>photo,store,icon,effects:effectHub,notify:toast,onChange:()=>applyAppearance(new Date())});
+const stationManager=window.IstanteStationManager.create({library:stationLibrary,icon,notify:toast});
+const scheduleEditor=window.IstanteSchedules.create({icon,onChange:updateSettingsFields});
 let appearanceReady=false;
 const moments=window.IstanteMoments.create({getSettings:()=>settings,getDraft:readDraftSettings,radio,notify:toast,openTimer:()=>openDialog('timer'),icon});
 
@@ -122,7 +125,7 @@ function nextPhrase() {
 function applyAppearance(now) {
  const min=now.getHours()*60+now.getMinutes(),sun=X.solar(now);
  const lightTime=sun?sun.isDay:(min>=360&&min<1080),theme=X.theme(now),old=document.documentElement.dataset.theme;
- document.documentElement.dataset.theme=theme;
+ document.documentElement.dataset.theme=theme;document.documentElement.dataset.timeFormat=settings.timeFormat;
  try{localStorage.setItem('istante.original.theme',theme);}catch(_){}
  if(appearanceReady&&old!==theme&&!document.documentElement.classList.contains('is-loading'))X.transition(theme);
  appearanceReady=true;
@@ -147,9 +150,9 @@ function syncGoal(now, force) {
 }
 function tick(force) {
  const now = new Date(), hhmm = pad(now.getHours())+':'+pad(now.getMinutes());
- if (hhmm !== lastClock) {
-  lastClock = hhmm; const h=now.getHours(); $('#moment-greeting').textContent=h<5||h>=22?'Buonanotte.':h<12?'Buongiorno.':h<18?'Buon pomeriggio.':'Buonasera.'; $('#clock').innerHTML = pad(now.getHours())+'<span class="clock-colon">:</span>'+pad(now.getMinutes());
-  $('#clock').setAttribute('datetime',hhmm); $('#clock').setAttribute('aria-label','Sono le '+hhmm); document.title = hhmm+' | Istante'; applyAppearance(now);
+ if (hhmm !== lastClock || force) {
+  lastClock = hhmm; const h=now.getHours(); $('#moment-greeting').textContent=h<5||h>=22?'Buonanotte.':h<12?'Buongiorno.':h<18?'Buon pomeriggio.':'Buonasera.'; const displayHour=settings.timeFormat==='12'?(now.getHours()%12||12):now.getHours();$('#clock').innerHTML = pad(displayHour)+'<span class="clock-colon">:</span>'+pad(now.getMinutes());$('#clock-period').hidden=settings.timeFormat!=='12';$('#clock-period').textContent=now.getHours()<12?'AM':'PM';
+  $('#clock').setAttribute('datetime',hhmm); $('#clock').setAttribute('aria-label','Sono le '+timeFormatter.format(now)); document.title = timeFormatter.format(now)+' | Istante'; applyAppearance(now);
  }
  $('#clock-seconds').textContent = pad(now.getSeconds());
  const date = dateFormatter.format(now); if (date !== lastDate) { lastDate = date; $('#date-label').textContent = date; }
@@ -198,7 +201,7 @@ function readDraftSettings(){
  const form=$('#settings-form');if(!$('#settings-dialog').open)return settings;
  const values={...settings,...Object.fromEntries(new FormData(form))};
  for(const key of Object.keys(C.DEFAULTS))if(typeof C.DEFAULTS[key]==='boolean'&&form.elements[key])values[key]=form.elements[key].checked;
- return C.cleanSettings(values);
+ values.radioSchedules=scheduleEditor.value();return C.cleanSettings(values);
 }
 function sectionSummaries(){
  const f=$('#settings-form').elements,choice=name=>f[name]?.selectedOptions?.[0]?.textContent||'';
@@ -229,10 +232,11 @@ function fillSettings() {
  if(!form.elements.goalEnd.value)form.elements.goalEnd.value=dateInput(new Date(new Date().getFullYear()+1,0,1));
  draftPhoto=photo;$('#photo-input').value='';$('#photo-label').textContent=photo?'Sostituisci la fotografia':'Scegli una fotografia';$('#settings-error').hidden=true;
  $('#wake-support').textContent=('wakeLock' in navigator&&window.isSecureContext)?'La richiesta di schermo acceso dipende dalle autorizzazioni e dal risparmio energetico del dispositivo.':'Schermo sempre acceso non disponibile qui: serve un browser compatibile su HTTPS o localhost.';
- X.beginSettings();window.IstanteControls.refresh();updateSettingsFields();
+ scheduleEditor.begin(settings);stationLibrary.syncSelects();form.elements.radioStation.value=settings.radioStation;X.beginSettings();window.IstanteControls.refresh();updateSettingsFields();
 }
 function updateSettingsFields() {
- const f=$('#settings-form').elements,mode=f.mode.value;
+ const f=$('#settings-form').elements,mode=f.mode.value,hasStations=stationLibrary.list().length>0;
+ if(!hasStations)f.radioScheduleEnabled.checked=false;if((!hasStations||!f.radioEnabled.checked)&&f.timerAction.value==='radio')f.timerAction.value='sound';
  function group(id,enabled){const box=$(id);const wasHidden=box.hidden;box.hidden=!enabled;if(enabled&&wasHidden&&$('#settings-dialog').open)window.IstanteMotion.flash(box);box.querySelectorAll('input,select,button').forEach(el=>el.disabled=!enabled);}
  f.morning.required=false;f.evening.required=false;
  group('#schedule-times',['twice','daily'].includes(mode));group('#evening-field',mode==='twice');$('#interval-field').hidden=mode!=='interval';f.interval.disabled=mode!=='interval';
@@ -251,45 +255,46 @@ function updateSettingsFields() {
  f.effectSunSync.disabled=!f.effectsEnabled.checked||f.effect.value==='none';
  const meteoOption=[...f.weatherFX.options].find(o=>o.value==='auto');meteoOption.disabled=!X.draftHasPlace();
  if(meteoOption.disabled&&f.weatherFX.value==='auto')f.weatherFX.value='off';
- const selectedDays=new Set(f.radioDays.value.split(','));$$('[data-weekday]').forEach(b=>b.setAttribute('aria-pressed',String(selectedDays.has(b.dataset.weekday))));
+ scheduleEditor.syncEnabled(f.radioEnabled.checked&&f.radioScheduleEnabled.checked);
+ f.radioVolume.disabled=!f.radioEnabled.checked||!hasStations;f.radioStation.disabled=!f.radioEnabled.checked||!hasStations;f.radioScheduleEnabled.disabled=!f.radioEnabled.checked||!hasStations;radioOption.disabled=!f.radioEnabled.checked||!hasStations;if(radioOption.disabled&&f.timerAction.value==='radio')f.timerAction.value='sound';
  window.IstanteControls.refresh();sectionSummaries();previewFX.sync();
 }
 function openDialog(which) {
- const dialog=$('#'+which+'-dialog');if(!dialog)return;previousFocus=document.activeElement;
- radio.close();X.pause();if(which==='settings')fillSettings();else if(which==='library')renderLibrary(true);
+ const dialog=$('#'+which+'-dialog');if(!dialog)return;previousFocus=document.activeElement;dialog._returnFocus=previousFocus;
+ radio.close();X.pause();if(which==='settings')fillSettings();else if(which==='library')renderLibrary(true);else if(which==='stations')stationManager.render();
  clearTimeout(idleTimer);document.body.classList.remove('is-idle');document.body.classList.add('has-panel');document.body.style.overflow='hidden';window.IstanteMotion.present(dialog);
  if(which==='library')$('#phrase-search').focus({preventScroll:true});else dialog.querySelector('.close-button').focus({preventScroll:true});
 }
 function closeDialog(dialog) { window.IstanteMotion.dismiss(dialog); }
 $$('dialog').forEach(dialog=>{
  dialog.addEventListener('cancel',event=>{event.preventDefault();closeDialog(dialog);});
- dialog.addEventListener('close',()=>{document.body.classList.remove('has-panel');document.body.style.overflow='';if(previousFocus&&previousFocus.isConnected)previousFocus.focus({preventScroll:true});lastActivity=0;activity();X.resume();});
+ dialog.addEventListener('close',()=>{const stillOpen=!!$('dialog[open]');document.body.classList.toggle('has-panel',stillOpen);document.body.style.overflow=stillOpen?'hidden':'';const back=dialog._returnFocus;if(back&&back.isConnected)back.focus({preventScroll:true});lastActivity=0;activity();X.resume();});
  dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)closeDialog(dialog);});
 });
 $$('[data-open]').forEach(b=>b.addEventListener('click',()=>openDialog(b.dataset.open)));
 $$('[data-close]').forEach(b=>b.addEventListener('click',()=>closeDialog(b.closest('dialog'))));
 $('#settings-form').addEventListener('change',updateSettingsFields);
 $('#settings-form').addEventListener('input',()=>{sectionSummaries();previewFX.sync();});
-$$('.settings-section').forEach(section=>{window.IstanteMotion.accordion(section);section.addEventListener('toggle',()=>previewFX.sync());});
-$$('[data-weekday]').forEach(b=>b.addEventListener('click',()=>{const field=$('#settings-form').elements.radioDays,set=new Set(field.value.split(',').filter(Boolean));if(set.has(b.dataset.weekday))set.delete(b.dataset.weekday);else set.add(b.dataset.weekday);field.value=[...set].sort().join(',');updateSettingsFields();}));
+$$('.settings-section').forEach(section=>{window.IstanteMotion.accordion(section);section.addEventListener('toggle',()=>{previewFX.sync();if(section.open&&$('#settings-dialog').open)setTimeout(()=>{if(section.open)section.querySelector('summary').scrollIntoView({block:'start',behavior:settings.motion&&!matchMedia('(prefers-reduced-motion: reduce)').matches?'smooth':'instant'});},60);});});
 new MutationObserver(()=>{sectionSummaries();if($('#settings-dialog').open)updateSettingsFields();}).observe($('#place-name'),{childList:true,subtree:true,characterData:true});
 document.addEventListener('selectstart',event=>event.preventDefault());
 document.addEventListener('dragstart',event=>{if(!event.target.closest('input[type=file]'))event.preventDefault();});
 document.addEventListener('keydown',event=>{if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='a')event.preventDefault();},{capture:true});
 $('#settings-form').addEventListener('submit',event=>{
  event.preventDefault();const f=event.currentTarget,values={...settings,...Object.fromEntries(new FormData(f))};
+ values.radioSchedules=scheduleEditor.value();
  for(const key of ['showClock','showSeconds','motion','hideControls','wakeLock','typing','solarTimes','weather','transitionFX','photoMotion','breathe','typingErase','effectsEnabled','effectSunSync','radioEnabled','radioScheduleEnabled','timerEnabled'])values[key]=f.elements[key].checked;
  values.interval=Number(values.interval);values.photoDim=Number(values.photoDim);let error='';if(!validateSettings(f))return;
  if(values.mode==='twice'&&C.minutes(values.morning,-1)>=C.minutes(values.evening,-1))error='L\'inizio della sera deve essere successivo all\'inizio della mattina.';
  if(values.goalMode==='custom'&&(!values.goalStart||!values.goalEnd||new Date(values.goalEnd)<=new Date(values.goalStart)))error='Inserisci una data finale successiva alla data di inizio.';
- if(values.radioEnabled&&values.radioScheduleEnabled&&(C.minutes(values.radioStart,-1)<0||C.minutes(values.radioStop,-1)<0||values.radioStart===values.radioStop||!values.radioDays))error='Scegli giorni e orari diversi di avvio e spegnimento della radio.';
+ if(!error&&values.radioEnabled&&values.radioScheduleEnabled)error=scheduleEditor.validate();
  if(values.background==='photo'&&!draftPhoto)error='Scegli una fotografia oppure un altro tipo di sfondo.';
- if(error){expandSection(values.background==='photo'&&!draftPhoto?f.elements.background:values.goalMode==='custom'?f.elements.goalEnd:values.radioEnabled&&values.radioScheduleEnabled?f.elements.radioStart:f.elements.morning);$('#settings-error').textContent=error;$('#settings-error').hidden=false;return;}
+ if(error){expandSection(values.background==='photo'&&!draftPhoto?f.elements.background:values.goalMode==='custom'?f.elements.goalEnd:values.radioEnabled&&values.radioScheduleEnabled?f.elements.radioScheduleEnabled:f.elements.morning);$('#settings-error').textContent=error;$('#settings-error').hidden=false;return;}
  const scheduleChanged=['mode','morning','evening','interval'].some(k=>settings[k]!==values[k]);
  if(values.theme==='solar'&&!X.draftHasPlace())values.theme='auto';
  settings=C.cleanSettings(values);let ok=store.write('settings',settings);
  if(draftPhoto!==photo){photo=draftPhoto;ok=store.write('photo',photo)&&ok;}
- X.commitSettings();radio.apply();moments.apply();applyAppearance(new Date());syncGoal(new Date(),true);if(scheduleChanged)syncSchedule(new Date(),true);
+ X.commitSettings();radio.apply();moments.apply();applyAppearance(new Date());lastClock='';tick(true);if(schedule)$('#phrase-meta').textContent=schedule.nextAt?'Prossimo pensiero alle '+timeFormatter.format(schedule.nextAt):'Un nuovo pensiero alla prossima apertura';if(scheduleChanged)syncSchedule(new Date(),true);
  closeDialog($('#settings-dialog'));lastActivity=0;activity();
  toast(ok?'Tutto pronto. Questo momento \u00e8 tuo.':'Preferenze applicate solo per questa sessione: memoria del browser non disponibile.');updateWakeLock();
 });
@@ -352,12 +357,9 @@ window.addEventListener('storage',event=>{if(event.key===KEY+'favorites'){const 
 window.IstanteControls.enhance($('#settings-form'));window.IstanteControls.enhance($('#radio-panel'));applyAppearance(new Date());updateLibraryCounts();startClock();activity();updateWakeLock();
 // The complete collection is local. No redundant fetch is needed during startup.
 if(storageFailed)toast('Il browser non consente il salvataggio locale. La pagina funziona comunque in questa sessione.');
-if(/^https?:$/.test(location.protocol)&&'serviceWorker' in navigator&&window.isSecureContext){
- const hadController=!!navigator.serviceWorker.controller;let reloading=false;
- navigator.serviceWorker.addEventListener('controllerchange',()=>{if(hadController&&!reloading){reloading=true;location.reload();}});
- const register=()=>navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).catch(()=>{});
- if(document.readyState==='complete')register();else window.addEventListener('load',register,{once:true});
-}
+window.IstanteUpdates.create({notify:toast});
+document.addEventListener('istante:manage-stations',()=>openDialog('stations'));
+document.addEventListener('istante:stations-changed',()=>{if(!stationLibrary.list().length){settings.radioScheduleEnabled=false;if(settings.timerAction==='radio')settings.timerAction='sound';store.write('settings',settings);}moments.apply();if($('#settings-dialog').open)updateSettingsFields();});
 Promise.all([X.boot(),new Promise(resolve=>setTimeout(resolve,550))]).catch(()=>{}).finally(()=>{
  clearTimeout(window.ISTANTE_FAILSAFE);tick(false);applyAppearance(new Date());
  requestAnimationFrame(()=>{document.documentElement.classList.remove('is-loading');$('#app-shell').inert=false;$('#boot-screen').classList.add('is-done');X.reveal();setTimeout(()=>$('#boot-screen').remove(),500);});
