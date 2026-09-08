@@ -1,4 +1,4 @@
-/* Istante v3.4.0 - application and local preferences. */
+/* Istante v3.5.0 - application and local preferences. */
 (function () {
 'use strict';
 const C = window.IstanteCore;
@@ -44,7 +44,8 @@ const scheduleEditor=window.IstanteSchedules.create({icon,onChange:updateSetting
 let appearanceReady=false;
 const moments=window.IstanteMoments.create({getSettings:()=>settings,getDraft:readDraftSettings,radio,notify:toast,openTimer:()=>openDialog('timer'),icon});
 
-const sharing=window.IstanteShare.create({getSnapshot:()=>({phrase:current?.text||'Un momento, per te.',time:timeFormatter.format(new Date()),theme:document.documentElement.dataset.theme||'dark'}),open:()=>openDialog('share'),notify:toast});
+const scene=window.IstanteScene.create({getSettings:()=>settings,getSun:()=>X.solar(new Date()),store,openWelcome:()=>openDialog('welcome')});
+const sharing=window.IstanteShare.create({getSnapshot:()=>({phrase:current?.text||'Un momento, per te.',time:timeFormatter.format(new Date()),theme:document.documentElement.dataset.theme||'dark',date:dateFormatter.format(new Date()),greeting:$('#moment-greeting').textContent,clockStyle:settings.clockStyle,hours:new Date().getHours(),minutes:new Date().getMinutes(),sky:scene.describe(),goal:C.getGoal(new Date(),settings),station:settings.radioEnabled?radio.station().name:''}),open:()=>openDialog('share'),notify:toast});
 
 function toast(message) {
  const el = $('#toast'); ($('dialog[open]:not(.is-leaving)') || document.body).append(el);
@@ -156,7 +157,7 @@ function tick(force) {
   lastClock = hhmm; const h=now.getHours(); $('#moment-greeting').textContent=h<5||h>=22?'Buonanotte.':h<12?'Buongiorno.':h<18?'Buon pomeriggio.':'Buonasera.'; const displayHour=settings.timeFormat==='12'?(now.getHours()%12||12):now.getHours();$('#clock').innerHTML = pad(displayHour)+'<span class="clock-colon">:</span>'+pad(now.getMinutes());$('#clock-period').hidden=settings.timeFormat!=='12';$('#clock-period').textContent=now.getHours()<12?'AM':'PM';
   $('#clock').setAttribute('datetime',hhmm); $('#clock').setAttribute('aria-label','Sono le '+timeFormatter.format(now)); document.title = timeFormatter.format(now)+' | Istante'; applyAppearance(now);
  }
- $('#clock-seconds').textContent = pad(now.getSeconds());
+ $('#clock-seconds').textContent = pad(now.getSeconds());scene.update(now);
  const date = dateFormatter.format(now); if (date !== lastDate) { lastDate = date; $('#date-label').textContent = date; }
  syncSchedule(now,force); syncGoal(now,force);
 }
@@ -208,7 +209,7 @@ function readDraftSettings(){
 function sectionSummaries(){
  const f=$('#settings-form').elements,choice=name=>f[name]?.selectedOptions?.[0]?.textContent||'';
  const themes={dark:'Notte',light:'Carta',auto:'Tema del dispositivo',solar:'Segui il sole'};
- const data={appearance:(themes[f.theme.value]||'Tema')+' \u00b7 '+choice('background'),phrases:(modeNames[f.mode.value]||choice('mode'))+(f.typing.checked?' \u00b7 Macchina da scrivere':''),sky:$('#place-name').textContent,effects:f.effectsEnabled.checked?choice('effect')+(f.weatherFX.value!=='off'?' \u00b7 '+choice('weatherFX'):''):'Disattivati',radio:f.radioEnabled.checked?choice('radioStation').replace(/^\d+\s+/,''):'Player nascosto',timer:f.timerEnabled.checked?f.timerMinutes.value+' min \u00b7 '+choice('timerAction'):'Disattivato',goal:choice('goalMode'),screen:f.hideControls.checked?'Comandi a scomparsa':'Comandi sempre visibili'};
+ const data={appearance:(themes[f.theme.value]||'Tema')+' \u00b7 '+choice('background'),phrases:(modeNames[f.mode.value]||choice('mode'))+(f.typing.checked?' \u00b7 Macchina da scrivere':''),sky:$('#place-name').textContent,effects:f.effectsEnabled.checked?choice('effect')+(f.weatherFX.value!=='off'?' \u00b7 '+choice('weatherFX'):''):'Disattivati',radio:f.radioEnabled.checked?choice('radioStation').replace(/^\d+\s+/,''):'Player nascosto',timer:f.timerEnabled.checked?f.timerMinutes.value+' min \u00b7 Scelte nel timer':'Disattivato',goal:choice('goalMode'),screen:f.hideControls.checked?'Comandi a scomparsa':'Comandi sempre visibili'};
  for(const [key,value]of Object.entries(data)){const el=$('[data-summary="'+key+'"]');if(el)el.textContent=value;}
 }
 function expandSection(target){
@@ -238,7 +239,7 @@ function fillSettings() {
 }
 function updateSettingsFields() {
  const f=$('#settings-form').elements,mode=f.mode.value,hasStations=stationLibrary.list().length>0;
- if(!hasStations)f.radioScheduleEnabled.checked=false;if((!hasStations||!f.radioEnabled.checked)&&f.timerAction.value==='radio')f.timerAction.value='sound';if(!hasStations||!f.radioEnabled.checked)f.timerDuring.value='silent';
+ if(!hasStations)f.radioScheduleEnabled.checked=false;
  function group(id,enabled){const box=$(id);const wasHidden=box.hidden;box.hidden=!enabled;if(enabled&&wasHidden&&$('#settings-dialog').open)window.IstanteMotion.flash(box);box.querySelectorAll('input,select,button').forEach(el=>el.disabled=!enabled);}
  f.morning.required=false;f.evening.required=false;
  group('#schedule-times',['twice','daily'].includes(mode));group('#evening-field',mode==='twice');$('#interval-field').hidden=mode!=='interval';f.interval.disabled=mode!=='interval';
@@ -246,9 +247,7 @@ function updateSettingsFields() {
  const notes={twice:'La frase non cambia ricaricando la pagina. La sera continua anche dopo mezzanotte, fino al mattino.',daily:'Un pensiero dal cambio mattutino fino alla stessa ora del giorno dopo, anche ricaricando la pagina.',interval:'Il cambio segue intervalli regolari dell\'orologio, non il tempo trascorso dall\'apertura.',opening:'La frase cambia a ogni apertura o ricaricamento della pagina. Non cambia da sola mentre resti qui.'};
  $('#schedule-note').textContent=notes[mode];group('#picsum-fields',f.background.value==='picsum');group('#photo-options',['photo','picsum'].includes(f.background.value));group('#typing-fields',f.typing.checked);group('#effects-fields',f.effectsEnabled.checked);group('#radio-fields',f.radioEnabled.checked);
  group('#radio-schedule-fields',f.radioEnabled.checked&&f.radioScheduleEnabled.checked);f.radioScheduleEnabled.disabled=!f.radioEnabled.checked;
- group('#timer-settings-fields',f.timerEnabled.checked);const radioOption=[...f.timerAction.options].find(o=>o.value==='radio');radioOption.disabled=!f.radioEnabled.checked;
- if(!f.radioEnabled.checked&&f.timerAction.value==='radio')f.timerAction.value='sound';
- $('#timer-radio-note').hidden=!f.timerEnabled.checked||f.radioEnabled.checked;group('#timer-sound-fields',f.timerEnabled.checked&&f.timerAction.value==='sound');
+ group('#timer-settings-fields',f.timerEnabled.checked);
  f.showSeconds.disabled=!f.showClock.checked;f.showSeconds.closest('label').classList.toggle('is-dependent-disabled',!f.showClock.checked);
  f.photoMotion.disabled=!['photo','picsum'].includes(f.background.value)||!f.motion.checked;
  f.typing.disabled=!f.motion.checked;f.typing.closest('label').classList.toggle('is-dependent-disabled',!f.motion.checked);
@@ -258,8 +257,7 @@ function updateSettingsFields() {
  const meteoOption=[...f.weatherFX.options].find(o=>o.value==='auto');meteoOption.disabled=!X.draftHasPlace();
  if(meteoOption.disabled&&f.weatherFX.value==='auto')f.weatherFX.value='off';
  scheduleEditor.syncEnabled(f.radioEnabled.checked&&f.radioScheduleEnabled.checked);
- f.radioVolume.disabled=!f.radioEnabled.checked||!hasStations;f.radioStation.disabled=!f.radioEnabled.checked||!hasStations;f.radioScheduleEnabled.disabled=!f.radioEnabled.checked||!hasStations;radioOption.disabled=!f.radioEnabled.checked||!hasStations;if(radioOption.disabled&&f.timerAction.value==='radio')f.timerAction.value='sound';
- const duringRadio=[...f.timerDuring.options].find(o=>o.value==='radio');duringRadio.disabled=!f.radioEnabled.checked||!hasStations;if(duringRadio.disabled)f.timerDuring.value='silent';window.IstanteControls.refresh();sectionSummaries();previewFX.sync();
+ f.radioVolume.disabled=!f.radioEnabled.checked||!hasStations;f.radioStation.disabled=!f.radioEnabled.checked||!hasStations;f.radioScheduleEnabled.disabled=!f.radioEnabled.checked||!hasStations;f.clockStyle.disabled=!f.showClock.checked;window.IstanteControls.refresh();sectionSummaries();previewFX.sync();
 }
 function openDialog(which) {
  const dialog=$('#'+which+'-dialog');if(!dialog)return;previousFocus=document.activeElement;dialog._returnFocus=previousFocus;
@@ -270,11 +268,12 @@ function openDialog(which) {
 function closeDialog(dialog) { window.IstanteMotion.dismiss(dialog); }
 $$('dialog').forEach(dialog=>{
  dialog.addEventListener('cancel',event=>{event.preventDefault();closeDialog(dialog);});
- dialog.addEventListener('close',()=>{const stillOpen=!!$('dialog[open]');document.body.classList.toggle('has-panel',stillOpen);document.body.style.overflow=stillOpen?'hidden':'';const back=dialog._returnFocus;if(back&&back.isConnected)back.focus({preventScroll:true});lastActivity=0;activity();X.resume();});
+ dialog.addEventListener('close',()=>{if(dialog.id==='settings-dialog'){scene.collapseSettings();}const stillOpen=!!$('dialog[open]');document.body.classList.toggle('has-panel',stillOpen);document.body.style.overflow=stillOpen?'hidden':'';const back=dialog._returnFocus;if(back&&back.isConnected)back.focus({preventScroll:true});lastActivity=0;activity();X.resume();});
  dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)closeDialog(dialog);});
 });
 $$('[data-open]').forEach(b=>b.addEventListener('click',()=>openDialog(b.dataset.open)));
 $$('[data-close]').forEach(b=>b.addEventListener('click',()=>closeDialog(b.closest('dialog'))));
+$('#configure-timer').addEventListener('click',()=>{const d=$('#settings-dialog');d.addEventListener('close',()=>moments.open(),{once:true});closeDialog(d);});
 $('#settings-form').addEventListener('change',updateSettingsFields);
 $('#settings-form').addEventListener('input',()=>{sectionSummaries();previewFX.sync();});
 $$('.settings-section').forEach(section=>{window.IstanteMotion.accordion(section);section.addEventListener('toggle',()=>{previewFX.sync();if(section.open&&$('#settings-dialog').open)setTimeout(()=>{if(section.open)section.querySelector('summary').scrollIntoView({block:'start',behavior:settings.motion&&!matchMedia('(prefers-reduced-motion: reduce)').matches?'smooth':'instant'});},60);});});
@@ -285,7 +284,7 @@ document.addEventListener('keydown',event=>{if((event.ctrlKey||event.metaKey)&&e
 $('#settings-form').addEventListener('submit',event=>{
  event.preventDefault();const f=event.currentTarget,values={...settings,...Object.fromEntries(new FormData(f))};
  values.radioSchedules=scheduleEditor.value();
- for(const key of ['showClock','showSeconds','motion','hideControls','wakeLock','typing','solarTimes','weather','transitionFX','photoMotion','breathe','typingErase','effectsEnabled','effectSunSync','radioEnabled','radioScheduleEnabled','timerEnabled'])values[key]=f.elements[key].checked;
+ for(const key of ['celestialSky','showClock','showSeconds','motion','hideControls','wakeLock','typing','solarTimes','weather','transitionFX','photoMotion','breathe','typingErase','effectsEnabled','effectSunSync','radioEnabled','radioScheduleEnabled','timerEnabled'])values[key]=f.elements[key].checked;
  values.interval=Number(values.interval);values.photoDim=Number(values.photoDim);let error='';if(!validateSettings(f))return;
  if(values.mode==='twice'&&C.minutes(values.morning,-1)>=C.minutes(values.evening,-1))error='L\'inizio della sera deve essere successivo all\'inizio della mattina.';
  if(values.goalMode==='custom'&&(!values.goalStart||!values.goalEnd||new Date(values.goalEnd)<=new Date(values.goalStart)))error='Inserisci una data finale successiva alla data di inizio.';
@@ -356,7 +355,7 @@ document.addEventListener('pointermove',activity,{passive:true});document.addEve
 document.addEventListener('visibilitychange',()=>{clearTimeout(clockTimer);if(!document.hidden){startClock();lastActivity=0;activity();}updateWakeLock();});
 window.addEventListener('pageshow',()=>{startClock();});window.addEventListener('pagehide',()=>{clearTimeout(clockTimer);if(wakeSentinel)wakeSentinel.release().catch(()=>{});});
 window.addEventListener('storage',event=>{if(event.key===KEY+'favorites'){const next=store.read('favorites',[]);favorites.clear();if(Array.isArray(next))next.filter(v=>typeof v==='string').forEach(v=>favorites.add(v));updateFavoriteButton();updateLibraryCounts();if($('#library-dialog').open)renderLibrary();}});
-window.IstanteControls.enhance($('#settings-form'));window.IstanteControls.enhance($('#radio-panel'));applyAppearance(new Date());updateLibraryCounts();startClock();activity();updateWakeLock();
+window.IstanteControls.enhance($('#settings-form'));window.IstanteControls.enhance($('#radio-panel'));window.IstanteControls.enhance($('#timer-session-options'));applyAppearance(new Date());updateLibraryCounts();startClock();activity();updateWakeLock();
 // The complete collection is local. No redundant fetch is needed during startup.
 if(storageFailed)toast('Il browser non consente il salvataggio locale. La pagina funziona comunque in questa sessione.');
 window.IstanteUpdates.create({notify:toast});
@@ -364,6 +363,6 @@ document.addEventListener('istante:manage-stations',()=>openDialog('stations'));
 document.addEventListener('istante:stations-changed',()=>{if(!stationLibrary.list().length){settings.radioScheduleEnabled=false;if(settings.timerAction==='radio')settings.timerAction='sound';settings.timerDuring='silent';store.write('settings',settings);}moments.apply();if($('#settings-dialog').open)updateSettingsFields();});
 Promise.all([X.boot(),new Promise(resolve=>setTimeout(resolve,550))]).catch(()=>{}).finally(()=>{
  clearTimeout(window.ISTANTE_FAILSAFE);tick(false);applyAppearance(new Date());
- requestAnimationFrame(()=>{document.documentElement.classList.remove('is-loading');$('#app-shell').inert=false;$('#boot-screen').classList.add('is-done');X.reveal();setTimeout(()=>$('#boot-screen').remove(),500);});
+ requestAnimationFrame(()=>{document.documentElement.classList.remove('is-loading');$('#app-shell').inert=false;$('#boot-screen').classList.add('is-done');X.reveal();setTimeout(()=>{$('#boot-screen')?.remove();scene.ready();},500);});
 });
 })();

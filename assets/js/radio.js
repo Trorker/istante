@@ -1,4 +1,4 @@
-/* Istante 3.4.0. Audio only after explicit interaction or authorized automation.
+/* Istante 3.5.0. Audio only after explicit interaction or authorized automation.
  * Community URLs are resolved only after Play, constrained by station name/provider.
  */
 (function(root,factory){if(typeof module==='object'&&module.exports)module.exports=factory();else root.IstanteRadio=factory();})(typeof globalThis!=='undefined'?globalThis:this,function(){'use strict';

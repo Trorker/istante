@@ -5,6 +5,8 @@
   const T=window.IstanteTime,$=s=>document.querySelector(s),M=window.IstanteMotion;
   const key='istante.original1.timer.v1';let state;
   try{state=T.cleanTimer(JSON.parse(sessionStorage.getItem(key)||'null'));}catch(_){state=T.cleanTimer(null);}
+  let draftOptions=T.timerOptions(getSettings());try{const saved=JSON.parse(localStorage.getItem('istante.original1.timer-options')||'null');if(saved)draftOptions=T.timerOptions(saved);}catch(_){}
+  function timerSettings(){const s={...getSettings(),...(state.state==='idle'?draftOptions:state.options||draftOptions)};if(!s.radioEnabled||!radio.station().id){s.timerDuring='silent';if(s.timerAction==='radio')s.timerAction='sound';}return s;}
   let context=null,nodes=new Set(),endSoundTimeout=0,armed=false,previousWindow=null,attempted='',signature='',scheduleOwned=false,alarmRadio=false,restored=state.state==='running',lastView='',destroyed=false;
   let soundToken=0,soundBus=[],duringOwned=false,duringSuppressed=false;
   const save=()=>{try{sessionStorage.setItem(key,JSON.stringify(state));}catch(_){/* Session still works without browser storage. */}};
@@ -25,12 +27,12 @@
   }
   function result(text,retry=false){$('#timer-result').textContent=text;$('#timer-result').hidden=!text;$('#timer-retry-audio').hidden=!retry;$('#timer-chip-time').title=text;}
   function describe(){
-   const s=getSettings();
+   const s=timerSettings();
    const ending=s.timerAction==='radio'&&s.radioEnabled?'Alla fine: '+radio.station().name:s.timerAction==='silent'?'Alla fine: un avviso visivo.':'Alla fine: '+({chime:'piccoli rintocchi',bell:'campana morbida',pulse:'segnale delicato'}[s.timerSound])+(s.timerVolume===0?' (volume a zero).':'.');
    $('#timer-finish-description').textContent=(s.timerDuring==='radio'&&s.radioEnabled?'Durante: '+radio.station().name+'. ':'')+ending;
   }
   function startDuring(){
-   const s=getSettings();if(s.timerDuring!=='radio'||!s.radioEnabled||!radio.station().id||duringSuppressed)return;
+   const s=timerSettings();if(s.timerDuring!=='radio'||!s.radioEnabled||!radio.station().id||duringSuppressed)return;
    // Already playing music belongs to its original owner, not to this timer.
    if(radio.getState().wantsPlay)return;
    duringOwned=true;scheduleOwned=false;void radio.start('timer-during');
@@ -56,28 +58,39 @@
    if(state.state==='paused'){void unlockSound();state.deadline=Date.now()+state.remaining;state.state='running';startDuring();save();render();return;}
    if(state.state==='done'){reset();return;}
    const duration=readDuration();if(!duration){$('#timer-error').textContent='Scegli una durata da 1 secondo a 24 ore, con minuti e secondi da 00 a 59.';$('#timer-error').hidden=false;return;}
-   $('#timer-error').hidden=true;clearSound();result('');alarmRadio=false;duringSuppressed=false;void unlockSound();if(getSettings().timerDuring!=='radio')void radio.unlock();state={state:'running',duration,remaining:duration,deadline:Date.now()+duration,id:Date.now().toString(36)+Math.random().toString(36).slice(2,6)};restored=false;startDuring();save();render();M.flash($('#timer-running'));notify('Il tuo momento \u00e8 iniziato.');
+   $('#timer-error').hidden=true;clearSound();result('');alarmRadio=false;duringSuppressed=false;void unlockSound();if(timerSettings().timerDuring!=='radio')void radio.unlock();state={options:T.timerOptions(draftOptions),state:'running',duration,remaining:duration,deadline:Date.now()+duration,id:Date.now().toString(36)+Math.random().toString(36).slice(2,6)};restored=false;startDuring();save();render();M.flash($('#timer-running'));notify('Il tuo momento \u00e8 iniziato.');
   }
   function pauseTimer(){if(state.state!=='running')return;const left=T.remaining(state);if(left<=0){finish();return;}state.remaining=left;state.state='paused';stopDuring();save();render();}
   function reset(){clearSound();stopDuring();duringSuppressed=false;alarmRadio=false;state={state:'idle',duration:getSettings().timerMinutes*60000,remaining:getSettings().timerMinutes*60000,deadline:0,id:''};save();result('');$('#timer-error').hidden=true;setDuration(state.duration);render();}
   function finish(silentRestore=false){
-   if(state.state!=='running')return;stopDuring(!silentRestore&&getSettings().timerAction==='radio'&&getSettings().radioEnabled);state.state='done';state.remaining=0;save();render();
-   if(silentRestore){result('Il timer \u00e8 terminato mentre la pagina non era attiva. Nessun audio avviato al ripristino.',getSettings().timerAction!=='silent');return;}
-   notify('Il tempo \u00e8 tuo. Il tuo momento \u00e8 terminato.');const s=getSettings();
+   if(state.state!=='running')return;stopDuring(!silentRestore&&timerSettings().timerAction==='radio'&&getSettings().radioEnabled);state.state='done';state.remaining=0;save();render();
+   if(silentRestore){result('Il timer \u00e8 terminato mentre la pagina non era attiva. Nessun audio avviato al ripristino.',timerSettings().timerAction!=='silent');return;}
+   notify('Il tempo \u00e8 tuo. Il tuo momento \u00e8 terminato.');const s=timerSettings();
    if(!s.timerEnabled)return;
    if(s.timerAction==='radio'&&s.radioEnabled){alarmRadio=true;result('Il tempo \u00e8 terminato. Sintonizzo la tua radio...');if(radio.getState().state==='playing'){alarmRadio=false;result('Il tempo \u00e8 terminato. La tua radio sta gi\u00e0 suonando.');}else void radio.start('timer');}
    else if(s.timerAction==='silent'){result('Il tuo momento \u00e8 terminato. Prenditi ancora un respiro.');}
    else {const played=playSound(s.timerSound,s.timerVolume);result(played?'Il tuo momento \u00e8 terminato. Prenditi ancora un respiro.':'Il tempo \u00e8 terminato. Tocca per ascoltare l\u2019avviso.',!played);}
   }
+  function renderOptions(active){
+   const current=timerSettings(),radioAvailable=getSettings().radioEnabled&&!!radio.station().id;
+   for(const [id,key]of [['during','timerDuring'],['action','timerAction'],['sound','timerSound'],['volume','timerVolume']]){
+    const el=$('#timer-'+id);el.value=String(current[key]);el.disabled=active||((id==='sound'||id==='volume')&&current.timerAction!=='sound');
+    if(el.tagName==='SELECT')for(const o of el.options)if(o.value==='radio')o.disabled=!radioAvailable;
+   }
+   $('#timer-sound-preview').disabled=active||current.timerAction!=='sound';
+   $('#timer-session-note').textContent=active?'Scelte bloccate per questo timer. Annullalo per preparare un nuovo momento.':!radioAvailable?'Radio non disponibile: attiva il player e aggiungi una stazione. Le altre scelte restano disponibili.':'Le scelte vengono confermate all’avvio. La radio usa stazione e volume del player.';
+   window.IstanteControls.refresh();
+  }
+  for(const [id,key]of [['during','timerDuring'],['action','timerAction'],['sound','timerSound'],['volume','timerVolume']])$('#timer-'+id).addEventListener('change',e=>{if(state.state!=='idle')return;draftOptions=T.timerOptions({...draftOptions,[key]:e.target.value});try{localStorage.setItem('istante.original1.timer-options',JSON.stringify(draftOptions));}catch(_){}render();});
   function render(){
    const s=getSettings(),ms=T.remaining(state),active=state.state!=='idle';$('#timer-open').hidden=!s.timerEnabled;$('#timer-chip').hidden=!s.timerEnabled||!active;$('#timer-chip').dataset.state=state.state;
-   $('#timer-duration').hidden=active;$('#timer-presets').hidden=active;$('#timer-running').hidden=!active;$('#timer-reset').hidden=!active;$('#timer-reset').textContent=state.state==='done'?'Chiudi avviso':'Annulla timer';
+   $('#timer-duration').hidden=active;$('#timer-presets').hidden=false;document.querySelectorAll('[data-duration]').forEach(b=>b.disabled=active);$('#timer-running').hidden=!active;$('#timer-reset').hidden=!active;$('#timer-reset').textContent=state.state==='done'?'Chiudi avviso':'Annulla timer';
    $('#timer-state-label').textContent=state.state==='paused'?'Il tempo pu\u00f2 aspettare.':state.state==='done'?'Un momento per te.':'Il tuo momento, in corso';
    const text=T.display(ms);$('#timer-readout').textContent=text;$('#timer-chip-time').textContent=state.state==='done'?'Tempo finito':text;$('#timer-chip-label').textContent=state.state==='paused'?'In pausa':state.state==='done'?'Prenditi un respiro':'Un tempo per te';
    $('#timer-chip-toggle').hidden=state.state==='done';$('#timer-chip-dismiss').hidden=state.state!=='done';$('#timer-chip-toggle').innerHTML='<span class="icon">'+icon(state.state==='paused'?'play':'pause')+'</span>';$('#timer-chip-toggle').setAttribute('aria-label',state.state==='paused'?'Riprendi il timer':'Metti in pausa il timer');
    const progress=state.duration?Math.max(0,Math.min(100,(1-ms/state.duration)*100)):0;$('#timer-progress').setAttribute('aria-valuenow',String(Math.round(progress)));$('#timer-progress i').style.width=progress+'%';
    const view=state.state+':'+s.timerEnabled;if(lastView!==view){lastView=view;const label=state.state==='running'?'Metti in pausa':state.state==='paused'?'Riprendi il tuo momento':state.state==='done'?'Un nuovo momento':'Inizia il tuo momento';$('#timer-start').innerHTML='<span class="icon">'+icon(state.state==='running'?'pause':'play')+'</span><span>'+label+'</span>';$('#timer-start').disabled=!s.timerEnabled;}
-   describe();
+   renderOptions(active);describe();
   }
   function scheduleText(now,current){
    const s=getSettings();if(!s.radioEnabled||!s.radioScheduleEnabled)return 'Programmazione disattivata.';
@@ -102,17 +115,17 @@
    $('#radio-program-enable').hidden=armed;$('#schedule-authorize').textContent=armed?'Audio preparato \u00b7 riabilita':'Abilita audio per questa sessione';
   }
   function apply(){
-   const s=getSettings();if(!s.timerEnabled&&state.state!=='idle')reset();if(!s.radioEnabled||s.timerDuring!=='radio')stopDuring();if(!s.radioEnabled){armed=false;if(alarmRadio){alarmRadio=false;result('Radio disattivata. Resta l\u2019avviso visivo.');}}if(state.state==='idle')setDuration(s.timerMinutes*60000);render();evaluate();
+   const s=getSettings();if(!s.timerEnabled&&state.state!=='idle')reset();if(!s.radioEnabled||!radio.station().id)stopDuring();if(!s.radioEnabled){armed=false;if(alarmRadio){alarmRadio=false;result('Radio disattivata. Resta l\u2019avviso visivo.');}}if(state.state==='idle')setDuration(s.timerMinutes*60000);render();evaluate();
   }
   function tick(){if(destroyed)return;if(state.state==='running'&&T.remaining(state)<=0){finish(restored);restored=false;}else restored=false;if(state.state!=='idle')render();evaluate();}
   function open(){if(!getSettings().timerEnabled)return;render();openTimer();}
   $('#timer-open').addEventListener('click',open);$('#timer-chip-open').addEventListener('click',open);$('#timer-start').addEventListener('click',startTimer);$('#timer-reset').addEventListener('click',reset);$('#timer-chip-dismiss').addEventListener('click',reset);$('#timer-chip-toggle').addEventListener('click',()=>state.state==='running'?pauseTimer():startTimer());
   document.querySelectorAll('[data-duration]').forEach(b=>b.addEventListener('click',()=>{if(state.state==='idle')setDuration(Number(b.dataset.duration)*60000);}));
-  $('#timer-retry-audio').addEventListener('click',async()=>{const s=getSettings();if(s.timerAction==='radio'&&s.radioEnabled){alarmRadio=true;void radio.start('timer');}else if(s.timerAction==='silent'){result('Il timer prevede soltanto un avviso visivo.');}else{const ok=await unlockSound();const played=ok&&playSound(s.timerSound,s.timerVolume);result(played?'Prenditi ancora un respiro.':'Audio non disponibile in questo browser.',!played);}});
-  $('#timer-sound-preview').addEventListener('click',async()=>{const s=getDraft();if(!s.timerEnabled||s.timerAction!=='sound')return;const ok=await unlockSound();if(!ok||!playSound(s.timerSound,s.timerVolume))notify('Il browser non ha autorizzato il suono.');else if(s.timerVolume===0)notify('Il volume del suono finale \u00e8 a zero.');});
+  $('#timer-retry-audio').addEventListener('click',async()=>{const s=timerSettings();if(s.timerAction==='radio'&&s.radioEnabled){alarmRadio=true;void radio.start('timer');}else if(s.timerAction==='silent'){result('Il timer prevede soltanto un avviso visivo.');}else{const ok=await unlockSound();const played=ok&&playSound(s.timerSound,s.timerVolume);result(played?'Prenditi ancora un respiro.':'Audio non disponibile in questo browser.',!played);}});
+  $('#timer-sound-preview').addEventListener('click',async()=>{const s=timerSettings();if(!s.timerEnabled||s.timerAction!=='sound'||state.state!=='idle')return;const ok=await unlockSound();if(!ok||!playSound(s.timerSound,s.timerVolume))notify('Il browser non ha autorizzato il suono.');else if(s.timerVolume===0)notify('Il volume del suono finale \u00e8 a zero.');});
   $('#schedule-authorize').addEventListener('click',()=>void prepare(true));$('#radio-program-enable').addEventListener('click',()=>void prepare(true));
   document.addEventListener('istante:radio-manual',e=>{duringOwned=false;if(state.state==='running'||state.state==='paused')duringSuppressed=true;const current=T.windowAt(new Date(),getSettings());if(e.detail.playing)armed=true;if(current){attempted='active';scheduleOwned=true;}evaluate();});
-  document.addEventListener('istante:radio-state',e=>{if(duringOwned&&state.state==='running'&&['error','offline','blocked'].includes(e.detail.state))$('#timer-audio-hint').textContent='Radio non disponibile. Il timer continua; puoi premere Play per riprovare.';if(!alarmRadio||state.state!=='done')return;const r=e.detail;if(r.state==='playing'){alarmRadio=false;result('Il tuo momento \u00e8 terminato. La radio ti fa compagnia.');}else if(['error','offline','blocked'].includes(r.state)){alarmRadio=false;const s=getSettings();playSound(s.timerSound,s.timerVolume);result(r.state==='blocked'?'Il tempo \u00e8 terminato. Tocca per avviare la radio.':'Radio non disponibile. Il timer \u00e8 terminato; puoi riprovare.',true);}});
+  document.addEventListener('istante:radio-state',e=>{if(duringOwned&&state.state==='running'&&['error','offline','blocked'].includes(e.detail.state))$('#timer-audio-hint').textContent='Radio non disponibile. Il timer continua; puoi premere Play per riprovare.';if(!alarmRadio||state.state!=='done')return;const r=e.detail;if(r.state==='playing'){alarmRadio=false;result('Il tuo momento \u00e8 terminato. La radio ti fa compagnia.');}else if(['error','offline','blocked'].includes(r.state)){alarmRadio=false;const s=timerSettings();playSound(s.timerSound,s.timerVolume);result(r.state==='blocked'?'Il tempo \u00e8 terminato. Tocca per avviare la radio.':'Radio non disponibile. Il timer \u00e8 terminato; puoi riprovare.',true);}});
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)tick();});window.addEventListener('pageshow',()=>tick());
   window.addEventListener('pagehide',()=>{save();clearSound();});
   setDuration(state.state==='idle'?getSettings().timerMinutes*60000:state.duration);apply();tick();const interval=setInterval(tick,500);

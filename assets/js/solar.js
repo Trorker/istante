@@ -1,5 +1,5 @@
 /* Solar-only adaptation of SunCalc 1.9.0, Vladimir Agafonkin.
- * See vendor/SUNCALC-LICENSE.txt. Original: github.com/mourner/suncalc.
+ * See docs/licenses/SUNCALC-LICENSE.txt. Original: github.com/mourner/suncalc.
  * No network dependency. Astronomical estimates: unobstructed horizon, sea level.
  */
 (function(root,factory){if(typeof module==='object'&&module.exports)module.exports=factory();else root.IstanteSolar=factory();})(typeof globalThis!=='undefined'?globalThis:this,function(){

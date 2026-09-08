@@ -1,35 +1,39 @@
-/* Istante 3.4.0 - complete verified offline shell; updates wait for consent. */
+/* Istante 3.5.0 - complete verified offline shell; updates wait for consent. */
 'use strict';
-const VERSION='3.4.0';
+const VERSION='3.5.0';
 const PREFIX='istante-'+encodeURIComponent(self.registration.scope)+'-';
-const CACHE=PREFIX+VERSION+'-835c2dc38119';
+const CACHE=PREFIX+VERSION+'-7728e6333ed3';
 const FILES=[
   {
     "url": "./CHANGELOG.md",
-    "integrity": "sha256-v59bD4VkBOxJKoyQMvhW3MnCt+tWr17cIVo1dh4/BRg="
+    "integrity": "sha256-TVf4gHvwxBHRwqhJd1SdKisuQSWorpG29AaEin0PEcY="
   },
   {
     "url": "./README.md",
-    "integrity": "sha256-/XIQ6/wKaDMpjDkucw6tt/EfMOifDM4MzvOc9hNf4Rc="
+    "integrity": "sha256-3s0zJ90HMB+ileYq/OKGQgMNKSs08cFCBfp0897sB64="
   },
   {
-    "url": "./assets/css/app.css?v=3.4.0",
+    "url": "./assets/css/app.css?v=3.5.0",
     "integrity": "sha256-zwmGkmywuj1vyy1L5J+cRukFqD9ISALzNzRZbAyLbLk="
   },
   {
-    "url": "./assets/css/documents.css?v=3.4.0",
+    "url": "./assets/css/documents.css?v=3.5.0",
     "integrity": "sha256-w30+osfEFz4kpIUwSQSM0yBdD9dbBPcs7d3AbDDQt1U="
   },
   {
-    "url": "./assets/css/interactions.css?v=3.4.0",
+    "url": "./assets/css/interactions.css?v=3.5.0",
     "integrity": "sha256-8MepLjLfIYmfrajvDlkVYRQkBTJNoHD3IlKlt1XmDL4="
   },
   {
-    "url": "./assets/css/refinements.css?v=3.4.0",
+    "url": "./assets/css/refinements.css?v=3.5.0",
     "integrity": "sha256-ie4hEuKO1al0lkVsNvOAzvs5RA8mMRfX5E8ufntSrvU="
   },
   {
-    "url": "./assets/css/sharing.css?v=3.4.0",
+    "url": "./assets/css/scene.css?v=3.5.0",
+    "integrity": "sha256-bffPuEqCL1wvgKe/YxHw3OTgsUDTfS8U2ufT7DrWOJM="
+  },
+  {
+    "url": "./assets/css/sharing.css?v=3.5.0",
     "integrity": "sha256-1PFUCBrg6C0Q930Z0Ny4EeTFe1DJDUg83GKAf98fcdA="
   },
   {
@@ -57,100 +61,104 @@ const FILES=[
     "integrity": "sha256-6xtsEpiws2tWhx63Do1RYDsV5fHZCgIC1k5ISbiErQ8="
   },
   {
-    "url": "./assets/images/istante-social-v3.4.0.jpg",
+    "url": "./assets/images/istante-social-v3.5.0.jpg",
     "integrity": "sha256-TMjEWujefJ8YHqThb6ZqZFJJ9eJAX7YSxP0gWyFMXrk="
   },
   {
-    "url": "./assets/js/controls.js?v=3.4.0",
-    "integrity": "sha256-joK6x2HHVyT3bRJdUAveRfb648x43r8mbRyK2oPYlH0="
+    "url": "./assets/js/controls.js?v=3.5.0",
+    "integrity": "sha256-DfVaRPd7eFCFOELOtwGQ+zRsQB9b2R1rs75f+kuSAaY="
   },
   {
-    "url": "./assets/js/core.js?v=3.4.0",
-    "integrity": "sha256-3idonQQo1/TOLgnEf4LU4xTpVZe6I85rDK9lgIBTXQE="
+    "url": "./assets/js/core.js?v=3.5.0",
+    "integrity": "sha256-c7d+aRPn5L/hEIO2kMi2FHxStvRQ0Zm6X3+dl+AF1Qg="
   },
   {
-    "url": "./assets/js/documents.js?v=3.4.0",
-    "integrity": "sha256-IwJzQ62UtrKI72IyPxHVxXLfYirUzqm2CnLGMqdYXvY="
+    "url": "./assets/js/documents.js?v=3.5.0",
+    "integrity": "sha256-T6T37HmJkgwTipzGU9g2kkrnb5xVpk0xW9ZQBoYfYcc="
   },
   {
-    "url": "./assets/js/effects.js?v=3.4.0",
+    "url": "./assets/js/effects.js?v=3.5.0",
     "integrity": "sha256-txRcwvBh/a6VHFKuvw5XZuPrWZ1Czm103qAKGAzJqq8="
   },
   {
-    "url": "./assets/js/experience.js?v=3.4.0",
+    "url": "./assets/js/experience.js?v=3.5.0",
     "integrity": "sha256-peqx2gb4Ecblw+7mkW8lYwNqnfzzg8oA+0LaUs6pGAg="
   },
   {
-    "url": "./assets/js/icons.js?v=3.4.0",
+    "url": "./assets/js/icons.js?v=3.5.0",
     "integrity": "sha256-H2mvktAcIDQYhBOQxSvpFU+X0I7yY1eEQaGjHFiWSOM="
   },
   {
-    "url": "./assets/js/main.js?v=3.4.0",
-    "integrity": "sha256-9xejHJqi8N5vymOokEXsCiIXM6rLE5HHyJiVTFDUQ0E="
+    "url": "./assets/js/main.js?v=3.5.0",
+    "integrity": "sha256-W+S37IEwa2sOHP+vdGJpaoV9bd92vutzWrRvYfbR75M="
   },
   {
-    "url": "./assets/js/moments.js?v=3.4.0",
-    "integrity": "sha256-l2nzcLNVVayhzcOnlIrwsZAKO2iTtXiTnvOzz0G2ATU="
+    "url": "./assets/js/moments.js?v=3.5.0",
+    "integrity": "sha256-INCjoSAW7pagidDJzhzA6t+Ixn1+sRs1IhocvaTZtsk="
   },
   {
-    "url": "./assets/js/motion.js?v=3.4.0",
+    "url": "./assets/js/motion.js?v=3.5.0",
     "integrity": "sha256-EYsXgVZsHUVRZFrAVOM5awdpav/T/rn4fL//FGJ6HhA="
   },
   {
-    "url": "./assets/js/radio.js?v=3.4.0",
-    "integrity": "sha256-kcs5Be4YdjQh26KgbfxcyVLQ3/EsXuDWV4MwMJSmBQw="
+    "url": "./assets/js/radio.js?v=3.5.0",
+    "integrity": "sha256-sI+D35Dd2ahTQNzvh6Za/lbBgboL+trrURus7Fo9H0g="
   },
   {
-    "url": "./assets/js/schedules.js?v=3.4.0",
+    "url": "./assets/js/scene.js?v=3.5.0",
+    "integrity": "sha256-h/DTwFRnpa7lcVvi8K0LONnpt5KL1CejkLtLIptiBMM="
+  },
+  {
+    "url": "./assets/js/schedules.js?v=3.5.0",
     "integrity": "sha256-H/yt4iLNLqoPJELoramNqaV7nH+WMXu560eLsQeaxJc="
   },
   {
-    "url": "./assets/js/share-card.js?v=3.4.0",
-    "integrity": "sha256-TzT+kqCTWW2U7+qLczE3lNLO7b8fZ3VB6GfzJ0znRJg="
+    "url": "./assets/js/share-card.js?v=3.5.0",
+    "integrity": "sha256-7WkedopmHFRdDGy3wwvEDDY+ga2dOM2JWnjhLym+s+o="
   },
   {
-    "url": "./assets/js/share.js?v=3.4.0",
-    "integrity": "sha256-eBzH/ZbrogXZw6mz+XXz5qcDSBNr/wQ3jCTfNzfNaQ4="
+    "url": "./assets/js/share.js?v=3.5.0",
+    "integrity": "sha256-hW8esp01SIhv5lUpf7+/ziJdP4gwRWCMEOxS8F4mpF4="
   },
   {
-    "url": "./assets/js/solar.js?v=3.4.0",
-    "integrity": "sha256-pkx9wok4DrRL8qsXe8NRKWg942LV0Jeif0j6vnQkYHE="
+    "url": "./assets/js/solar.js?v=3.5.0",
+    "integrity": "sha256-VGRSsAaknWPX8TWTiaqN4AxevZMN6XyTxfvvPZbWY4s="
   },
   {
-    "url": "./assets/js/station-library.js?v=3.4.0",
+    "url": "./assets/js/station-library.js?v=3.5.0",
     "integrity": "sha256-+pTpXsXtsPCRcubkDYH2i9NtQKam99RCO3ifE8ocoUY="
   },
   {
-    "url": "./assets/js/station-manager.js?v=3.4.0",
-    "integrity": "sha256-tefAkjBCZj/RX+KzAB7PO8h8tkj1HNmomzAH9qUuCBY="
+    "url": "./assets/js/station-manager.js?v=3.5.0",
+    "integrity": "sha256-wW/LaUINSn7vDVasQdOi4dFiD+QUU9mz3aE1YySOzRg="
   },
   {
-    "url": "./assets/js/time-core.js?v=3.4.0",
-    "integrity": "sha256-NvHFLiNBKi48Rgd3uXFVBgw9qi05jN7d19w7oF/uYJ4="
+    "url": "./assets/js/time-core.js?v=3.5.0",
+    "integrity": "sha256-0yzXAFoEFgzglLF/3hIo44F53a1jAumLyBTrAJk8aOM="
   },
   {
-    "url": "./assets/js/typing.js?v=3.4.0",
+    "url": "./assets/js/typing.js?v=3.5.0",
     "integrity": "sha256-UCBA6cDGYJaCIJsv5Zji0ZneeareFqMUovNDYxRCM94="
   },
   {
-    "url": "./assets/js/updates.js?v=3.4.0",
-    "integrity": "sha256-ITxzf6lEURAId14R9xkLzSKnUCosxkTTA7eun+KPzOg="
+    "url": "./assets/js/updates.js?v=3.5.0",
+    "integrity": "sha256-MbyAJzttU58cmJkM5oTdUnDFwnS0Q0Lxkio7JHLuxYU="
   },
   {
-    "url": "./data/phrases.js?v=3.4.0",
+    "url": "./data/phrases.js?v=3.5.0",
     "integrity": "sha256-vhBBwNS7hCT522LBBvzwq0cxygENUUwc/6FRszst1oQ="
   },
   {
-    "url": "./data/stations.js?v=3.4.0",
+    "url": "./data/stations.js?v=3.5.0",
     "integrity": "sha256-ogF3QoCghtIz8erATYiLCc8fcJ7v5RDFUrFuU4EU4CA="
   },
   {
     "url": "./docs/LICENZA.md",
-    "integrity": "sha256-Q6gznSi5bl6bMh2OzBE0EiQvxTjJzzzb+BN84kRZN1E="
+    "integrity": "sha256-c2TFY1QtSsJxiMd/K7GXN8YHzLkVzjD1lWihoBZzIRU="
   },
   {
     "url": "./docs/TERZE-PARTI.md",
-    "integrity": "sha256-iC1Xs1ys+/LZaBQL3pkoU1EiiSOq8mxS6fbnCqJMhfc="
+    "integrity": "sha256-4dJp9iy41l3A7r3wNHxrQ4JNoUfg2669FQz9+quWRDg="
   },
   {
     "url": "./docs/licenses/BOOTSTRAP-ICONS-LICENSE.txt",
@@ -158,7 +166,7 @@ const FILES=[
   },
   {
     "url": "./docs/licenses/ISTANTE-LICENSE.txt",
-    "integrity": "sha256-MNapEBJdQ1HgQMsFl/JnH2VWuY3QJtru7JvZMnZY/AQ="
+    "integrity": "sha256-RGVIMCrNBat41eL0JSPowzIdqvLCZc4qIMlzW1JzlF0="
   },
   {
     "url": "./docs/licenses/MATERIAL-ICONS-LICENSE.txt",
@@ -177,12 +185,16 @@ const FILES=[
     "integrity": "sha256-Iyfij0NgTLddiOIOsqQTrG6Rs0UgKLcaMF4OExi+BpM="
   },
   {
+    "url": "./docs/release/v3.5.0.md",
+    "integrity": "sha256-D0T7C3x/QokjyYYnpvJoPI0vmrwrxi/3HX1VI/95lfs="
+  },
+  {
     "url": "./index.html",
-    "integrity": "sha256-fC5TFMKBoX04FnuPxuCosyLCSX87xKBvUTFCiExCJdQ="
+    "integrity": "sha256-EEqetMBsAX3c3NXDgLrhBWXbHV/LlSi7bYbDcTKg3P8="
   },
   {
     "url": "./leggi.html",
-    "integrity": "sha256-qhx6NgY6PLs9OU3BGmmsoAdCy3PDdCwWkdl+oU0AUjg="
+    "integrity": "sha256-nMGYuR9kc1TMyEu0A8vfr0QRFF87yIdFOMDw8NgiWTU="
   },
   {
     "url": "./manifest.webmanifest",

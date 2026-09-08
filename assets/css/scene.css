@@ -1,0 +1,46 @@
+/* 3.5: bounded scene, explicit timer setup and quiet celestial details. */
+html,body{height:100%;width:100%;min-height:0!important;max-width:100%;overflow:hidden!important;overscroll-behavior:none;scrollbar-gutter:auto!important}
+body{position:fixed!important;inset:0;touch-action:pan-y pinch-zoom}
+#app-shell{position:relative;isolation:isolate;height:var(--view-h,100dvh);min-height:0!important;max-height:var(--view-h,100dvh);width:100%;overflow:hidden;display:flex;flex-direction:column;padding-top:clamp(14px,3vh,38px);padding-bottom:max(10px,env(safe-area-inset-bottom))}
+.topbar,.bottom-bar,.goal-strip{flex-shrink:0}.topbar{z-index:6}
+.stage-viewport{flex:1 1 0;min-height:0;min-width:0;width:100%;position:relative;overflow:hidden}
+#main.main-stage{position:absolute;left:0;top:50%;height:auto;min-height:0!important;max-height:none;width:100%;padding:22px 12px;flex:none;transform:translateY(-50%) scale(var(--stage-scale,1));transform-origin:center;animation:none!important}
+.clock-frame{position:relative;display:grid;place-items:center;min-width:0}
+.clock-line{grid-area:1/1}
+.analog-clock{width:clamp(132px,16vh,196px);height:clamp(132px,16vh,196px);grid-area:1/1;position:relative;color:var(--ink)}
+.analog-clock>svg{width:100%;height:100%;overflow:visible}.dial-rim{fill:none;stroke:var(--line);stroke-width:.9}.dial-major{stroke:var(--muted);stroke-width:1.8}.dial-minor{stroke:var(--line);stroke-width:1}
+.analog-hour,.analog-minute,.analog-second{transform-origin:100px 100px;stroke-linecap:round}.analog-hour{stroke:var(--ink);stroke-width:4}.analog-minute{stroke:var(--ink);stroke-width:2.5}.analog-second{stroke:var(--accent);stroke-width:1}.dial-pin{fill:var(--accent)}.analog-period{position:absolute;left:0;right:0;bottom:24%;font-size:9px;letter-spacing:.15em;color:var(--muted)}
+body[data-clock-style=analog] .quote-wrap{margin-top:24px}.timer-slot{flex:0 0 44px;height:44px;display:flex;align-items:center;justify-content:center;min-width:0}.timer-chip{margin:0!important;max-height:40px;box-shadow:none}.timer-chip-main{min-height:30px}.timer-chip .icon-button{height:30px;width:30px}
+.goal-strip{margin-top:0}.moon-caption{display:flex;justify-content:center;gap:10px;margin-top:13px;font-size:11px;letter-spacing:.03em;color:var(--muted)}.moon-phase-percent{opacity:.6}
+.celestial-sky{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:3;--sky-x:50%;--sky-y:20%}
+#sky-stars{position:absolute;inset:0;width:100%;height:100%;opacity:.82;animation:star-breathe 17s ease-in-out infinite alternate}
+#sky-body{position:absolute;left:var(--sky-x);top:var(--sky-y);width:70px;height:70px;transform:translate(-50%,-50%);opacity:.65;transition:left 3s linear,top 3s linear;filter:drop-shadow(0 0 16px rgba(203,211,225,.12))}
+.sky-halo{position:absolute;left:var(--sky-x);top:var(--sky-y);width:min(64vw,680px);height:min(64vw,680px);transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(141,169,203,.10),transparent 66%);transition:background 8s}
+.celestial-sky[data-period=day] .sky-halo{background:radial-gradient(circle,rgba(238,191,100,.15),transparent 65%)}.celestial-sky[data-period=day] #sky-body{width:82px;height:82px;opacity:.45;filter:drop-shadow(0 0 25px rgba(237,187,105,.23))}
+.sky-static *{animation:none!important;transition:none!important}@keyframes star-breathe{from{opacity:.66}to{opacity:.96}}
+/* Only the content of dialogs may scroll, never the underlying dashboard. */
+dialog{max-width:calc(100vw - 24px)!important;max-height:calc(var(--view-h,100dvh) - 24px)!important;overflow-x:hidden!important;overscroll-behavior:contain}
+dialog .panel-content,.timer-content,.settings-scroll,.library-list-wrap,.custom-options{min-width:0;overflow-x:hidden!important;overscroll-behavior:contain}
+.settings-section-body,.stacked-label{min-width:0}.panel-footer{flex-shrink:0}dialog button,dialog input,dialog select{max-width:100%}
+/* A row per document; icons and labels always stay on the same line. */
+.about-docs{display:grid!important;grid-template-columns:minmax(0,1fr);gap:0;margin-top:18px;border-top:1px solid var(--line)}
+.about-docs a{width:100%;display:flex!important;align-items:center;gap:11px;min-height:44px;border-bottom:1px solid var(--line);white-space:nowrap}
+.about-docs a span:not(.icon){min-width:0;white-space:nowrap}.about-docs .icon{width:18px;height:18px}
+.favorite-search-button{width:44px!important;min-width:44px!important;height:44px!important;border-radius:50%!important;background:transparent;border:1px solid var(--line);color:var(--muted);flex:none}
+.favorite-search-button[aria-pressed=true]{background:var(--accent-soft)!important;color:var(--accent)!important;border-color:var(--accent)}
+.favorite-search-button[aria-pressed=true] .icon svg{fill:currentColor}.station-search-tools,.station-list-tools{display:flex;align-items:center;gap:10px;min-width:0;flex:none}.station-search-tools .select-search-bar,.station-list-tools .select-search-bar{flex:1;min-width:0;width:auto;margin:0!important}
+.select-popup .station-search-tools{margin:0 0 18px}.select-popup .station-picker-tabs{display:none}
+/* Timer controls stay in their positions from setup to completion. */
+.timer-panel{width:540px}.timer-content{padding:20px 26px;min-height:0}.timer-time-stage{position:relative;height:112px;display:grid;place-items:center}.timer-duration,.timer-running{grid-area:1/1;width:100%;margin:0!important}
+#timer-duration[hidden],#timer-running[hidden]{display:flex!important;visibility:hidden;pointer-events:none}#timer-running{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px}#timer-state-label{font-size:10px}#timer-readout{font-size:52px;line-height:1.1}.timer-track{width:100%;max-width:240px;min-height:2px}
+.timer-presets{margin:12px 0 18px}.timer-option-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}.timer-option-grid .stacked-label{margin-top:10px}.timer-session-options{border-top:1px solid var(--line);padding-top:3px}.timer-session-options .custom-trigger{min-height:44px;font-size:12px}.timer-session-options select{min-width:0}
+.timer-session-options .text-button{min-height:36px}#timer-session-note{min-height:2.7em;font-size:11px;margin-top:6px}.timer-finish-description{min-height:2.5em;font-size:12px;margin-top:14px}
+#timer-reset[hidden]{display:inline-flex!important;visibility:hidden;pointer-events:none}.timer-actions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr)}.timer-actions>.primary-button{margin-left:0;width:100%;min-width:0;min-height:48px}.timer-actions>.text-button{width:100%;min-width:0}
+#timer-result{min-height:2.8em;margin-top:10px;font-size:12px}#timer-result[hidden]{display:block!important;visibility:hidden}#timer-retry-audio[hidden]{display:flex!important;visibility:hidden;pointer-events:none}#timer-retry-audio{min-height:32px!important;margin:4px auto 0!important}
+/* Share options, logo and onboarding are intentionally compact. */
+.share-formats{grid-template-columns:repeat(3,minmax(0,1fr))!important}.share-options{display:grid;grid-template-columns:1fr 1fr;gap:0 20px}.share-options .toggle-row{min-width:0;gap:10px;padding:13px 0}.share-options .toggle-row>span{font-size:12px;min-width:0}.share-options .toggle-row small{font-size:10px;line-height:1.5}.share-options .is-unavailable{opacity:.45}.share-options input{flex-shrink:0}
+.welcome-panel{width:510px}.welcome-content{text-align:center;padding:12px 34px 28px}.welcome-logo{display:block;margin:0 auto 22px;border-radius:17px}.welcome-content h2{font-family:var(--serif);font-size:34px;font-weight:400;margin:13px 0 15px;line-height:1.2}.welcome-content>p:not(.section-label){font-size:14px;line-height:1.7;color:var(--muted)}#welcome-features{margin:22px 0;text-align:left;display:grid;gap:12px}#welcome-features p{font-size:13px;line-height:1.6;padding-left:14px;border-left:1px solid var(--accent)}.welcome-content>.local-note{font-size:11px!important}.welcome-panel .panel-footer{justify-content:space-between}
+#persistent-storage-status{margin-top:22px;line-height:1.7}#storage-request,#welcome-reopen{display:inline-flex;margin:10px 12px 4px 0;font-size:12px}
+@media(max-width:740px){#app-shell{padding-left:20px;padding-right:20px}.moon-caption{font-size:10px;margin-top:10px}.timer-chip-main{font-size:10px}.timer-slot{flex-basis:38px;height:38px}.timer-content{padding:16px 20px}.share-options{gap:0 14px}.analog-clock{width:142px;height:142px}#sky-body{width:52px;height:52px}.celestial-sky[data-period=day] #sky-body{width:65px;height:65px}.welcome-content{padding:10px 24px 22px}.welcome-content h2{font-size:29px}.favorite-search-button{width:42px!important;min-width:42px!important;height:42px!important}}
+@media(max-height:540px) and (orientation:landscape){#app-shell{padding:10px 20px 7px}#main.main-stage{padding:8px 4px;gap:8px 22px}.timer-slot{height:34px;flex-basis:34px}.moon-caption{grid-column:1/-1;margin:0}.analog-clock{width:112px;height:112px}.goal-strip{display:none}.bottom-bar{min-height:34px}.topbar{min-height:32px}.timer-chip{max-height:30px}.timer-chip-main{min-height:24px}.timer-chip .icon-button{height:25px;width:25px}}
+@media(prefers-reduced-motion:reduce){.celestial-sky *{animation:none!important;transition:none!important}}

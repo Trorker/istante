@@ -49,3 +49,14 @@ Il generatore di cartoline usa Canvas e il lettore Markdown è implementato loca
 Preferenze e immagini non vengono inviate a un servizio di generazione. Scegliere una destinazione nel menu di condivisione autorizza invece l'invio a quell'applicazione. Istante non include analytics o tracciamento aggiuntivo.
 
 [Licenza del progetto](LICENZA.md) · [Il progetto](../README.md)
+
+## Cielo locale dalla v3.5.0
+
+`assets/js/scene.js` contiene anche un adattamento delle formule di fase e
+illuminazione lunare di **SunCalc 1.9.0**, Vladimir Agafonkin. Resta valida la
+licenza BSD-2-Clause conservata in `docs/licenses/SUNCALC-LICENSE.txt`. La fase
+non richiede alcuna chiamata remota. La traiettoria grafica è decorativa.
+
+La nuova licenza non commerciale di Istante riguarda solo le parti originali
+per cui l’autore dispone dei diritti; non sostituisce MIT, BSD o Apache delle
+componenti terze. [Riferimento SunCalc](https://github.com/mourner/suncalc/tree/v1.9.0).

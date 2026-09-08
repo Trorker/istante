@@ -42,14 +42,15 @@
   return new Intl.DateTimeFormat(format==='12'?'en-GB':'it-IT',options).format(date).replace(/am/i,'AM').replace(/pm/i,'PM');
  }
  function remaining(timer,now=Date.now()){if(timer.state==='running')return Math.max(0,timer.deadline-now);return Math.max(0,timer.remaining||0);}
+ function timerOptions(raw={}){raw=raw&&typeof raw==='object'?raw:{};return{timerDuring:['silent','radio'].includes(raw.timerDuring)?raw.timerDuring:'silent',timerAction:['sound','radio','silent'].includes(raw.timerAction)?raw.timerAction:'sound',timerSound:['chime','bell','pulse'].includes(raw.timerSound)?raw.timerSound:'chime',timerVolume:Number.isFinite(Number(raw.timerVolume))?Math.max(0,Math.min(100,Number(raw.timerVolume))):65};}
  function cleanTimer(raw){
   const base={state:'idle',duration:1500000,remaining:1500000,deadline:0,id:''};
   if(!raw||typeof raw!=='object'||!['idle','running','paused','done'].includes(raw.state))return base;
   const duration=Number(raw.duration),deadline=Number(raw.deadline),left=Number(raw.remaining);
   if(!Number.isFinite(duration)||duration<1000||duration>86400000)return base;
   if(raw.state==='running'&&(!Number.isFinite(deadline)||deadline<=0||deadline>Date.now()+86400000))return base;
-  return{state:raw.state,duration,remaining:Math.min(duration,Math.max(0,Number.isFinite(left)?left:duration)),deadline:Number.isFinite(deadline)?deadline:0,id:typeof raw.id==='string'?raw.id:''};
+  return{options:timerOptions(raw.options),state:raw.state,duration,remaining:Math.min(duration,Math.max(0,Number.isFinite(left)?left:duration)),deadline:Number.isFinite(deadline)?deadline:0,id:typeof raw.id==='string'?raw.id:''};
  }
  function display(ms){const seconds=Math.max(0,Math.ceil(ms/1000)),h=Math.floor(seconds/3600),m=Math.floor(seconds/60)%60,s=seconds%60;return(h?pad(h)+':':'')+pad(m)+':'+pad(s);}
- return{minute,days,dayKey,rows,intervals,windowAt,nextStart,formatTime,remaining,cleanTimer,display};
+ return{minute,days,dayKey,rows,intervals,windowAt,nextStart,formatTime,remaining,cleanTimer,timerOptions,display};
 });

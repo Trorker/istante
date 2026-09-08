@@ -12,7 +12,7 @@
      const b=node('button','icon-button');b.type='button';b.innerHTML='<span class="icon">'+icon(glyph)+'</span>';b.setAttribute('aria-label',label+': '+s.name);if(pressed!==null)b.setAttribute('aria-pressed',String(pressed));b.addEventListener('click',action);row.append(b);
     }list.append(row);
    }
-   $('#station-manager-empty').hidden=stations.length>0;$('#station-manager-count').textContent=stations.length+' stazioni';$('#station-undo').hidden=!library.canUndo();$('#station-restore').hidden=!library.hiddenCount();$('#station-filter').setAttribute('aria-pressed',String(filter));
+   $('#station-manager-empty').hidden=stations.length>0;$('#station-manager-count').textContent=stations.length+' stazioni';$('#station-undo').hidden=!library.canUndo();$('#station-restore').hidden=!library.hiddenCount();$('#station-filter').setAttribute('aria-pressed',String(filter));$('#station-filter').setAttribute('aria-label',filter?'Mostra tutte le stazioni':'Mostra solo le stazioni preferite');
   }
   $('#station-manager-search').addEventListener('input',render);$('#station-filter').addEventListener('click',()=>{filter=!filter;render();});$('#station-undo').addEventListener('click',()=>library.undo());$('#station-restore').addEventListener('click',()=>{library.restore();notify('Stazioni del catalogo ripristinate.');});
   $('#station-add-form').addEventListener('submit',e=>{e.preventDefault();const form=e.currentTarget,msg=$('#station-add-error');try{library.add(form.elements.stationName.value,form.elements.stationUrl.value,form.elements.stationPage.value);form.reset();msg.hidden=true;$('#station-add-details').open=false;notify('La tua stazione \u00e8 nel catalogo.');}catch(err){msg.textContent=err.message;msg.hidden=false;}});

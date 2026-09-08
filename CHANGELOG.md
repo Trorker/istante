@@ -2,6 +2,21 @@
 
 Le modifiche sono elencate dalla release più recente. Le voci Original 1.x descrivono la base minimale da cui deriva la linea 3.x; non includono gli esperimenti grafici della precedente linea 2.x.
 
+## 3.5.0 - 8 settembre 2026
+
+- Dashboard senza scroll, scena adattata alla viewport e timer senza spostamenti del layout.
+- Orologio analogico opzionale; digitale e 24 ore predefiniti.
+- Cielo fisso con sole, fase lunare calcolata localmente e stelle.
+- Scelte durante/fine timer nel pannello del timer, bloccate per la sessione.
+- Accordion richiusi uscendo dalle impostazioni; collegamenti documenti allineati.
+- Cuore dei preferiti a destra della ricerca delle stazioni, senza schede Tutte/Preferite.
+- Cartoline con logo e firma, formato orizzontale e inclusioni selezionabili; QR facoltativo.
+- Benvenuto in tre passi mostrato una sola volta, rivedibile da Informazioni.
+- Memoria persistente richiesta in modo protetto, con stato e gestione del rifiuto.
+- Licenza non commerciale con attribuzione e sorgente disponibile; diritti precedenti e terzi preservati.
+- Cache e risorse allineate alla release; incluso `docs/release/v3.5.0.md`.
+
+
 ## 3.4.0 - 8 settembre 2026
 
 - Cuori dei preferiti realmente pieni in tutti i contesti; filtro delle stazioni coerente con il design.

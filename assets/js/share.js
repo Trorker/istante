@@ -9,7 +9,7 @@
   function render(){
    const ticket=++generation;file=null;$('share-send').disabled=true;$('share-download').disabled=true;$('share-preview').parentElement.setAttribute('aria-busy','true');status('Preparo il tuo istante...');
    try{
-    const canvas=card.draw(snapshot,format,$('share-clock').checked);
+    const options=Object.fromEntries(['clock','qr','date','sky','goal','radio'].map(k=>[k,$('share-'+k).checked&&!$('share-'+k).disabled]));const canvas=card.draw(snapshot,format,options);
     canvas.toBlob(blob=>{
      if(ticket!==generation)return;if(!blob){$('share-preview').parentElement.setAttribute('aria-busy','false');status('Immagine non disponibile. Puoi comunque condividere il link.');return;}
      file=new File([blob],'istante-'+format+'.png',{type:'image/png'});
@@ -27,7 +27,7 @@
    if(typeof navigator.share!=='function'){void copy();return;}
    navigator.share({title:'Istante - Un momento, per te.',text:'Una dashboard per prenderti un momento: frasi, musica e piccoli obiettivi.',url:card.URL}).catch(e=>{if(e.name!=='AbortError'){status('Condivisione non disponibile. Usa Copia link.');}});
   }
-  $('share-open').addEventListener('click',open);$('share-clock').addEventListener('change',render);
+  $('share-open').addEventListener('click',open);['clock','qr','date','sky','goal','radio'].forEach(k=>$('share-'+k).addEventListener('change',render));
   document.querySelectorAll('[data-share-format]').forEach(b=>b.addEventListener('click',()=>{format=b.dataset.shareFormat;document.querySelectorAll('[data-share-format]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));render();}));
   $('share-download').addEventListener('click',download);$('share-copy').addEventListener('click',()=>void copy());$('share-link').addEventListener('click',link);
   $('share-send').addEventListener('click',()=>{
@@ -37,7 +37,7 @@
    navigator.share({files:[file],title:'Il tuo istante.',text:snapshot.phrase+'\nUn momento, per te.',url:card.URL}).then(()=>status('Il tuo istante e\u0300 passato alla condivisione.')).catch(e=>{if(e.name!=='AbortError')status('Condivisione non riuscita. Puoi salvare l\u2019immagine o condividere solo il link.');}).finally(()=>{busy=false;$('share-send').disabled=!file;});
   });
   $('share-dialog').addEventListener('close',()=>{generation++;if(previewURL){URL.revokeObjectURL(previewURL);previewURL='';}file=null;$('share-preview').hidden=true;$('share-preview').removeAttribute('src');});
-  return{prepare(){snapshot=getSnapshot();render();}};
+  return{prepare(){snapshot=getSnapshot();for(const key of ['goal','radio']){$('share-'+key).checked=false;const available=key==='goal'?!!snapshot.goal:!!snapshot.station;$('share-'+key).disabled=!available;$('share-'+key).closest('label').classList.toggle('is-unavailable',!available);}render();}};
  }
  window.IstanteShare={create};
 })();
