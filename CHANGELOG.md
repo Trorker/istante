@@ -2,6 +2,19 @@
 
 Le modifiche sono elencate dalla release più recente. Le voci Original 1.x descrivono la base minimale da cui deriva la linea 3.x; non includono gli esperimenti grafici della precedente linea 2.x.
 
+## 3.4.0 - 8 settembre 2026
+
+- Cuori dei preferiti realmente pieni in tutti i contesti; filtro delle stazioni coerente con il design.
+- Sorprendimi avvia la nuova radio anche da fermo e rilascia sempre la sorgente precedente.
+- Cartoline condivisibili in PNG, formato quadrato o storia, link e QR; fallback per salvataggio e condivisione del solo indirizzo.
+- Anteprima social del sito con immagine inclusa, URL canonico e descrizione estesa.
+- Radio durante il timer, indipendente dall'avviso finale, con pausa, ripresa e rispetto degli ascolti manuali e delle fasce autorizzate.
+- Pagine che caricano README, changelog, release, licenza e terze parti dai file locali.
+- Icone dei social in About; nuove risorse incluse nella cache verificata.
+- Ripristinato il file Markdown della singola release in `docs/release/`, oltre al changelog generale.
+
+[Note complete della release 3.4.0](docs/release/v3.4.0.md)
+
 ## 3.3.0 — 8 settembre 2026
 
 ### Interfaccia e orari

@@ -1,4 +1,4 @@
-/* Istante v3.3.0 - application and local preferences. */
+/* Istante v3.4.0 - application and local preferences. */
 (function () {
 'use strict';
 const C = window.IstanteCore;
@@ -43,6 +43,8 @@ const stationManager=window.IstanteStationManager.create({library:stationLibrary
 const scheduleEditor=window.IstanteSchedules.create({icon,onChange:updateSettingsFields});
 let appearanceReady=false;
 const moments=window.IstanteMoments.create({getSettings:()=>settings,getDraft:readDraftSettings,radio,notify:toast,openTimer:()=>openDialog('timer'),icon});
+
+const sharing=window.IstanteShare.create({getSnapshot:()=>({phrase:current?.text||'Un momento, per te.',time:timeFormatter.format(new Date()),theme:document.documentElement.dataset.theme||'dark'}),open:()=>openDialog('share'),notify:toast});
 
 function toast(message) {
  const el = $('#toast'); ($('dialog[open]:not(.is-leaving)') || document.body).append(el);
@@ -236,7 +238,7 @@ function fillSettings() {
 }
 function updateSettingsFields() {
  const f=$('#settings-form').elements,mode=f.mode.value,hasStations=stationLibrary.list().length>0;
- if(!hasStations)f.radioScheduleEnabled.checked=false;if((!hasStations||!f.radioEnabled.checked)&&f.timerAction.value==='radio')f.timerAction.value='sound';
+ if(!hasStations)f.radioScheduleEnabled.checked=false;if((!hasStations||!f.radioEnabled.checked)&&f.timerAction.value==='radio')f.timerAction.value='sound';if(!hasStations||!f.radioEnabled.checked)f.timerDuring.value='silent';
  function group(id,enabled){const box=$(id);const wasHidden=box.hidden;box.hidden=!enabled;if(enabled&&wasHidden&&$('#settings-dialog').open)window.IstanteMotion.flash(box);box.querySelectorAll('input,select,button').forEach(el=>el.disabled=!enabled);}
  f.morning.required=false;f.evening.required=false;
  group('#schedule-times',['twice','daily'].includes(mode));group('#evening-field',mode==='twice');$('#interval-field').hidden=mode!=='interval';f.interval.disabled=mode!=='interval';
@@ -257,11 +259,11 @@ function updateSettingsFields() {
  if(meteoOption.disabled&&f.weatherFX.value==='auto')f.weatherFX.value='off';
  scheduleEditor.syncEnabled(f.radioEnabled.checked&&f.radioScheduleEnabled.checked);
  f.radioVolume.disabled=!f.radioEnabled.checked||!hasStations;f.radioStation.disabled=!f.radioEnabled.checked||!hasStations;f.radioScheduleEnabled.disabled=!f.radioEnabled.checked||!hasStations;radioOption.disabled=!f.radioEnabled.checked||!hasStations;if(radioOption.disabled&&f.timerAction.value==='radio')f.timerAction.value='sound';
- window.IstanteControls.refresh();sectionSummaries();previewFX.sync();
+ const duringRadio=[...f.timerDuring.options].find(o=>o.value==='radio');duringRadio.disabled=!f.radioEnabled.checked||!hasStations;if(duringRadio.disabled)f.timerDuring.value='silent';window.IstanteControls.refresh();sectionSummaries();previewFX.sync();
 }
 function openDialog(which) {
  const dialog=$('#'+which+'-dialog');if(!dialog)return;previousFocus=document.activeElement;dialog._returnFocus=previousFocus;
- radio.close();X.pause();if(which==='settings')fillSettings();else if(which==='library')renderLibrary(true);else if(which==='stations')stationManager.render();
+ radio.close();X.pause();if(which==='settings')fillSettings();else if(which==='library')renderLibrary(true);else if(which==='stations')stationManager.render();else if(which==='share')sharing.prepare();
  clearTimeout(idleTimer);document.body.classList.remove('is-idle');document.body.classList.add('has-panel');document.body.style.overflow='hidden';window.IstanteMotion.present(dialog);
  if(which==='library')$('#phrase-search').focus({preventScroll:true});else dialog.querySelector('.close-button').focus({preventScroll:true});
 }
@@ -359,7 +361,7 @@ window.IstanteControls.enhance($('#settings-form'));window.IstanteControls.enhan
 if(storageFailed)toast('Il browser non consente il salvataggio locale. La pagina funziona comunque in questa sessione.');
 window.IstanteUpdates.create({notify:toast});
 document.addEventListener('istante:manage-stations',()=>openDialog('stations'));
-document.addEventListener('istante:stations-changed',()=>{if(!stationLibrary.list().length){settings.radioScheduleEnabled=false;if(settings.timerAction==='radio')settings.timerAction='sound';store.write('settings',settings);}moments.apply();if($('#settings-dialog').open)updateSettingsFields();});
+document.addEventListener('istante:stations-changed',()=>{if(!stationLibrary.list().length){settings.radioScheduleEnabled=false;if(settings.timerAction==='radio')settings.timerAction='sound';settings.timerDuring='silent';store.write('settings',settings);}moments.apply();if($('#settings-dialog').open)updateSettingsFields();});
 Promise.all([X.boot(),new Promise(resolve=>setTimeout(resolve,550))]).catch(()=>{}).finally(()=>{
  clearTimeout(window.ISTANTE_FAILSAFE);tick(false);applyAppearance(new Date());
  requestAnimationFrame(()=>{document.documentElement.classList.remove('is-loading');$('#app-shell').inert=false;$('#boot-screen').classList.add('is-done');X.reveal();setTimeout(()=>$('#boot-screen').remove(),500);});
