@@ -1,4 +1,4 @@
-/* Istante v3.5.0 - application and local preferences. */
+/* Istante v3.6.0 - application and local preferences. */
 (function () {
 'use strict';
 const C = window.IstanteCore;
@@ -14,7 +14,15 @@ const store = {
  write(key, value) { try { localStorage.setItem(KEY + key, JSON.stringify(value)); return true; } catch (_) { storageFailed = true; return false; } },
  remove(key) { try { localStorage.removeItem(KEY + key); } catch (_) {} }
 };
-let settings = C.cleanSettings(store.read('settings', {}));
+// 3.6 moves the former per-session preferences into the main configuration once.
+let rawSettings=store.read('settings', {});
+if(!store.read('timer-options-migrated-360',false)){
+ const legacy=store.read('timer-options',null);
+ if(legacy&&typeof legacy==='object'&&!Array.isArray(legacy))rawSettings={...rawSettings,...window.IstanteTime.timerOptions(legacy)};
+ if(store.write('settings',rawSettings)){store.write('timer-options-migrated-360',true);store.remove('timer-options');}
+}
+let settings = C.cleanSettings(rawSettings);
+let returnToTimer=false;
 let originalPayload = window.ISTANTE_PHRASES, customPayload = store.read('collection', null), phrases;
 try { phrases = C.parsePhrases(customPayload || originalPayload); }
 catch (_) { customPayload = null; store.remove('collection'); phrases = C.parsePhrases(originalPayload); }
@@ -209,7 +217,7 @@ function readDraftSettings(){
 function sectionSummaries(){
  const f=$('#settings-form').elements,choice=name=>f[name]?.selectedOptions?.[0]?.textContent||'';
  const themes={dark:'Notte',light:'Carta',auto:'Tema del dispositivo',solar:'Segui il sole'};
- const data={appearance:(themes[f.theme.value]||'Tema')+' \u00b7 '+choice('background'),phrases:(modeNames[f.mode.value]||choice('mode'))+(f.typing.checked?' \u00b7 Macchina da scrivere':''),sky:$('#place-name').textContent,effects:f.effectsEnabled.checked?choice('effect')+(f.weatherFX.value!=='off'?' \u00b7 '+choice('weatherFX'):''):'Disattivati',radio:f.radioEnabled.checked?choice('radioStation').replace(/^\d+\s+/,''):'Player nascosto',timer:f.timerEnabled.checked?f.timerMinutes.value+' min \u00b7 Scelte nel timer':'Disattivato',goal:choice('goalMode'),screen:f.hideControls.checked?'Comandi a scomparsa':'Comandi sempre visibili'};
+ const data={appearance:(themes[f.theme.value]||'Tema')+' \u00b7 '+choice('background'),phrases:(modeNames[f.mode.value]||choice('mode'))+(f.typing.checked?' \u00b7 Macchina da scrivere':''),sky:$('#place-name').textContent,effects:f.effectsEnabled.checked?choice('effect')+(f.weatherFX.value!=='off'?' \u00b7 '+choice('weatherFX'):''):'Disattivati',radio:f.radioEnabled.checked?choice('radioStation').replace(/^\d+\s+/,''):'Player nascosto',timer:f.timerEnabled.checked?f.timerMinutes.value+' min \u00b7 '+choice('timerAction'):'Disattivato',goal:choice('goalMode'),screen:f.hideControls.checked?'Comandi a scomparsa':'Comandi sempre visibili'};
  for(const [key,value]of Object.entries(data)){const el=$('[data-summary="'+key+'"]');if(el)el.textContent=value;}
 }
 function expandSection(target){
@@ -248,6 +256,13 @@ function updateSettingsFields() {
  $('#schedule-note').textContent=notes[mode];group('#picsum-fields',f.background.value==='picsum');group('#photo-options',['photo','picsum'].includes(f.background.value));group('#typing-fields',f.typing.checked);group('#effects-fields',f.effectsEnabled.checked);group('#radio-fields',f.radioEnabled.checked);
  group('#radio-schedule-fields',f.radioEnabled.checked&&f.radioScheduleEnabled.checked);f.radioScheduleEnabled.disabled=!f.radioEnabled.checked;
  group('#timer-settings-fields',f.timerEnabled.checked);
+ const timerRadioAvailable=f.radioEnabled.checked&&hasStations;
+ for(const field of [f.timerDuring,f.timerAction]){
+  for(const option of field.options)if(option.value==='radio')option.disabled=!timerRadioAvailable;
+  if(!timerRadioAvailable&&field.value==='radio')field.value=field===f.timerDuring?'silent':'sound';
+ }
+ group('#timer-sound-settings',f.timerEnabled.checked&&f.timerAction.value==='sound');
+ $('#timer-volume-label').textContent=f.timerVolume.value+'%';
  f.showSeconds.disabled=!f.showClock.checked;f.showSeconds.closest('label').classList.toggle('is-dependent-disabled',!f.showClock.checked);
  f.photoMotion.disabled=!['photo','picsum'].includes(f.background.value)||!f.motion.checked;
  f.typing.disabled=!f.motion.checked;f.typing.closest('label').classList.toggle('is-dependent-disabled',!f.motion.checked);
@@ -268,14 +283,19 @@ function openDialog(which) {
 function closeDialog(dialog) { window.IstanteMotion.dismiss(dialog); }
 $$('dialog').forEach(dialog=>{
  dialog.addEventListener('cancel',event=>{event.preventDefault();closeDialog(dialog);});
- dialog.addEventListener('close',()=>{if(dialog.id==='settings-dialog'){scene.collapseSettings();}const stillOpen=!!$('dialog[open]');document.body.classList.toggle('has-panel',stillOpen);document.body.style.overflow=stillOpen?'hidden':'';const back=dialog._returnFocus;if(back&&back.isConnected)back.focus({preventScroll:true});lastActivity=0;activity();X.resume();});
+ dialog.addEventListener('close',()=>{if(dialog.id==='settings-dialog'){scene.collapseSettings();if(returnToTimer){returnToTimer=false;requestAnimationFrame(()=>moments.open());}}const stillOpen=!!$('dialog[open]');document.body.classList.toggle('has-panel',stillOpen);document.body.style.overflow=stillOpen?'hidden':'';const back=dialog._returnFocus;if(back&&back.isConnected)back.focus({preventScroll:true});lastActivity=0;activity();X.resume();});
  dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)closeDialog(dialog);});
 });
 $$('[data-open]').forEach(b=>b.addEventListener('click',()=>openDialog(b.dataset.open)));
 $$('[data-close]').forEach(b=>b.addEventListener('click',()=>closeDialog(b.closest('dialog'))));
-$('#configure-timer').addEventListener('click',()=>{const d=$('#settings-dialog');d.addEventListener('close',()=>moments.open(),{once:true});closeDialog(d);});
+$('#configure-timer').addEventListener('click',()=>{returnToTimer=true;$('#settings-form').requestSubmit();});
+$('#timer-options-open').addEventListener('click',()=>{
+ const dialog=$('#timer-dialog');dialog.addEventListener('close',()=>{
+  returnToTimer=true;openDialog('settings');expandSection($('#section-timer summary'));
+ },{once:true});closeDialog(dialog);
+});
 $('#settings-form').addEventListener('change',updateSettingsFields);
-$('#settings-form').addEventListener('input',()=>{sectionSummaries();previewFX.sync();});
+$('#settings-form').addEventListener('input',()=>{$('#timer-volume-label').textContent=$('#settings-form').elements.timerVolume.value+'%';sectionSummaries();previewFX.sync();});
 $$('.settings-section').forEach(section=>{window.IstanteMotion.accordion(section);section.addEventListener('toggle',()=>{previewFX.sync();if(section.open&&$('#settings-dialog').open)setTimeout(()=>{if(section.open)section.querySelector('summary').scrollIntoView({block:'start',behavior:settings.motion&&!matchMedia('(prefers-reduced-motion: reduce)').matches?'smooth':'instant'});},60);});});
 new MutationObserver(()=>{sectionSummaries();if($('#settings-dialog').open)updateSettingsFields();}).observe($('#place-name'),{childList:true,subtree:true,characterData:true});
 document.addEventListener('selectstart',event=>event.preventDefault());

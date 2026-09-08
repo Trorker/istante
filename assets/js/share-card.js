@@ -1,66 +1,155 @@
-/* Local canvas artwork. No screenshots, external images or upload service. */
+/* Local, resolution-independent share artwork. No fonts, images or uploads from third parties. */
 (function(){'use strict';
  const URL='https://ruslan-dzyuba.it/istante/';
+ // QR has a four-module quiet zone on each side. Keep the matrix unmodified.
  const QR=["0000000000000000000000000000000000000", "0000000000000000000000000000000000000", "0000000000000000000000000000000000000", "0000000000000000000000000000000000000", "0000111111101001011011100011111110000", "0000100000100010111100111010000010000", "0000101110100111001001111010111010000", "0000101110101111100000110010111010000", "0000101110101101000000001010111010000", "0000100000101110000010010010000010000", "0000111111101010101010101011111110000", "0000000000001110010111000000000000000", "0000100010111111010001111111110010000", "0000111110001001011011100011111110000", "0000011101100000100010100111000010000", "0000000011010001101001110010110110000", "0000010001101100111101011100000100000", "0000101011001111100001100011111110000", "0000001000100101111101001000111010000", "0000110010000000010001101101000110000", "0000011010100100110101010001000100000", "0000111011001000111100000011110110000", "0000001100101110000100001000001010000", "0000000110010110101101100010000110000", "0000111110101111011001001111110010000", "0000000000001011000110001000100010000", "0000111111101111011111111010111010000", "0000100000100110010101011000100010000", "0000101110101010110011011111110000000", "0000101110100011011110110101000010000", "0000101110100000100111001100011110000", "0000100000100000010001111011110110000", "0000111111101001100101001000100100000", "0000000000000000000000000000000000000", "0000000000000000000000000000000000000", "0000000000000000000000000000000000000", "0000000000000000000000000000000000000"];
  const sizes={square:[1080,1080],story:[1080,1920],landscape:[1920,1080],cover:[1200,630]};
+ const TAU=Math.PI*2;
  function wrap(ctx,text,width){
-  const lines=[];for(const paragraph of String(text).split(/\n/)){
-   let line='';for(const word of paragraph.trim().split(/\s+/).filter(Boolean)){
-    const test=line?line+' '+word:word;
-    if(ctx.measureText(test).width<=width){line=test;continue;}
+  const lines=[];
+  for(const paragraph of String(text).split(/\n/)){
+   let line='';
+   for(const word of paragraph.trim().split(/\s+/).filter(Boolean)){
+    const candidate=line?line+' '+word:word;
+    if(ctx.measureText(candidate).width<=width){line=candidate;continue;}
     if(line){lines.push(line);line='';}
-    // Do not split normal words. Very long imported tokens still stay in the card.
-    if(ctx.measureText(word).width>width){for(const char of Array.from(word)){if(ctx.measureText(line+char).width>width){lines.push(line);line='';}line+=char;}}
-    else line=word;
-   }lines.push(line);
-  }return lines;
+    if(ctx.measureText(word).width>width){
+     for(const ch of Array.from(word)){
+      if(line&&ctx.measureText(line+ch).width>width){lines.push(line);line='';}
+      line+=ch;
+     }
+    }else line=word;
+   }
+   lines.push(line);
+  }
+  return lines;
+ }
+ function palette(light,isDay){
+  if(light)return {background:'#f1eee5',ink:'#303b33',muted:'#687461',accent:'#697f55',line:'#75836636',halo:isDay?'#cfb56a35':'#9cb8b543',glow:isDay?'#ead1984d':'#b8cabc40',sun:'#c5a765',moon:'#6c7f73',qrBg:isDay?'#e9e3d4':'#e4e8e1',qrInk:isDay?'#3d4931':'#304840'};
+  return {background:'#141c19',ink:'#efece2',muted:'#a2b29f',accent:'#beccaa',line:'#bacbab30',halo:isDay?'#b6995338':'#5b898144',glow:isDay?'#d0b06d31':'#739ba634',sun:'#eed6a3',moon:'#cddbd5',qrBg:isDay?'#e2dac5':'#d8e0d9',qrInk:isDay?'#35422e':'#243d34'};
+ }
+ function disk(c,x,y,r){c.beginPath();c.arc(x,y,r,0,TAU);}
+ function haze(c,x,y,r,color,W,H){
+  const g=c.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,color);g.addColorStop(1,color.slice(0,7)+'00');c.fillStyle=g;c.fillRect(0,0,W,H);
+ }
+ function mark(c,x,y,size,color){
+  c.save();c.translate(x,y);c.strokeStyle=color;c.lineWidth=size*3.5/192;c.lineCap='round';
+  disk(c,size/2,size/2,size*52/192);c.stroke();c.beginPath();c.moveTo(size*111/192,size*72/192);c.lineTo(size*81/192,size*120/192);c.stroke();c.restore();
+ }
+ function spaced(c,text,x,y,spacing){
+  const letters=Array.from(text),width=letters.reduce((n,ch)=>n+c.measureText(ch).width,0)+Math.max(0,letters.length-1)*spacing;
+  c.textAlign='left';let left=x-width/2;for(const ch of letters){c.fillText(ch,left,y);left+=c.measureText(ch).width+spacing;}
+ }
+ function moon(c,x,y,r,phase,P){
+  // Orthographic disk: the visible terminator follows the illumination angle.
+  // The illuminated hemisphere changes side between waxing and waning.
+  const p=Number.isFinite(phase)?((phase%1)+1)%1:.5;
+  const illumination=-Math.cos(TAU*p),side=p<=.5?1:-1;
+  c.save();disk(c,x,y,r);c.clip();
+  c.fillStyle=P.background;c.fillRect(x-r,y-r,r*2,r*2);
+  const earth=c.createRadialGradient(x-r*.22,y-r*.28,0,x,y,r*1.3);
+  earth.addColorStop(0,P.moon+'28');earth.addColorStop(1,P.moon+'0c');c.fillStyle=earth;c.fillRect(x-r,y-r,r*2,r*2);
+  c.beginPath();
+  const steps=128;
+  for(let i=0;i<=steps;i++){
+   const yy=-r+i*2*r/steps,xx=side*Math.sqrt(Math.max(0,r*r-yy*yy));
+   if(i===0)c.moveTo(x+xx,y+yy);else c.lineTo(x+xx,y+yy);
+  }
+  for(let i=steps;i>=0;i--){const yy=-r+i*2*r/steps,xx=-side*illumination*Math.sqrt(Math.max(0,r*r-yy*yy));c.lineTo(x+xx,y+yy);}
+  c.closePath();const fill=c.createRadialGradient(x+side*r*.3,y-r*.3,0,x,y,r*1.5);
+  fill.addColorStop(0,P.moon);fill.addColorStop(1,P.moon+'b3');c.fillStyle=fill;c.fill();c.restore();
+  c.save();c.globalAlpha=.18;c.strokeStyle=P.moon;c.lineWidth=.8;disk(c,x,y,r);c.stroke();c.restore();
+ }
+ function sky(c,info,P,W,H,land,story){
+  const x=W*.815,y=land?145:story?246:206,r=land?22:35;
+  haze(c,x,y,land?180:285,P.halo,W,H);haze(c,x-r,y-r,r*3,P.glow,W,H);
+  c.save();
+  if(info.isDay){
+   // Two soft rings, rather than sharp rays or a sticker-like sun icon.
+   for(const [radius,alpha]of [[r*1.43,.20],[r*2.10,.08]]){c.globalAlpha=alpha;c.strokeStyle=P.sun;c.lineWidth=1;disk(c,x,y,radius);c.stroke();}
+   c.globalAlpha=.85;const g=c.createRadialGradient(x-r*.3,y-r*.35,0,x,y,r*1.4);
+   g.addColorStop(0,P.sun);g.addColorStop(1,P.sun+'b3');c.fillStyle=g;disk(c,x,y,r);c.fill();
+  }else{
+   c.globalAlpha=1;moon(c,x,y,r,info.phase,P);
+   let seed=417;
+   const rand=()=>{seed=(Math.imul(1664525,seed)+1013904223)>>>0;return seed/4294967296;};
+   for(let i=0;i<55;i++){
+    const xx=50+rand()*(W-100),yy=110+rand()*Math.min(H*.63,760);
+    if((xx>200&&xx<W-180&&yy>175)||Math.hypot(xx-x,yy-y)<r*1.6)continue;
+    c.globalAlpha=.14+rand()*.30;c.fillStyle=P.moon;disk(c,xx,yy,.6+rand()*.9);c.fill();
+   }
+  }
+  // Celestial arcs stay at the edges, leaving the phrase quiet and legible.
+  c.globalAlpha=.25;c.strokeStyle=P.line;c.lineWidth=1;
+  c.beginPath();c.ellipse(W*.82,y+10,W*.48,H*.32,-.3,.05,Math.PI*.80);c.stroke();
+  c.restore();
+ }
+ function analog(c,x,y,r,snapshot,P){
+  c.save();c.translate(x,y);c.strokeStyle=P.line;c.lineWidth=1.4;disk(c,0,0,r);c.stroke();
+  for(let i=0;i<12;i++){c.save();c.rotate(i*Math.PI/6);c.strokeStyle=i%3===0?P.muted:P.line;c.beginPath();c.moveTo(0,-r+5);c.lineTo(0,-r+(i%3===0?13:9));c.stroke();c.restore();}
+  const h=Number(snapshot.hours)||0,m=Number(snapshot.minutes)||0;
+  for(const [angle,length,width]of [[h%12*30+m*.5,.51,3], [m*6,.75,2]]){
+   c.save();c.rotate(angle*Math.PI/180);c.strokeStyle=P.ink;c.lineCap='round';c.lineWidth=width;c.beginPath();c.moveTo(0,5);c.lineTo(0,-r*length);c.stroke();c.restore();
+  }
+  c.fillStyle=P.accent;disk(c,0,0,2.5);c.fill();c.restore();
+ }
+ function fitLine(c,text,width){
+  if(c.measureText(text).width<=width)return text;
+  const chars=Array.from(text);while(chars.length&&c.measureText(chars.join('')+'\u2026').width>width)chars.pop();return chars.join('')+'\u2026';
  }
  function draw(snapshot,format='square',options=true){
-  const opt=typeof options==='boolean'?{clock:options,qr:true,date:true,sky:true}:options;
+  snapshot=snapshot||{};
+  const opt=typeof options==='boolean'?{clock:options,qr:true,date:true,sky:true}:options||{};
   const [w,h]=sizes[format]||sizes.square,canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
   const c=canvas.getContext('2d');if(!c)throw Error('Canvas non disponibile');
-  const light=snapshot.theme==='light',land=w>h,story=h>w*1.5,scale=w/1080;
-  c.scale(scale,scale);const W=w/scale,H=h/scale,pad=70;
-  const ink=light?'#28322c':'#efeee7',muted=light?'#65715f':'#a7b29f',accent=light?'#586e44':'#c0cfaa';
-  c.fillStyle=light?'#f2eee5':'#141b18';c.fillRect(0,0,W,H);
-  function halo(x,y,r,color){const g=c.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,color);g.addColorStop(1,'transparent');c.fillStyle=g;c.fillRect(0,0,W,H);}
-  halo(W*.08,H*.09,700,light?'#c8d6b780':'#71905540');halo(W*.98,H*.96,580,light?'#ddc5a45e':'#bb955728');
-  c.strokeStyle=light?'#64765736':'#c0cfaa28';c.lineWidth=1;c.strokeRect(24,24,W-48,H-48);
-  // The real Istante mark: circle + diagonal stroke, same geometry as icon.svg.
-  function logo(x,y,size){c.save();c.translate(x,y);c.strokeStyle=accent;c.lineWidth=size*3.5/192;c.beginPath();c.arc(size/2,size/2,size*52/192,0,Math.PI*2);c.stroke();c.lineCap='round';c.beginPath();c.moveTo(size*111/192,size*72/192);c.lineTo(size*81/192,size*120/192);c.stroke();c.restore();}
-  logo(pad-18,31,82);c.textAlign='left';c.fillStyle=ink;c.font='43px Georgia,serif';c.fillText('istante.',pad+62,87);
-  c.textAlign='right';c.fillStyle=muted;c.font='12px Arial,sans-serif';c.fillText('UN MOMENTO, PER TE.',W-pad,64);c.font='11px Arial,sans-serif';c.fillText('Un progetto di Ruslan Dzyuba',W-pad,87);
-  let top=land?150:story?330:222;
-  if(opt.date&&snapshot.date){c.textAlign='center';c.fillStyle=muted;c.font='17px Arial,sans-serif';c.fillText(snapshot.date,W/2,land?130:157);}
+  const scale=w/1080,W=1080,H=h/scale,land=w>h,story=h>w*1.5,pad=72,light=snapshot.theme==='light';
+  const P=palette(light,opt.sky&&snapshot.sky?!!snapshot.sky.isDay:true);
+  c.scale(scale,scale);c.fillStyle=P.background;c.fillRect(0,0,W,H);
+  haze(c,W*.04,H*.05,650,light?'#b5c8a137':'#6d91552c',W,H);
+  haze(c,W*.88,H*.92,540,light?'#d7c39732':'#9d845221',W,H);
+  if(opt.sky&&snapshot.sky)sky(c,snapshot.sky,P,W,H,land,story);
+  c.strokeStyle=P.line;c.lineWidth=1;c.strokeRect(24,24,W-48,H-48);
+  // Header: the same Istante mark, no repeated author credit.
+  mark(c,pad-16,28,75,P.accent);c.textAlign='left';c.fillStyle=P.ink;c.font='42px Georgia,serif';c.fillText('istante.',pad+59,80);
+  c.font='11px Arial,sans-serif';c.fillStyle=P.muted;c.textAlign='right';c.fillText('UN MOMENTO, PER TE.',W-pad,66);
+  // One vertical signature only, outside the text column and the QR quiet zone.
+  c.save();c.translate(W-41,H*.50);c.rotate(-Math.PI/2);c.fillStyle=P.muted;c.font='11px Arial,sans-serif';spaced(c,'RUSLAN DZYUBA',0,0,2.3);c.restore();
+  if(opt.date&&snapshot.date){c.textAlign='center';c.fillStyle=P.muted;c.font=(land?13:16)+'px Arial,sans-serif';c.fillText(fitLine(c,snapshot.date,630),W/2,land?130:153);}
+  let top=land?165:story?325:205;
   if(opt.clock){
    if(snapshot.clockStyle==='analog'){
-    const radius=land?32:story?77:48,cx=W/2,cy=land?190:story?277:225;c.save();c.translate(cx,cy);c.strokeStyle=light?'#67735960':'#cad6b850';c.lineWidth=1.3;c.beginPath();c.arc(0,0,radius,0,2*Math.PI);c.stroke();
-    for(let i=0;i<12;i++){c.save();c.rotate(i*Math.PI/6);c.beginPath();c.moveTo(0,-radius+6);c.lineTo(0,-radius+11);c.stroke();c.restore();}
-    for(const [angle,length,width]of [[((snapshot.hours||0)%12*30+(snapshot.minutes||0)*.5),.53,3],[(snapshot.minutes||0)*6,.77,2]]){c.save();c.rotate(angle*Math.PI/180);c.strokeStyle=ink;c.lineWidth=width;c.lineCap='round';c.beginPath();c.moveTo(0,5);c.lineTo(0,-radius*length);c.stroke();c.restore();}c.restore();top=cy+radius+49;
-   }else{c.textAlign='center';c.fillStyle=ink;c.font=(land?44:story?106:70)+'px Arial,sans-serif';c.fillText(snapshot.time||'',W/2,land?188:story?300:241);top=land?224:story?380:292;}
+    const r=land?35:story?82:54,y=land?186:story?290:248;
+    analog(c,W/2,y,r,snapshot,P);top=y+r+(land?24:55);
+   }else{
+    c.textAlign='center';c.fillStyle=P.ink;c.font=(land?48:story?102:78)+'px Arial,sans-serif';
+    const y=land?193:story?304:259;c.fillText(snapshot.time||'',W/2,y);top=y+(land?25:56);
+   }
   }
-  let extra=0;const elements=[];
-  if(opt.sky&&snapshot.sky){const sky=snapshot.sky;elements.push((sky.isDay?'Il sole ti accompagna':sky.name+' \u00b7 '+Math.round(sky.fraction*100)+'% illuminata'));}
-  if(opt.goal&&snapshot.goal){const goal=snapshot.goal;elements.push((goal.title||'Il mio obiettivo')+' \u00b7 '+(goal.done?'Traguardo raggiunto':goal.days+' giorni, '+goal.hours+' ore'));}
-  if(opt.radio&&snapshot.station)elements.push('La mia colonna sonora \u00b7 '+snapshot.station);
-  extra=elements.length*29;
-  const footer=H-(land?139:202),bottom=footer-extra-38;
-  let font=land?42:story?74:57,lines;const width=W-pad*2;
-  do{c.font=font+'px Georgia,serif';lines=wrap(c,snapshot.phrase||'Prenditi un momento per te.',width);if(lines.length*font*1.3<=bottom-top)break;font-=1;}while(font>9);
-  const lh=font*1.3,start=top+(bottom-top-lines.length*lh)/2+font;c.textAlign='center';c.fillStyle=ink;
-  lines.forEach((line,i)=>c.fillText(line,W/2,start+i*lh));
-  c.fillStyle=muted;c.font=(land?12:16)+'px Arial,sans-serif';elements.forEach((t,i)=>{let text=t;while(c.measureText(text).width>width&&text.length>1)text=text.slice(0,-2);if(text!==t)text+='\u2026';c.fillText(text,W/2,footer-extra+i*29);});
-  if(opt.sky&&snapshot.sky&&!land){
-   if(snapshot.sky.isDay){c.fillStyle=light?'#c29451':'#d6bb7c';c.beginPath();c.arc(W-pad-28,top-25,12,0,Math.PI*2);c.fill();}
-   else if(window.IstanteScene){const m=document.createElement('canvas');m.width=m.height=160;window.IstanteScene.paintMoon(m,snapshot.sky.phase,light);c.globalAlpha=.82;c.drawImage(m,W-pad-66,top-68,66,66);c.globalAlpha=1;}
-  }
-  c.strokeStyle=light?'#6c7e5540':'#c2d4a938';c.beginPath();c.moveTo(pad,footer+8);c.lineTo(W-pad,footer+8);c.stroke();
-  c.textAlign='left';c.fillStyle=muted;c.font=(land?16:22)+'px Georgia,serif';c.fillText('Un piccolo spazio, soltanto tuo.',pad,footer+(land?46:62));
-  c.fillStyle=ink;c.font=(land?13:18)+'px Arial,sans-serif';c.fillText('ruslan-dzyuba.it/istante/',pad,footer+(land?74:99));
-  c.fillStyle=muted;c.font='11px Arial,sans-serif';c.fillText('ISTANTE / RUSLAN DZYUBA',pad,H-43);
+  const footer=H-(land?182:207),metadata=[];
+  if(opt.sky&&snapshot.sky){const k=snapshot.sky;metadata.push(k.isDay?'Sotto la stessa luce.':k.name||'Un momento, sotto le stelle.');}
+  if(opt.goal&&snapshot.goal){const g=snapshot.goal;metadata.push((g.title||'Il mio obiettivo')+' \u00b7 '+(g.done?'Traguardo raggiunto':g.days+' giorni, '+g.hours+' ore'));}
+  if(opt.radio&&snapshot.station)metadata.push('In ascolto \u00b7 '+snapshot.station);
+  const rowH=land?22:30,metaSpace=metadata.length?metadata.length*rowH+22:0,bottom=footer-35-metaSpace;
+  let font=land?44:story?78:61,lines;
+  do{c.font=font+'px Georgia,serif';lines=wrap(c,snapshot.phrase||'Prenditi un momento per te.',W-pad*2-60);if(lines.length*font*1.32<=bottom-top)break;font--;}while(font>8);
+  const lineH=font*1.32,start=top+(bottom-top-lines.length*lineH)/2+font;
+  c.textAlign='center';c.fillStyle=P.ink;lines.forEach((text,i)=>c.fillText(text,W/2,start+i*lineH));
+  c.fillStyle=P.muted;c.font=(land?12:15)+'px Arial,sans-serif';
+  metadata.forEach((text,i)=>c.fillText(fitLine(c,text,W-pad*2-60),W/2,footer-24-(metadata.length-1-i)*rowH));
+  // Footer is balanced independently of whether the QR is included.
+  c.strokeStyle=P.line;c.beginPath();c.moveTo(pad,footer);c.lineTo(W-pad,footer);c.stroke();
+  c.textAlign=opt.qr?'left':'center';const footX=opt.qr?pad:W/2;
+  c.fillStyle=P.ink;c.font=(land?18:26)+'px Georgia,serif';c.fillText('Prenditi il tuo tempo.',footX,footer+(land?43:64));
+  c.fillStyle=P.muted;c.font=(land?12:16)+'px Arial,sans-serif';c.fillText('ruslan-dzyuba.it/istante/',footX,footer+(land?72:104));
   if(opt.qr){
-   // Matrix includes its own 4-module quiet zone. Integer physical pixels keep it scannable.
-   c.save();c.setTransform(1,0,0,1,0,0);const cell=land?Math.max(2,Math.floor(3*scale)):4,side=QR.length*cell,x=Math.round(w-pad*scale-side),y=Math.round((footer+23)*scale);c.fillStyle='#fff';c.fillRect(x,y,side,side);c.fillStyle='#142019';QR.forEach((row,i)=>Array.from(row).forEach((bit,j)=>{if(bit==='1')c.fillRect(x+j*cell,y+i*cell,cell,cell);}));c.restore();
+   // Same hue family as the artwork, dark modules on a uniformly light field.
+   // Integer device pixels and an intact quiet zone keep the code sharp.
+   c.save();c.setTransform(1,0,0,1,0,0);
+   const cell=land?Math.max(3,Math.floor(3.4*scale)):4,side=QR.length*cell;
+   const x=Math.round(w-pad*scale-side),y=Math.round((footer+(land?18:25))*scale);
+   c.fillStyle=P.qrBg;c.fillRect(x,y,side,side);c.fillStyle=P.qrInk;
+   QR.forEach((row,i)=>Array.from(row).forEach((bit,j)=>{if(bit==='1')c.fillRect(x+j*cell,y+i*cell,cell,cell);}));
+   c.restore();
   }
   return canvas;
  }

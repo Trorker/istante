@@ -2,6 +2,17 @@
 
 Le modifiche sono elencate dalla release più recente. Le voci Original 1.x descrivono la base minimale da cui deriva la linea 3.x; non includono gli esperimenti grafici della precedente linea 2.x.
 
+## 3.6.0 - 8 settembre 2026
+
+- Player più compatto: eliminati il campo stream personalizzato e il testo informativo sottostante. Restano gestione stazioni e messaggi di errore utili.
+- Timer alleggerito: durata, scelta rapida della radio, riepilogo e avvio. Le preferenze principali sono nella configurazione.
+- Suono finale, volume, tipo di avviso e comportamento predefinito spostati in Impostazioni → Un tempo per te; collegamento diretto e Salva e apri il timer.
+- Importazione una tantum delle precedenti preferenze del timer. Le sessioni avviate mantengono le scelte iniziali.
+- Firma unica, laterale e ruotata sulle cartoline; rimossi i crediti ripetuti.
+- Sole, fase lunare, stelle e aloni ridisegnati per integrarsi meglio nella composizione.
+- QR coordinato alla palette, con contrasto, margine libero e dimensioni verificati anche nei formati orizzontali. Rimane facoltativo.
+- Aggiornati copertina social, README, lettore della release e cache verificata; incluso `docs/release/v3.6.0.md`.
+
 ## 3.5.0 - 8 settembre 2026
 
 - Dashboard senza scroll, scena adattata alla viewport e timer senza spostamenti del layout.

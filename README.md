@@ -1,6 +1,6 @@
 # Istante
 
-**Ultima versione: 3.5.0**  
+**Ultima versione: 3.6.0**  
 **Un momento, per te.**  
 Un progetto di **Ruslan Dzyuba**.
 
@@ -24,13 +24,21 @@ un’immagine automatica da Picsum. Sole, fase lunare e stelle accompagnano il
 giorno e la notte; gli altri effetti ambientali restano selezionabili.
 
 Il mini player raccoglie le tue stazioni, i preferiti e le programmazioni.
-Nel timer scegli, prima di iniziare, se avviare la radio durante la pausa e
-cosa fare alla fine: un suono, la radio o soltanto un avviso visivo. Le scelte
-restano fisse per quella sessione. L’ascolto già avviato manualmente resta
-indipendente dal timer.
+La gestione del catalogo permette di aggiungere le proprie radio senza
+appesantire i controlli di ascolto.
 
-La condivisione prepara sul dispositivo una cartolina con logo e firma, frase
-e link. Scegli se aggiungere QR, orologio, data, cielo, obiettivo e stazione.
+Per una pausa imposta la durata e scegli se ascoltare la radio durante il timer.
+In Impostazioni → Un tempo per te trovi le preferenze: durata iniziale,
+comportamento predefinito, avviso finale, suono e volume. Il timer resta
+semplice: una scelta rapida per la musica, il riepilogo finale e il pulsante
+Inizia. Una pausa già avviata mantiene le proprie scelte, anche modificando
+la configurazione. L’ascolto avviato manualmente resta indipendente dal timer.
+
+La condivisione prepara sul dispositivo una cartolina con logo, frase, link
+e una sola firma laterale. Scegli se aggiungere QR, orologio, data, cielo,
+obiettivo e stazione. Il QR riprende i colori del tema mantenendo un fondo
+uniforme e un contrasto netto. Sole, luna e stelle accompagnano la frase
+senza coprirla; le illustrazioni sono stilizzate, non mappe del cielo.
 Obiettivo e stazione non vengono inclusi senza una tua scelta esplicita.
 
 ## Avvio e pubblicazione
@@ -76,7 +84,7 @@ sistema e non è adatto a scadenze critiche.
 
 - `index.html`, `leggi.html`, `sw.js`, `manifest.webmanifest`, `version.json`: ingresso, lettore documenti e aggiornamenti.
 - `assets/`: interfaccia, logica, immagini e icone. `data/`: raccolta e catalogo radio.
-- `README.md`: il progetto. `CHANGELOG.md`: lo storico. `docs/release/v3.5.0.md`: la release corrente.
+- `README.md`: il progetto. `CHANGELOG.md`: lo storico. `docs/release/v3.6.0.md`: la release corrente.
 - `docs/LICENZA.md` e `docs/TERZE-PARTI.md`: diritti, attribuzioni e servizi.
 
 Le pagine Leggi il progetto, Tutte le novità, Questa release, Licenza e Terze

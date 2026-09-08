@@ -44,3 +44,58 @@ dialog .panel-content,.timer-content,.settings-scroll,.library-list-wrap,.custom
 @media(max-width:740px){#app-shell{padding-left:20px;padding-right:20px}.moon-caption{font-size:10px;margin-top:10px}.timer-chip-main{font-size:10px}.timer-slot{flex-basis:38px;height:38px}.timer-content{padding:16px 20px}.share-options{gap:0 14px}.analog-clock{width:142px;height:142px}#sky-body{width:52px;height:52px}.celestial-sky[data-period=day] #sky-body{width:65px;height:65px}.welcome-content{padding:10px 24px 22px}.welcome-content h2{font-size:29px}.favorite-search-button{width:42px!important;min-width:42px!important;height:42px!important}}
 @media(max-height:540px) and (orientation:landscape){#app-shell{padding:10px 20px 7px}#main.main-stage{padding:8px 4px;gap:8px 22px}.timer-slot{height:34px;flex-basis:34px}.moon-caption{grid-column:1/-1;margin:0}.analog-clock{width:112px;height:112px}.goal-strip{display:none}.bottom-bar{min-height:34px}.topbar{min-height:32px}.timer-chip{max-height:30px}.timer-chip-main{min-height:24px}.timer-chip .icon-button{height:25px;width:25px}}
 @media(prefers-reduced-motion:reduce){.celestial-sky *{animation:none!important;transition:none!important}}
+/* 3.6: lighter listening controls, one decision per pause. */
+.radio-panel{width:340px;padding:20px;gap:12px}
+.radio-panel-head{margin-bottom:6px;gap:10px;align-items:center}
+.radio-panel .radio-panel-head h2{font-size:24px;line-height:1.2;margin:0}
+.radio-panel-head>.icon{width:20px;height:20px}
+.radio-panel .stacked-label{margin-top:0;font-size:12px;gap:7px}
+.radio-panel .radio-actions{margin:0;gap:8px}
+.radio-panel .radio-volume{margin-top:8px}
+.radio-panel .radio-source{margin-top:6px;padding-top:10px;border-top:1px solid var(--line);gap:8px;font-size:10px;min-width:0}
+.radio-source a{min-width:0;flex:0 0 auto}.radio-source #radio-provider{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.radio-panel #radio-detail{margin:8px 0 0;line-height:1.5;font-size:12px}
+#radio-detail[hidden]{display:none!important}
+.radio-program-info{font-size:11px;gap:7px;padding-top:8px}
+.timer-panel{width:460px}
+.timer-panel .panel-head{padding:23px 26px 18px}
+.timer-panel .panel-head h2{font-size:32px}
+.timer-content{padding:12px 26px 4px}
+.timer-time-stage{height:112px}
+.timer-panel .timer-duration input{width:80px;height:62px;font-size:34px}
+.timer-panel .timer-duration label{font-size:10px;gap:9px}
+.timer-panel .timer-presets{margin:10px 0 16px;gap:6px;flex-wrap:nowrap}
+.timer-presets button{flex:1;min-width:0;padding:5px 4px;font-size:12px}
+.timer-panel #timer-running{padding:0;gap:10px}
+.timer-panel #timer-readout{font-size:54px;line-height:1.1}
+.timer-panel .timer-track{margin:5px auto 0}
+.timer-session-options{padding:0;border-top:1px solid var(--line)}
+.timer-radio-choice.toggle-row{border:0;margin:0;padding:14px 0 8px;min-height:48px;gap:12px}
+.timer-radio-choice>span{display:flex;align-items:center;gap:9px;font-size:13px;min-width:0}
+.timer-radio-choice .icon{width:17px;height:17px;color:var(--muted);flex:0 0 auto}
+.timer-radio-choice input{flex-shrink:0}
+.timer-preference-summary{display:flex;align-items:center;gap:8px;justify-content:space-between;min-height:38px}
+.timer-panel .timer-finish-description{font-size:12px;line-height:1.4;min-height:0;margin:0;text-align:left;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#timer-options-open{width:34px;height:34px;min-width:34px;flex:none}
+#timer-options-open .icon{width:17px;height:17px}
+#timer-dialog[data-state=running] #timer-during:disabled,#timer-dialog[data-state=paused] #timer-during:disabled{opacity:.7}
+.timer-notice{height:64px;min-height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.timer-panel #timer-result,.timer-panel #timer-audio-hint,.timer-panel #timer-error{font-size:11px;line-height:1.45;padding:0;margin:0;min-height:0;text-align:center}
+.timer-panel #timer-result[hidden],.timer-panel #timer-retry-audio[hidden]{display:none!important}
+.timer-panel #timer-retry-audio{min-height:24px!important;padding:2px 6px;margin:0!important;font-size:12px;gap:6px}
+.timer-panel #timer-retry-audio .icon{width:15px;height:15px}
+.timer-panel .timer-actions{padding:17px 26px;grid-template-columns:minmax(0,1fr) minmax(0,1.45fr)}
+.timer-panel .timer-actions button{font-size:13px}
+#timer-volume-label{float:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+#timer-sound-preview{display:flex;align-items:center;gap:7px;min-height:36px;margin-top:8px}
+#timer-sound-preview .icon{width:17px;height:17px}
+#timer-sound-settings .stacked-label{margin-top:16px}
+@media(max-width:600px){
+ .radio-panel{width:min(340px,calc(100vw - 32px));padding:18px}
+ .timer-panel .panel-head{padding:20px 20px 15px}
+ .timer-content{padding:8px 20px 0}
+ .timer-panel .timer-actions{padding:15px 20px}
+ .timer-panel .timer-duration input{width:70px}
+ .timer-panel .timer-radio-choice>span{font-size:12px;gap:7px}
+}
+@media(max-width:360px){.timer-panel .timer-duration input{width:64px;height:60px}.timer-panel .timer-presets{gap:4px}.timer-panel .timer-presets button{font-size:11px}.timer-radio-choice.toggle-row{gap:7px}.timer-panel .timer-actions{gap:6px}.timer-panel .timer-actions button{font-size:12px;padding-inline:10px}}
