@@ -1,6 +1,6 @@
 // Istante: 1,000 individually written thoughts. Canonical collection; exportable from the app.
 window.ISTANTE_PHRASES = {
-  "version": "3.8.0",
+  "version": "3.9.0",
   "language": "it",
   "count": 1000,
   "collection": "istante-pensieri-1000-2026",

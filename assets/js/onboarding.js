@@ -8,10 +8,11 @@
   const definitions=[
    {target:'.clock-block',fallback:'.clock-section',note:'prima di tutto, rallenta',title:'Il tempo, dalla tua parte.',copy:'Digitale o analogico: scegli come guardarlo. Puoi lasciare Istante aperto mentre lavori, leggi o ti prendi una pausa.'},
    {target:'.thought-block',note:'un pensiero da tenere vicino',title:'Non serve correre.',copy:'Mille frasi originali, scelte a caso senza ripetersi prima di completare il giro. Decidi tu quando cambiarle, o lascia che arrivino mattina e sera.'},
-   {target:'#favorite-current',note:'questo cuore conserva',title:'Ritrova quello che ti somiglia.',copy:'Salva una frase con il cuore. La raccolta, in basso a sinistra, tiene insieme tutti i pensieri e i tuoi preferiti. Le frecce incrociate ne scelgono un altro.'},
+   {target:'#favorite-current',note:'questo cuore conserva',title:'Ritrova quello che ti somiglia.',copy:'Salva una frase con il cuore. La biblioteca, in basso a sinistra, conserva la raccolta originale, i tuoi JSON personali e i preferiti. Le frecce incrociate ne scelgono un altro.'},
    {target:'#goal-strip',note:'una direzione, senza fretta',title:'Il tuo prossimo capitolo.',copy:'Un viaggio, una data importante, qualcosa che aspetti: nelle impostazioni puoi dare un nome al traguardo e vedere il tempo che ti avvicina.'},
    {target:'#radio-mini',note:'scegli cosa ti fa compagnia',title:'Ascolta il tuo momento.',copy:'Apri il player: Radio per le dirette, Ambiente per rumore rosa, marrone, pioggia o vento, anche offline. Premi Play: nessun suono parte da solo.'},
    {target:'#timer-open',note:'uno spazio solo tuo',title:'Concediti una pausa.',copy:'Imposta un timer e scegli se ascoltare la radio durante la pausa. Il suono finale e le altre preferenze sono nelle impostazioni.'},
+   {target:'#calendar-open',note:'spazio ai tuoi giorni',title:'Il calendario, con calma.',copy:'Una seconda pagina per importare i tuoi file ICS o leggere un calendario condiviso. Anno, mese, settimana e agenda, senza cambiare il tuo screensaver.'},
    {target:'#share-open',note:'un piccolo pensiero da regalare',title:'Porta questo istante altrove.',copy:'Crea una cartolina con frase, orologio e cielo. Scegli se includere il QR: il nuovo link e la firma restano sul bordo.'},
    {target:'[data-open="settings"]',note:'qui lo rendi davvero tuo',title:'Il resto, al tuo ritmo.',copy:'Foto, tema, effetti, traguardo e radio sono divisi in sezioni. Qui trovi anche il backup JSON e questa guida, da rivedere quando vuoi.'}
   ];
@@ -61,7 +62,7 @@
   byId('welcome-reopen').addEventListener('click',()=>{const d=byId('settings-dialog');d.addEventListener('close',()=>showWelcome(true),{once:true});M.dismiss(d);});
   document.querySelectorAll('dialog').forEach(d=>d.addEventListener('close',()=>{if(pending&&!transitioning)queueMicrotask(()=>showWelcome());}));
   window.addEventListener('resize',queue,{passive:true});window.visualViewport?.addEventListener('resize',queue,{passive:true});
-  return{ready(){ready=true;showWelcome();}};
+  return{ready(){ready=true;if(location.hash.startsWith('#p='))return;showWelcome();}};
  }
  window.IstanteOnboarding={create};
 })();

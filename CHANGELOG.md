@@ -1,5 +1,9 @@
 # Changelog di Istante
 
+## 3.9.0 — 8 settembre 2026
+
+Calendario ICS con cinque viste, biblioteca JSON persistente, QR con frase e modale di ricezione, rintocco orario, grana analogica, cielo circolare più caldo, riga ambientale riordinata e countdown in mesi/anni. Modalità leggera per tablet, meno ridisegni e backup esteso. Vedi [note complete](docs/release/v3.9.0.md) per limiti ICS, rete, audio e verifiche.
+
 Le modifiche sono elencate dalla release più recente. Le voci Original 1.x descrivono la base minimale da cui deriva la linea 3.x; non includono gli esperimenti grafici della precedente linea 2.x.
 
 ## 3.8.0 - 8 settembre 2026

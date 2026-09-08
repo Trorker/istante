@@ -44,7 +44,7 @@ Le connessioni audio partono su richiesta o da automazioni autorizzate. Istante 
 
 ## Condivisione e pagine informative
 
-Il generatore di cartoline usa Canvas e il lettore Markdown è implementato localmente senza librerie caricate da CDN. Il QR statico codifica soltanto l'indirizzo pubblico di Istante. La condivisione usa il menu del dispositivo dove disponibile; l'applicazione di destinazione può gestire separatamente immagine e testo.
+Il generatore di cartoline usa Canvas e il lettore Markdown è implementato localmente senza librerie caricate da CDN. Il QR dinamico codifica il sito ufficiale e la frase nel frammento del link; la generazione avviene sul dispositivo. La condivisione usa il menu del dispositivo dove disponibile; l'applicazione di destinazione può gestire separatamente immagine e testo.
 
 Preferenze e immagini non vengono inviate a un servizio di generazione. Scegliere una destinazione nel menu di condivisione autorizza invece l'invio a quell'applicazione. Istante non include analytics o tracciamento aggiuntivo.
 
@@ -76,3 +76,24 @@ Riferimenti tecnici: [AudioContext](https://developer.mozilla.org/en-US/docs/Web
 [creazione dei buffer](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createBuffer),
 [buone pratiche Web Audio](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Best_practices),
 [File API](https://developer.mozilla.org/en-US/docs/Web/API/File_API/Using_files_from_web_applications).
+
+
+## QR dinamico e calendari (v3.9.0)
+
+Il modulo JavaScript `assets/js/qr.js` adatta tabelle Reed-Solomon e costruzione
+della matrice byte-mode da python-qrcode 8.2 (Lincoln Loop e contributori), sotto
+licenza BSD-3-Clause. Non esegue Python nel browser. Il testo integrale della
+licenza è conservato qui: [licenza QR](licenses/PYTHON-QRCODE-LICENSE.txt).
+[Riferimento python-qrcode](https://github.com/lincolnloop/python-qrcode).
+
+Il lettore ICS è un'implementazione locale mirata: non include ICAL.js, non
+esegue HTML dagli appuntamenti e non scarica script dal calendario. Non pretende
+di implementare l'intero standard. I calendari remoti appartengono ai rispettivi
+fornitori e vengono richiesti solo quando l'utente li collega. Il fornitore
+riceve la normale richiesta HTTPS; URL con token privati vanno custoditi come
+credenziali. I file importati restano locali.
+[Riferimento iCalendar](https://datatracker.ietf.org/doc/html/rfc5545).
+
+Rintocco e grana usano primitive Web Audio e SVG del browser, senza registrazioni,
+font o librerie di campioni aggiuntivi. Le condizioni delle componenti terze
+restano distinte dalla licenza non commerciale delle parti originali di Istante.

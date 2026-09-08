@@ -1,192 +1,205 @@
 # Istante
 
-**Ultima versione: 3.8.0**  
-**Un momento, per te.**  
-Un progetto di **Ruslan Dzyuba**.
+**Versione attuale: 3.9.0**  
+**Un momento, per te.** Un progetto di **Ruslan Dzyuba**.  
+[Sito ufficiale: istante.ruslan-dzyuba.it](https://istante.ruslan-dzyuba.it/)
 
-**Sito ufficiale: [istante.ruslan-dzyuba.it](https://istante.ruslan-dzyuba.it/)**
+Istante è una dashboard / screensaver da lasciare dove preferisci: sul computer,
+su un tablet, in un angolo tranquillo. Una pagina che ti fa compagnia dalla
+mattina alla sera e ti ricorda di prendere un momento per te.
 
-Istante è una dashboard / screensaver da mettere dove preferisci: sul computer,
-su un tablet, in uno spazio tranquillo. Una pagina che ti fa compagnia dalla
-mattina alla sera e ti invita a prenderti del tempo per te.
+L'orologio, un pensiero, la tua musica e il tempo che manca al tuo prossimo
+obiettivo. Non un elenco di cose da fare: un piccolo spazio per rilassarti,
+ritrovare la tua direzione e abitare la giornata con un po' più di calma.
 
-Un orologio, una frase motivazionale, la tua musica e il conto alla rovescia
-verso un obiettivo: pochi elementi che danno ritmo alla giornata, senza fretta.
-Il tuo istante, un piccolo spazio per rilassarti e ritrovare la tua direzione.
+## Il tuo istante
 
-## Il tuo spazio
+La schermata principale resta nello schermo, senza scorrimento. Puoi scegliere
+orologio digitale o analogico, formato 24 ore (predefinito) oppure 12 ore, una foto
+personale o fotografie automatiche. Il tema può essere Notte, Carta, quello del
+dispositivo o Segui il sole quando hai configurato una località.
 
-La scena principale resta contenuta nello schermo, senza scorrimento. Puoi
-scegliere orologio digitale (predefinito) o analogico, formato 24 o 12 ore,
-tema Notte o Carta, tema del dispositivo oppure Segui il sole con una località.
+Sole e luna seguono un arco circolare illustrativo; la luna mostra la fase
+calcolata sul dispositivo. Vicino all'alba e al tramonto la luce diventa calda e
+arancione. Meteo, orari solari e fase lunare sono raccolti in una riga discreta.
+Il cielo reagisce al meteo recente, quando disponibile. Gli effetti manuali
+rimangono decorativi e separati dalle condizioni reali.
 
-Le 1.000 frasi sono incluse nel sito, con preferiti e una scrittura animata
-facoltativa. La scelta è casuale, con uno storico locale: prima di ripetere
-un pensiero, Istante percorre l’intera raccolta. Ricaricare la pagina o
-ripetere la scrittura non consuma una nuova frase durante la stessa fascia. Lo sfondo può essere una sfumatura, una fotografia personale o
-un’immagine automatica da Picsum. Sole, fase lunare e stelle accompagnano il
-giorno e la notte; gli altri effetti ambientali restano selezionabili.
+Il prossimo capitolo è la tua data da aspettare: un viaggio, un cambiamento, un
+obiettivo. Per attese lunghe il conto usa anni, mesi e giorni; avvicinandosi alla
+data torna a giorni, ore e minuti. I mesi sono calcolati sul calendario, non
+considerati tutti di trenta giorni.
 
-Il mini player ha due modi di farti compagnia: **Radio** per le dirette e
-**Ambiente** per i suoni generati sul dispositivo. La radio raccoglie le tue
-stazioni, i preferiti e le programmazioni; la gestione del catalogo permette
-di aggiungere le proprie emittenti senza appesantire i controlli di ascolto.
+## Pensieri da incontrare e da conservare
 
-In Ambiente puoi scegliere rumore rosa, rumore marrone, pioggia o vento.
-Premi Play e regola il volume: non serve una connessione e non viene scaricata
-alcuna registrazione. I suoni sono sintetici, non campionamenti naturali.
-Radio e ambiente si alternano: avviare uno ferma l'altro. Puoi disabilitarli
-separatamente in Impostazioni, nella sezione della colonna sonora.
-Le programmazioni e l'opzione del timer restano riferite alla radio; i suoni
-ambientali si avviano dal player e non introducono nuovi automatismi.
+La biblioteca parte dalle **1.000 frasi originali** di Istante. La scelta è
+casuale, con storico locale: prima di ripetere un pensiero il sorteggio percorre
+la raccolta attiva. Una scelta manuale può invece ripetere una frase. Ricaricare
+la pagina o riscrivere il testo non cambia il pensiero della stessa fascia.
 
-Per una pausa imposta la durata e scegli se ascoltare la radio durante il timer.
-In Impostazioni → Un tempo per te trovi le preferenze: durata iniziale,
-comportamento predefinito, avviso finale, suono e volume. Il timer resta
-semplice: una scelta rapida per la musica, il riepilogo finale e il pulsante
-Inizia. Una pausa già avviata mantiene le proprie scelte, anche modificando
-la configurazione. L’ascolto avviato manualmente resta indipendente dal timer.
+Apri la raccolta in basso a sinistra: il selettore in alto contiene la raccolta
+originale e i tuoi JSON personali. Puoi conservarne fino a 30, scegliere quella
+attiva, esportarla o eliminare una raccolta personale. Quella originale resta
+sempre disponibile. Le raccolte sono locali a questo browser, non sincronizzate
+tra dispositivi. La scrittura lettera per lettera, con pause e piccole correzioni,
+è facoltativa e indipendente dalla frequenza di cambio della frase.
 
-La condivisione prepara sul dispositivo una cartolina con logo, frase, link
-e una sola firma laterale con cuore, autore e indirizzo ufficiale. Scegli se aggiungere QR, orologio, data, cielo,
-obiettivo e stazione. Il QR riprende i colori del tema mantenendo un fondo
-uniforme e un contrasto netto. Sole, luna e stelle accompagnano la frase
-senza coprirla; le illustrazioni sono stilizzate, non mappe del cielo.
-Pioggia, neve, nuvole, nebbia e altri effetti del cielo vengono disegnati
-anche nel PNG esportato, non soltanto nell’anteprima. Sole, luna e stelle
-si attenuano quando il meteo lo richiede. Le scelte decorative manuali
-restano distinte dalle condizioni reali.
-Obiettivo e stazione non vengono inclusi senza una tua scelta esplicita.
+Un JSON può essere un semplice elenco di testi, oppure avere questo formato:
 
-## Frasi e memoria locale
+```json
+{
+  "title": "Piccoli versi",
+  "category": "Poesia",
+  "phrases": [
+    "La finestra lascia entrare il giorno, senza chiedergli fretta.",
+    "Nel silenzio trova posto anche quello che non sai dire."
+  ]
+}
+```
 
-La raccolta predefinita contiene 1.000 testi nuovi, senza combinazioni di
-prefissi e suffissi ripetuti. Il sorteggio tiene traccia dei testi mostrati
-e salva fino a 3.000 voci recenti di storico, con data e motivo del cambio.
-La raccolta mostra anche il numero di pensieri già incontrati nel ciclo.
-Dopo averli esauriti tutti, un nuovo ciclo riparte senza ripetere subito
-l’ultima frase. Una selezione esplicita dalla raccolta può invece ripetere
-volontariamente un testo. La modalità A ogni apertura mantiene la sua
-funzione: una nuova apertura fa un nuovo sorteggio.
+Sono accettate anche voci con `text` e `author`: l'autore viene conservato nel
+testo della frase. Usa solo contenuti che puoi legittimamente usare e condividere.
+Massimo 10.000 frasi per raccolta, 1.000 caratteri per frase; biblioteca entro
+circa 2,2 milioni di caratteri JSON, compatibilmente con lo spazio del browser.
+I preferiti di una raccolta non attiva non vengono cancellati.
 
-Lo storico appartiene a quel browser e non viene sincronizzato fra dispositivi.
-Cancellare i dati del sito lo azzera; con memoria negata rimane solo per
-la sessione. Le raccolte personali importate non vengono sostituite. Una
-copia identica della vecchia raccolta standard viene aggiornata; per altre
-raccolte resta il comando Ripristina originale. I preferiti relativi a testi
-non più presenti rimangono memorizzati, ma non compaiono nella nuova lista.
+## I tuoi giorni, con calma
 
-## Una guida che ti fa strada
+Il pulsante calendario apre **calendario.html**, una seconda pagina con viste
+**anno, mese, settimana, giorno e agenda**. Tocca un giorno o un appuntamento per
+vederne i dettagli. Più calendari possono essere mostrati insieme e nascosti
+singolarmente senza essere cancellati.
 
-Al primo ingresso il benvenuto racconta il progetto: non una lista di cose da
-fare, ma un piccolo spazio per stare bene e tenere vicino il proprio obiettivo.
-Puoi entrare subito oppure scegliere **Fammi strada**. La guida evidenzia
-orologio, frase, preferiti, traguardo, player, timer, condivisione e impostazioni
-con frecce disegnate e brevi suggerimenti. I controlli disattivati non vengono
-indicati. Puoi saltarla, tornare indietro o rivederla da Informazioni.
-Il nuovo benvenuto compare una sola volta per profilo, anche aggiornando da
-una versione con il vecchio messaggio, salvo cancellazione dei dati locali.
+In **I tuoi calendari** importa un file `.ics` o collega un indirizzo HTTPS/webcal.
+Sono calendari in **sola lettura**: Istante non modifica gli appuntamenti sul
+servizio originale e non sostituisce un sistema collaborativo di creazione eventi.
+I file importati rimangono sul dispositivo; i collegamenti vengono aggiornati
+ogni 30 minuti mentre la pagina è visibile, oppure con il pulsante Aggiorna.
+Senza rete o in caso di errore viene mantenuta l'ultima copia salvata.
 
-## Il tuo istante, da conservare
+Il fornitore deve autorizzare la lettura dal browser tramite **CORS**. Un link ICS
+privato non è sempre leggibile da un sito esterno: in quel caso scarica il file
+dal fornitore e importalo. Non viene usato un proxy esterno per aggirare il limite.
+Non sono gestiti login OAuth o accessi che richiedano cookie del fornitore.
 
-In **Impostazioni > Porta con te il tuo istante** trovi Esporta backup e
-Ripristina backup. Il file JSON comprende il traguardo, le preferenze salvate,
-le stazioni personali e preferite, le fasce radio, le frasi preferite,
-l'eventuale raccolta personalizzata e lo storico delle frasi. Le modifiche
-ancora aperte nelle impostazioni vanno prima salvate.
+Limiti: 8 calendari, 1 MB per file, circa 2 milioni di caratteri complessivi e
+5.000 eventi di origine per calendario. Le viste espandono fino a 10.000 istanze.
+Sono supportati eventi giornalieri o con orario, UTC, orari locali e fusi IANA,
+ricorrenze comuni giornaliere/settimanali/mensili/annuali, date aggiuntive,
+esclusioni ed eccezioni singole. È un lettore mirato, non l'intero standard ICS:
+regole avanzate, fusi proprietari/VTIMEZONE personalizzati, allarmi ICS e attività
+non sono gestiti. La pagina segnala le ricorrenze e i fusi non interpretabili;
+per regole non supportate mostra soltanto la prima data e le RDATE esplicite.
+Gli orari sono visualizzati nel fuso del dispositivo. Controlla sempre gli
+appuntamenti importanti nel calendario originale.
 
-La località è inclusa soltanto selezionando la relativa casella. Senza questa
-scelta, l'importazione mantiene la località già presente sul dispositivo di
-arrivo. Fotografie, meteo in cache, registrazioni audio e timer in corso non
-entrano nel backup. Lo sfondo personale torna all'atmosfera neutra: la foto
-va caricata nuovamente. Il file contiene dati personali leggibili e non è
-cifrato: conservalo in un posto fidato, non pubblicarlo.
+## Una colonna sonora, una pausa
 
-Prima di sostituire i dati, Istante controlla il JSON e mostra un riepilogo.
-Serve una conferma esplicita. Un file non valido non modifica la configurazione;
-in caso di errore di scrittura viene tentato il ripristino dei valori precedenti.
-Il limite del file è 4 MB. Dopo il ripristino la pagina si ricarica, il timer
-precedente si ferma e l'audio non riparte da solo. Le programmazioni salvate
-richiedono nuovamente l'abilitazione per la sessione.
+Il mini player offre **Radio**, per le dirette, e **Ambiente**, per rumore rosa,
+marrone, pioggia o vento sintetizzati offline. Avviare una sorgente ferma l'altra.
+Il catalogo radio ha preferiti, stazioni personali, scelta casuale e fasce orarie
+multiple. La radio richiede Internet; Ambiente non scarica registrazioni.
 
-**Cambio di indirizzo:** il vecchio percorso su `ruslan-dzyuba.it` e il nuovo
-sottodominio sono origini differenti; il browser non trasferisce automaticamente
-i dati. Per recuperarli, rendi disponibile questa versione anche al vecchio
-indirizzo, esporta lì il backup e importalo sul sito ufficiale. Istante non
-può leggere direttamente la memoria di un'altra origine. Lo stesso backup
-permette il passaggio fra dispositivi, senza account o sincronizzazione cloud.
+Il timer rimane semplice: imposta la durata e scegli la radio durante la pausa.
+Le preferenze principali e l'avviso finale sono in **Impostazioni > Un tempo per
+te**. Una pausa avviata conserva le proprie scelte. La musica avviata manualmente
+resta distinta da quella avviata dal timer.
 
-## Avvio e pubblicazione
+Il **Rintocco consapevole** è facoltativo, disattivato all'inizio. Scegli campana
+morbida o diapason, volume e fascia di silenzio, anche a cavallo della mezzanotte.
+Due orari uguali significano silenzio tutto il giorno. Il suono avviene una sola
+volta allo scoccare dell'ora: non recupera ore saltate quando torni alla pagina.
+Serve una prima interazione per autorizzare Web Audio. Con scheda sospesa,
+dispositivo bloccato o browser chiuso l'avviso non è garantito: non è una sveglia
+di sistema e non va usato per scadenze critiche.
 
-Carica il contenuto di questa cartella nella root di `istante.ruslan-dzyuba.it`,
-su un hosting statico HTTPS. I percorsi relativi permettono anche una sottocartella
-per prove o migrazione. Non serve compilazione, backend o account.
-Sostituisci l’intera cartella di rilascio, incluso `sw.js`: non mescolare file
-di versioni diverse. In locale puoi usare un server statico; l’apertura diretta
-di `index.html` non offre le funzioni di aggiornamento/cache dei service worker.
+## Condividere un pensiero
 
-Gli aggiornamenti disponibili vengono segnalati sul pulsante Impostazioni;
-la nuova copia viene verificata e attivata con il comando Aggiorna. Preferenze,
-frasi personali e stazioni rimangono nel browser, quando la memoria è disponibile.
+Il comando Condividi genera una cartolina locale con logo, frase e firma laterale
+con il sito ufficiale. Puoi includere orologio, data, cielo, obiettivo, stazione
+e QR. Gli effetti del tempo vengono disegnati anche nel PNG esportato.
 
-## Offline, privacy e limiti
+**Il QR e il link contengono la frase**, in dati testuali codificati nel frammento
+`#p=`. Chi li apre vede una modale con il pensiero ricevuto e può conservarlo
+nella biblioteca, senza sostituire la propria raccolta. Non servono account o un
+server che archivi le frasi. I dati non sono cifrati: chi possiede il link può
+leggerli. Non condividere testi riservati. Coordinate, catalogo e preferenze non
+entrano nel link. Alcune applicazioni possono rimuovere il frammento: il sito si
+aprirà normalmente ma non potrà recuperare il pensiero. Le vecchie immagini con
+QR verso la sola homepage rimangono tali.
 
-Dopo un primo caricamento completo su HTTPS, il sito conserva in cache
-interfaccia, documenti, frasi, icone ed effetti locali. Orologio e fase lunare
-non richiedono Internet; con coordinate salvate anche gli orari solari hanno
-un calcolo locale di riserva. La traiettoria visiva di sole e luna è stilizzata,
-non una mappa della loro posizione astronomica. Scegliere il tema Notte durante
-il giorno non fa tramontare il sole: il tema modifica i colori, non l’ora del cielo; senza località il ritmo del
-cielo segue indicativamente le 06:00 / 18:00 dell’orologio del dispositivo.
+Il QR mantiene colori coerenti e un margine libero. Per testi molto lunghi usa
+il formato quadrato o storia; un testo eccezionalmente denso può richiedere di
+condividere il link invece del QR. Non applicare filtri al codice e non ritagliarlo.
 
-La richiesta `navigator.storage.persist()` viene gestita senza bloccare
-l’avvio. Il browser può concederla o negarla: in Informazioni trovi lo stato.
-Non è una promessa di conservazione illimitata e non sostituisce un backup.
+## Movimento e prestazioni
 
-I suoni ambientali funzionano offline una volta caricata l'applicazione.
-Non ci sono file audio da salvare in cache: vengono creati piccoli buffer
-stereo in RAM e riprodotti con Web Audio, con volume progressivo. Questo non
-significa zero memoria o zero codice: la cache contiene comunque il programma,
-mentre i campioni temporanei vengono ricreati sul dispositivo. Il rumore rosa
-è un'approssimazione procedurale a bande; il marrone privilegia le frequenze
-basse. Pioggia e vento sono texture sintetiche con variazioni lente.
+In **Impostazioni > Lo schermo** trovi qualità Automatica, Leggera e Completa.
+Automatica sceglie la modalità leggera sui dispositivi touch o con poca memoria
+segnalata dal browser. Questa riduce particelle, risoluzione canvas, sfocature e
+animazioni decorative; puoi selezionarla anche manualmente.
 
-Radio live, nuove foto e meteo aggiornato richiedono Internet. Il cielo e
-le cartoline usano osservazioni meteo vecchie al massimo 45 minuti. Quando
-scadono, tornano a un cielo neutro, senza inventare condizioni; un effetto
-scelto manualmente continua a funzionare anche offline. Il meteo testuale
-può rimanere visibile come salvato fino a tre ore. Le richieste
-ai servizi partono soltanto per le funzioni attive. La geolocalizzazione
-richiede una scelta esplicita e il consenso del dispositivo. Nessun account,
-server applicativo o caricamento remoto delle cartoline.
+Gli effetti canvas sono limitati a 20 fotogrammi al secondo in Leggera e 30 in
+Completa. Il cielo non viene ridisegnato a ogni secondo: posizione e fase sono
+aggiornate quando necessario e il movimento è interpolato con trasformazioni.
+Le animazioni non necessarie si fermano in background. La preferenza di sistema
+per movimento ridotto viene rispettata. **Grana analogica** aggiunge una trama
+SVG statica e regolabile, senza generare rumore nuovo a ogni fotogramma.
 
-L’audio parte solo con un’azione esplicita; il browser può richiedere Play per
-autorizzarlo o riprenderlo. Il livello effettivo dipende anche dal volume del
-dispositivo. La pausa sospende il generatore; in background il sistema operativo
-può interrompere l’ascolto. Timer e programmi
-radio funzionano con la pagina aperta: sospensione, standby o chiusura della
-scheda possono ritardare o impedire gli avvisi. Istante non è una sveglia di
-sistema e non è adatto a scadenze critiche.
+La modalità leggera non rende compatibile un browser obsoleto: occorre un browser
+che supporti le API e la sintassi JavaScript moderne usate dall'applicazione.
+Il risultato e il consumo effettivo dipendono dall'hardware e dal browser.
 
-## File e documenti
+## Conservare il tuo spazio
 
-- `index.html`, `leggi.html`, `sw.js`, `manifest.webmanifest`, `version.json`: ingresso, lettore documenti e aggiornamenti.
-- `assets/`: interfaccia, logica, immagini e icone. `data/`: raccolta e catalogo radio.
-- `README.md`: il progetto. `CHANGELOG.md`: lo storico. `docs/release/v3.8.0.md`: la release corrente.
-- `docs/LICENZA.md` e `docs/TERZE-PARTI.md`: diritti, attribuzioni e servizi.
+In **Porta con te il tuo istante** esporta o ripristina un backup JSON. Include
+configurazione, traguardo, radio, preferiti, storico e tutte le raccolte personali.
+Località e calendari sono inclusi solo selezionando le rispettive caselle.
+Il backup può contenere testi privati e URL ICS con chiavi di accesso: non
+pubblicarlo. Foto, cache meteo, audio e timer in corso non sono inclusi.
 
-Le pagine Leggi il progetto, Tutte le novità, Questa release, Licenza e Terze
-parti caricano i rispettivi Markdown inclusi nel sito.
+Prima del ripristino compare un riepilogo e serve conferma. File non validi non
+modificano i dati; una scrittura fallita tenta di ripristinare i valori precedenti.
+Massimo 4 MB per backup. Sono leggibili anche i backup precedenti dello schema 1.
+I calendari non inclusi restano sul dispositivo di destinazione. Dopo il
+ripristino l'audio non riparte autonomamente. Il vecchio sito sul dominio
+`ruslan-dzyuba.it` e il sottodominio attuale hanno memorie distinte: usa il backup
+per trasferire i dati fra origini o dispositivi.
 
-## Autore e licenza
+## Avvio, offline e aggiornamenti
 
-**Istante — Ruslan Dzyuba**. Sorgente disponibile per uso non commerciale,
-con attribuzione e redistribuzione del codice alle medesime condizioni.
-Il divieto di vendita non è compatibile con la definizione OSI di open source;
-consulta [la licenza completa](docs/LICENZA.md). Le licenze dei terzi e i diritti
-sulle copie precedenti non vengono modificati retroattivamente.
+Pubblica il contenuto di questa cartella nella root di **istante.ruslan-dzyuba.it**
+su hosting statico HTTPS. Non occorrono compilazione o backend. Sostituisci tutti
+i file, compreso `sw.js`, senza mescolare release diverse. I percorsi relativi
+funzionano anche in sottocartella. Per prove locali usa un server statico.
 
-[Sito](https://istante.ruslan-dzyuba.it/) ·
-[GitHub](https://github.com/Trorker) ·
-[Instagram](https://www.instagram.com/trorker/) ·
+Dopo il primo caricamento completo la cache include schermata, calendario,
+documenti, frasi e risorse locali. I tuoi file ICS e JSON sono nella memoria
+locale. La richiesta di persistenza può essere concessa o negata dal browser:
+non garantisce conservazione illimitata e non sostituisce un backup.
+Gli aggiornamenti preparati vengono segnalati sul pulsante Impostazioni e
+attivati con **Aggiorna**. Foto nuove, meteo recente, sincronizzazione ICS e radio
+live richiedono una connessione.
+
+Fase lunare e orologio funzionano offline. Con coordinate salvate c'è un calcolo
+solare locale di riserva; senza località il ritmo indicativo è 06:00/18:00.
+La traiettoria grafica non indica azimut, altezza astronomica o veri orari di
+levata della luna. Un tema Notte di giorno modifica i colori, non fa tramontare
+il sole. Gli effetti meteo automatici usano dati di massimo 45 minuti; il testo
+meteo può restare indicato come salvato fino a tre ore.
+
+## File, autore e condizioni
+
+- `index.html`: screensaver. `calendario.html`: calendari. `leggi.html`: documenti Markdown.
+- `assets/`: logica e interfaccia; `data/`: raccolta originale e stazioni.
+- `README.md`: il progetto; `CHANGELOG.md`: storico; `docs/release/v3.9.0.md`: questa release.
+- `docs/LICENZA.md`, `docs/TERZE-PARTI.md`, `docs/licenses/`: condizioni e attribuzioni.
+
+**Istante — Ruslan Dzyuba**. Sorgente disponibile per uso non commerciale, con
+attribuzione e redistribuzione alle medesime condizioni. Il divieto di vendita
+non corrisponde alla definizione OSI di open source. Restano separate le licenze
+dei componenti terzi e i diritti delle versioni precedenti.
+
+[Licenza](docs/LICENZA.md) · [Terze parti](docs/TERZE-PARTI.md)  
+[GitHub](https://github.com/Trorker) · [Instagram](https://www.instagram.com/trorker/) ·
 [LinkedIn](https://www.linkedin.com/in/ruslan-dzyuba/)

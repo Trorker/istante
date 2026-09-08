@@ -6,7 +6,7 @@ function create({getSettings,getPhoto,store,icon,effects,notify,onChange}){
  let place=store.read('place',null);if(!S.validPlace(place))place=null;else place={lat:place.lat,lon:place.lon,name:String(place.name||'La mia posizione').slice(0,80),zone:S.validZone(place.zone)};
  let draft=place,forecast=store.read('forecast',null),fetching=false,lastAttempt=0,weatherState='';
  let activeLayer=0,lastPhotoKey='',loadedPhoto=false,photoRequest=0,photoBusy=false,photoAttempt=0,objectUrls=['',''];
- let chars=[],text='',typeTimer=0,repeatTimer=0,ready=false,typingToken=0,transitionTimer=0,searchId=0;
+ let chars=[],text='',typeTimer=0,repeatTimer=0,ready=false,typingToken=0,transitionTimer=0,searchId=0,lastCursor=null;
  const media=window.matchMedia('(prefers-reduced-motion: reduce)'),systemTheme=window.matchMedia('(prefers-color-scheme: dark)');
  const canMove=()=>getSettings().motion&&!media.matches;
  const getPlaceKey=p=>p?p.lat+','+p.lon:'';
@@ -40,7 +40,7 @@ function create({getSettings,getPhoto,store,icon,effects,notify,onChange}){
  function update(now){const s=getSettings(),sun=solar(now),line=$('#solar-line');line.hidden=!s.solarTimes||!sun;document.body.classList.toggle('has-solar',!line.hidden);document.body.classList.toggle('has-breath',s.breathe&&canMove());document.body.classList.toggle('photo-drift',s.photoMotion&&canMove());document.body.style.setProperty('--text-scale',s.textScale/100);
  if(sun&&!line.hidden){const fmt=t=>t?window.IstanteTime.formatTime(t,s.timeFormat,sun.zone):'\u2014';$('#sunrise-time').textContent=fmt(sun.rise);$('#sunset-time').textContent=fmt(sun.set);$('#sunrise-time').dateTime=sun.rise?new Date(sun.rise).toISOString():'';$('#sunset-time').dateTime=sun.set?new Date(sun.set).toISOString():'';
  const progress=sun.rise&&sun.set?Math.min(1,Math.max(0,(+now-sun.rise)/(sun.set-sun.rise))):.5;const x=8+164*progress,y=33-100*progress*(1-progress);$('#solar-marker').setAttribute('transform',`translate(${x.toFixed(2)} ${y.toFixed(2)})`);$('#solar-marker').style.opacity=sun.isDay?'1':'.2';line.dataset.day=String(sun.isDay);let note=sun.polar?(sun.isDay?'Il sole non tramonta oggi':'Il sole non sorge oggi'):'';if(sun.source==='calcolo locale')note=note?note+' \u00b7 stima':'calcolo locale';$('#solar-note').textContent=note;line.title=(place.name||'Localit\u00e0')+' \u00b7 '+sun.zone+' \u00b7 '+sun.source;}
- displayWeather(now);$('#environment-line').hidden=line.hidden&&$('#weather-line').hidden;const r=safeForecast(),w=r&&r.placeKey===getPlaceKey(place)?r.data?.current:null;effects.sync({sun,weather:w,now});void fetchWeather();void updatePhoto();}
+ displayWeather(now);$('#environment-line').hidden=line.hidden&&$('#weather-line').hidden&&!s.celestialSky;const r=safeForecast(),w=r&&r.placeKey===getPlaceKey(place)?r.data?.current:null;effects.sync({sun,weather:w,now});void fetchWeather();void updatePhoto();}
  function transition(target,preview=false){
   // The persistent sky is the only renderer of a celestial body. Theme != time.
   if(!canMove()||(!getSettings().transitionFX&&!preview))return;
@@ -63,8 +63,8 @@ function create({getSettings,getPhoto,store,icon,effects,notify,onChange}){
  function runTyping(eraseFirst=false){stopTyping(false);const s=getSettings(),root=$('#quote-text');if(!s.typing||!canMove()||document.hidden||document.querySelector('dialog[open]')){stopTyping(true);return;}const token=typingToken;root.classList.add('is-typing');if(!(eraseFirst&&s.typingErase))chars.forEach(c=>c.classList.remove('is-ink'));
  const steps=window.IstanteTyping.plan(chars.map(c=>({char:c.dataset.char,wordStart:c.dataset.wordStart==='true'})),s,Math.random,eraseFirst&&s.typingErase);let pos=0;
  const next=()=>{if(token!==typingToken)return;if(document.hidden||document.querySelector('dialog[open]')){stopTyping(true);return;}if(pos>=steps.length){stopTyping(true);if(s.typingRepeat>0)repeatTimer=setTimeout(()=>runTyping(true),s.typingRepeat*1000);return;}
- const step=steps[pos++];root.dataset.typingPhase=step.kind==='erase'?'erasing':step.kind==='mistake'?'correcting':'writing';chars.forEach(c=>c.classList.remove('is-cursor'));
- if(step.index>=0){const c=chars[step.index];if(step.kind==='erase'){c.classList.remove('is-ink');c.dataset.glyph=c.dataset.char;if(step.index>0)chars[step.index-1].classList.add('is-cursor');}else{c.dataset.glyph=step.glyph;c.classList.add('is-ink','is-cursor');}}typeTimer=setTimeout(next,step.wait);};next();}
+ const step=steps[pos++];root.dataset.typingPhase=step.kind==='erase'?'erasing':step.kind==='mistake'?'correcting':'writing';if(lastCursor)lastCursor.classList.remove('is-cursor');lastCursor=null;
+ if(step.index>=0){const c=chars[step.index];if(step.kind==='erase'){c.classList.remove('is-ink');c.dataset.glyph=c.dataset.char;if(step.index>0){lastCursor=chars[step.index-1];lastCursor.classList.add('is-cursor');}}else{c.dataset.glyph=step.glyph;c.classList.add('is-ink','is-cursor');lastCursor=c;}}typeTimer=setTimeout(next,step.wait);};next();}
  function pause(){stopTyping(true);}
  function resume(){if(!document.hidden&&ready&&getSettings().typing&&canMove()&&getSettings().typingRepeat>0&&!document.querySelector('dialog[open]')){clearTimeout(repeatTimer);repeatTimer=setTimeout(()=>runTyping(true),getSettings().typingRepeat*1000);}}
  document.addEventListener('close',e=>{if(e.target.classList?.contains('control-popup'))resume();},true);

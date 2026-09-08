@@ -2,7 +2,7 @@
 (function(){'use strict';
  const URL='https://istante.ruslan-dzyuba.it/';
  // QR has a four-module quiet zone on each side. Keep the matrix unmodified.
- const QR=["0000000000000000000000000000000000000", "0000000000000000000000000000000000000", "0000000000000000000000000000000000000", "0000000000000000000000000000000000000", "0000111111100001011100101011111110000", "0000100000101000000100000010000010000", "0000101110101101101010011010111010000", "0000101110101001101101011010111010000", "0000101110100111111100111010111010000", "0000100000100111111010001010000010000", "0000111111101010101010101011111110000", "0000000000001111110000100000000000000", "0000100000101111101101000110011100000", "0000011010011001001001010001101100000", "0000001000100110100001100011100000000", "0000010100000100101110101010110000000", "0000111101110100111010001011000010000", "0000010010001000111001011111100110000", "0000111001101101111110101000111000000", "0000010101011001011100011011101010000", "0000000110110000101001001001011000000", "0000110100000000100100011011101110000", "0000110100110111111111010010010010000", "0000100110001000001010001100100000000", "0000101101111100000111001111101110000", "0000000000001110010100111000110000000", "0000111111100111111111111010111000000", "0000100000100111110000111000100100000", "0000101110100111010010011111110110000", "0000101110100100000110101001011010000", "0000101110100100011100100111111100000", "0000100000100011000100010101111010000", "0000111111101010000001110110001000000", "0000000000000000000000000000000000000", "0000000000000000000000000000000000000", "0000000000000000000000000000000000000", "0000000000000000000000000000000000000"];
+
  const sizes={square:[1080,1080],story:[1080,1920],landscape:[1920,1080],cover:[1200,630]};
  const TAU=Math.PI*2;
  function wrap(ctx,text,width){
@@ -151,10 +151,12 @@
   const c=canvas.getContext('2d');if(!c)throw Error('Canvas non disponibile');
   const scale=w/1080,W=1080,H=h/scale,land=w>h,story=h>w*1.5,pad=72,light=snapshot.theme==='light';
   const P=palette(light,opt.sky&&snapshot.sky?!!snapshot.sky.isDay:true);
+  const qrMatrix=opt.qr?window.IstanteQR.matrix(snapshot.shareURL||URL):null,qrTotal=qrMatrix?qrMatrix.length+8:0,qrCell=qrMatrix?Math.max(2,Math.floor((land?146*scale:180)/qrTotal)):0,qrSide=qrTotal*qrCell;
+  if(land&&qrSide/scale>230)throw Error('Per questa frase lunga scegli il formato quadrato o storia, oppure disattiva il QR.');
   c.scale(scale,scale);c.fillStyle=P.background;c.fillRect(0,0,W,H);
   haze(c,W*.04,H*.05,650,light?'#b5c8a137':'#6d91552c',W,H);
   haze(c,W*.88,H*.92,540,light?'#d7c39732':'#9d845221',W,H);
-  if(opt.sky&&snapshot.sky)sky(c,snapshot.sky,P,W,H,land,story);
+  if(opt.sky&&snapshot.sky){sky(c,snapshot.sky,P,W,H,land,story);if(snapshot.sky.warmth>0){c.save();c.globalAlpha=Math.min(1,snapshot.sky.warmth)*.6;haze(c,W*.85,H*.5,W*.55,light?'#e7984c66':'#ee792f66',W,H);c.restore();}}
   c.strokeStyle=P.line;c.lineWidth=1;c.strokeRect(24,24,W-48,H-48);
   // Header: the same Istante mark, no repeated author credit.
   mark(c,pad-16,28,75,P.accent);c.textAlign='left';c.fillStyle=P.ink;c.font='42px Georgia,serif';c.fillText('istante.',pad+59,80);
@@ -176,7 +178,7 @@
     const y=land?193:story?304:259;c.fillText(snapshot.time||'',W/2,y);top=y+(land?25:56);
    }
   }
-  const footer=H-(land?182:207),metadata=[];
+  const footer=H-Math.max(land?182:207,qrSide/scale+45),metadata=[];
   if(opt.sky&&snapshot.sky){const k=snapshot.sky;const a=k.atmosphere;metadata.push(a?.label?(a.source==='manual'?'Atmosfera: ':'')+a.label+(k.isDay?'':' \u00b7 '+(k.name||'Notte')):k.isDay?'Sotto la stessa luce.':k.name||'Un momento, sotto le stelle.');}
   if(opt.goal&&snapshot.goal){const g=snapshot.goal;metadata.push((g.title||'Il mio obiettivo')+' \u00b7 '+(g.done?'Traguardo raggiunto':g.days+' giorni, '+g.hours+' ore'));}
   if(opt.radio&&snapshot.station)metadata.push('In ascolto \u00b7 '+snapshot.station);
@@ -196,10 +198,10 @@
    // Same hue family as the artwork, dark modules on a uniformly light field.
    // Integer device pixels and an intact quiet zone keep the code sharp.
    c.save();c.setTransform(1,0,0,1,0,0);
-   const cell=land?Math.max(3,Math.floor(3.4*scale)):4,side=QR.length*cell;
-   const x=Math.round(w-pad*scale-side),y=Math.round((footer+(land?18:25))*scale);
+   const matrix=qrMatrix,quiet=4,total=qrTotal,cell=qrCell,side=qrSide;
+   const x=Math.round(w-pad*scale-side),y=Math.round((footer+(land?18:15))*scale);
    c.fillStyle=P.qrBg;c.fillRect(x,y,side,side);c.fillStyle=P.qrInk;
-   QR.forEach((row,i)=>Array.from(row).forEach((bit,j)=>{if(bit==='1')c.fillRect(x+j*cell,y+i*cell,cell,cell);}));
+   matrix.forEach((row,i)=>row.forEach((bit,j)=>{if(bit)c.fillRect(x+(j+quiet)*cell,y+(i+quiet)*cell,cell,cell);}));
    c.restore();
   }
   return canvas;
