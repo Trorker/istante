@@ -10,8 +10,8 @@
   const a=node.animate(frames,{duration,easing:'cubic-bezier(.2,.7,.2,1)',fill:'none'}); active.set(node,a);
   a.onfinish=()=>{if(active.get(node)!==a)return;active.delete(node);done?.();};
  }
- function present(node) { cancel(node);if(!node.open)node.showModal();animate(node,[{opacity:0,transform:'translateY(18px) scale(.975)'},{opacity:1,transform:'translateY(0) scale(1)'}],310); }
- function dismiss(node) { if(!node?.open)return;animate(node,[{opacity:1,transform:'translateY(0) scale(1)'},{opacity:0,transform:'translateY(12px) scale(.985)'}],190,()=>{node.classList.remove('is-leaving');node.close();});if(active.has(node))node.classList.add('is-leaving'); }
+ function present(node) { cancel(node);if(!node.open)node.showModal();if(node.classList.contains('tour-layer'))return;animate(node,[{opacity:0,transform:'translateY(18px) scale(.975)'},{opacity:1,transform:'translateY(0) scale(1)'}],310); }
+ function dismiss(node) { if(!node?.open)return;if(node.classList.contains('tour-layer')){node.close();return;}animate(node,[{opacity:1,transform:'translateY(0) scale(1)'},{opacity:0,transform:'translateY(12px) scale(.985)'}],190,()=>{node.classList.remove('is-leaving');node.close();});if(active.has(node))node.classList.add('is-leaving'); }
  function show(node) { cancel(node);node.hidden=false;animate(node,[{opacity:0,transform:'translateY(-8px) scale(.98)'},{opacity:1,transform:'translateY(0) scale(1)'}],260); }
  function hide(node) { if(node.hidden)return;animate(node,[{opacity:1,transform:'translateY(0)'},{opacity:0,transform:'translateY(-6px)'}],170,()=>{node.hidden=true;}); }
  function flash(node) { if(node)animate(node,[{opacity:.25,transform:'translateY(5px)'},{opacity:1,transform:'translateY(0)'}],260); }

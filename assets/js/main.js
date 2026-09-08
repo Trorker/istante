@@ -1,4 +1,4 @@
-/* Istante v3.7.0 - application and local preferences. */
+/* Istante v3.8.0 - application and local preferences. */
 (function () {
 'use strict';
 const C = window.IstanteCore;
@@ -51,14 +51,15 @@ const previewFX=window.IstanteEffects.create({getSettings:readDraftSettings,elem
 const effectHub={sync(context){FX.sync(context);previewFX.sync(context);}};
 const stationLibrary=window.IstanteStationLibrary.create(window.IstanteStations||[],toast);window.IstanteRadioLibrary=stationLibrary;
 const radio=window.IstanteRadio.create({library:stationLibrary,getSettings:()=>settings,save:(key,value)=>{settings[key]=value;saveNotice(store.write('settings',settings));},icon,notify:toast});
+const ambient=window.IstanteAmbient.create({getSettings:()=>settings,save:(key,value)=>{settings[key]=value;saveNotice(store.write('settings',settings));},radio,notify:toast,icon});
 const X=window.IstanteExperience.create({getSettings:()=>settings,getPhoto:()=>photo,store,icon,effects:effectHub,notify:toast,onChange:()=>applyAppearance(new Date())});
 const stationManager=window.IstanteStationManager.create({library:stationLibrary,icon,notify:toast});
 const scheduleEditor=window.IstanteSchedules.create({icon,onChange:updateSettingsFields});
 let appearanceReady=false;
 const moments=window.IstanteMoments.create({getSettings:()=>settings,getDraft:readDraftSettings,radio,notify:toast,openTimer:()=>openDialog('timer'),icon});
 
-const scene=window.IstanteScene.create({getSettings:()=>settings,getSun:()=>X.solar(new Date()),getWeather:now=>X.weather(now),store,openWelcome:()=>openDialog('welcome')});
-const sharing=window.IstanteShare.create({getSnapshot:()=>({phrase:current?.text||'Un momento, per te.',time:timeFormatter.format(new Date()),theme:document.documentElement.dataset.theme||'dark',date:dateFormatter.format(new Date()),greeting:$('#moment-greeting').textContent,clockStyle:settings.clockStyle,hours:new Date().getHours(),minutes:new Date().getMinutes(),sky:scene.describe(),goal:C.getGoal(new Date(),settings),station:settings.radioEnabled?radio.station().name:''}),open:()=>openDialog('share'),notify:toast});
+const scene=window.IstanteScene.create({getSettings:()=>settings,getSun:()=>X.solar(new Date()),getWeather:now=>X.weather(now),store,openGuide:which=>openDialog(which)});
+const sharing=window.IstanteShare.create({getSnapshot:()=>({phrase:current?.text||'Un momento, per te.',time:timeFormatter.format(new Date()),theme:document.documentElement.dataset.theme||'dark',date:dateFormatter.format(new Date()),greeting:$('#moment-greeting').textContent,clockStyle:settings.clockStyle,hours:new Date().getHours(),minutes:new Date().getMinutes(),sky:scene.describe(),goal:C.getGoal(new Date(),settings),station:settings.audioSource==='ambient'&&settings.ambientEnabled?ambient.label():settings.radioEnabled?radio.station().name:''}),open:()=>openDialog('share'),notify:toast});
 
 function toast(message) {
  const el=$('#toast'),host=$('#toast-host');
@@ -224,7 +225,7 @@ function readDraftSettings(){
 function sectionSummaries(){
  const f=$('#settings-form').elements,choice=name=>f[name]?.selectedOptions?.[0]?.textContent||'';
  const themes={dark:'Notte',light:'Carta',auto:'Tema del dispositivo',solar:'Segui il sole'};
- const data={appearance:(themes[f.theme.value]||'Tema')+' \u00b7 '+choice('background'),phrases:(modeNames[f.mode.value]||choice('mode'))+(f.typing.checked?' \u00b7 Macchina da scrivere':''),sky:$('#place-name').textContent,effects:f.effectsEnabled.checked?choice('effect')+(f.weatherFX.value!=='off'?' \u00b7 '+choice('weatherFX'):''):'Disattivati',radio:f.radioEnabled.checked?choice('radioStation').replace(/^\d+\s+/,''):'Player nascosto',timer:f.timerEnabled.checked?f.timerMinutes.value+' min \u00b7 '+choice('timerAction'):'Disattivato',goal:choice('goalMode'),screen:f.hideControls.checked?'Comandi a scomparsa':'Comandi sempre visibili'};
+ const data={appearance:(themes[f.theme.value]||'Tema')+' \u00b7 '+choice('background'),phrases:(modeNames[f.mode.value]||choice('mode'))+(f.typing.checked?' \u00b7 Macchina da scrivere':''),sky:$('#place-name').textContent,effects:f.effectsEnabled.checked?choice('effect')+(f.weatherFX.value!=='off'?' \u00b7 '+choice('weatherFX'):''):'Disattivati',radio:(f.radioEnabled.checked?'Radio':'')+(f.radioEnabled.checked&&f.ambientEnabled.checked?' \u00b7 ':'')+(f.ambientEnabled.checked?'Ambiente offline':!f.radioEnabled.checked?'Player nascosto':''),timer:f.timerEnabled.checked?f.timerMinutes.value+' min \u00b7 '+choice('timerAction'):'Disattivato',goal:choice('goalMode'),screen:f.hideControls.checked?'Comandi a scomparsa':'Comandi sempre visibili'};
  for(const [key,value]of Object.entries(data)){const el=$('[data-summary="'+key+'"]');if(el)el.textContent=value;}
 }
 function expandSection(target){
@@ -261,6 +262,7 @@ function updateSettingsFields() {
  group('#goal-fields',f.goalMode.value==='custom');group('#photo-fields',f.background.value==='photo');
  const notes={twice:'La frase non cambia ricaricando la pagina. La sera continua anche dopo mezzanotte, fino al mattino.',daily:'Un pensiero dal cambio mattutino fino alla stessa ora del giorno dopo, anche ricaricando la pagina.',interval:'Il cambio segue intervalli regolari dell\'orologio, non il tempo trascorso dall\'apertura.',opening:'La frase cambia a ogni apertura o ricaricamento della pagina. Non cambia da sola mentre resti qui.'};
  $('#schedule-note').textContent=notes[mode];group('#picsum-fields',f.background.value==='picsum');group('#photo-options',['photo','picsum'].includes(f.background.value));group('#typing-fields',f.typing.checked);group('#effects-fields',f.effectsEnabled.checked);group('#radio-fields',f.radioEnabled.checked);
+ group('#ambient-settings-fields',f.ambientEnabled.checked);
  group('#radio-schedule-fields',f.radioEnabled.checked&&f.radioScheduleEnabled.checked);f.radioScheduleEnabled.disabled=!f.radioEnabled.checked;
  group('#timer-settings-fields',f.timerEnabled.checked);
  const timerRadioAvailable=f.radioEnabled.checked&&hasStations;
@@ -311,7 +313,7 @@ document.addEventListener('keydown',event=>{if((event.ctrlKey||event.metaKey)&&e
 $('#settings-form').addEventListener('submit',event=>{
  event.preventDefault();const f=event.currentTarget,values={...settings,...Object.fromEntries(new FormData(f))};
  values.radioSchedules=scheduleEditor.value();
- for(const key of ['celestialSky','showClock','showSeconds','motion','hideControls','wakeLock','typing','solarTimes','weather','transitionFX','photoMotion','breathe','typingErase','effectsEnabled','effectSunSync','radioEnabled','radioScheduleEnabled','timerEnabled'])values[key]=f.elements[key].checked;
+ for(const key of ['ambientEnabled','celestialSky','showClock','showSeconds','motion','hideControls','wakeLock','typing','solarTimes','weather','transitionFX','photoMotion','breathe','typingErase','effectsEnabled','effectSunSync','radioEnabled','radioScheduleEnabled','timerEnabled'])values[key]=f.elements[key].checked;
  values.interval=Number(values.interval);values.photoDim=Number(values.photoDim);let error='';if(!validateSettings(f))return;
  if(values.mode==='twice'&&C.minutes(values.morning,-1)>=C.minutes(values.evening,-1))error='L\'inizio della sera deve essere successivo all\'inizio della mattina.';
  if(values.goalMode==='custom'&&(!values.goalStart||!values.goalEnd||new Date(values.goalEnd)<=new Date(values.goalStart)))error='Inserisci una data finale successiva alla data di inizio.';
@@ -322,7 +324,7 @@ $('#settings-form').addEventListener('submit',event=>{
  if(values.theme==='solar'&&!X.draftHasPlace())values.theme='auto';
  settings=C.cleanSettings(values);let ok=store.write('settings',settings);
  if(draftPhoto!==photo){photo=draftPhoto;ok=store.write('photo',photo)&&ok;}
- X.commitSettings();radio.apply();moments.apply();applyAppearance(new Date());lastClock='';tick(true);if(schedule)$('#phrase-meta').textContent=schedule.nextAt?'Prossimo pensiero alle '+timeFormatter.format(schedule.nextAt):'Un nuovo pensiero alla prossima apertura';if(scheduleChanged)syncSchedule(new Date(),true);
+ X.commitSettings();radio.apply();ambient.apply();moments.apply();applyAppearance(new Date());lastClock='';tick(true);if(schedule)$('#phrase-meta').textContent=schedule.nextAt?'Prossimo pensiero alle '+timeFormatter.format(schedule.nextAt):'Un nuovo pensiero alla prossima apertura';if(scheduleChanged)syncSchedule(new Date(),true);
  closeDialog($('#settings-dialog'));lastActivity=0;activity();
  toast(ok?'Tutto pronto. Questo momento \u00e8 tuo.':'Preferenze applicate solo per questa sessione: memoria del browser non disponibile.');updateWakeLock();
 });
@@ -386,6 +388,11 @@ window.IstanteControls.enhance($('#settings-form'));window.IstanteControls.enhan
 // The complete collection is local. No redundant fetch is needed during startup.
 if(storageFailed)toast('Il browser non consente il salvataggio locale. La pagina funziona comunque in questa sessione.');
 window.IstanteUpdates.create({notify:toast});
+window.IstanteBackup.create({
+ store,core:C,builtins:window.IstanteStations||[],getSettings:()=>settings,
+ notify:toast,open:()=>openDialog('backup'),
+ onRestored(){ambient.stop(true);radio.stop();moments.destroy();try{sessionStorage.removeItem('istante.original1.timer.v1');}catch(_){}setTimeout(()=>location.reload(),600);}
+});
 document.addEventListener('istante:manage-stations',()=>openDialog('stations'));
 document.addEventListener('istante:stations-changed',()=>{if(!stationLibrary.list().length){settings.radioScheduleEnabled=false;if(settings.timerAction==='radio')settings.timerAction='sound';settings.timerDuring='silent';store.write('settings',settings);}moments.apply();if($('#settings-dialog').open)updateSettingsFields();});
 Promise.all([X.boot(),new Promise(resolve=>setTimeout(resolve,550))]).catch(()=>{}).finally(()=>{

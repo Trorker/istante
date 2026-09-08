@@ -60,3 +60,19 @@ non richiede alcuna chiamata remota. La traiettoria grafica è decorativa.
 La nuova licenza non commerciale di Istante riguarda solo le parti originali
 per cui l’autore dispone dei diritti; non sostituisce MIT, BSD o Apache delle
 componenti terze. [Riferimento SunCalc](https://github.com/mourner/suncalc/tree/v1.9.0).
+
+
+## Suoni ambientali e backup locali (dalla v3.8.0)
+
+Il generatore di rumore rosa, marrone, pioggia e vento usa codice procedurale
+originale e le primitive Web Audio del browser. Non contiene registrazioni,
+tracce radio o librerie di campioni di terzi. I buffer sono temporanei, in RAM;
+il codice dell'applicazione è comunque parte della cache offline.
+
+Il backup usa File, Blob e JSON del browser: nessun caricamento a un server.
+Le icone aggiuntive restano SVG locali nello stesso stile dei comandi.
+
+Riferimenti tecnici: [AudioContext](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext),
+[creazione dei buffer](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createBuffer),
+[buone pratiche Web Audio](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Best_practices),
+[File API](https://developer.mozilla.org/en-US/docs/Web/API/File_API/Using_files_from_web_applications).

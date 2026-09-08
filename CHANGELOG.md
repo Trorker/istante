@@ -2,6 +2,16 @@
 
 Le modifiche sono elencate dalla release più recente. Le voci Original 1.x descrivono la base minimale da cui deriva la linea 3.x; non includono gli esperimenti grafici della precedente linea 2.x.
 
+## 3.8.0 - 8 settembre 2026
+
+- Nuovo indirizzo ufficiale `https://istante.ruslan-dzyuba.it/`: aggiornati metadati, condivisione, QR, pagine informative e anteprima social.
+- Benvenuto riscritto intorno all'idea di uno spazio personale che accompagna la giornata. Guida facoltativa con evidenziazioni, frecce disegnate e suggerimenti contestuali; rivedibile da Informazioni.
+- Unica firma laterale nelle cartoline: `by ♡ Ruslan Dzyuba · istante.ruslan-dzyuba.it`, anche senza QR. Logo, cielo e meteo restano nella composizione.
+- Eliminato il secondo astro durante il cambio tema. Sole e luna seguono il ritmo reale o indicativo della giornata; la transizione cambia soltanto l'atmosfera cromatica.
+- Generatore ambientale offline nel player: rumore rosa, marrone, pioggia e vento, con volume, mute e attivazione indipendente dalla radio. Nessun file audio remoto; radio e generatore non si sovrappongono.
+- Backup e ripristino JSON locale delle preferenze, del traguardo, del catalogo radio, delle programmazioni, delle frasi preferite e dello storico. Località facoltativa, anteprima e conferma prima della sostituzione, controlli di validità e rollback in caso di errore di memoria.
+- Guida adattata a telefoni in orizzontale e verticale, senza scroll della dashboard. Tutte le nuove risorse incluse nella cache verificata della release.
+
 ## 3.7.0 - 8 settembre 2026
 
 - Sostituite le 700 frasi con 1.000 nuovi pensieri, controllati per duplicati e formulazioni troppo simili.

@@ -29,7 +29,7 @@ licenza e il riferimento al progetto originale. Nelle copie e versioni derivate
 accessibili agli utenti mantenere un credito visibile nella sezione Informazioni
 o equivalente: "Istante - progetto originale di Ruslan Dzyuba".
 Nella documentazione e nel codice mantenere https://github.com/Trorker e il link
-https://ruslan-dzyuba.it/istante/. Le modifiche vanno indicate senza attribuirle
+https://istante.ruslan-dzyuba.it/. Le modifiche vanno indicate senza attribuirle
 falsamente all'autore originale. Nessuna approvazione o affiliazione e implicita.
 
 5. Codice disponibile e medesime condizioni
