@@ -1,6 +1,6 @@
 # Istante
 
-**Ultima versione: 3.6.0**  
+**Ultima versione: 3.7.0**  
 **Un momento, per te.**  
 Un progetto di **Ruslan Dzyuba**.
 
@@ -18,8 +18,10 @@ La scena principale resta contenuta nello schermo, senza scorrimento. Puoi
 scegliere orologio digitale (predefinito) o analogico, formato 24 o 12 ore,
 tema Notte o Carta, tema del dispositivo oppure Segui il sole con una località.
 
-Le 700 frasi sono incluse nel sito, con preferiti e una scrittura animata
-facoltativa. Lo sfondo può essere una sfumatura, una fotografia personale o
+Le 1.000 frasi sono incluse nel sito, con preferiti e una scrittura animata
+facoltativa. La scelta è casuale, con uno storico locale: prima di ripetere
+un pensiero, Istante percorre l’intera raccolta. Ricaricare la pagina o
+ripetere la scrittura non consuma una nuova frase durante la stessa fascia. Lo sfondo può essere una sfumatura, una fotografia personale o
 un’immagine automatica da Picsum. Sole, fase lunare e stelle accompagnano il
 giorno e la notte; gli altri effetti ambientali restano selezionabili.
 
@@ -39,7 +41,29 @@ e una sola firma laterale. Scegli se aggiungere QR, orologio, data, cielo,
 obiettivo e stazione. Il QR riprende i colori del tema mantenendo un fondo
 uniforme e un contrasto netto. Sole, luna e stelle accompagnano la frase
 senza coprirla; le illustrazioni sono stilizzate, non mappe del cielo.
+Pioggia, neve, nuvole, nebbia e altri effetti del cielo vengono disegnati
+anche nel PNG esportato, non soltanto nell’anteprima. Sole, luna e stelle
+si attenuano quando il meteo lo richiede. Le scelte decorative manuali
+restano distinte dalle condizioni reali.
 Obiettivo e stazione non vengono inclusi senza una tua scelta esplicita.
+
+## Frasi e memoria locale
+
+La raccolta predefinita contiene 1.000 testi nuovi, senza combinazioni di
+prefissi e suffissi ripetuti. Il sorteggio tiene traccia dei testi mostrati
+e salva fino a 3.000 voci recenti di storico, con data e motivo del cambio.
+La raccolta mostra anche il numero di pensieri già incontrati nel ciclo.
+Dopo averli esauriti tutti, un nuovo ciclo riparte senza ripetere subito
+l’ultima frase. Una selezione esplicita dalla raccolta può invece ripetere
+volontariamente un testo. La modalità A ogni apertura mantiene la sua
+funzione: una nuova apertura fa un nuovo sorteggio.
+
+Lo storico appartiene a quel browser e non viene sincronizzato fra dispositivi.
+Cancellare i dati del sito lo azzera; con memoria negata rimane solo per
+la sessione. Le raccolte personali importate non vengono sostituite. Una
+copia identica della vecchia raccolta standard viene aggiornata; per altre
+raccolte resta il comando Ripristina originale. I preferiti relativi a testi
+non più presenti rimangono memorizzati, ma non compaiono nella nuova lista.
 
 ## Avvio e pubblicazione
 
@@ -70,7 +94,11 @@ La richiesta `navigator.storage.persist()` viene gestita senza bloccare
 l’avvio. Il browser può concederla o negarla: in Informazioni trovi lo stato.
 Non è una promessa di conservazione illimitata e non sostituisce un backup.
 
-Radio live, nuove foto e meteo aggiornato richiedono Internet. Le richieste
+Radio live, nuove foto e meteo aggiornato richiedono Internet. Il cielo e
+le cartoline usano osservazioni meteo vecchie al massimo 45 minuti. Quando
+scadono, tornano a un cielo neutro, senza inventare condizioni; un effetto
+scelto manualmente continua a funzionare anche offline. Il meteo testuale
+può rimanere visibile come salvato fino a tre ore. Le richieste
 ai servizi partono soltanto per le funzioni attive. La geolocalizzazione
 richiede una scelta esplicita e il consenso del dispositivo. Nessun account,
 server applicativo o caricamento remoto delle cartoline.
@@ -84,7 +112,7 @@ sistema e non è adatto a scadenze critiche.
 
 - `index.html`, `leggi.html`, `sw.js`, `manifest.webmanifest`, `version.json`: ingresso, lettore documenti e aggiornamenti.
 - `assets/`: interfaccia, logica, immagini e icone. `data/`: raccolta e catalogo radio.
-- `README.md`: il progetto. `CHANGELOG.md`: lo storico. `docs/release/v3.6.0.md`: la release corrente.
+- `README.md`: il progetto. `CHANGELOG.md`: lo storico. `docs/release/v3.7.0.md`: la release corrente.
 - `docs/LICENZA.md` e `docs/TERZE-PARTI.md`: diritti, attribuzioni e servizi.
 
 Le pagine Leggi il progetto, Tutte le novità, Questa release, Licenza e Terze

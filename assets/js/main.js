@@ -1,4 +1,4 @@
-/* Istante v3.6.0 - application and local preferences. */
+/* Istante v3.7.0 - application and local preferences. */
 (function () {
 'use strict';
 const C = window.IstanteCore;
@@ -24,6 +24,11 @@ if(!store.read('timer-options-migrated-360',false)){
 let settings = C.cleanSettings(rawSettings);
 let returnToTimer=false;
 let originalPayload = window.ISTANTE_PHRASES, customPayload = store.read('collection', null), phrases;
+// Upgrade only a byte-equivalent old standard collection, never personal imports.
+try { const old = Array.isArray(customPayload) ? customPayload : customPayload?.phrases;
+ if(Array.isArray(old) && old.length===700 && C.hash(old.join('\n'))===943093509) { customPayload=null;store.remove('collection'); }
+} catch (_) {}
+const phraseHistory=window.IstantePhraseHistory.create({store});
 try { phrases = C.parsePhrases(customPayload || originalPayload); }
 catch (_) { customPayload = null; store.remove('collection'); phrases = C.parsePhrases(originalPayload); }
 let deck = C.buildDeck(phrases);
@@ -52,14 +57,24 @@ const scheduleEditor=window.IstanteSchedules.create({icon,onChange:updateSetting
 let appearanceReady=false;
 const moments=window.IstanteMoments.create({getSettings:()=>settings,getDraft:readDraftSettings,radio,notify:toast,openTimer:()=>openDialog('timer'),icon});
 
-const scene=window.IstanteScene.create({getSettings:()=>settings,getSun:()=>X.solar(new Date()),store,openWelcome:()=>openDialog('welcome')});
+const scene=window.IstanteScene.create({getSettings:()=>settings,getSun:()=>X.solar(new Date()),getWeather:now=>X.weather(now),store,openWelcome:()=>openDialog('welcome')});
 const sharing=window.IstanteShare.create({getSnapshot:()=>({phrase:current?.text||'Un momento, per te.',time:timeFormatter.format(new Date()),theme:document.documentElement.dataset.theme||'dark',date:dateFormatter.format(new Date()),greeting:$('#moment-greeting').textContent,clockStyle:settings.clockStyle,hours:new Date().getHours(),minutes:new Date().getMinutes(),sky:scene.describe(),goal:C.getGoal(new Date(),settings),station:settings.radioEnabled?radio.station().name:''}),open:()=>openDialog('share'),notify:toast});
 
 function toast(message) {
- const el = $('#toast'); ($('dialog[open]:not(.is-leaving)') || document.body).append(el);
- el.textContent = message; window.IstanteMotion.show(el);
- clearTimeout(toastTimer); toastTimer = setTimeout(() => window.IstanteMotion.hide(el), 4100);
+ const el=$('#toast'),host=$('#toast-host');
+ clearTimeout(toastTimer);
+ // Top-layer popover escapes dialog transforms and clipping without stealing focus.
+ if(typeof host.showPopover==='function'){
+  try { if(host.matches(':popover-open'))host.hidePopover();host.showPopover(); } catch(_){}
+ }else{
+  host.classList.add('toast-fallback');
+  const parent=$('dialog[open]:not(.is-leaving)')||document.body;
+  parent.append(host);
+ }
+ el.textContent=message;window.IstanteMotion.show(el);
+ toastTimer=setTimeout(()=>window.IstanteMotion.hide(el),4100);
 }
+
 function saveNotice(ok) { if (!ok) toast('Memoria del browser non disponibile o piena: le modifiche restano solo in questa sessione.'); }
 function isPanelOpen() { return !!$('dialog[open]')||$('#radio-mini').classList.contains('is-open'); }
 function activity() {
@@ -77,13 +92,6 @@ function randomIndex(length) {
   return a[0] % length;
  }
  return Math.floor(Math.random() * length);
-}
-function chooseOpening() {
- const last = store.read('lastPhrase', ''), group = typeof last === 'string' ? C.themeKey(last) : '';
- let candidates = deck.items.filter(p => p.group !== group);
- if (!candidates.length) candidates = deck.items.filter(p => p.text !== last);
- if (!candidates.length) candidates = deck.items;
- return candidates[randomIndex(candidates.length)];
 }
 function updateFavoriteButton() {
  if (!current) return;
@@ -112,27 +120,25 @@ function syncSchedule(now, force) {
  const key = deck.signature + ':' + next.key + (settings.mode === 'opening' ? ':' + openingSession : '');
  if (key === slotKey && !force) return;
  schedule = next; slotKey = key;
- const override = store.read('override', null);
- let phrase = override && override.key === slotKey ? phrases.find(p => p.id === override.id) : null;
- const manual = !!phrase;
- if (!phrase) phrase = settings.mode === 'opening' ? chooseOpening() : C.pickScheduled(deck.items, schedule.ordinal);
- renderPhrase(phrase, !!current); updatePhraseMeta(manual);
+ const selection = phraseHistory.resolve(phrases, slotKey);
+ const phrase=selection.phrase;
+ // Forced clock / settings refresh must not restart the phrase or consume history.
+ if(!current || current.id!==phrase.id) renderPhrase(phrase, !!current);
+ updatePhraseMeta(selection.manual);updateLibraryCounts();
 }
 function chooseManual(phrase) {
  if (!phrase) return;
- syncSchedule(new Date()); saveNotice(store.write('override', { key:slotKey, id:phrase.id }));
- renderPhrase(phrase, true); updatePhraseMeta(true); activity();
+ syncSchedule(new Date());
+ const selection=phraseHistory.select(phrases,slotKey,phrase);
+ renderPhrase(selection.phrase,true);updatePhraseMeta(true);updateLibraryCounts();activity();
 }
 function nextPhrase() {
  if (!current) return;
- const idx = deck.items.findIndex(p => p.id === current.id);
- let candidate = deck.items[(idx + 1) % deck.items.length];
- for (let i = 1; i < deck.items.length; i++) {
-  const p = deck.items[(idx + i) % deck.items.length];
-  if (p.group !== current.group) { candidate = p; break; }
- }
- chooseManual(candidate);
+ syncSchedule(new Date());
+ const selection=phraseHistory.next(phrases,slotKey);
+ renderPhrase(selection.phrase,true);updatePhraseMeta(true);updateLibraryCounts();activity();
 }
+
 function applyAppearance(now) {
  const min=now.getHours()*60+now.getMinutes(),sun=X.solar(now);
  const lightTime=sun?sun.isDay:(min>=360&&min<1080),theme=X.theme(now),old=document.documentElement.dataset.theme;
@@ -173,7 +179,8 @@ function startClock() { clearTimeout(clockTimer); tick(false); if (!document.hid
 function updateLibraryCounts() {
  const count = phrases.filter(p=>favorites.has(p.text)).length;
  $('#collection-count').textContent = phrases.length; $('#all-count').textContent = phrases.length; $('#favorites-count').textContent = count;
- $('#library-subtitle').textContent = phrases.length+' piccoli promemoria. '+(customPayload ? 'La tua raccolta personale.' : 'La tua raccolta originale, sempre con te.');
+ const progress=phraseHistory.stats(phrases);
+ $('#library-subtitle').textContent=phrases.length.toLocaleString('it-IT')+' pensieri. '+(customPayload?'La tua raccolta. ':'')+'Casuale senza ripetizioni: '+progress.seen+' / '+progress.total+' in questo ciclo.';
  $('#restore-phrases').hidden = !customPayload;
 }
 function toggleFavorite(phrase) {
@@ -278,7 +285,7 @@ function openDialog(which) {
  const dialog=$('#'+which+'-dialog');if(!dialog)return;previousFocus=document.activeElement;dialog._returnFocus=previousFocus;
  radio.close();X.pause();if(which==='settings')fillSettings();else if(which==='library')renderLibrary(true);else if(which==='stations')stationManager.render();else if(which==='share')sharing.prepare();
  clearTimeout(idleTimer);document.body.classList.remove('is-idle');document.body.classList.add('has-panel');document.body.style.overflow='hidden';window.IstanteMotion.present(dialog);
- if(which==='library')$('#phrase-search').focus({preventScroll:true});else dialog.querySelector('.close-button').focus({preventScroll:true});
+ dialog.querySelector('.close-button').focus({preventScroll:true});
 }
 function closeDialog(dialog) { window.IstanteMotion.dismiss(dialog); }
 $$('dialog').forEach(dialog=>{

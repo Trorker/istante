@@ -2,6 +2,19 @@
 
 Le modifiche sono elencate dalla release più recente. Le voci Original 1.x descrivono la base minimale da cui deriva la linea 3.x; non includono gli esperimenti grafici della precedente linea 2.x.
 
+## 3.7.0 - 8 settembre 2026
+
+- Sostituite le 700 frasi con 1.000 nuovi pensieri, controllati per duplicati e formulazioni troppo simili.
+- Sorteggio casuale senza ripetizioni fino all'esaurimento del ciclo; storico locale persistente, frase stabile nella stessa fascia e aggiornamenti senza perdere le raccolte personali.
+- Pioggia, neve, nuvole, nebbia, luce ed effetti ambientali inclusi anche nel PNG della condivisione. Restano logo, firma laterale e QR coordinato al tema.
+- Sole, luna e stelle seguono le condizioni del cielo, sia sulla dashboard sia nelle cartoline. Distinzione fra meteo recente ed effetti decorativi manuali; nessuna condizione inventata offline.
+- Toast centrato tramite un contenitore indipendente dalle animazioni e dalle modali: nessun salto laterale durante l'ingresso o la chiusura delle impostazioni.
+- Traguardo e conto alla rovescia mantenuti sui telefoni in orizzontale; adattamento del contenuto senza scroll della dashboard.
+- Testo e contatore del pulsante Raccolta nascosti sui telefoni, anche in orizzontale. Restano icona, nome accessibile e accesso alla lista completa.
+- Aggiornati documentazione, risorse e cache verificata; incluso `docs/release/v3.7.0.md`.
+
+[Note complete della release 3.7.0](docs/release/v3.7.0.md)
+
 ## 3.6.0 - 8 settembre 2026
 
 - Player più compatto: eliminati il campo stream personalizzato e il testo informativo sottostante. Restano gestione stazioni e messaggi di errore utili.

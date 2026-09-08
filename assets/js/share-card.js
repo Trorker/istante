@@ -62,26 +62,73 @@
  }
  function sky(c,info,P,W,H,land,story){
   const x=W*.815,y=land?145:story?246:206,r=land?22:35;
+  const A=info.atmosphere||{kind:'neutral',orb:1,stars:1,clouds:0},kind=A.kind;
+  c.save();c.globalAlpha=A.orb;
   haze(c,x,y,land?180:285,P.halo,W,H);haze(c,x-r,y-r,r*3,P.glow,W,H);
-  c.save();
   if(info.isDay){
-   // Two soft rings, rather than sharp rays or a sticker-like sun icon.
-   for(const [radius,alpha]of [[r*1.43,.20],[r*2.10,.08]]){c.globalAlpha=alpha;c.strokeStyle=P.sun;c.lineWidth=1;disk(c,x,y,radius);c.stroke();}
-   c.globalAlpha=.85;const g=c.createRadialGradient(x-r*.3,y-r*.35,0,x,y,r*1.4);
+   for(const [radius,alpha]of [[r*1.43,.20],[r*2.10,.08]]){c.globalAlpha=alpha*A.orb;c.strokeStyle=P.sun;c.lineWidth=1;disk(c,x,y,radius);c.stroke();}
+   c.globalAlpha=.85*A.orb;const g=c.createRadialGradient(x-r*.3,y-r*.35,0,x,y,r*1.4);
    g.addColorStop(0,P.sun);g.addColorStop(1,P.sun+'b3');c.fillStyle=g;disk(c,x,y,r);c.fill();
   }else{
-   c.globalAlpha=1;moon(c,x,y,r,info.phase,P);
-   let seed=417;
-   const rand=()=>{seed=(Math.imul(1664525,seed)+1013904223)>>>0;return seed/4294967296;};
-   for(let i=0;i<55;i++){
-    const xx=50+rand()*(W-100),yy=110+rand()*Math.min(H*.63,760);
+   c.globalAlpha=A.orb;moon(c,x,y,r,info.phase,P);
+   const rand=seeded(417);
+   for(let i=0;i<70;i++){
+    const xx=50+rand()*(W-100),yy=110+rand()*Math.min(H*.75,1100);
     if((xx>200&&xx<W-180&&yy>175)||Math.hypot(xx-x,yy-y)<r*1.6)continue;
-    c.globalAlpha=.14+rand()*.30;c.fillStyle=P.moon;disk(c,xx,yy,.6+rand()*.9);c.fill();
+    c.globalAlpha=(.14+rand()*.30)*A.stars;c.fillStyle=P.moon;disk(c,xx,yy,.6+rand()*.9);c.fill();
    }
   }
-  // Celestial arcs stay at the edges, leaving the phrase quiet and legible.
   c.globalAlpha=.25;c.strokeStyle=P.line;c.lineWidth=1;
-  c.beginPath();c.ellipse(W*.82,y+10,W*.48,H*.32,-.3,.05,Math.PI*.80);c.stroke();
+  c.beginPath();c.ellipse(W*.82,y+10,W*.48,H*.32,-.3,.05,Math.PI*.80);c.stroke();c.restore();
+  ambient(c,info,P,W,H);
+  weather(c,A,P,W,H,land,story);
+ }
+ function seeded(seed){return()=>{seed=(Math.imul(1664525,seed)+1013904223)>>>0;return seed/4294967296;};}
+ function ambient(c,info,P,W,H){
+  const effect=info.effect||'none',strength=Number.isFinite(info.intensity)?info.intensity:.35;
+  c.save();c.globalAlpha=Math.min(.85,.3+strength);
+  if(effect==='halos'||effect==='aurora'){
+   haze(c,W*.08,H*.30,W*.5,P.halo,W,H);haze(c,W*.91,H*.68,W*.47,P.glow,W,H);
+   if(effect==='aurora'){
+    c.save();c.translate(W*.10,H*.32);c.rotate(-.35);c.scale(1,.24);
+    haze(c,W*.3,0,W*.85,P.halo,W*1.5,H*5);c.restore();
+   }
+  }else if(effect==='particles'){
+   const rand=seeded(957);c.fillStyle=P.accent;
+   for(let i=0;i<54;i++){const x=rand()*W,y=100+rand()*(H-170),edge=x<W*.18||x>W*.82;c.globalAlpha=(edge?.25:.055)*(.6+strength);disk(c,x,y,.6+rand()*2);c.fill();}
+  }
+  c.restore();
+ }
+ function weather(c,A,P,W,H,land,story){
+  const k=A.kind,rand=seeded(29371),top=100,bottom=H-190;
+  c.save();
+  // A real canvas layer: clouds and precipitation are encoded in the exported PNG.
+  // Keep the center quieter; footer / QR are rendered afterwards on top.
+  if(A.clouds>0){
+   const colour=P.background==='#141c19'?'#829d9e':'#73878c';
+   for(let i=0;i<9;i++){
+    const x=(i%2?W*.78:W*.09)+(rand()-.5)*W*.35,y=120+rand()*(H*.6),r=140+rand()*210;
+    c.save();c.translate(x,y);c.scale(1,.30+rand()*.24);c.globalAlpha=A.clouds*(k==='fog'?.19:.32);
+    const g=c.createRadialGradient(0,0,2,0,0,r);g.addColorStop(0,colour+'cc');g.addColorStop(.55,colour+'50');g.addColorStop(1,colour+'00');c.fillStyle=g;c.fillRect(-r,-r,2*r,2*r);c.restore();
+   }
+  }
+  const isRain=k==='rain'||k==='storm';
+  if(isRain||k==='snow'){
+   c.strokeStyle=P.muted;c.fillStyle=P.ink;c.lineCap='round';
+   const count=isRain?(story?210:145):(story?140:90);
+   for(let i=0;i<count;i++){
+    const x=30+rand()*(W-60),y=top+rand()*Math.max(70,bottom-top),edge=x<W*.19||x>W*.81;
+    c.globalAlpha=(edge?.45:.085)*( .55+rand()*.45 );
+    if(isRain){const len=(land?12:22)+rand()*25;c.lineWidth=.65+rand()*.65;c.beginPath();c.moveTo(x,y);c.lineTo(x-len*.23,y+len);c.stroke();}
+    else{const r=1.1+rand()*2.2;disk(c,x,y,r);c.fill();if(edge&&r>2.7){c.lineWidth=.7;c.beginPath();c.moveTo(x-r*2,y);c.lineTo(x+r*2,y);c.moveTo(x,y-r*2);c.lineTo(x,y+r*2);c.stroke();}}
+   }
+  }
+  if(k==='storm'){
+   c.globalAlpha=.35;haze(c,W*.91,H*.27,W*.21,P.glow,W,H);
+   c.strokeStyle=P.muted;c.lineWidth=1.3;c.globalAlpha=.20;
+   c.beginPath();c.moveTo(W*.92,top+8);c.lineTo(W*.89,top+57);c.lineTo(W*.92,top+54);c.lineTo(W*.88,top+115);c.stroke();
+  }
+  if(k==='sun'&&A.orb>0){c.globalAlpha=.45;haze(c,W*.9,H*.23,W*.42,P.glow,W,H);}
   c.restore();
  }
  function analog(c,x,y,r,snapshot,P){
@@ -126,7 +173,7 @@
    }
   }
   const footer=H-(land?182:207),metadata=[];
-  if(opt.sky&&snapshot.sky){const k=snapshot.sky;metadata.push(k.isDay?'Sotto la stessa luce.':k.name||'Un momento, sotto le stelle.');}
+  if(opt.sky&&snapshot.sky){const k=snapshot.sky;const a=k.atmosphere;metadata.push(a?.label?(a.source==='manual'?'Atmosfera: ':'')+a.label+(k.isDay?'':' \u00b7 '+(k.name||'Notte')):k.isDay?'Sotto la stessa luce.':k.name||'Un momento, sotto le stelle.');}
   if(opt.goal&&snapshot.goal){const g=snapshot.goal;metadata.push((g.title||'Il mio obiettivo')+' \u00b7 '+(g.done?'Traguardo raggiunto':g.days+' giorni, '+g.hours+' ore'));}
   if(opt.radio&&snapshot.station)metadata.push('In ascolto \u00b7 '+snapshot.station);
   const rowH=land?22:30,metaSpace=metadata.length?metadata.length*rowH+22:0,bottom=footer-35-metaSpace;
