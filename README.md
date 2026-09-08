@@ -1,6 +1,6 @@
 # Istante
 
-**Versione attuale: 3.10.1**  
+**Versione corrente: **3.10.2**.
 **Un momento, per te.** Un progetto di **Ruslan Dzyuba**.  
 [Sito ufficiale: istante.ruslan-dzyuba.it](https://istante.ruslan-dzyuba.it/)
 
@@ -252,7 +252,7 @@ meteo può restare indicato come salvato fino a tre ore.
 
 - `index.html`: dashboard e calendario virtuale. `calendario.html`: compatibilità per i vecchi link. `leggi.html`: documenti Markdown.
 - `assets/`: logica e interfaccia; `data/`: raccolta originale, catalogo delle raccolte e stazioni.
-- `README.md`: il progetto; `CHANGELOG.md`: storico; `docs/release/v3.10.1.md`: questa release.
+- `README.md`: il progetto; `CHANGELOG.md`: storico; `docs/release/v3.10.2.md`: questa release.
 - `docs/LICENZA.md`, `docs/TERZE-PARTI.md`, `docs/licenses/`: condizioni e attribuzioni.
 
 **Istante — Ruslan Dzyuba**. Sorgente disponibile per uso non commerciale, con

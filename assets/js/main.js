@@ -1,4 +1,4 @@
-/* Istante v3.10.1 - application and local preferences. */
+/* Istante v3.10.2 - application and local preferences. */
 (function () {
 'use strict';
 const C = window.IstanteCore;
@@ -388,6 +388,19 @@ document.addEventListener('pointermove',activity,{passive:true});document.addEve
 document.addEventListener('visibilitychange',()=>{clearTimeout(clockTimer);if(!document.hidden){startClock();lastActivity=0;activity();}updateWakeLock();});
 window.addEventListener('pageshow',()=>{startClock();});window.addEventListener('pagehide',()=>{clearTimeout(clockTimer);if(wakeSentinel)wakeSentinel.release().catch(()=>{});});
 window.addEventListener('storage',event=>{if(event.key===KEY+'favorites'){const next=store.read('favorites',[]);favorites.clear();if(Array.isArray(next))next.filter(v=>typeof v==='string').forEach(v=>favorites.add(v));updateFavoriteButton();updateLibraryCounts();if($('#library-dialog').open)renderLibrary();}});
+
+// Quick relative goal helper: converts months/years into the existing date field.
+$('#goal-offset-apply')?.addEventListener('click',()=>{
+ const value=Math.max(1,Math.min(120,Number($('#goal-offset-value')?.value)||1));
+ const unit=$('#goal-offset-unit')?.value==='years'?'years':'months';
+ const startInput=$('[name="goalStart"]'),endInput=$('[name="goalEnd"]');
+ let start=startInput.value?new Date(startInput.value):new Date();if(!Number.isFinite(+start))start=new Date();
+ const end=new Date(start);if(unit==='years')end.setFullYear(end.getFullYear()+value);else end.setMonth(end.getMonth()+value);
+ const local=d=>{const z=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate())+'T'+z(d.getHours())+':'+z(d.getMinutes());};
+ if(!startInput.value){startInput.value=local(start);startInput.dispatchEvent(new Event('change',{bubbles:true}));}
+ endInput.value=local(end);endInput.dispatchEvent(new Event('change',{bubbles:true}));window.IstanteControls.refresh();
+ toast('Traguardo impostato tra '+value+' '+(unit==='years'?(value===1?'anno':'anni'):(value===1?'mese':'mesi'))+'.');
+});
 window.IstanteControls.enhance($('#settings-form'));window.IstanteControls.enhance($('#radio-panel'));window.IstanteControls.enhance($('#timer-session-options'));applyAppearance(new Date());updateLibraryCounts();startClock();activity();updateWakeLock();
 // The complete collection is local. No redundant fetch is needed during startup.
 if(storageFailed)toast('Il browser non consente il salvataggio locale. La pagina funziona comunque in questa sessione.');

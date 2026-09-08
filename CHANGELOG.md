@@ -1,6 +1,17 @@
-# Changelog di Istante
+# Changelog
 
-## 3.10.1 — 8 settembre 2026
+## 3.10.2
+- Calendario bloccato nel viewport: niente scroll della pagina.
+- Supporto per `Western/Central Europe` e varianti nei file ICS.
+- Traguardo impostabile rapidamente anche in mesi o anni.
+- Tagline “Un momento, per te.” spostata sotto il logo.
+- Stazione selezionata evidenziata senza spunta in conflitto con i preferiti.
+- Pulsante elimina direttamente nella chip del timer.
+- Microtesti delle impostazioni semplificati.
+
+ di Istante
+
+## 3.10.2 — 8 settembre 2026
 
 - Qualità delle animazioni spostata in Aspetto e schermo, accanto alla grana; gli effetti mantengono il proprio pannello.
 - Timer più chiaro: Silenzio / Radio / Suono relax e riepilogo della sorgente, senza cambiare il layout della sessione.
@@ -9,7 +20,7 @@
 - Condivisione: formato Come lo schermo e nuova cattura dei gradienti e canvas visibili prima di aprire la modale. Posizioni, opacità e trasformazioni correnti; nessuna fotografia di sfondo.
 - Versioni e cache con verifica di integrità aggiornate, documentazione e note storiche conservate.
 
-Vedi le [note complete](docs/release/v3.10.1.md) per uso, controlli e limiti.
+Vedi le [note complete](docs/release/v3.10.2.md) per uso, controlli e limiti.
 
 ## 3.10.0 — 8 settembre 2026
 

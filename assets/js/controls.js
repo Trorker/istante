@@ -30,7 +30,7 @@
   document.body.append(d);return d;
  }
  function openSelect(input){
-  const d=makePopup(input,'select-popup'),list=el('div','custom-options');list.setAttribute('role','listbox');list.setAttribute('aria-label',fieldLabel(input));const opts=[];let search;const isStation=input.dataset.stations==='true';let favoriteOnly=false,applyFilter=()=>{};
+  const d=makePopup(input,'select-popup'),list=el('div','custom-options');list.setAttribute('role','listbox');list.setAttribute('aria-label',fieldLabel(input));const opts=[];let search;const isStation=input.dataset.stations==='true';if(isStation)d.classList.add('station-select-popup');let favoriteOnly=false,applyFilter=()=>{};
   let searchBar;
   if(isStation||input.dataset.search==='true'||input.options.length>12){
    searchBar=el('div',isStation?'station-search-tools':'select-search-tools');const bar=el('label','select-search-bar'),glyph=el('span','icon');glyph.innerHTML=icon('search');bar.append(glyph);search=el('input','select-search');search.type='search';search.placeholder=isStation?'Cerca una stazione...':'Cerca...';search.setAttribute('aria-label','Cerca nel catalogo');search.autocomplete='off';bar.append(search);searchBar.append(bar);d.append(searchBar);

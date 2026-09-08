@@ -87,3 +87,11 @@ button[aria-pressed=true].icon-button{color:var(--accent);background:var(--accen
 .slot-toggle input:before{content:'';display:block!important;position:absolute;width:12px;height:12px;left:3px;top:3px;border-radius:50%;background:var(--muted);transition:transform .2s}
 .slot-toggle input:checked{background:var(--accent-soft);border-color:var(--accent)!important}
 .slot-toggle input:checked:before{background:var(--accent);transform:translateX(14px)}
+
+/* v3.10.2 refinements */
+.brand-lockup{display:grid;grid-template-columns:auto;gap:2px;align-items:start}.brand-lockup .wordmark{line-height:1}.brand-lockup .brand-tagline{padding:0 0 0 36px;font-size:10px;line-height:1.2}.topbar>.brand-tagline{display:none}
+.goal-relative-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;gap:10px;align-items:end;margin-top:12px}.goal-relative-row .secondary-button{min-height:46px;margin-bottom:0}
+.station-select-popup .custom-option[aria-selected=true]::after{display:none!important}.station-select-popup .custom-option[aria-selected=true]{box-shadow:inset 3px 0 0 var(--accent);padding-left:15px;background:var(--accent-soft);color:var(--ink)}.station-select-popup .custom-option[aria-selected=true] .station-no{color:var(--accent)}
+.timer-chip-delete{color:var(--muted)}.timer-chip-delete:hover,.timer-chip-delete:focus-visible{color:var(--accent);background:var(--accent-soft)}
+.settings-section-body .field-note{font-size:10px;line-height:1.55;max-width:48ch}.settings-section summary small{line-height:1.35}
+@media(max-width:520px){.goal-relative-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.goal-relative-row .secondary-button{grid-column:1/-1;width:100%;justify-content:center}.brand-lockup .brand-tagline{padding-left:34px;font-size:9px}}
