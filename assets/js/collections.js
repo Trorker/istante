@@ -32,7 +32,7 @@ function create({store,core,original,legacy,notify,onChange}){
   const box=document.getElementById('collection-shelf');if(!box)return;box.replaceChildren();document.getElementById('collection-active-name').textContent=selected().title;
   const query=core.normalized(document.getElementById('collection-search').value);
   document.querySelectorAll('[data-collection-tab]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.collectionTab===tab)));
-  document.getElementById('collection-library-note').textContent=tab==='mine'?'Scegli una raccolta da usare. Puoi esportare i JSON e rimuovere quelli aggiunti.':'Scarica nella tua biblioteca: i testi sono inclusi in Istante e disponibili anche senza connessione. Il download non cambia la raccolta attiva.';
+  document.getElementById('collection-library-note').textContent=tab==='mine'?'Scegli una raccolta da usare. Puoi importare JSON o TXT ed esportare le raccolte in JSON.':'Scarica nella tua biblioteca: i testi sono inclusi in Istante e disponibili anche senza connessione. Il download non cambia la raccolta attiva.';
   const list=tab==='mine'?[builtin,...state.items]:catalog();
   for(const item of list.filter(x=>!query||core.normalized(x.title+' '+x.category+' '+(x.description||'')).includes(query))){
    const row=document.createElement('article');row.className='collection-card'+(item.id===state.selected?' is-selected':'');

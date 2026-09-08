@@ -1,4 +1,4 @@
-/* Istante v3.10.3 - application and local preferences. */
+/* Istante v3.10.4 - application and local preferences. */
 (function () {
 'use strict';
 const C = window.IstanteCore;
@@ -307,7 +307,7 @@ $$('dialog').forEach(dialog=>{
 $$('[data-open]').forEach(b=>b.addEventListener('click',()=>openDialog(b.dataset.open)));
 $$('[data-close]').forEach(b=>b.addEventListener('click',()=>closeDialog(b.closest('dialog'))));
 $('#configure-timer').addEventListener('click',()=>{returnToTimer=true;$('#settings-form').requestSubmit();});
-$('#timer-options-open').addEventListener('click',()=>{
+$('#timer-options-open')?.addEventListener('click',()=>{
  const dialog=$('#timer-dialog');dialog.addEventListener('close',()=>{
   returnToTimer=true;openDialog('settings');expandSection($('#section-timer summary'));
  },{once:true});closeDialog(dialog);
@@ -355,8 +355,15 @@ $('#favorite-current').addEventListener('click',()=>{if(current){toggleFavorite(
 $('#filter-all').addEventListener('click',()=>{favoriteOnly=false;renderLibrary(true);});$('#filter-favorites').addEventListener('click',()=>{favoriteOnly=true;renderLibrary(true);});
 $('#phrase-search').addEventListener('input',()=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>renderLibrary(true),100);});$('#load-more').addEventListener('click',()=>{visibleLimit+=40;renderLibrary();});
 function activateCollection(payload){const parsed=C.parsePhrases(payload);phrases=parsed;deck=C.buildDeck(phrases);slotKey='';syncSchedule(new Date(),true);updateLibraryCounts();renderLibrary(true);}
-$('#import-phrases').addEventListener('change',async event=>{const file=event.target.files[0];if(!file)return;try{if(file.size>2*1024*1024)throw Error('Scegli un JSON inferiore a 2 MB.');collections.add(JSON.parse(await file.text()),file.name.replace(/\.json$/i,''));}catch(e){toast(e instanceof SyntaxError?'Il JSON non è valido.':e.message);}finally{event.target.value='';}});
-$('#collection-import-file').addEventListener('change',async event=>{const file=event.target.files[0];if(!file)return;try{if(file.size>2097152)throw Error('Scegli un JSON inferiore a 2 MB.');collections.add(JSON.parse(await file.text()),file.name.replace(/\.json$/i,''));}catch(e){toast(e instanceof SyntaxError?'Il JSON non e valido.':e.message);}finally{event.target.value='';}});
+async function importCollectionFile(file){
+ if(file.size>2*1024*1024)throw Error('Scegli un file inferiore a 2 MB.');
+ const text=await file.text(),isTxt=/\.txt$/i.test(file.name)||file.type==='text/plain';
+ if(isTxt){const phrases=text.split(/\r?\n/).map(v=>v.trim()).filter(Boolean);if(!phrases.length)throw Error('Il TXT non contiene frasi. Inserisci una frase per riga.');return{title:file.name.replace(/\.txt$/i,''),category:'Personale',phrases};}
+ try{return JSON.parse(text);}catch(_){throw Error('Il JSON non è valido. Per un TXT usa una frase per riga.');}
+}
+async function handleCollectionImport(event){const file=event.target.files[0];if(!file)return;try{collections.add(await importCollectionFile(file),file.name.replace(/\.(json|txt)$/i,''));}catch(e){toast(e.message);}finally{event.target.value='';}}
+$('#import-phrases').addEventListener('change',handleCollectionImport);
+$('#collection-import-file').addEventListener('change',handleCollectionImport);
 $('#export-phrases').addEventListener('click',()=>{
  const payload={version:'1.0',title:collections.name(),language:'it',count:phrases.length,phrases:phrases.map(p=>p.text)},blob=new Blob([JSON.stringify(payload,null,2)+'\n'],{type:'application/json;charset=utf-8'});
  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='istante-frasi.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
@@ -372,6 +379,14 @@ $('#photo-input').addEventListener('change',async event=>{
  const ctx=canvas.getContext('2d');ctx.fillStyle='#131615';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(image,0,0,canvas.width,canvas.height);draftPhoto=canvas.toDataURL('image/jpeg',.83);
  $('#photo-label').textContent=file.name.length>32?file.name.slice(0,29)+'...':file.name;toast('Foto pronta. Salva le impostazioni per applicarla.');}
  catch(error){toast(error.message);}
+});
+
+document.addEventListener('istante:onboarding-setting',event=>{
+ const d=event.detail||{},allowed={clockStyle:['digital','analog'],theme:['auto','dark','light'],mode:['twice','daily'],timerMinutes:[5,15,25,45,60]};
+ if(!Object.prototype.hasOwnProperty.call(allowed,d.key)||!allowed[d.key].includes(d.value))return;
+ settings=C.cleanSettings({...settings,[d.key]:d.value});store.write('settings',settings);
+ if(d.key==='mode')syncSchedule(new Date(),true);
+ applyAppearance(new Date());lastClock='';tick(true);moments.apply();pages.apply();
 });
 document.addEventListener('keydown',event=>{
  activity();const target=event.target;

@@ -44,3 +44,5 @@
 .share-formats{grid-template-columns:repeat(3,minmax(0,1fr))!important}
 .share-content>.field-note{max-width:none;width:100%}
 @media(max-width:520px){.share-formats{grid-template-columns:repeat(3,minmax(0,1fr))!important}.share-formats button{font-size:11px;padding-inline:4px}.share-formats button small{font-size:9px}}
+
+/* v3.10.4: QR rendering is transparent/subtle in the generated canvas; no extra UI card is added here. */

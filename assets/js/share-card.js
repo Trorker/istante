@@ -154,7 +154,7 @@
   const P=palette(light,opt.sky&&snapshot.sky?!!snapshot.sky.isDay:true);
   if(opt.sky&&snapshot.sky?.capture)P.background=snapshot.sky.capture.background;
   const qrMatrix=opt.qr?window.IstanteQR.matrix(snapshot.shareURL||URL):null,qrTotal=qrMatrix?qrMatrix.length+8:0;
-  const qrTarget=(format==='landscape'?112:format==='square'?128:156)*scale;
+  const qrTarget=(format==='landscape'?96:format==='square'?112:148)*scale;
   const qrCell=qrMatrix?Math.max(2,Math.floor(qrTarget/qrTotal)):0,qrSide=qrTotal*qrCell;
   c.scale(scale,scale);c.fillStyle=P.background;c.fillRect(0,0,W,H);
   if(!snapshot.sky?.capture){haze(c,W*.04,H*.05,650,light?'#b5c8a137':'#6d91552c',W,H);haze(c,W*.88,H*.92,540,light?'#d7c39732':'#9d845221',W,H);}
@@ -202,7 +202,12 @@
    c.save();c.setTransform(1,0,0,1,0,0);
    const matrix=qrMatrix,quiet=4,total=qrTotal,cell=qrCell,side=qrSide;
    const x=Math.round(w-pad*scale-side),y=Math.round((footer+(land?18:15))*scale);
-   c.fillStyle=P.qrBg;c.fillRect(x,y,side,side);c.fillStyle=P.qrInk;
+   const isDay=snapshot.sky?.isDay!==false;
+   // Transparent quiet zone: by day the code follows the ink colour; by night it becomes paper white.
+   // A very light translucent plate keeps contrast on animated/weather backgrounds without becoming a card.
+   const platePad=Math.max(3,Math.round(5*scale));c.save();c.globalAlpha=isDay?.12:.08;c.fillStyle=isDay?'#f1eee5':'#f1eee5';
+   if(typeof c.roundRect==='function'){c.beginPath();c.roundRect(x-platePad,y-platePad,side+platePad*2,side+platePad*2,Math.max(5,8*scale));c.fill();}else c.fillRect(x-platePad,y-platePad,side+platePad*2,side+platePad*2);c.restore();
+   c.fillStyle=isDay?P.ink:'#f1eee5';
    matrix.forEach((row,i)=>row.forEach((bit,j)=>{if(bit)c.fillRect(x+(j+quiet)*cell,y+(i+quiet)*cell,cell,cell);}));
    c.restore();
   }

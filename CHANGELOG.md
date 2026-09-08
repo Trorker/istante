@@ -1,5 +1,18 @@
 # Changelog
 
+## 3.10.4 — 9 settembre 2026
+
+- importazione raccolte anche da file TXT, una frase per riga;
+- checkbox native personalizzate nello stile di Istante;
+- QR delle cartoline più piccolo e cromaticamente coerente: scuro/ink di giorno, carta chiara di notte, con fondo quasi trasparente;
+- calendario con testata unica e più compatta; rimossa la card vuota “Fai spazio ai tuoi giorni”;
+- quando non ci sono calendari compare un accesso rapido “Aggiungi” accanto a “I tuoi calendari”;
+- timer più compatto e senza pulsante Impostazioni;
+- benvenuto riscritto per spiegare meglio utilità e filosofia del progetto;
+- logo del benvenuto ricostruito in CSS e animato, senza immagine;
+- guida trasformata in mini wizard: alcune scelte (orologio, ritmo frasi, durata timer, tema) si applicano direttamente durante il percorso;
+- transizioni della guida rese più dinamiche mantenendo `prefers-reduced-motion`.
+
 ## 3.10.3 — 9 settembre 2026
 
 - Condivisione semplificata: rimossa misura schermo, QR più piccolo e coerente con la palette, eliminato Copia frase.
