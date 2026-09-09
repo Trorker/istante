@@ -1,119 +1,123 @@
-/* Istante 3.13.2 - verified offline shell; updates wait for consent. */
+/* Istante 3.13.3 - verified offline shell; updates wait for consent. */
 'use strict';
-const VERSION="3.13.2";
+const VERSION="3.13.3";
 const PREFIX='istante-'+encodeURIComponent(self.registration.scope)+'-';
-const CACHE=PREFIX+VERSION+'-5f72908449ae';
+const CACHE=PREFIX+VERSION+'-b7da8e0f920c';
 const FILES=[
   {
     "url": "./CHANGELOG.md",
-    "integrity": "sha256-QfseWNcNvQRMAY0s8uYjthm1X1urd+HBNUyRCzSZt8A="
+    "integrity": "sha256-T0Uh11OrOlEcJ+sS/8LgBxbO8HGrCPSyiEr8MhK4Xjw="
   },
   {
     "url": "./README.md",
-    "integrity": "sha256-ogjEw7kedkJFk2ZBmjGeVqy+TB2PTPyJReModWjodHs="
+    "integrity": "sha256-PzFaZlwq8+DYSB/ufZcHnoWvnPVUuR0AaBMNIctOj1A="
   },
   {
-    "url": "./assets/css/app.css?v=3.13.2",
+    "url": "./assets/css/app.css?v=3.13.3",
     "integrity": "sha256-aFnVAkNSeEWGO9B7XrCksckOwpIqabK8X8Jf6YQlO2s="
   },
   {
-    "url": "./assets/css/calendar.css?v=3.13.2",
+    "url": "./assets/css/calendar.css?v=3.13.3",
     "integrity": "sha256-mRseePu1SbZTihKvvJg9PyD9FMkRtOhoqtifSFz6AuI="
   },
   {
-    "url": "./assets/css/documents.css?v=3.13.2",
+    "url": "./assets/css/documents.css?v=3.13.3",
     "integrity": "sha256-w30+osfEFz4kpIUwSQSM0yBdD9dbBPcs7d3AbDDQt1U="
   },
   {
-    "url": "./assets/css/evolution.css?v=3.13.2",
+    "url": "./assets/css/evolution.css?v=3.13.3",
     "integrity": "sha256-+RhSkH7u6HgB+XgDyNlNiWvP9t6+2z1Fgtr0+D2v9fY="
   },
   {
-    "url": "./assets/css/interactions.css?v=3.13.2",
+    "url": "./assets/css/interactions.css?v=3.13.3",
     "integrity": "sha256-8MepLjLfIYmfrajvDlkVYRQkBTJNoHD3IlKlt1XmDL4="
   },
   {
-    "url": "./assets/css/onboarding.css?v=3.13.2",
+    "url": "./assets/css/onboarding.css?v=3.13.3",
     "integrity": "sha256-AQ4H3dUnR1GsaqTsb3YB0S8u1BT74DFWXQo25fyZR5M="
   },
   {
-    "url": "./assets/css/polish-3.10.1.css?v=3.13.2",
+    "url": "./assets/css/polish-3.10.1.css?v=3.13.3",
     "integrity": "sha256-DpPWKaakcY8r5zAt7cGYVc2J14yr8WmLYE9xHeDDjdU="
   },
   {
-    "url": "./assets/css/polish-3.10.3.css?v=3.13.2",
+    "url": "./assets/css/polish-3.10.3.css?v=3.13.3",
     "integrity": "sha256-gKPIRjN9LzniljlsEk5tIdG/B6eDYtnc0DvI+uqulCQ="
   },
   {
-    "url": "./assets/css/polish-3.11.1.css?v=3.13.2",
+    "url": "./assets/css/polish-3.11.1.css?v=3.13.3",
     "integrity": "sha256-s6SmC3EuequV2sRDujxiSu60IdD2iEqeCA7hy9durvk="
   },
   {
-    "url": "./assets/css/polish-3.11.css?v=3.13.2",
+    "url": "./assets/css/polish-3.11.css?v=3.13.3",
     "integrity": "sha256-xQhb0XcpsDL8RPdLOfQKjPoDtZuqcJv4aMToagsYC2c="
   },
   {
-    "url": "./assets/css/polish-3.12.1.css?v=3.13.2",
+    "url": "./assets/css/polish-3.12.1.css?v=3.13.3",
     "integrity": "sha256-gtA1u5t/+mdiZ7QBENaBKWeuQ1qCzsUaDSy0ti63IG8="
   },
   {
-    "url": "./assets/css/polish-3.12.2.css?v=3.13.2",
+    "url": "./assets/css/polish-3.12.2.css?v=3.13.3",
     "integrity": "sha256-x2oPkXQSI1fxgJZikah2xwqVtMbWCsIj2PpwX1HxCVc="
   },
   {
-    "url": "./assets/css/polish-3.12.3.css?v=3.13.2",
+    "url": "./assets/css/polish-3.12.3.css?v=3.13.3",
     "integrity": "sha256-VX8zB1+75ZX/8GIordzyZgF34cARdPOKxB+GZjG7mCI="
   },
   {
-    "url": "./assets/css/polish-3.12.5.css?v=3.13.2",
+    "url": "./assets/css/polish-3.12.5.css?v=3.13.3",
     "integrity": "sha256-YKrp9dCI28LV40F8v06VTs1QRnfDBBmefMGcOGTft4Y="
   },
   {
-    "url": "./assets/css/polish-3.12.6.css?v=3.13.2",
+    "url": "./assets/css/polish-3.12.6.css?v=3.13.3",
     "integrity": "sha256-s5bMyAlYtsFN7ecUsSdp5+ebWS5rRe9Vc8wBzrEVX+E="
   },
   {
-    "url": "./assets/css/polish-3.12.7.css?v=3.13.2",
+    "url": "./assets/css/polish-3.12.7.css?v=3.13.3",
     "integrity": "sha256-VAyI4isyajV46CS8HmgDGeA5jWDVpwhUKYkCf3cqp6U="
   },
   {
-    "url": "./assets/css/polish-3.12.8.css?v=3.13.2",
+    "url": "./assets/css/polish-3.12.8.css?v=3.13.3",
     "integrity": "sha256-LVCxnZ3DXob9Ry150gXtjg7x9eSABZI/10JSgpdykB4="
   },
   {
-    "url": "./assets/css/polish-3.12.9.css?v=3.13.2",
+    "url": "./assets/css/polish-3.12.9.css?v=3.13.3",
     "integrity": "sha256-quVsSXf4GHVl25s2wMTjKkaSt5SetZaif30eAtVlXHM="
   },
   {
-    "url": "./assets/css/polish-3.13.0.css?v=3.13.2",
+    "url": "./assets/css/polish-3.13.0.css?v=3.13.3",
     "integrity": "sha256-kICGywA1Y6b6EOOa0WDBdgR7foJ0aFcDOuc+d3l7ZdQ="
   },
   {
-    "url": "./assets/css/polish-3.13.1.css?v=3.13.2",
+    "url": "./assets/css/polish-3.13.1.css?v=3.13.3",
     "integrity": "sha256-uqAXxvi0t2ljIZAZe08PCckDYXr/EXwW5Cb2KAXbJSA="
   },
   {
-    "url": "./assets/css/polish-3.13.2.css?v=3.13.2",
+    "url": "./assets/css/polish-3.13.2.css?v=3.13.3",
     "integrity": "sha256-FB+Olken7WVgG6RhncuIjjPamdyo1zl+bwoN+38frbA="
   },
   {
-    "url": "./assets/css/rebuild.css?v=3.13.2",
+    "url": "./assets/css/polish-3.13.3.css?v=3.13.3",
+    "integrity": "sha256-SfPaeQ3TNmrFivCPqqriJG3Y9oxzLXzfeMPgckemZlA="
+  },
+  {
+    "url": "./assets/css/rebuild.css?v=3.13.3",
     "integrity": "sha256-7+I1/IHVLaxUjil38ea0EWI76xzxWKz+mtLc+xIufVM="
   },
   {
-    "url": "./assets/css/refinements.css?v=3.13.2",
+    "url": "./assets/css/refinements.css?v=3.13.3",
     "integrity": "sha256-ie4hEuKO1al0lkVsNvOAzvs5RA8mMRfX5E8ufntSrvU="
   },
   {
-    "url": "./assets/css/scene.css?v=3.13.2",
+    "url": "./assets/css/scene.css?v=3.13.3",
     "integrity": "sha256-DfUZpZ+I3yME216MiDOL/k5fvN2dr03DKSvP80KA9KQ="
   },
   {
-    "url": "./assets/css/sharing.css?v=3.13.2",
+    "url": "./assets/css/sharing.css?v=3.13.3",
     "integrity": "sha256-1PFUCBrg6C0Q930Z0Ny4EeTFe1DJDUg83GKAf98fcdA="
   },
   {
-    "url": "./assets/css/workspace.css?v=3.13.2",
+    "url": "./assets/css/workspace.css?v=3.13.3",
     "integrity": "sha256-SucOOzR4hMet+GVIRyminV6RHw1Tds/BhxKSlBxNaKY="
   },
   {
@@ -161,167 +165,167 @@ const FILES=[
     "integrity": "sha256-zbXBjZ8ni9l2agI1s96jybKmx/bNP3hKmLASPqssDXo="
   },
   {
-    "url": "./assets/js/ambient.js?v=3.13.2",
+    "url": "./assets/js/ambient.js?v=3.13.3",
     "integrity": "sha256-6aTKhGOJvFau9okuVrpfl3/nY5njbkRYvTrsrmEdCiw="
   },
   {
-    "url": "./assets/js/backup.js?v=3.13.2",
+    "url": "./assets/js/backup.js?v=3.13.3",
     "integrity": "sha256-p2dz1ebiJS5eMQH3vJ0rJzpC96d6N4sjugkessUZg18="
   },
   {
-    "url": "./assets/js/calendar-core.js?v=3.13.2",
+    "url": "./assets/js/calendar-core.js?v=3.13.3",
     "integrity": "sha256-0PSRzkTpt6QT+HTkNXbcI9iDZxq6FkNiz9MX1TPWmrQ="
   },
   {
-    "url": "./assets/js/calendar-holidays.js?v=3.13.2",
+    "url": "./assets/js/calendar-holidays.js?v=3.13.3",
     "integrity": "sha256-XhBKagz5DeWSsE6Fj0fOxtEcuMPz9fKBLtz26cwfpq8="
   },
   {
-    "url": "./assets/js/calendar-worker.js?v=3.13.2",
+    "url": "./assets/js/calendar-worker.js?v=3.13.3",
     "integrity": "sha256-QClTXX2cCBrvQVl3LvEgfoPWi8SfDk/Z5efjH1kOw2U="
   },
   {
-    "url": "./assets/js/calendar.js?v=3.13.2",
+    "url": "./assets/js/calendar.js?v=3.13.3",
     "integrity": "sha256-QdtkiwHFvP6kc1VwA4xNwirF8SrIfJsebT0ct5J/Olc="
   },
   {
-    "url": "./assets/js/collections.js?v=3.13.2",
+    "url": "./assets/js/collections.js?v=3.13.3",
     "integrity": "sha256-yvVz/zdTpkPm55fqrw2eWBd5pM0g1fKxml2qByW8QrY="
   },
   {
-    "url": "./assets/js/companion.js?v=3.13.2",
+    "url": "./assets/js/companion.js?v=3.13.3",
     "integrity": "sha256-o0fN7fB6IZQ3WZmdtwvC8/Bu/c2nwnyR4Cf90rwg+9w="
   },
   {
-    "url": "./assets/js/controls.js?v=3.13.2",
+    "url": "./assets/js/controls.js?v=3.13.3",
     "integrity": "sha256-+NERywMyu39MNc4I9UOR1ReGkgO6oafM+2NHE7ju968="
   },
   {
-    "url": "./assets/js/core.js?v=3.13.2",
-    "integrity": "sha256-HW7D39iiTtuEy/VPk0Od+bYqJ7Rq+WHsNcbbrOijMnc="
+    "url": "./assets/js/core.js?v=3.13.3",
+    "integrity": "sha256-RO/QQqqC8UIedbCgGMl3iMINi0ophQKW+mB+wOaY2zo="
   },
   {
-    "url": "./assets/js/cursor.js?v=3.13.2",
+    "url": "./assets/js/cursor.js?v=3.13.3",
     "integrity": "sha256-xnjdsjHYgqNP2TKtbzg7N7TFXtCfxmkOtXcRsGEl4ps="
   },
   {
-    "url": "./assets/js/documents.js?v=3.13.2",
-    "integrity": "sha256-LShSZIjLpMxsH/GaM2rLUukfsnc7kz3BoJlNJ4C7uxU="
+    "url": "./assets/js/documents.js?v=3.13.3",
+    "integrity": "sha256-3ujOLHSwHUlQUybdIqpnQWu83sWFSp/+IaXftyWaZnE="
   },
   {
-    "url": "./assets/js/effects.js?v=3.13.2",
+    "url": "./assets/js/effects.js?v=3.13.3",
     "integrity": "sha256-z29nXTO0OBr/i5SxQT2kWjNTvis58dHKutG+Q4zdFV4="
   },
   {
-    "url": "./assets/js/experience.js?v=3.13.2",
+    "url": "./assets/js/experience.js?v=3.13.3",
     "integrity": "sha256-CHzH0N6sfi9lO3RWmgqess4oFZGcCdj/avl1w+BZ3DE="
   },
   {
-    "url": "./assets/js/gestures.js?v=3.13.2",
-    "integrity": "sha256-btkjnVsk6VEutGojf6OE48uCkUt/Sf0Qjg8lhreja6M="
+    "url": "./assets/js/gestures.js?v=3.13.3",
+    "integrity": "sha256-jIAp7KKZyPamLVrkwnMp0VtvzmC0pyUtfutPmRDMQxg="
   },
   {
-    "url": "./assets/js/icons.js?v=3.13.2",
+    "url": "./assets/js/icons.js?v=3.13.3",
     "integrity": "sha256-ds17M9Sz24Oj2VnIrr4kUsh9DW7oUFIZRoiSaUm41mI="
   },
   {
-    "url": "./assets/js/main.js?v=3.13.2",
-    "integrity": "sha256-oRqUHxOl5nIbws5DDdEiGgULMeZHV8lRXOfuFnbrtk4="
+    "url": "./assets/js/main.js?v=3.13.3",
+    "integrity": "sha256-THOpm2jD/vh9fTX0rgFr0nSoGtSwcfJUpSVvSNrP7XY="
   },
   {
-    "url": "./assets/js/moments.js?v=3.13.2",
-    "integrity": "sha256-YVMaN8/HYmth36KCh7E46CWLHrwlI4mPsZHPubeS5PA="
+    "url": "./assets/js/moments.js?v=3.13.3",
+    "integrity": "sha256-n7GQEsalqMOjCsdFqC+cKbukbtpFdDL82IMBgF2v+ZM="
   },
   {
-    "url": "./assets/js/motion.js?v=3.13.2",
+    "url": "./assets/js/motion.js?v=3.13.3",
     "integrity": "sha256-vxN2FTFxleh9zVtMIBMF58C/yfzO/a6DxZ/4ZE1sRRg="
   },
   {
-    "url": "./assets/js/onboarding.js?v=3.13.2",
-    "integrity": "sha256-aNEXImakBgRTsvoCRD+IIV+l1lfoB0iLFAXct7hIQfs="
+    "url": "./assets/js/onboarding.js?v=3.13.3",
+    "integrity": "sha256-Zm8COOpiGNBiXwBBICJN36njp6StoglRR6QlYdabHF4="
   },
   {
-    "url": "./assets/js/pages.js?v=3.13.2",
-    "integrity": "sha256-vsFiQZCwvw+SfWPpEvFe1H90rSzNAg1/mm4Sz0WSSuM="
+    "url": "./assets/js/pages.js?v=3.13.3",
+    "integrity": "sha256-/hvqvZ3CwR8BuyWDDJYX1fA3YpuUehsVOFXlG26NFDI="
   },
   {
-    "url": "./assets/js/phrase-history.js?v=3.13.2",
+    "url": "./assets/js/phrase-history.js?v=3.13.3",
     "integrity": "sha256-HFas8jvUehChmHiYLJH5ju+pTqcH99BT617iEOO5qlI="
   },
   {
-    "url": "./assets/js/qr.js?v=3.13.2",
+    "url": "./assets/js/qr.js?v=3.13.3",
     "integrity": "sha256-h9+XUGoIJCIzHWgWSpGkBhUkaj6Gd6ujG0KfrWnQCWs="
   },
   {
-    "url": "./assets/js/radio.js?v=3.13.2",
+    "url": "./assets/js/radio.js?v=3.13.3",
     "integrity": "sha256-1NjCUKYwjfJaqqFKnmShOtnwzolHM59xHX+iLvQrfAM="
   },
   {
-    "url": "./assets/js/scene-snapshot.js?v=3.13.2",
+    "url": "./assets/js/scene-snapshot.js?v=3.13.3",
     "integrity": "sha256-uWF/RWhqsf1OSDC8P2qqJRG38sSd1HVFemucosjek2w="
   },
   {
-    "url": "./assets/js/scene.js?v=3.13.2",
+    "url": "./assets/js/scene.js?v=3.13.3",
     "integrity": "sha256-KmyIqEV/wShmMJzyUq6kGtTRU7YgC45Ch1yxC+DsaY4="
   },
   {
-    "url": "./assets/js/schedules.js?v=3.13.2",
+    "url": "./assets/js/schedules.js?v=3.13.3",
     "integrity": "sha256-H/yt4iLNLqoPJELoramNqaV7nH+WMXu560eLsQeaxJc="
   },
   {
-    "url": "./assets/js/share-card.js?v=3.13.2",
+    "url": "./assets/js/share-card.js?v=3.13.3",
     "integrity": "sha256-DdtcnH3IWJH5m6wOeKJGxEyYk+HQ3u9pJYhqya29LWY="
   },
   {
-    "url": "./assets/js/share-link.js?v=3.13.2",
+    "url": "./assets/js/share-link.js?v=3.13.3",
     "integrity": "sha256-2TanCsnoLWuqepFmQZ5Bpiv0Cae5pn2NdUzCQXORRwc="
   },
   {
-    "url": "./assets/js/share.js?v=3.13.2",
+    "url": "./assets/js/share.js?v=3.13.3",
     "integrity": "sha256-qDznyu5UgCS0WCxuZnPt6yR/hkHeF+OJktxkusYMIWY="
   },
   {
-    "url": "./assets/js/solar.js?v=3.13.2",
+    "url": "./assets/js/solar.js?v=3.13.3",
     "integrity": "sha256-VGRSsAaknWPX8TWTiaqN4AxevZMN6XyTxfvvPZbWY4s="
   },
   {
-    "url": "./assets/js/station-library.js?v=3.13.2",
+    "url": "./assets/js/station-library.js?v=3.13.3",
     "integrity": "sha256-LgYPUz7awWA4t+908F7CW9DqRu55l3Ud2PhLDd5cYLk="
   },
   {
-    "url": "./assets/js/station-manager.js?v=3.13.2",
+    "url": "./assets/js/station-manager.js?v=3.13.3",
     "integrity": "sha256-BjobRZbBViBAGZ52MRgEFtHHa3pMV7+3OnF2i/lIJvs="
   },
   {
-    "url": "./assets/js/time-core.js?v=3.13.2",
+    "url": "./assets/js/time-core.js?v=3.13.3",
     "integrity": "sha256-yWnAPi+1CXiopVFiAo2BqPpB6zbX4qCpf1gm8FFXMXA="
   },
   {
-    "url": "./assets/js/tooltips.js?v=3.13.2",
+    "url": "./assets/js/tooltips.js?v=3.13.3",
     "integrity": "sha256-rgj6lwM8zUdP6EjRZMtSq0RGtDjaxF5yxecawV/qPEM="
   },
   {
-    "url": "./assets/js/touch-feedback.js?v=3.13.2",
+    "url": "./assets/js/touch-feedback.js?v=3.13.3",
     "integrity": "sha256-KMdQlPn+ES9/Kfah/N/tU6hl1sqcTlQvEdMD8UZnDFM="
   },
   {
-    "url": "./assets/js/typing.js?v=3.13.2",
+    "url": "./assets/js/typing.js?v=3.13.3",
     "integrity": "sha256-UCBA6cDGYJaCIJsv5Zji0ZneeareFqMUovNDYxRCM94="
   },
   {
-    "url": "./assets/js/updates.js?v=3.13.2",
+    "url": "./assets/js/updates.js?v=3.13.3",
     "integrity": "sha256-cAXmy1J897v+efX3seGbPVaCt9Xtfc+EANURF7Tuz2A="
   },
   {
-    "url": "./assets/js/weather-scene.js?v=3.13.2",
+    "url": "./assets/js/weather-scene.js?v=3.13.3",
     "integrity": "sha256-1d94NsdzeehITi9XR9HJ3UKJ+SIsGxvJtRbMZ8Dd8vA="
   },
   {
     "url": "./calendario.html",
-    "integrity": "sha256-WsMkeUqKPz6/VZyhOHzkjqZnkMpk/iizOUZg1mOEeEw="
+    "integrity": "sha256-yquaX5Bcbvq3E6O83Ow0eU6P8fa+xfrXY3UOFvIRSYo="
   },
   {
-    "url": "./data/collection-catalog.js?v=3.13.2",
+    "url": "./data/collection-catalog.js?v=3.13.3",
     "integrity": "sha256-UcIR0Oz/3Vg766QJdY+Uzfx4QzqghtGhseMXceIB2ts="
   },
   {
@@ -337,11 +341,11 @@ const FILES=[
     "integrity": "sha256-lcOQFEdF35LWHEz2YMTjbM0vZYXO8sSMH+DRna+ZtFU="
   },
   {
-    "url": "./data/phrases.js?v=3.13.2",
+    "url": "./data/phrases.js?v=3.13.3",
     "integrity": "sha256-S1hjBGN9N/XT3kSrXVE5xXanUIJ2HqtUKVQnFqTmlEw="
   },
   {
-    "url": "./data/stations.js?v=3.13.2",
+    "url": "./data/stations.js?v=3.13.3",
     "integrity": "sha256-ogF3QoCghtIz8erATYiLCc8fcJ7v5RDFUrFuU4EU4CA="
   },
   {
@@ -465,6 +469,10 @@ const FILES=[
     "integrity": "sha256-f1aDr01w0RBs3vA3OQbNvA8m9SI9UD461CZKu3A7uPE="
   },
   {
+    "url": "./docs/release/v3.13.3.md",
+    "integrity": "sha256-J/ug/jBbDDTdMjEUgueQUfUYMmjIr0sI3yh3mZR7Jfw="
+  },
+  {
     "url": "./docs/release/v3.4.0.md",
     "integrity": "sha256-Iyfij0NgTLddiOIOsqQTrG6Rs0UgKLcaMF4OExi+BpM="
   },
@@ -490,11 +498,11 @@ const FILES=[
   },
   {
     "url": "./index.html",
-    "integrity": "sha256-N3Gxx3asT2RQcT5nWdeRsI3/GbuSR+YBTXfwEI+6ZPI="
+    "integrity": "sha256-NP8XJmndaPkql4SDmV1ZfwHxHNQv7AGsoN6oyFbsnOc="
   },
   {
     "url": "./leggi.html",
-    "integrity": "sha256-5rEzSHeFseJ8HtziYGWisdwAL8Yu9Kik7JOgPRyeM9o="
+    "integrity": "sha256-XoVvhT00CbF6XoqTeSDOynQ2gpoQpApmFblSMXvmn44="
   },
   {
     "url": "./manifest.webmanifest",
@@ -502,7 +510,7 @@ const FILES=[
   },
   {
     "url": "./version.json",
-    "integrity": "sha256-uD52kZg+2b/khOoMbhu2lRlIhdVTi9jBbFjNtOvIIO0="
+    "integrity": "sha256-CVt83nvImqSMLtNvXVubOykv9pvKBoYQ16TDC0kRa1g="
   }
 ];
 const ABS=FILES.map(f=>({...f,url:new URL(f.url,self.registration.scope).href}));

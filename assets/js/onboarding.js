@@ -13,7 +13,7 @@
    {target:'.collection-link',note:'qui ritrovi le tue parole',title:'La mia raccolta apre la biblioteca.',copy:'Frasi, preferiti e raccolte personali restano insieme. Puoi creare una raccolta tua e aggiungere i pensieri uno alla volta.'},
    {target:'#next-phrase',note:'quando vuoi cambiare aria',title:'Un altro pensiero, subito.',copy:'Questo tasto cambia frase senza modificare la tua programmazione automatica.'},
    {target:'#favorite-current',note:'questo cuore conserva',title:'Tieni vicino ciò che ti parla.',copy:'Il cuore salva il pensiero corrente tra i preferiti, così puoi ritrovarlo nella biblioteca.'},
-   {target:'#timer-open',force:true,simulate:'timer',note:'una pausa con un confine',title:'Dove vuoi usare il timer?',copy:'Puoi aprirlo in una finestra oppure dedicargli una pagina intera. La durata la scegli quando lo apri.'},
+   {target:'#timer-open',force:true,note:'una pausa con un confine',title:'Il timer resta vicino.',copy:'Si apre in una finestra ottimizzata anche per touch. La durata si sceglie dal quadrante.'},
    {target:'#calendar-open',force:true,simulate:'calendar',note:'i tuoi giorni, senza rumore',title:'Il calendario è sempre raggiungibile.',copy:'Decidi se abilitarlo adesso. Se vuoi collegare un calendario ICS, apri la pagina Calendario e usa Gestisci.'},
    {target:'#share-open',note:'un pensiero da regalare',title:'Porta con te questo istante.',copy:'Condividi una cartolina o un link. Scegli formato e dettagli senza cambiare la schermata principale.'},
    {target:'#fullscreen',note:'quando vuoi togliere il resto',title:'Uno schermo, un solo momento.',copy:'Schermo intero rende Istante più immersivo su monitor, tablet o uno schermo dedicato.'},
@@ -61,7 +61,7 @@
    const raw=target.getBoundingClientRect(),margin=10;
    const r={x:clamp(raw.x-6,4,W-4),y:clamp(raw.y-6,4,H-4),w:Math.min(raw.width+12,W-8),h:Math.min(raw.height+12,H-8)};
    r.w=Math.min(r.w,W-4-r.x);r.h=Math.min(r.h,H-4-r.y);
-   card.style.width=Math.min(380,W-28,H<450?Math.max(240,W*.50):380)+'px';card.style.maxHeight=Math.max(140,H-28)+'px';
+   const cardWidth=W<=740?Math.min(index===1?310:330,W-18):Math.min(380,W-28,H<450?Math.max(240,W*.46):380);card.style.width=cardWidth+'px';card.style.maxHeight=Math.max(130,H-(W<=740?14:28))+'px';
    const ch=card.offsetHeight,cw=card.offsetWidth,cx=r.x+r.w/2,cy=r.y+r.h/2,gap=48;
    const spots=[{x:cx-cw/2,y:r.y+r.h+gap},{x:cx-cw/2,y:r.y-ch-gap},{x:r.x+r.w+gap,y:cy-ch/2},{x:r.x-cw-gap,y:cy-ch/2}];
    function scored(p){const x=clamp(p.x,14,W-cw-14),y=clamp(p.y,14,H-ch-14),ox=Math.max(0,Math.min(x+cw,r.x+r.w+margin)-Math.max(x,r.x-margin)),oy=Math.max(0,Math.min(y+ch,r.y+r.h+margin)-Math.max(y,r.y-margin));return{x,y,score:ox*oy*100+Math.abs(x-p.x)+Math.abs(y-p.y)};}
@@ -93,10 +93,6 @@
    const status=box.querySelector('[data-weather-status]'),locate=box.querySelector('[data-weather-action=locate]');
    locate.onclick=()=>{locate.disabled=true;status.textContent='Attendo la posizione…';document.dispatchEvent(new CustomEvent('istante:onboarding-weather-locate',{detail:{done(ok,message){locate.disabled=false;status.textContent=message|| (ok?'Meteo attivato.':'Posizione non disponibile.');if(ok){locate.textContent='Meteo attivato';locate.setAttribute('aria-pressed','true');}position();}}}));};
    box.querySelector('[data-weather-action=later]').onclick=()=>{store.write('settings',{...store.read('settings',{}),weather:false});document.dispatchEvent(new CustomEvent('istante:onboarding-setting',{detail:{key:'weather',value:false}}));status.textContent='Va bene. Puoi attivarlo più tardi dalle impostazioni.';position();};position();
-  }
-  function renderTimerSetup(host){
-   let box=host.querySelector('.tour-timer-setup');if(box){box.hidden=false;position();return;}const saved=store.read('settings',{}),current=saved.timerDisplay==='page'?'page':'modal';box=document.createElement('div');box.className='tour-timer-setup';box.innerHTML='<span class="tour-inline-label">Come vuoi aprirlo?</span><div class="tour-mini-tabs" role="group" aria-label="Apertura timer"><button type="button" data-timer-display="modal">Finestra</button><button type="button" data-timer-display="page">Pagina</button></div>';
-   box.querySelectorAll('[data-timer-display]').forEach(b=>{b.setAttribute('aria-pressed',String(b.dataset.timerDisplay===current));b.onclick=()=>{box.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');const value=b.dataset.timerDisplay;store.write('settings',{...store.read('settings',{}),timerDisplay:value});document.dispatchEvent(new CustomEvent('istante:onboarding-setting',{detail:{key:'timerDisplay',value}}));M.flash(b);};});host.append(box);position();
   }
   function renderCalendarSetup(host){
    let box=host.querySelector('.tour-inline-setup');if(box){box.hidden=false;position();return;}const saved=store.read('settings',{});let chosen=saved.calendarEnabled!==false;box=document.createElement('div');box.className='tour-inline-setup tour-calendar-setup';box.innerHTML='<span class="tour-inline-label">Vuoi usare il calendario?</span><div class="tour-mini-tabs" role="group" aria-label="Attivazione calendario"><button type="button" data-calendar-enabled="true">Attivo</button><button type="button" data-calendar-enabled="false">Non ora</button></div><button type="button" class="text-button tour-calendar-open-link">Apri il calendario per collegare un ICS <span aria-hidden="true">→</span></button><p class="field-note">La scelta viene applicata quando premi Avanti.</p>';host.append(box);
@@ -135,7 +131,7 @@
      });choices.append(b);
     }
    }
-   if(d.simulate==='weather')renderWeatherSetup(choices);else if(d.simulate==='calendar')renderCalendarSetup(choices);else if(d.simulate==='timer')renderTimerSetup(choices);
+   if(d.simulate==='weather')renderWeatherSetup(choices);else if(d.simulate==='calendar')renderCalendarSetup(choices);
    byId('tour-back').disabled=index===0;byId('tour-next').innerHTML=(index===steps.length-1?'Il tempo è mio':'Avanti')+'<span class="icon">'+window.IstanteIcons.render('arrow')+'</span>';
    position();M.flash(card);setTimeout(()=>{card.classList.remove('tour-step-transition');dialog.classList.remove('tour-step-changing');},420);byId('tour-next').focus({preventScroll:true});
   }

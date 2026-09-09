@@ -1,4 +1,4 @@
-/* Istante v3.13.2 - application and local preferences. */
+/* Istante v3.13.3 - application and local preferences. */
 (function () {
 'use strict';
 const C = window.IstanteCore;
@@ -506,7 +506,7 @@ document.addEventListener('istante:onboarding-calendar-url',event=>{
  const url=event.detail?.url;if(!url)return;const next={...settings,calendarEnabled:true};settings=C.cleanSettings(next);store.write('settings',settings);pages.apply();calendar.apply();void calendar.connectURL(url,'Calendario').then(()=>toast('Calendario collegato.')).catch(err=>{toast(err?.message||'Link ICS non leggibile. Puoi aggiungerlo più tardi.');});
 });
 document.addEventListener('istante:onboarding-setting',event=>{
- const d=event.detail||{},allowed={clockStyle:['digital','analog'],theme:['auto','dark','light'],mode:['twice','daily'],timerMinutes:[5,15,25,45,60],timerDisplay:['modal','page'],calendarEnabled:[true,false],weather:[true,false]};
+ const d=event.detail||{},allowed={clockStyle:['digital','analog'],theme:['auto','dark','light'],mode:['twice','daily'],timerMinutes:[5,15,25,45,60],calendarEnabled:[true,false],weather:[true,false]};
  if(d.key==='goalPreset'&&d.patch&&typeof d.patch==='object'){
   settings=C.cleanSettings({...settings,...d.patch});store.write('settings',settings);
   applyAppearance(new Date());lastClock='';tick(true);moments.apply();pages.apply();return;
@@ -566,7 +566,8 @@ document.addEventListener('istante:volume-gesture',event=>{
  const next=Math.max(0,Math.min(100,(Number(settings[key])||0)+delta));if(next===settings[key])return;settings=C.cleanSettings({...settings,[key]:next});store.write('settings',settings);radio.apply();ambient.apply();
  const field=$('#settings-form')?.elements?.[key];if(field){field.value=String(next);field.dispatchEvent(new Event('input',{bubbles:true}));}volumeToast(key==='ambientVolume'?'Volume ambiente':'Volume radio',next);
 });
-document.addEventListener('istante:audio-zone-toggle',()=>{if(!settings.audioVolumeGesture)return;const useAmbient=settings.audioSource==='ambient'&&settings.ambientEnabled;if(useAmbient){const was=!!ambient.inspect?.().playing;document.dispatchEvent(new CustomEvent('istante:ambient-toggle'));toast((was?'Pausa':'Play')+' · suono ambiente');return;}if(!settings.radioEnabled)return;const state=radio.getState?.()||{};if(state.wantsPlay){radio.stop();document.dispatchEvent(new CustomEvent('istante:radio-manual',{detail:{playing:false}}));toast('Pausa · radio');}else{void radio.start('manual');document.dispatchEvent(new CustomEvent('istante:radio-manual',{detail:{playing:true}}));toast('Play · radio');}});
+function toggleAudioZone(){if(!settings.audioVolumeGesture)return false;const useAmbient=settings.audioSource==='ambient'&&settings.ambientEnabled;if(useAmbient){const was=!!ambient.inspect?.().playing;if(was)ambient.stop();else void ambient.start('manual');document.dispatchEvent(new CustomEvent('istante:ambient-manual',{detail:{playing:!was}}));toast((was?'Pausa':'Play')+' · suono ambiente');return true;}if(!settings.radioEnabled)return false;const state=radio.getState?.()||{};if(state.wantsPlay){radio.stop();document.dispatchEvent(new CustomEvent('istante:radio-manual',{detail:{playing:false}}));toast('Pausa · radio');}else{void radio.start('manual');document.dispatchEvent(new CustomEvent('istante:radio-manual',{detail:{playing:true}}));toast('Play · radio');}return true;}
+window.IstanteAudioZoneToggle=toggleAudioZone;document.addEventListener('istante:audio-zone-toggle',toggleAudioZone);
 document.addEventListener('istante:manage-stations',()=>openDialog('stations'));
 document.addEventListener('istante:stations-changed',()=>{if(!stationLibrary.list().length){settings.radioScheduleEnabled=false;if(settings.timerAction==='radio')settings.timerAction='sound';if(settings.timerDuring==='radio')settings.timerDuring='silent';store.write('settings',settings);}moments.apply();if($('#settings-dialog').open)updateSettingsFields();});
 Promise.all([X.boot(),new Promise(resolve=>setTimeout(resolve,550))]).catch(()=>{}).finally(()=>{

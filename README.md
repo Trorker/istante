@@ -1,6 +1,6 @@
 # Istante
 
-**Versione corrente: 3.13.2**  
+**Versione corrente: 3.13.3**  
 **Un momento, per te.**  
 Un progetto di **Ruslan Dzyuba**.
 
@@ -16,10 +16,9 @@ il tuo prossimo capitolo, musica lo-fi o suoni rilassanti, cielo e meteo,
 un timer per una pausa e, se lo desideri, il calendario. Tutto resta nello
 stesso linguaggio visivo essenziale di Istante.
 
-## Il cuore della 3.12
+## Il cuore di Istante
 
-La **3.12 resta costruita sul design della 3.8.0**, che torna a essere la
-base grafica: superfici più pulite, tipografia più equilibrata, controlli
+La linea grafica attuale resta costruita sui principi della **3.8.0**: superfici più pulite, tipografia più equilibrata, controlli
 coerenti, gerarchie più semplici e meno elementi che competono fra loro.
 Le funzioni introdotte in seguito sono state mantenute dove utili, ma riportate
 nello stesso sistema visivo.
@@ -60,7 +59,7 @@ programmazioni multiple e scelta casuale. Dalla gestione delle stazioni puoi anc
 generatore audio offline: rumore rosa, marrone, pioggia o vento sintetizzati
 con Web Audio, senza file audio da scaricare.
 
-Il timer rimane volutamente semplice: la durata principale si sceglie su un **quadrante circolare tipo orologio** da 1 a 60 minuti e può essere rifinita di un minuto alla volta con i pulsanti **− / +**; ore/minuti/secondi precisi restano sotto “Durata precisa”. Può aprirsi nella classica **Finestra** oppure, facoltativamente, come **Pagina** immersiva a sinistra della Dashboard. Quando parte, il tempo residuo entra in un indicatore circolare animato con avanzamento; silenzio, radio o suono rilassante restano configurabili senza appesantire la schermata principale.
+Il timer rimane volutamente semplice: la durata principale si sceglie su un **quadrante circolare tipo orologio** da 1 a 60 minuti e può essere rifinita di un minuto alla volta con i pulsanti **− / +**; ore/minuti/secondi precisi restano sotto “Durata precisa”. Per questa prima release pubblica il Timer usa una sola esperienza: una **modale** ottimizzata per mouse e touch. Quando parte, il tempo residuo entra in un indicatore circolare animato con avanzamento; silenzio, radio o suono rilassante restano configurabili senza appesantire la schermata principale.
 
 ## Calendario, se ti serve
 
@@ -97,7 +96,7 @@ Il benvenuto spiega perché esiste Istante e propone una breve configurazione
 guidata. Su tablet e display bassi la scheda si compatta per non uscire dal viewport. La guida passa attraverso tutti i controlli principali — raccolta,
 nuova frase, preferiti, meteo, calendario, timer, condivisione, schermo intero,
 impostazioni e radio — anche quando Meteo o Calendario non sono ancora
-configurati. Se il Meteo manca, il passaggio mostra un esempio temporaneo e propone soltanto l’acquisizione della posizione del dispositivo; il passaggio Timer permette anche di scegliere Finestra o Pagina. Può essere saltata o riaperta più avanti.
+configurati. Se il Meteo manca, il passaggio mostra un esempio temporaneo e propone soltanto l’acquisizione della posizione del dispositivo; il passaggio Timer presenta direttamente la pausa e il suo utilizzo, senza modalità alternative. Può essere saltata o riaperta più avanti.
 
 Su desktop con mouse o trackpad puoi attivare un **cursore personalizzato discreto** dalle impostazioni. È disattivato di default: puntino e anello reagiscono agli elementi interattivi e restano sopra ai pannelli aperti, mentre nei campi di testo continua a comparire il cursore nativo.
 
@@ -108,7 +107,7 @@ Su desktop con mouse o trackpad puoi attivare un **cursore personalizzato discre
 - `data/`: frasi, catalogo raccolte e stazioni predefinite.
 - `README.md`: descrizione del progetto e release corrente.
 - `CHANGELOG.md`: storico delle modifiche.
-- `docs/release/v3.13.2.md`: note dettagliate di questa release.
+- `docs/release/v3.13.3.md`: note dettagliate di questa release.
 - `docs/LICENZA.md`: licenza non commerciale con attribuzione obbligatoria.
 - `docs/TERZE-PARTI.md`: dipendenze, servizi e attribuzioni.
 - `docs/VISIONE-E-DESIGN.md`: valori, regole grafiche e criteri responsive da mantenere nelle release future.

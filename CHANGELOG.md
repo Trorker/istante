@@ -1,5 +1,17 @@
 # Changelog
 
+## 3.13.3 — 10 settembre 2026
+
+- Timer: rimossa temporaneamente la modalità a pagina; una sola modale più stabile e coerente su touch.
+- Timer: quadrante e cerchio in esecuzione condividono la stessa impronta; preset rapidi e +/- resi affidabili, inclusa 1 ora.
+- Calendario: logo usa lo stesso lockup della dashboard; Giorno e Agenda sfruttano meglio la larghezza disponibile.
+- Navigazione touch: ritorno Calendario → Dashboard più tollerante e limitato alla fascia bassa.
+- Audio gesture: doppio tap sul bordo destro reso più affidabile.
+- Cielo: Sole e Luna più grandi sui display ampi; stelle notturne riportate in primo piano.
+- Dashboard: più respiro tra linea superiore e Prossimo capitolo.
+- Wizard: passaggio 2 compattato per display piccoli e tablet landscape.
+- Rifiniture generali per la prima release pubblicabile, con priorità a touch e piccoli viewport.
+
 ## 3.13.2 — 10 settembre 2026
 
 - Biblioteca: **Crea raccolta** spostato accanto a **Importa JSON o TXT**; mantenuto il flusso dettagli → modifica → frasi una alla volta. Ricerca e filtri restano allineati e la raccolta in uso è evidenziata senza barra laterale.
