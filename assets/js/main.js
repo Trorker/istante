@@ -1,4 +1,4 @@
-/* Istante v3.13.1 - application and local preferences. */
+/* Istante v3.13.2 - application and local preferences. */
 (function () {
 'use strict';
 const C = window.IstanteCore;
@@ -79,17 +79,17 @@ function toast(message) {
   const parent=$('dialog[open]:not(.is-leaving)')||document.body;
   parent.append(host);
  }
- el.classList.remove('is-volume-toast');el.textContent=message;window.IstanteMotion.show(el);
+ el.classList.remove('is-volume-toast');el.style.removeProperty('opacity');el.style.removeProperty('transform');el.textContent=message;window.IstanteMotion.show(el);
  toastTimer=setTimeout(()=>window.IstanteMotion.hide(el),4100);
 }
 
 function volumeToast(label,value){
  const el=$('#toast'),host=$('#toast-host');clearTimeout(toastTimer);
  if(typeof host.showPopover==='function'){try{if(host.matches(':popover-open'))host.hidePopover();host.showPopover();}catch(_){}}else{host.classList.add('toast-fallback');($('dialog[open]:not(.is-leaving)')||document.body).append(host);}
- el.replaceChildren();el.classList.add('is-volume-toast');
+ el.replaceChildren();el.classList.add('is-volume-toast');el.hidden=false;el.style.opacity='1';el.style.transform='none';
  const row=document.createElement('div');row.className='volume-toast-row';const text=document.createElement('span');text.textContent=label;const valueText=document.createElement('strong');valueText.textContent=value+'%';row.append(text,valueText);
  const range=document.createElement('input');range.type='range';range.min='0';range.max='100';range.value=String(value);range.disabled=true;range.setAttribute('aria-label',label+' '+value+'%');
- el.append(row,range);window.IstanteMotion.show(el);toastTimer=setTimeout(()=>{window.IstanteMotion.hide(el);setTimeout(()=>el.classList.remove('is-volume-toast'),180);},2300);
+ el.append(row,range);toastTimer=setTimeout(()=>{el.hidden=true;el.style.removeProperty('opacity');el.style.removeProperty('transform');el.classList.remove('is-volume-toast');},1750);
 }
 function saveNotice(ok) { if (!ok) toast('Memoria del browser non disponibile o piena: le modifiche restano solo in questa sessione.'); }
 function isPanelOpen() { return !!$('dialog[open]')||$('#radio-mini').classList.contains('is-open'); }
@@ -566,7 +566,7 @@ document.addEventListener('istante:volume-gesture',event=>{
  const next=Math.max(0,Math.min(100,(Number(settings[key])||0)+delta));if(next===settings[key])return;settings=C.cleanSettings({...settings,[key]:next});store.write('settings',settings);radio.apply();ambient.apply();
  const field=$('#settings-form')?.elements?.[key];if(field){field.value=String(next);field.dispatchEvent(new Event('input',{bubbles:true}));}volumeToast(key==='ambientVolume'?'Volume ambiente':'Volume radio',next);
 });
-document.addEventListener('istante:audio-zone-toggle',()=>{if(!settings.audioVolumeGesture)return;const play=$('#radio-play');if(play&&!play.disabled){play.click();const active=settings.audioSource==='ambient'?'suono ambiente':'radio';setTimeout(()=>toast('Play / pausa · '+active),40);}});
+document.addEventListener('istante:audio-zone-toggle',()=>{if(!settings.audioVolumeGesture)return;const useAmbient=settings.audioSource==='ambient'&&settings.ambientEnabled;if(useAmbient){const was=!!ambient.inspect?.().playing;document.dispatchEvent(new CustomEvent('istante:ambient-toggle'));toast((was?'Pausa':'Play')+' · suono ambiente');return;}if(!settings.radioEnabled)return;const state=radio.getState?.()||{};if(state.wantsPlay){radio.stop();document.dispatchEvent(new CustomEvent('istante:radio-manual',{detail:{playing:false}}));toast('Pausa · radio');}else{void radio.start('manual');document.dispatchEvent(new CustomEvent('istante:radio-manual',{detail:{playing:true}}));toast('Play · radio');}});
 document.addEventListener('istante:manage-stations',()=>openDialog('stations'));
 document.addEventListener('istante:stations-changed',()=>{if(!stationLibrary.list().length){settings.radioScheduleEnabled=false;if(settings.timerAction==='radio')settings.timerAction='sound';if(settings.timerDuring==='radio')settings.timerDuring='silent';store.write('settings',settings);}moments.apply();if($('#settings-dialog').open)updateSettingsFields();});
 Promise.all([X.boot(),new Promise(resolve=>setTimeout(resolve,550))]).catch(()=>{}).finally(()=>{

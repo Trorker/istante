@@ -1,4 +1,4 @@
-/* Istante v3.13.1 — production refinement after 3.13.0. */
+/* Istante v3.13.2 — production refinement after 3.13.0. */
 
 /* Dashboard rules: only the line tips fade. Never mask content. */
 .goal-strip,#goal-strip,#idle-goal-summary,#environment-line,#upcoming-event,.idle-weather-summary,.idle-upcoming-event{mask-image:none!important;-webkit-mask-image:none!important}

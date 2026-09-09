@@ -1,5 +1,21 @@
 # Changelog
 
+## 3.13.2 — 10 settembre 2026
+
+- Biblioteca: **Crea raccolta** spostato accanto a **Importa JSON o TXT**; mantenuto il flusso dettagli → modifica → frasi una alla volta. Ricerca e filtri restano allineati e la raccolta in uso è evidenziata senza barra laterale.
+- Dashboard: corretto il taglio inferiore dell’orario del prossimo impegno e consolidata la modalità inattiva con **una sola riga** sintetica, senza duplicazioni durante il timeout.
+- Timer modale: controlli **− / +** spostati ai lati del quadrante e resi geometricamente centrati; corretti i preset 5/15/25/45/60 minuti affinché aggiornino lo stato reale, non solo la grafica.
+- Timer: la parte inferiore visibile mostra soltanto **Silenzio / Radio / Suono relax**; messaggi ed errori tecnici restano come live-region invisibili e toast, senza occupare spazio.
+- Pagina Timer: layout ripulito, orario corrente integrato, preset rapidi e comando **Imposta durata** utilizzabili direttamente dalla pagina senza sovrapporre footer o controlli.
+- Calendario: linguaggio visivo riportato alla **3.12.9** mantenendo le funzioni attuali; viste Anno/Mese/Settimana/Giorno/Agenda solo testuali, mentre Elenco e Gestione restano azioni icon-only.
+- Calendario Mese: griglia a piena altezza con 4/5/6 settimane reali; periodo stabile in hover e logo unificato pixel-per-pixel con Dashboard e pagina Timer.
+- Calendario Settimana: eventi alleggeriti con un fondo appena percettibile e bordo colore sorgente, conservando la separazione tra data ed eventi.
+- Audio gesture: toast volume con slider privo di animazioni pesanti; doppio tap/click reso più tollerante per alternare Play/Pausa nella zona audio.
+- Tooltip: eliminati i tooltip nativi del browser e reso deterministico l’annullamento del timer appena si esce dall’elemento prima dei due secondi.
+- Cielo notturno: ripristinate e aumentate leggermente le stelle, con resa coerente anche in modalità performance leggera.
+- Excalifont: quando scelto globalmente viene applicato alla quasi totalità della tipografia, mantenendo Classic soltanto per micro-testi funzionali dove serve contrasto e leggibilità.
+- Eseguiti smoke test Chromium su Dashboard, timeout, Calendario, Timer, raccolte, tooltip e gesture volume; consolidati cache offline, documentazione e compatibilità delle impostazioni esistenti.
+
 ## 3.13.1 — 9 settembre 2026
 
 - Dashboard: sfumatura limitata alle sole estremità delle righe, senza mascherare testo o contenuti; pre-timeout più morbido e minimale senza spostare la frase.
