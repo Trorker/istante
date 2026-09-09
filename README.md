@@ -1,6 +1,6 @@
 # Istante
 
-**Versione corrente: 3.12.5**  
+**Versione corrente: 3.12.6**  
 **Un momento, per te.**  
 Un progetto di **Ruslan Dzyuba**.
 
@@ -35,18 +35,18 @@ trasformarla in una dashboard tecnica.
 La raccolta principale contiene 1.000 pensieri e usa una selezione casuale con
 memoria locale per evitare ripetizioni ravvicinate. Dalla biblioteca puoi
 aggiungere altre raccolte incluse nel sito oppure importare file **JSON** o
-**TXT** (una frase per riga). La scelta delle raccolte vive nella **stessa modale** delle frasi: non apre un secondo pannello sopra al primo. La biblioteca usa una gerarchia più editoriale e leggibile tra raccolta corrente, ricerca, frasi e raccolte disponibili. Le raccolte personali restano nel browser finché non le elimini.
+**TXT** (una frase per riga). La scelta delle raccolte vive nella **stessa modale** delle frasi: non apre un secondo pannello sopra al primo. Il pulsante **Vedi raccolte** apre un unico catalogo a card; ogni raccolta indica subito se è **In uso**, **Scaricata** o **Da scaricare**, con filtri dedicati per questi stati. Le raccolte personali restano nel browser finché non le elimini.
 
 La macchina da scrivere è facoltativa e può usare un ritmo umano, piccole pause
 e correzioni. Preferiti e storico restano locali.
+
+La dimensione dei testi usa una scala a quattro posizioni — **Piccolo, Medio, Grande, Molto grande** — progettata per far crescere soprattutto i contenuti da leggere e solo in misura minore i controlli dell'interfaccia.
 
 ## Il tuo prossimo capitolo
 
 Il traguardo non è un promemoria aggressivo: è una direzione. Puoi usare il
 nuovo anno, scegliere una data precisa oppure impostare rapidamente una distanza
-in **mesi o anni**. Dalla dashboard c'è un accesso diretto alla configurazione e
-il wizard iniziale può aiutarti a impostarlo senza entrare prima nelle
-impostazioni complete.
+in **mesi o anni**. Dalla dashboard il riepilogo apre una **modale dedicata** con avanzamento e tempo residuo; da lì puoi passare alla configurazione completa. Se nessun traguardo è impostato, il blocco non occupa spazio vuoto. Il wizard iniziale può aiutarti a impostarlo senza entrare prima nelle impostazioni complete.
 
 Quando la distanza è lunga, il riepilogo usa anche mesi e anni invece di
 riempire lo schermo con un numero enorme di giorni.
@@ -58,17 +58,14 @@ programmazioni multiple e scelta casuale. In alternativa puoi usare il
 generatore audio offline: rumore rosa, marrone, pioggia o vento sintetizzati
 con Web Audio, senza file audio da scaricare.
 
-Il timer rimane volutamente semplice. Prima di iniziare puoi scegliere silenzio,
-radio o suono rilassante durante la pausa; le preferenze più tecniche restano
-nelle impostazioni. Alla fine può suonare un avviso o avviare la radio secondo
-la configurazione disponibile.
+Il timer rimane volutamente semplice: la durata principale si sceglie con uno **slider da 1 a 120 minuti**, mentre ore/minuti/secondi precisi restano sotto “Durata precisa”. Quando parte, il tempo residuo entra in un indicatore circolare animato con avanzamento; silenzio, radio o suono rilassante restano configurabili senza appesantire la schermata principale.
 
 ## Calendario, se ti serve
 
 Il calendario è **opzionale** e vive nella stessa istanza della dashboard: su
 dispositivi touch puoi passare alla vista calendario con uno swipe, oppure usare
 i controlli dedicati. Sono disponibili viste mese, settimana, anno, giorno e
-agenda, con fino a 8 calendari ICS e festività italiane facoltative. La vista Anno sfrutta lo spazio disponibile sui desktop normali senza dilatarsi sui monitor ultrawide, mentre Settimana mantiene una soglia tipografica leggibile anche con la scala testo Piccolo.
+agenda, con fino a 8 calendari ICS e festività italiane facoltative. La vista Anno sfrutta lo spazio disponibile sui desktop normali senza dilatarsi sui monitor ultrawide. Nella vista Settimana l'elenco dei calendari è un **drawer richiamabile**: quando è chiuso, i sette giorni usano tutta la larghezza disponibile e mantengono una soglia tipografica leggibile anche con la scala testo Piccolo.
 
 La vista torna alla dashboard dopo un periodo configurabile di inattività.
 Il prossimo impegno può comparire in modo discreto sulla hero. Nella vista mese, quando un giorno contiene più eventi di quanti possano essere mostrati con calma, compare **“altri eventi”**: apre direttamente quel giorno invece di comprimere il calendario. I feed ICS sono
@@ -77,9 +74,7 @@ in fusi IANA quando possibile.
 
 ## Condivisione
 
-Istante può creare una cartolina PNG del momento: frase, tema, posizione del
-sole o della luna, stelle ed effetti atmosferici, senza copiare eventuali foto
-di sfondo personali o Picsum. Il QR apre il sito ufficiale e può portare con sé
+Istante può creare una cartolina PNG del momento: frase, tema, posizione del sole o della luna, stelle ed effetti atmosferici. La preview nella modale mantiene sempre l'intero rapporto d'aspetto, senza essere tagliata dalla superficie di anteprima. La cartolina non incorpora eventuali foto di sfondo personali o Picsum. Il QR apre il sito ufficiale e può portare con sé
 la frase condivisa. Firma e indirizzo ufficiale restano parte della composizione.
 
 ## Offline, privacy e backup
@@ -109,7 +104,7 @@ configurati. Può essere saltata o riaperta più avanti.
 - `data/`: frasi, catalogo raccolte e stazioni predefinite.
 - `README.md`: descrizione del progetto e release corrente.
 - `CHANGELOG.md`: storico delle modifiche.
-- `docs/release/v3.12.5.md`: note dettagliate di questa release.
+- `docs/release/v3.12.6.md`: note dettagliate di questa release.
 - `docs/LICENZA.md`: licenza non commerciale con attribuzione obbligatoria.
 - `docs/TERZE-PARTI.md`: dipendenze, servizi e attribuzioni.
 - `docs/VISIONE-E-DESIGN.md`: valori, regole grafiche e criteri responsive da mantenere nelle release future.

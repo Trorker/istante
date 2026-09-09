@@ -22,9 +22,9 @@ function create({getSettings,element,preview=false,statusNode=null}){
   if(scene.weather==='snow')add('snow',preview?22:Math.min(48,Math.max(25,Math.floor(width/28))));
  }
  function paint(dt){if(!ctx||!width||!height)return;ctx.clearRect(0,0,width,height);seed();const s=getSettings(),speed=s.effectSpeed/60,intensity=Math.sqrt(s.effectIntensity/100),light=document.documentElement.dataset.theme==='light'&&document.body.dataset.background!=='photo';
-  ctx.strokeStyle=light?'#657771':'#c5dce2';ctx.fillStyle=light?'#54705d':'#dce6ce';ctx.lineWidth=preview?.85:1;
+  ctx.strokeStyle=light?'#425a52':'#c5dce2';ctx.fillStyle=light?'#356044':'#dce6ce';ctx.lineWidth=preview?.85:1;
   for(const p of particles){p.t+=dt*.6;p.y+=(p.kind==='dust'?-1:1)*p.v*dt*speed;p.x+=dt*speed*(p.kind==='rain'?-18:Math.sin(p.t)*8);if(p.y>height+30)p.y=-25;if(p.y< -30)p.y=height+25;if(p.x< -30)p.x=width+25;if(p.x>width+30)p.x=-25;
-   const middle=Math.abs(p.x-width/2)<width*.32&&p.y>height*.15&&p.y<height*.82;ctx.globalAlpha=p.a*intensity*(middle?.36:1);ctx.beginPath();if(p.kind==='rain'){ctx.moveTo(p.x,p.y);ctx.lineTo(p.x-2,p.y+p.r*(preview?.65:1));ctx.stroke();}else{ctx.arc(p.x,p.y,p.r*(preview?.85:1),0,Math.PI*2);ctx.fill();}}
+   const middle=Math.abs(p.x-width/2)<width*.32&&p.y>height*.15&&p.y<height*.82;ctx.globalAlpha=p.a*intensity*(middle?.36:1)*(light?1.35:1);ctx.beginPath();if(p.kind==='rain'){ctx.moveTo(p.x,p.y);ctx.lineTo(p.x-2,p.y+p.r*(preview?.65:1));ctx.stroke();}else{ctx.arc(p.x,p.y,p.r*(preview?.85:1),0,Math.PI*2);ctx.fill();}}
   ctx.globalAlpha=1;
  }
  function stop(){cancelAnimationFrame(frame);frame=0;last=0;active=false;layer.classList.add('fx-paused');layer.dataset.running='false';}

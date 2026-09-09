@@ -1,4 +1,4 @@
-/* Istante v3.12.5 — production layout reset.
+/* Istante v3.12.6 — production layout reset.
    The central thought, information ribbon and toolbar are three real layout rows.
    This file intentionally neutralizes inherited grid placement from older polish layers. */
 
@@ -348,7 +348,7 @@
 @media(prefers-reduced-motion:reduce){.is-idle:not(.has-panel) .idle-summary-strip{animation:none!important}#idle-goal-progress-fill{transition:none!important}}
 
 /* --------------------------------------------------------------------------
-   Istante v3.12.5 — final production refinement
+   Istante v3.12.6 — final production refinement
    -------------------------------------------------------------------------- */
 
 /* Information ribbon: readable micro-hierarchy without becoming a dashboard. */
@@ -493,7 +493,7 @@
   .bottom-bar .toolbar{padding-block:1px 2px!important}.toolbar-group .icon-button{width:34px!important;height:34px!important;min-width:34px!important}
 }
 
-/* v3.12.5 — lower ribbon readability floor across compact screens. */
+/* v3.12.6 — lower ribbon readability floor across compact screens. */
 .dashboard-lower .active-info-strip .section-label,
 .dashboard-lower .active-info-strip .progress-labels,
 .dashboard-lower .active-info-strip .countdown>div>span,
@@ -525,7 +525,7 @@
 .dashboard-lower .active-info-strip .progress-track{height:6px!important}
 .idle-summary-strip .idle-progress-track{height:4px!important}
 
-/* v3.12.5 — final readable floor for information that carries meaning. */
+/* v3.12.6 — final readable floor for information that carries meaning. */
 .dashboard-lower .active-info-strip>#environment-line::before,
 .dashboard-lower .active-info-strip #weather-place,
 .dashboard-lower .active-info-strip .solar-label,
@@ -546,7 +546,7 @@
   font-size:max(11px,calc(11.5px * var(--ui-scale,1)))!important;
 }
 
-/* v3.12.5 — library final pass: two calm rows instead of three compressed columns. */
+/* v3.12.6 — library final pass: two calm rows instead of three compressed columns. */
 .phrase-library-tools{
   grid-template-columns:minmax(180px,1fr) auto!important;
   grid-template-areas:'current tabs' 'search search'!important;

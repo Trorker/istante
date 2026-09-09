@@ -1,5 +1,24 @@
 # Changelog
 
+## 3.12.6 — 9 settembre 2026
+
+- toolbar inferiore ricomposta come **un unico cluster centrato**, mantenendo i tre gruppi semantici Frasi / Tempo / Schermo e impostazioni;
+- condivisione alleggerita: rimossa l'etichetta visibile “Formato” e preview resa sempre contenuta, senza taglio dell'immagine;
+- **Biblioteca** ripensata con due soli livelli, Frasi e Raccolte: tutte le raccolte sono mostrate come card in un unico catalogo e possono essere filtrate per **In uso / Scaricate / Da scaricare**;
+- rimosso il comando permanente “Configura il prossimo capitolo” dalla fascia: il riepilogo del traguardo apre ora una **modale dedicata** con avanzamento, tempo residuo e accesso alle impostazioni;
+- **Timer** ridisegnato con impostazione principale tramite slider 1–120 minuti, durata precisa in un pannello secondario e stato in corso animato con orbita/progresso;
+- toast reso più riconoscibile con superficie più piena, bordo e ombra dedicata anche nel tema Carta;
+- scala dei testi trasformata in uno **slider a quattro livelli**: Piccolo, Medio, Grande, Molto grande; la UI cresce più lentamente della frase e le barre di avanzamento mantengono una dimensione fisica minima;
+- calendario: logo ricostruito come **un unico pulsante** con simbolo centrato verticalmente tra `istante.` e `Un momento, per te.`;
+- calendario Anno: indicatore eventi ingrandito, distanziato dal numero del giorno e reso più contrastato;
+- calendario Mese: riservata una riga reale a **“Altri N eventi”** e ridotto il numero di eventi espansi prima del riepilogo;
+- calendario Settimana: l'elenco sorgenti non occupa più larghezza permanente, ma diventa un **drawer animato** aperto dal pulsante Elenco; i sette giorni usano l'intero canvas;
+- feedback sonoro dei tocchi aumentato e slider volume spostato sotto la scelta del timbro;
+- backup: **Località** e **Calendari** usano entrambi lo stesso pattern a switch;
+- effetti meteo nel tema Carta rinforzati per mantenere contrasto e leggibilità senza diventare invasivi;
+- quando non è configurato alcun traguardo, la relativa fascia viene realmente rimossa e lo spazio residuo viene redistribuito tra Meteo e Calendario;
+- consolidati stati opzionali, compatibilità con dati locali esistenti, cache offline, documentazione e controlli di produzione.
+
 ## 3.12.5 — 9 settembre 2026
 
 - portata la tipografia del calendario a una soglia minima realmente leggibile, con particolare attenzione alla vista **Settimana** e ai display compatti;

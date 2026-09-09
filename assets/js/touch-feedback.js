@@ -3,14 +3,14 @@
 function create({getSettings}){
  let ctx=null,last=0;
  function context(){const A=root.AudioContext||root.webkitAudioContext;if(!A)return null;if(!ctx)ctx=new A();if(ctx.state==='suspended')ctx.resume().catch(()=>{});return ctx;}
- function gainNode(c,volume){const g=c.createGain();g.gain.value=Math.max(0,Math.min(1,volume/100))*.19;g.connect(c.destination);return g;}
+ function gainNode(c,volume){const g=c.createGain();g.gain.value=Math.max(0,Math.min(1,volume/100))*.48;g.connect(c.destination);return g;}
  function tone(type,volume){
-  const c=context();if(!c)return;const now=c.currentTime,level=Math.max(.0001,Math.min(1,volume/100))*.2,g=c.createGain();g.connect(c.destination);g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(level,now+.003);
+  const c=context();if(!c)return;const now=c.currentTime,level=Math.max(.0001,Math.min(1,volume/100))*.52,g=c.createGain();g.connect(c.destination);g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(level,now+.003);
   if(type==='paper'){g.gain.exponentialRampToValueAtTime(.0001,now+.075);const n=c.createBuffer(1,Math.floor(c.sampleRate*.06),c.sampleRate),d=n.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*(1-i/d.length);const src=c.createBufferSource(),f=c.createBiquadFilter();f.type='bandpass';f.frequency.value=1750;f.Q.value=.8;src.buffer=n;src.connect(f);f.connect(g);src.start(now);src.stop(now+.065);return;}
   if(type==='wood'){
    /* A short wooden knock: low body + filtered transient. Separate gains avoid the
       near-silent double attenuation that affected the previous implementation. */
-   g.gain.cancelScheduledValues(now);g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(Math.max(.015,level*1.35),now+.002);g.gain.exponentialRampToValueAtTime(.0001,now+.135);
+   g.gain.cancelScheduledValues(now);g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(Math.max(.025,level*1.5),now+.002);g.gain.exponentialRampToValueAtTime(.0001,now+.135);
    const body=c.createOscillator(),bodyGain=c.createGain(),tap=c.createBufferSource(),tapGain=c.createGain(),filter=c.createBiquadFilter();
    filter.type='lowpass';filter.frequency.setValueAtTime(1650,now);filter.frequency.exponentialRampToValueAtTime(720,now+.09);filter.Q.value=.55;
    body.type='triangle';body.frequency.setValueAtTime(205,now);body.frequency.exponentialRampToValueAtTime(118,now+.105);

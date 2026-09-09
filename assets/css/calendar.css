@@ -1,4 +1,4 @@
-/* Istante calendar — v3.12.5 production canonical layer.
+/* Istante calendar — v3.12.6 production canonical layer.
    Loaded last on purpose: one readable calendar system, one set of breakpoints. */
 
 #calendar-view{background:var(--bg)!important;color:var(--ink)!important}
@@ -97,7 +97,7 @@
 #calendar-view .calendar-week-day .event-time{display:block!important;margin:0 0 3px!important;font-size:calc(9.5px * var(--ui-scale,1))!important}
 #calendar-view .calendar-empty-day{padding:14px 4px!important;text-align:center!important;font-size:calc(10.5px * var(--ui-scale,1))!important;color:var(--faint)!important}
 
-/* Day — dedicated v3.12.5 renderer. */
+/* Day — dedicated v3.12.6 renderer. */
 #calendar-view .calendar-day-view{min-height:100%!important;max-width:980px!important;margin:0 auto!important;padding:clamp(12px,2vw,26px) clamp(6px,1vw,12px) 30px!important}
 #calendar-view .calendar-day-view-head{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:end!important;gap:20px!important;padding:0 2px 20px!important;border-bottom:1px solid var(--line)!important}
 #calendar-view .calendar-day-date{display:grid!important;grid-template-columns:auto 1fr!important;grid-template-areas:'weekday weekday' 'number month'!important;align-items:end!important;column-gap:13px!important;min-width:0!important}
@@ -194,7 +194,7 @@
 @media(prefers-reduced-motion:reduce){#calendar-view .calendar-main.is-loading{transition:none!important}}
 
 /* --------------------------------------------------------------------------
-   Istante v3.12.5 — production readability and spatial balance
+   Istante v3.12.6 — production readability and spatial balance
    This block is intentionally final and overrides legacy compact breakpoints.
    -------------------------------------------------------------------------- */
 
@@ -287,7 +287,7 @@
 }
 @media(max-width:360px){#calendar-view .calendar-views button{font-size:calc(10px * var(--ui-scale,1))!important}}
 
-/* v3.12.5 — readability floor. “Piccolo” remains compact, never microscopic. */
+/* v3.12.6 — readability floor. “Piccolo” remains compact, never microscopic. */
 #calendar-view .calendar-brand-tagline,
 #calendar-view .calendar-local-note,
 #calendar-view .calendar-sync-status,
@@ -325,7 +325,7 @@
   }
 }
 
-/* v3.12.5 — final Week readability floor, including compact landscape. */
+/* v3.12.6 — final Week readability floor, including compact landscape. */
 #calendar-view .calendar-week-day>button{
   font-size:max(12px,calc(13px * var(--ui-scale,1)))!important;
 }

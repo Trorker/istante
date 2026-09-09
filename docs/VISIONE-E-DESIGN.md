@@ -1,6 +1,6 @@
 # Istante — Visione, valori e sistema di design
 
-**Versione di riferimento:** 3.12.5  
+**Versione di riferimento:** 3.12.6  
 **Sito ufficiale:** https://istante.ruslan-dzyuba.it/
 
 ## 1. Che cos'è Istante
@@ -84,6 +84,8 @@ Il calendario è una **vista virtuale della stessa istanza**, non un'altra appli
 - Comandi del periodo, cambio vista e gestione calendari appartengono a **un’unica barra compatta**; non si impilano intestazioni tecniche separate. **Oggi** e il cambio vista stanno sul lato destro, come strumenti, non come contenuto principale.
 - Quando lo spazio scarseggia si semplificano eventi e sorgenti, ma **non** si riduce il calendario a una miniatura illeggibile: la leggibilità tipografica viene prima del tentativo di mostrare tutto contemporaneamente. Nella vista mese gli eventi in eccesso diventano un collegamento **“altri eventi”** verso il giorno: non si comprimono indefinitamente le righe.
 - I calendari condivisi sono in sola lettura e visivamente secondari rispetto agli eventi.
+- La lista delle sorgenti non deve sottrarre permanentemente larghezza alla **Settimana**: su desktop e tablet è un drawer richiamato da un comando esplicito e animato solo con transform/opacity.
+- Il lockup `simbolo + istante. + Un momento, per te.` è un unico elemento interattivo; il simbolo si centra rispetto alle due righe, non rispetto alla sola parola `istante.`.
 
 ## 6. Biblioteca
 
@@ -99,12 +101,13 @@ Regole:
 - azioni compatte;
 - ricerca con icona e spazio dedicato;
 - raccolta attiva indicata con un dettaglio discreto, non con una grande card colorata.
+- La navigazione ha due soli livelli: **Frasi** e **Raccolte**. La vista Raccolte usa un unico catalogo di card con stati **In uso / Scaricata / Da scaricare** e filtri sugli stessi stati; non separa artificialmente “mie” e “da scoprire”.
 
 ## 7. Impostazioni
 
 Le impostazioni sono divise per significato, tramite accordion. Una sezione aperta alla volta.
 
-Ogni controllo deve seguire uno di questi pattern: toggle, select custom, campo testo/data/ora custom, slider, gruppo segmentato solo quando rappresenta realmente alternative equivalenti. Le note devono essere brevi e occupare tutta la larghezza quando spiegano l'intero gruppo.
+Ogni controllo deve seguire uno di questi pattern: toggle, select custom, campo testo/data/ora custom, slider, gruppo segmentato solo quando rappresenta realmente alternative equivalenti. Località e Calendari nel backup usano lo stesso pattern a **switch**. La dimensione testo usa uno slider discreto a quattro livelli e la chrome cresce meno dei contenuti principali. Le note devono essere brevi e occupare tutta la larghezza quando spiegano l'intero gruppo.
 
 Ricerca, selettori e liste devono riutilizzare la stessa geometria. Uno stato selezionato si indica con un accento discreto sul lato o sul testo; **non** si aggiunge un indicatore sulla stessa zona riservata ad azioni come Preferito, Elimina o Altro.
 
