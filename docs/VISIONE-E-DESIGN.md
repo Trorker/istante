@@ -1,6 +1,6 @@
 # Istante — Visione, valori e sistema di design
 
-**Versione di riferimento:** 3.12.4  
+**Versione di riferimento:** 3.12.5  
 **Sito ufficiale:** https://istante.ruslan-dzyuba.it/
 
 ## 1. Che cos'è Istante

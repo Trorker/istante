@@ -1,4 +1,4 @@
-/* Istante v3.12.4 - application and local preferences. */
+/* Istante v3.12.5 - application and local preferences. */
 (function () {
 'use strict';
 const C = window.IstanteCore;
@@ -145,6 +145,14 @@ function nextPhrase() {
  syncSchedule(new Date());
  const selection=phraseHistory.next(phrases,slotKey);
  renderPhrase(selection.phrase,true);updatePhraseMeta(true);updateLibraryCounts();activity();
+}
+async function copyCurrentPhrase(){
+ if(!current?.text)return;
+ let ok=false;
+ try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(current.text);ok=true;}}catch(_){}
+ if(!ok){const area=document.createElement('textarea');area.value=current.text;area.setAttribute('readonly','');area.style.cssText='position:fixed;left:-9999px;top:0;opacity:0';document.body.append(area);area.select();try{ok=document.execCommand('copy');}catch(_){}area.remove();}
+ toast(ok?'Frase copiata.':'Non riesco a copiare automaticamente in questo browser.');
+ activity();
 }
 
 function applyAppearance(now) {
@@ -313,10 +321,26 @@ function setLibraryView(mode='phrases') {
  if(collectionsMode){collections.render();requestAnimationFrame(()=>$('#collection-search')?.focus({preventScroll:true}));}
  else{renderLibrary(true);requestAnimationFrame(()=>$('#phrase-search')?.focus({preventScroll:true}));}
 }
+function populateWeatherDialog(){
+ const weather=$('#weather-line'),solar=$('#solar-line'),hasWeather=weather&&!weather.hidden,hasSolar=solar&&!solar.hidden;
+ const modalIcon=$('#weather-modal-icon');
+ modalIcon.innerHTML=hasWeather?($('#weather-icon').innerHTML||icon('cloud')):icon(hasSolar?'sun':'cloud');
+ modalIcon.dataset.weather=hasWeather?($('#weather-icon').dataset.weather||''):'';
+ $('#weather-modal-temp').textContent=hasWeather?($('#weather-text').textContent||'—'):'—';
+ $('#weather-modal-condition').textContent=hasWeather?($('#weather-condition').textContent||'Meteo'):(settings.weather?'Meteo non disponibile':'Meteo disattivato');
+ $('#weather-modal-place').textContent=hasWeather?($('#weather-place').textContent||$('#place-name')?.textContent||'La tua località'):($('#place-name')?.textContent||'Nessuna località');
+ $('#weather-modal-sunrise').textContent=hasSolar?($('#sunrise-time').textContent||'—'):'—';
+ $('#weather-modal-sunset').textContent=hasSolar?($('#sunset-time').textContent||'—'):'—';
+ const moonName=$('.moon-phase-name')?.textContent||'',moonPct=$('.moon-phase-percent')?.textContent||'';
+ $('#weather-modal-moon').textContent=[moonName,moonPct].filter(Boolean).join(' · ')||'—';
+ const empty=$('#weather-modal-empty');empty.hidden=hasWeather||hasSolar;
+ empty.textContent=settings.weather||settings.solarTimes?'Aggiungi una località nelle impostazioni per mostrare qui meteo, alba e tramonto.':'Meteo e alba/tramonto sono disattivati. Puoi riattivarli quando vuoi.';
+ $('#weather-modal-status').textContent=hasWeather?($('#weather-line').title||'Dati meteo aggiornati quando servono.'):(hasSolar?'Alba e tramonto calcolati per la località scelta.':'Una vista essenziale del cielo del tuo Istante.');
+}
 function openDialog(which) {
  const collectionsMode=which==='collections';if(collectionsMode)which='library';
  const dialog=$('#'+which+'-dialog');if(!dialog)return;previousFocus=document.activeElement;dialog._returnFocus=previousFocus;
- if(which==='share')sharing.prepare();radio.close();X.pause();if(which==='settings')fillSettings();else if(which==='library'){collections.render();renderLibrary(true);setLibraryView(collectionsMode?'collections':'phrases');}else if(which==='stations')stationManager.render();
+ if(which==='share'){const details=$('#share-options-details');if(details)details.open=false;sharing.prepare();}else if(which==='weather')populateWeatherDialog();radio.close();X.pause();if(which==='settings')fillSettings();else if(which==='library'){collections.render();renderLibrary(true);setLibraryView(collectionsMode?'collections':'phrases');}else if(which==='stations')stationManager.render();
  clearTimeout(idleTimer);document.body.classList.remove('is-idle');document.body.classList.add('has-panel');document.body.style.overflow='hidden';window.IstanteMotion.present(dialog);
  dialog.querySelector('.close-button').focus({preventScroll:true});
 }
@@ -327,6 +351,11 @@ $$('dialog').forEach(dialog=>{
  dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)closeDialog(dialog);});
 });
 $$('[data-open]').forEach(b=>b.addEventListener('click',()=>openDialog(b.dataset.open)));
+function openWeatherFromSummary(event){if(event.type==='keydown'&&!['Enter',' '].includes(event.key))return;if(event.type==='keydown')event.preventDefault();openDialog('weather');}
+['#environment-line','.idle-weather-summary'].forEach(selector=>{const el=$(selector);if(el){el.addEventListener('click',openWeatherFromSummary);el.addEventListener('keydown',openWeatherFromSummary);}});
+$('#weather-configure')?.addEventListener('click',()=>{const d=$('#weather-dialog');d.addEventListener('close',()=>requestAnimationFrame(()=>{openDialog('settings');requestAnimationFrame(()=>{const summary=$('#section-sky summary');expandSection(summary);summary?.scrollIntoView({block:'start',behavior:settings.motion&&!matchMedia('(prefers-reduced-motion: reduce)').matches?'smooth':'auto'});});}),{once:true});closeDialog(d);});
+$('#quote-wrap')?.addEventListener('dblclick',event=>{event.preventDefault();void copyCurrentPhrase();});
+$('#quote-wrap')?.setAttribute('title','Doppio clic per copiare la frase');
 $('#collection-library-toggle')?.addEventListener('click',()=>setLibraryView('collections'));
 $('#library-phrases-tab')?.addEventListener('click',()=>setLibraryView('phrases'));
 $('#collection-library-back')?.addEventListener('click',()=>setLibraryView('phrases'));
@@ -410,7 +439,7 @@ $('#photo-input').addEventListener('change',async event=>{
 });
 
 document.addEventListener('istante:onboarding-setting',event=>{
- const d=event.detail||{},allowed={clockStyle:['digital','analog'],theme:['auto','dark','light'],mode:['twice','daily'],timerMinutes:[5,15,25,45,60],calendarEnabled:[true,false]};
+ const d=event.detail||{},allowed={clockStyle:['digital','analog'],theme:['auto','dark','light'],mode:['twice','daily'],timerMinutes:[5,15,25,45,60],calendarEnabled:[true,false],weather:[true,false]};
  if(d.key==='goalPreset'&&d.patch&&typeof d.patch==='object'){
   settings=C.cleanSettings({...settings,...d.patch});store.write('settings',settings);
   applyAppearance(new Date());lastClock='';tick(true);moments.apply();pages.apply();return;

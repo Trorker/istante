@@ -1,5 +1,21 @@
 # Changelog
 
+## 3.12.5 — 9 settembre 2026
+
+- portata la tipografia del calendario a una soglia minima realmente leggibile, con particolare attenzione alla vista **Settimana** e ai display compatti;
+- vista **Anno** ridisegnata per sfruttare l'altezza disponibile in una griglia 4×3 sui desktop normali, mantenendo un limite di larghezza sui monitor ultrawide;
+- corretto il lockup del logo del calendario: il simbolo non eredita più il vecchio posizionamento assoluto e non si sovrappone alla scritta;
+- ingrandite le barre di avanzamento attiva e inattiva e aumentata la leggibilità dei relativi dati;
+- fascia informativa resa adattiva: 20/60/20 con Meteo e Calendario, 25/75 quando è attivo un solo blocco laterale, 100% al traguardo quando entrambi sono disattivati;
+- aggiunta una modale **Meteo e luce** apribile dalla fascia attiva e dal riepilogo inattivo, con temperatura, condizione, località, alba, tramonto e fase lunare;
+- biblioteca rifinita con testata su due livelli, ricerca a tutta larghezza, raccolta corrente più evidente e righe delle frasi più leggibili;
+- doppio clic sulla frase corrente per copiarla negli appunti, con fallback per browser senza Clipboard API moderna;
+- wizard iniziale esteso a tutti i comandi principali, inclusi Meteo e Calendario anche quando non sono ancora configurati;
+- cartolina di condivisione resa più compatta, con preview ridotta; le opzioni secondarie sono raccolte nell'accordione **Configura cartolina**;
+- toolbar inferiore divisa in tre gruppi: Frasi / Tempo / Schermo e impostazioni;
+- alleggerite e rese più fluide le transizioni di dialog, pannelli, chrome e accordioni, eliminando blur costosi durante l'inattività;
+- riallineati versione, documentazione, cache offline e controlli di produzione.
+
 ## 3.12.4 — 9 settembre 2026
 
 - corretta alla radice la disposizione della dashboard: contenuto centrale, fascia informativa e toolbar ora occupano tre aree strutturali distinte e non possono più sovrapporsi;

@@ -4,20 +4,41 @@
  function create({store,open}){
   const $=s=>document.querySelector(s),byId=id=>document.getElementById(id),M=window.IstanteMotion;
   const dialog=byId('tour-dialog'),card=byId('tour-card'),seenKey='welcome.3.10';
-  let ready=false,pending=false,index=0,steps=[],raf=0,target=null,transitioning=false;
+  let ready=false,pending=false,index=0,steps=[],raf=0,target=null,transitioning=false,revealed=[];
   const definitions=[
-   {target:'.clock-block',fallback:'.clock-section',note:'inizia dal tuo ritmo',title:'Come vuoi vedere il tempo?',copy:"Istante può restare discreto sulla scrivania oppure diventare il centro dello schermo. Scegli subito l’orologio che ti fa stare meglio.",choices:{key:'clockStyle',items:[['digital','Digitale'],['analog','Analogico']]}},
+   {target:'.clock-block',fallback:'.clock-section',note:'inizia dal tuo ritmo',title:'Come vuoi vedere il tempo?',copy:"Istante può restare discreto sulla scrivania oppure diventare il centro dello schermo. Scegli l’orologio che ti fa stare meglio.",choices:{key:'clockStyle',items:[['digital','Digitale'],['analog','Analogico']]}},
    {target:'.thought-block',note:'una frase, al momento giusto',title:'Quanto spazio vuoi dare ai pensieri?',copy:'Puoi ricevere un nuovo pensiero al mattino e alla sera, oppure lasciarne uno con te per tutta la giornata.',choices:{key:'mode',items:[['twice','Mattina & sera'],['daily','Una al giorno']]}},
-   {target:'#favorite-current',note:'questo cuore conserva',title:'Tieni vicino ciò che ti parla.',copy:'Il cuore salva i pensieri che vuoi ritrovare. La biblioteca raccoglie collezioni di Istante e le tue raccolte personali, anche da file TXT con una frase per riga.'},
+   {target:'#environment-line',fallback:'#active-info-strip',force:true,note:'il cielo resta leggero',title:'Meteo, alba e tramonto quando servono.',copy:'Il meteo occupa spazio solo quando è disponibile. Puoi attivarlo ora e scegliere la località più tardi nelle impostazioni.',choices:{key:'weather',items:[[true,'Attiva meteo'],[false,'Non ora']]}},
    {target:'#goal-strip',note:'una direzione, senza fretta',title:'Dai un orizzonte al prossimo capitolo.',copy:'Scegli la fine dell’anno oppure imposta subito un titolo e una data importante.',choices:{key:'goalPreset',items:[['year','Fine anno'],['custom','Titolo e data']]}},
-   {target:'#calendar-open',fallback:'#settings-open',note:'i tuoi giorni, senza rumore',title:'Il calendario resta nello stesso Istante.',copy:'Puoi collegare più calendari ICS, vedere il prossimo impegno sulla dashboard e passare alla vista calendario con un gesto.',choices:{key:'calendarEnabled',items:[[true,'Attiva calendario'],[false,'Non ora']]}},
-   {target:'#radio-mini',note:'un suono può cambiare la stanza',title:'Costruisci la tua atmosfera.',copy:'Radio lo-fi e suoni ambientali possono accompagnare lavoro, lettura o una pausa. Nessun audio parte da solo.'},
-   {target:'#timer-open',note:'una pausa con un confine',title:'Quanto dura il tuo prossimo momento?',copy:'Scegli una durata di partenza. Potrai sempre cambiarla quando apri il timer.',choices:{key:'timerMinutes',items:[[15,'15 min'],[25,'25 min'],[45,'45 min']]}},
-   {target:'#share-open',note:'un pensiero da regalare',title:"Condividi senza perdere l’atmosfera.",copy:'La cartolina riprende frase, cielo e dettagli del tuo Istante. Il QR può portare chi la riceve direttamente al pensiero condiviso.'},
-   {target:'[data-open="settings"]',note:"l’ultimo tocco è tuo",title:'Scegli la luce di partenza.',copy:'Puoi lasciare che Istante segua il dispositivo oppure scegliere subito Carta o Notte. In seguito troverai tutte le regolazioni nelle impostazioni.',choices:{key:'theme',items:[['auto','Auto'],['light','Carta'],['dark','Notte']]}}
+   {target:'.collection-link',note:'qui ritrovi le tue parole',title:'La mia raccolta apre la biblioteca.',copy:'Frasi, preferiti e raccolte personali restano insieme. Puoi anche importare TXT o JSON senza perdere la raccolta originale.'},
+   {target:'#next-phrase',note:'quando vuoi cambiare aria',title:'Un altro pensiero, subito.',copy:'Questo tasto cambia frase senza modificare la tua programmazione automatica.'},
+   {target:'#favorite-current',note:'questo cuore conserva',title:'Tieni vicino ciò che ti parla.',copy:'Il cuore salva il pensiero corrente tra i preferiti, così puoi ritrovarlo nella biblioteca.'},
+   {target:'#calendar-open',force:true,note:'i tuoi giorni, senza rumore',title:'Il calendario è sempre raggiungibile.',copy:'Il tasto resta disponibile anche senza calendari collegati: puoi aprire la vista, importare un ICS o collegarne uno in seguito.',choices:{key:'calendarEnabled',items:[[true,'Attiva calendario'],[false,'Non ora']]}},
+   {target:'#timer-open',force:true,note:'una pausa con un confine',title:'Quanto dura il tuo prossimo momento?',copy:'Apri il timer da qui. Scegli una durata di partenza: potrai cambiarla in qualsiasi momento.',choices:{key:'timerMinutes',items:[[15,'15 min'],[25,'25 min'],[45,'45 min']]}},
+   {target:'#share-open',note:'un pensiero da regalare',title:'Porta con te questo istante.',copy:'Condividi una cartolina o un link. Scegli formato e dettagli senza cambiare la schermata principale.'},
+   {target:'#fullscreen',note:'quando vuoi togliere il resto',title:'Uno schermo, un solo momento.',copy:'Schermo intero rende Istante più immersivo su monitor, tablet o uno schermo dedicato.'},
+   {target:'#settings-open',note:'l’ultimo tocco è tuo',title:'Tutto il resto vive qui.',copy:'Aspetto, dimensione dei caratteri, meteo, calendario, audio, timer e comportamento dello screensaver restano configurabili nelle impostazioni.',choices:{key:'theme',items:[['auto','Auto'],['light','Carta'],['dark','Notte']]}},
+   {target:'#radio-mini',fallback:'#settings-open',note:'un suono può cambiare la stanza',title:'Costruisci la tua atmosfera.',copy:'Radio lo-fi e suoni ambientali possono accompagnare lavoro, lettura o una pausa. Nessun audio parte da solo.'}
   ];
   function visible(el){if(!el||el.hidden||el.closest('[hidden]'))return false;const r=el.getBoundingClientRect();return r.width>0&&r.height>0&&getComputedStyle(el).visibility!=='hidden';}
-  function selectSteps(){return definitions.map(d=>{const primary=$(d.target),fallback=$(d.fallback||'__unused__');return{...d,el:visible(primary)?primary:fallback};}).filter(d=>visible(d.el));}
+  function selectSteps(){
+   revealed=[];
+   return definitions.map(d=>{
+    const primary=$(d.target);
+    if(primary&&d.force&&!visible(primary)&&primary.hidden){revealed.push({el:primary,hidden:true});primary.hidden=false;primary.classList.add('tour-temporary-target');}
+    const fallback=$(d.fallback||'__unused__');return{...d,el:visible(primary)?primary:fallback};
+   }).filter(d=>visible(d.el));
+  }
+  function restoreRevealed(){
+   const saved=store.read('settings',{});
+   for(const item of revealed){
+    const el=item.el;el.classList.remove('tour-temporary-target');
+    if(el.id==='calendar-open')el.hidden=saved.calendarEnabled===false;
+    else if(el.id==='timer-open')el.hidden=saved.timerEnabled===false;
+    else el.hidden=item.hidden;
+   }
+   revealed=[];
+  }
   const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
   function rectPath(x,y,w,h){const r=Math.min(16,w/3,h/3);return `M ${x+r} ${y} Q ${x+w*.55} ${y-2} ${x+w-r} ${y} Q ${x+w+1} ${y-1} ${x+w} ${y+r} L ${x+w} ${y+h-r} Q ${x+w+2} ${y+h+1} ${x+w-r} ${y+h} Q ${x+w*.4} ${y+h+2} ${x+r} ${y+h} Q ${x-1} ${y+h} ${x} ${y+h-r} L ${x} ${y+r} Q ${x-2} ${y-1} ${x+r} ${y}`;}
   function position(){
@@ -61,7 +82,7 @@
    byId('tour-note').textContent=d.note;byId('tour-title').textContent=d.title;byId('tour-copy').textContent=d.copy;
    const choices=byId('tour-choices');choices.replaceChildren();choices.hidden=!d.choices;
    if(d.choices){
-    const defaults={clockStyle:'digital',mode:'twice',timerMinutes:25,theme:'dark',goalPreset:'year',calendarEnabled:true},saved=store.read('settings',{});
+    const defaults={clockStyle:'digital',mode:'twice',timerMinutes:25,theme:'dark',goalPreset:'year',calendarEnabled:true,weather:true},saved=store.read('settings',{});
     const current=d.choices.key==='goalPreset'?(saved.goalMode==='custom'?'custom':'year'):(saved[d.choices.key]??defaults[d.choices.key]);
     for(const [value,label] of d.choices.items){
      const b=document.createElement('button');b.type='button';b.className='tour-choice';b.textContent=label;b.setAttribute('aria-pressed',String(current===value));
@@ -93,7 +114,7 @@
   byId('tour-next').addEventListener('click',()=>{if(index>=steps.length-1)M.dismiss(dialog);else{index++;showStep();}});
   byId('tour-back').addEventListener('click',()=>{if(index>0){index--;showStep();}});
   dialog.addEventListener('keydown',e=>{if(e.key==='ArrowRight'){e.preventDefault();byId('tour-next').click();}else if(e.key==='ArrowLeft'){e.preventDefault();byId('tour-back').click();}});
-  dialog.addEventListener('close',()=>{document.body.classList.remove('is-touring');target=null;store.write(seenKey,true);});
+  dialog.addEventListener('close',()=>{document.body.classList.remove('is-touring');target=null;restoreRevealed();store.write(seenKey,true);});
   byId('welcome-dialog').addEventListener('close',()=>{store.write(seenKey,true);store.write('welcome.seen',true);});
   byId('welcome-reopen').addEventListener('click',()=>{const d=byId('settings-dialog');d.addEventListener('close',()=>showWelcome(true),{once:true});M.dismiss(d);});
   document.querySelectorAll('dialog').forEach(d=>d.addEventListener('close',()=>{if(pending&&!transitioning)queueMicrotask(()=>showWelcome());}));

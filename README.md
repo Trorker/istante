@@ -1,6 +1,6 @@
 # Istante
 
-**Versione corrente: 3.12.4**  
+**Versione corrente: 3.12.5**  
 **Un momento, per te.**  
 Un progetto di **Ruslan Dzyuba**.
 
@@ -35,8 +35,7 @@ trasformarla in una dashboard tecnica.
 La raccolta principale contiene 1.000 pensieri e usa una selezione casuale con
 memoria locale per evitare ripetizioni ravvicinate. Dalla biblioteca puoi
 aggiungere altre raccolte incluse nel sito oppure importare file **JSON** o
-**TXT** (una frase per riga). La scelta delle raccolte vive nella **stessa modale** delle frasi: non apre un secondo pannello sopra al primo. Le raccolte personali restano nel browser finché
-non le elimini.
+**TXT** (una frase per riga). La scelta delle raccolte vive nella **stessa modale** delle frasi: non apre un secondo pannello sopra al primo. La biblioteca usa una gerarchia più editoriale e leggibile tra raccolta corrente, ricerca, frasi e raccolte disponibili. Le raccolte personali restano nel browser finché non le elimini.
 
 La macchina da scrivere è facoltativa e può usare un ritmo umano, piccole pause
 e correzioni. Preferiti e storico restano locali.
@@ -69,7 +68,7 @@ la configurazione disponibile.
 Il calendario è **opzionale** e vive nella stessa istanza della dashboard: su
 dispositivi touch puoi passare alla vista calendario con uno swipe, oppure usare
 i controlli dedicati. Sono disponibili viste mese, settimana, anno, giorno e
-agenda, con fino a 8 calendari ICS e festività italiane facoltative.
+agenda, con fino a 8 calendari ICS e festività italiane facoltative. La vista Anno sfrutta lo spazio disponibile sui desktop normali senza dilatarsi sui monitor ultrawide, mentre Settimana mantiene una soglia tipografica leggibile anche con la scala testo Piccolo.
 
 La vista torna alla dashboard dopo un periodo configurabile di inattività.
 Il prossimo impegno può comparire in modo discreto sulla hero. Nella vista mese, quando un giorno contiene più eventi di quanti possano essere mostrati con calma, compare **“altri eventi”**: apre direttamente quel giorno invece di comprimere il calendario. I feed ICS sono
@@ -98,10 +97,10 @@ continuare a essere calcolati localmente quando la rete non è disponibile.
 ## Primo avvio
 
 Il benvenuto spiega perché esiste Istante e propone una breve configurazione
-guidata. Puoi scegliere direttamente alcune preferenze — tipo di orologio,
-ritmo delle frasi, tema, durata della pausa e prossimo capitolo — mentre le
-frecce disegnate indicano gli elementi principali. La guida può essere saltata
-o riaperta più avanti.
+guidata. La guida passa attraverso tutti i controlli principali — raccolta,
+nuova frase, preferiti, meteo, calendario, timer, condivisione, schermo intero,
+impostazioni e radio — anche quando Meteo o Calendario non sono ancora
+configurati. Può essere saltata o riaperta più avanti.
 
 ## Struttura del progetto
 
@@ -110,7 +109,7 @@ o riaperta più avanti.
 - `data/`: frasi, catalogo raccolte e stazioni predefinite.
 - `README.md`: descrizione del progetto e release corrente.
 - `CHANGELOG.md`: storico delle modifiche.
-- `docs/release/v3.12.4.md`: note dettagliate di questa release.
+- `docs/release/v3.12.5.md`: note dettagliate di questa release.
 - `docs/LICENZA.md`: licenza non commerciale con attribuzione obbligatoria.
 - `docs/TERZE-PARTI.md`: dipendenze, servizi e attribuzioni.
 - `docs/VISIONE-E-DESIGN.md`: valori, regole grafiche e criteri responsive da mantenere nelle release future.

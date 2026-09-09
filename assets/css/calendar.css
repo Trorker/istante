@@ -1,4 +1,4 @@
-/* Istante calendar — v3.12.4 production canonical layer.
+/* Istante calendar — v3.12.5 production canonical layer.
    Loaded last on purpose: one readable calendar system, one set of breakpoints. */
 
 #calendar-view{background:var(--bg)!important;color:var(--ink)!important}
@@ -97,7 +97,7 @@
 #calendar-view .calendar-week-day .event-time{display:block!important;margin:0 0 3px!important;font-size:calc(9.5px * var(--ui-scale,1))!important}
 #calendar-view .calendar-empty-day{padding:14px 4px!important;text-align:center!important;font-size:calc(10.5px * var(--ui-scale,1))!important;color:var(--faint)!important}
 
-/* Day — dedicated v3.12.4 renderer. */
+/* Day — dedicated v3.12.5 renderer. */
 #calendar-view .calendar-day-view{min-height:100%!important;max-width:980px!important;margin:0 auto!important;padding:clamp(12px,2vw,26px) clamp(6px,1vw,12px) 30px!important}
 #calendar-view .calendar-day-view-head{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:end!important;gap:20px!important;padding:0 2px 20px!important;border-bottom:1px solid var(--line)!important}
 #calendar-view .calendar-day-date{display:grid!important;grid-template-columns:auto 1fr!important;grid-template-areas:'weekday weekday' 'number month'!important;align-items:end!important;column-gap:13px!important;min-width:0!important}
@@ -192,3 +192,150 @@
   #calendar-view .calendar-navigation .icon-button{width:29px!important;height:29px!important}#calendar-view .calendar-navigation .secondary-button{min-height:29px!important;padding:4px 6px!important;font-size:9px!important}#calendar-view .calendar-views{gap:0!important;padding:2px 1px!important}#calendar-view .calendar-views button{min-height:29px!important;padding:4px 4px!important;font-size:8.5px!important}
 }
 @media(prefers-reduced-motion:reduce){#calendar-view .calendar-main.is-loading{transition:none!important}}
+
+/* --------------------------------------------------------------------------
+   Istante v3.12.5 — production readability and spatial balance
+   This block is intentionally final and overrides legacy compact breakpoints.
+   -------------------------------------------------------------------------- */
+
+/* The logo is in normal flow: no inherited absolute positioning can overlap it. */
+#calendar-view .calendar-brand-lockup .wordmark{
+  display:flex!important;align-items:center!important;gap:9px!important;padding:0!important;
+}
+#calendar-view .calendar-brand-lockup .brand-symbol{
+  position:static!important;inset:auto!important;transform:none!important;
+  flex:0 0 22px!important;width:22px!important;height:22px!important;margin:0!important;
+}
+#calendar-view .calendar-brand-tagline{padding-left:31px!important;font-size:calc(10px * var(--ui-scale,1))!important}
+
+/* Never let useful calendar text collapse to decorative micro-copy. */
+#calendar-view .calendar-local-note,#calendar-view .calendar-sync-status{font-size:calc(10.5px * var(--ui-scale,1))!important}
+#calendar-view .calendar-event{font-size:calc(12.5px * var(--ui-scale,1))!important;line-height:1.22!important}
+#calendar-view .calendar-event .event-time{font-size:calc(10.5px * var(--ui-scale,1))!important}
+#calendar-view .calendar-more{font-size:calc(10.5px * var(--ui-scale,1))!important}
+
+/* Week: this is a planning view, so labels and events must be readable at a glance. */
+#calendar-view .calendar-week-day>button{font-size:calc(13px * var(--ui-scale,1))!important;line-height:1.15!important}
+#calendar-view .calendar-week-day>button strong{font-size:calc(30px * var(--ui-scale,1))!important;line-height:1!important}
+#calendar-view .calendar-week-day .calendar-event{font-size:calc(12.5px * var(--ui-scale,1))!important;line-height:1.22!important;padding:6px 7px!important}
+#calendar-view .calendar-week-day .calendar-event .event-time{font-size:calc(10.5px * var(--ui-scale,1))!important}
+
+/* Year: use the available calendar canvas on normal desktop widths, but stop growing on ultrawide. */
+@media(min-width:1181px) and (min-height:561px){
+  #calendar-view #cal-content>.calendar-year{
+    width:100%!important;max-width:none!important;height:100%!important;min-height:0!important;margin:0!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    grid-template-rows:repeat(3,minmax(0,1fr))!important;grid-auto-rows:unset!important;
+    gap:clamp(9px,1.15vh,14px) clamp(11px,.9vw,16px)!important;align-content:stretch!important;
+  }
+  #calendar-view .calendar-mini{
+    min-height:0!important;height:100%!important;padding:clamp(8px,1vh,12px) clamp(7px,.65vw,11px)!important;
+    display:flex!important;flex-direction:column!important;overflow:hidden!important;
+  }
+  #calendar-view .calendar-mini h2{flex:0 0 auto!important}
+  #calendar-view .calendar-mini h2 button{font-size:calc(16px * var(--ui-scale,1))!important;margin-bottom:clamp(3px,.6vh,7px)!important}
+  #calendar-view .calendar-mini-weekdays{flex:0 0 auto!important}
+  #calendar-view .calendar-mini-weekdays span{font-size:calc(10px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-mini-grid{flex:1 1 auto!important;min-height:0!important;grid-template-rows:repeat(6,minmax(0,1fr))!important;align-items:center!important}
+  #calendar-view .calendar-mini-grid button{
+    width:clamp(21px,2.6vh,29px)!important;height:clamp(21px,2.6vh,29px)!important;
+    font-size:calc(11px * var(--ui-scale,1))!important;
+  }
+}
+@media(min-width:2200px){#calendar-view #cal-content>.calendar-year{max-width:1680px!important;margin-inline:auto!important}}
+
+/* Tablet keeps a full 4x3 year where possible, with legible mini calendars. */
+@media(min-width:900px) and (max-width:1180px){
+  #calendar-view #cal-content>.calendar-year{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px 12px!important}
+  #calendar-view .calendar-mini-weekdays span{font-size:calc(9.5px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-mini-grid button{width:23px!important;height:23px!important;font-size:calc(10.5px * var(--ui-scale,1))!important}
+}
+
+/* Narrow layouts: preserve touch density, not microscopic typography. */
+@media(max-width:740px){
+  #calendar-view .calendar-brand-lockup .brand-symbol{width:20px!important;height:20px!important;flex-basis:20px!important}
+  #calendar-view .calendar-brand-tagline{padding-left:29px!important;font-size:calc(9.5px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-views button{font-size:calc(10.5px * var(--ui-scale,1))!important;min-height:32px!important}
+  #calendar-view .calendar-event{font-size:calc(10.5px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-event .event-time{font-size:calc(9.8px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-more{font-size:calc(9.8px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-mini-weekdays span{font-size:calc(9.5px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-mini-grid button{font-size:calc(10.5px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-week-day>button{font-size:calc(12px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-week-day>button strong{font-size:calc(27px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-week-day .calendar-event{font-size:calc(12px * var(--ui-scale,1))!important;line-height:1.3!important;padding:7px 8px!important}
+  #calendar-view .calendar-week-day .calendar-event .event-time{font-size:calc(10.5px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-agenda-row time{font-size:calc(10.5px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-agenda-row strong{font-size:calc(12.5px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-agenda-row small{font-size:calc(10px * var(--ui-scale,1))!important}
+}
+
+/* Short landscape still prioritises comprehension over fitting everything at any cost. */
+@media(max-height:560px) and (orientation:landscape){
+  #calendar-view .calendar-brand-tagline{font-size:calc(9.5px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-navigation .secondary-button{font-size:calc(10px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-views button{font-size:calc(10px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-event{font-size:calc(10.5px * var(--ui-scale,1))!important;line-height:1.2!important}
+  #calendar-view .calendar-event .event-time{font-size:calc(9.5px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-mini h2 button{font-size:calc(12.5px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-mini-weekdays span{font-size:calc(9.5px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-mini-grid button{width:20px!important;height:20px!important;font-size:calc(10px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-week-day>button{font-size:calc(10.5px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-week-day>button strong{font-size:calc(21px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-week-day .calendar-event{font-size:calc(10.5px * var(--ui-scale,1))!important;padding:4px 5px!important}
+  #calendar-view .calendar-week-day .calendar-event .event-time{font-size:calc(9.5px * var(--ui-scale,1))!important}
+}
+@media(max-width:360px){#calendar-view .calendar-views button{font-size:calc(10px * var(--ui-scale,1))!important}}
+
+/* v3.12.5 — readability floor. “Piccolo” remains compact, never microscopic. */
+#calendar-view .calendar-brand-tagline,
+#calendar-view .calendar-local-note,
+#calendar-view .calendar-sync-status,
+#calendar-view .calendar-event .event-time,
+#calendar-view .calendar-more,
+#calendar-view .calendar-mini-weekdays span,
+#calendar-view .calendar-week-event .event-time,
+#calendar-view .calendar-agenda-time,
+#calendar-view .calendar-agenda-item small{
+  font-size:max(9.5px,calc(10px * var(--ui-scale,1)))!important;
+}
+#calendar-view .calendar-views button{
+  font-size:max(10px,calc(12px * var(--ui-scale,1)))!important;
+}
+#calendar-view .calendar-mini-grid button{
+  font-size:max(10px,calc(11px * var(--ui-scale,1)))!important;
+}
+#calendar-view .calendar-week-day-label{
+  font-size:max(11px,calc(13px * var(--ui-scale,1)))!important;
+}
+#calendar-view .calendar-week-event{
+  font-size:max(11px,calc(12.5px * var(--ui-scale,1)))!important;
+}
+@media(max-width:740px), (max-height:560px) and (orientation:landscape){
+  #calendar-view .calendar-mini-weekdays span,
+  #calendar-view .calendar-mini-grid button,
+  #calendar-view .calendar-event .event-time,
+  #calendar-view .calendar-week-event .event-time,
+  #calendar-view .calendar-agenda-time,
+  #calendar-view .calendar-agenda-item small{
+    font-size:max(9.5px,calc(10px * var(--ui-scale,1)))!important;
+  }
+  #calendar-view .calendar-week-event{
+    font-size:max(10.5px,calc(12px * var(--ui-scale,1)))!important;
+  }
+}
+
+/* v3.12.5 — final Week readability floor, including compact landscape. */
+#calendar-view .calendar-week-day>button{
+  font-size:max(12px,calc(13px * var(--ui-scale,1)))!important;
+}
+#calendar-view .calendar-week-day>button strong{
+  font-size:max(25px,calc(30px * var(--ui-scale,1)))!important;
+}
+#calendar-view .calendar-week-day .calendar-event{
+  font-size:max(11.5px,calc(12.5px * var(--ui-scale,1)))!important;
+  line-height:1.3!important;
+}
+#calendar-view .calendar-week-day .calendar-event .event-time{
+  font-size:max(10.5px,calc(10.5px * var(--ui-scale,1)))!important;
+}
