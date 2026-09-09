@@ -1,4 +1,4 @@
-/* Istante v3.12.8 - application and local preferences. */
+/* Istante v3.12.9 - application and local preferences. */
 (function () {
 'use strict';
 const C = window.IstanteCore;
@@ -64,7 +64,7 @@ const moments=window.IstanteMoments.create({getSettings:()=>settings,getDraft:re
 const touchFeedback=window.IstanteTouchFeedback.create({getSettings:()=>settings});
 
 const calendar=window.IstanteCalendar.create({getSettings:()=>settings,notify:toast});
-const pages=window.IstantePages.create({getSettings:()=>settings,calendar,onChange:()=>{radio.close();X.pause();effectHub.sync();if(!document.body.classList.contains('view-calendar'))X.resume();}});
+const pages=window.IstantePages.create({getSettings:()=>settings,calendar,onChange:()=>{radio.close();X.pause();effectHub.sync();if(!document.body.classList.contains('view-calendar')&&!document.body.classList.contains('view-timer'))X.resume();}});
 const scene=window.IstanteScene.create({getSettings:()=>settings,getSun:()=>X.solar(new Date()),getWeather:now=>X.weather(now),store,openGuide:which=>openDialog(which)});
 const sharing=window.IstanteShare.create({getSnapshot:()=>({phrase:current?.text||'Un momento, per te.',time:timeFormatter.format(new Date()),theme:document.documentElement.dataset.theme||'dark',date:dateFormatter.format(new Date()),greeting:$('#moment-greeting').textContent,clockStyle:settings.clockStyle,hours:new Date().getHours(),minutes:new Date().getMinutes(),sky:window.IstanteSceneSnapshot.capture(scene.describe(),settings),goal:C.getGoal(new Date(),settings),station:settings.audioSource==='ambient'&&settings.ambientEnabled?ambient.label():settings.radioEnabled?radio.station().name:''}),open:()=>openDialog('share'),notify:toast});
 
@@ -166,7 +166,7 @@ function applyAppearance(now) {
  window.IstantePerformance.apply(settings);companion.apply();
  const min=now.getHours()*60+now.getMinutes(),sun=X.solar(now);
  const lightTime=sun?sun.isDay:(min>=360&&min<1080),theme=X.theme(now),old=document.documentElement.dataset.theme;
- document.documentElement.dataset.theme=theme;document.documentElement.dataset.timeFormat=settings.timeFormat;document.documentElement.dataset.fontStyle=settings.fontStyle||'current';updateViewportIndex();window.IstanteCursor?.apply(!!settings.customCursor);
+ document.documentElement.dataset.theme=theme;document.documentElement.dataset.timeFormat=settings.timeFormat;document.documentElement.dataset.fontStyle=settings.fontStyle||'current';document.documentElement.dataset.fontScope=settings.fontScope||'all';updateViewportIndex();window.IstanteCursor?.apply(!!settings.customCursor);
  try{localStorage.setItem('istante.original.theme',theme);}catch(_){}
  if(appearanceReady&&old!==theme&&!document.documentElement.classList.contains('is-loading'))X.transition(theme);
  appearanceReady=true;
@@ -308,6 +308,7 @@ function updateSettingsFields() {
  group('#ambient-settings-fields',f.ambientEnabled.checked);
  group('#radio-schedule-fields',f.radioEnabled.checked&&f.radioScheduleEnabled.checked);f.radioScheduleEnabled.disabled=!f.radioEnabled.checked;
  group('#timer-settings-fields',f.timerEnabled.checked);
+ const fontScope=$('#font-scope-setting');if(fontScope){const enabled=f.fontStyle.value==='excalifont';fontScope.hidden=!enabled;fontScope.querySelectorAll('input').forEach(el=>el.disabled=!enabled);}
  const timerRadioAvailable=f.radioEnabled.checked&&hasStations;
  for(const field of [f.timerDuring,f.timerAction]){
   for(const option of field.options)if(option.value==='radio')option.disabled=!timerRadioAvailable;
@@ -409,7 +410,7 @@ $('#touch-sound-preview')?.addEventListener('click',()=>touchFeedback.preview(re
 $('#settings-form').addEventListener('submit',event=>{
  event.preventDefault();const f=event.currentTarget,values={...settings,...Object.fromEntries(new FormData(f))};
  values.radioSchedules=scheduleEditor.value();
- for(const key of ['calendarEnabled','calendarUpcoming','calendarHolidays','mouseSwipe','customCursor','grain','chimeEnabled','chimeQuiet','ambientEnabled','celestialSky','showClock','showSeconds','motion','hideControls','wakeLock','touchSoundEnabled','typing','solarTimes','weather','transitionFX','photoMotion','breathe','typingErase','effectsEnabled','effectSunSync','radioEnabled','radioScheduleEnabled','timerEnabled'])values[key]=f.elements[key].checked;
+ for(const key of ['calendarEnabled','calendarUpcoming','calendarHolidays','mouseSwipe','audioVolumeGesture','customCursor','grain','chimeEnabled','chimeQuiet','ambientEnabled','celestialSky','showClock','showSeconds','motion','hideControls','wakeLock','touchSoundEnabled','typing','solarTimes','weather','transitionFX','photoMotion','breathe','typingErase','effectsEnabled','effectSunSync','radioEnabled','radioScheduleEnabled','timerEnabled'])values[key]=f.elements[key].checked;
  values.interval=Number(values.interval);values.photoDim=Number(values.photoDim);let error='';if(!validateSettings(f))return;
  if(values.mode==='twice'&&C.minutes(values.morning,-1)>=C.minutes(values.evening,-1))error='L\'inizio della sera deve essere successivo all\'inizio della mattina.';
  if(values.goalMode==='custom'&&(!values.goalStart||!values.goalEnd||new Date(values.goalEnd)<=new Date(values.goalStart)))error='Inserisci una data finale successiva alla data di inizio.';
@@ -475,7 +476,7 @@ document.addEventListener('istante:onboarding-calendar-url',event=>{
  const url=event.detail?.url;if(!url)return;const next={...settings,calendarEnabled:true};settings=C.cleanSettings(next);store.write('settings',settings);pages.apply();calendar.apply();void calendar.connectURL(url,'Calendario').then(()=>toast('Calendario collegato.')).catch(err=>{toast(err?.message||'Link ICS non leggibile. Puoi aggiungerlo più tardi.');});
 });
 document.addEventListener('istante:onboarding-setting',event=>{
- const d=event.detail||{},allowed={clockStyle:['digital','analog'],theme:['auto','dark','light'],mode:['twice','daily'],timerMinutes:[5,15,25,45,60],calendarEnabled:[true,false],weather:[true,false]};
+ const d=event.detail||{},allowed={clockStyle:['digital','analog'],theme:['auto','dark','light'],mode:['twice','daily'],timerMinutes:[5,15,25,45,60],timerDisplay:['modal','page'],calendarEnabled:[true,false],weather:[true,false]};
  if(d.key==='goalPreset'&&d.patch&&typeof d.patch==='object'){
   settings=C.cleanSettings({...settings,...d.patch});store.write('settings',settings);
   applyAppearance(new Date());lastClock='';tick(true);moments.apply();pages.apply();return;
@@ -519,7 +520,7 @@ $('#goal-offset-apply')?.addEventListener('click',()=>{
  toast('Traguardo impostato tra '+value+' '+(unit==='years'?(value===1?'anno':'anni'):(value===1?'mese':'mesi'))+'.');
 });
 updateViewportIndex();window.addEventListener('resize',updateViewportIndex,{passive:true});window.visualViewport?.addEventListener('resize',updateViewportIndex,{passive:true});
-window.IstanteControls.enhance($('#settings-form'));window.IstanteControls.enhance($('#radio-panel'));window.IstanteControls.enhance($('#timer-session-options'));applyAppearance(new Date());updateLibraryCounts();startClock();activity();updateWakeLock();
+window.IstanteControls.enhance($('#settings-form'));window.IstanteControls.enhance($('#radio-panel'));window.IstanteControls.enhance($('#timer-session-options'));window.IstanteControls.enhance($('#calendar-view'));applyAppearance(new Date());updateLibraryCounts();startClock();activity();updateWakeLock();
 // The complete collection is local. No redundant fetch is needed during startup.
 if(storageFailed)toast('Il browser non consente il salvataggio locale. La pagina funziona comunque in questa sessione.');
 window.IstanteUpdates.create({notify:toast});
@@ -527,6 +528,13 @@ window.IstanteBackup.create({
  store,core:C,builtins:window.IstanteStations||[],getSettings:()=>settings,
  notify:toast,open:()=>openDialog('backup'),
  onRestored(){ambient.stop(true);radio.stop();moments.destroy();try{sessionStorage.removeItem('istante.original1.timer.v1');}catch(_){}setTimeout(()=>location.reload(),600);}
+});
+document.addEventListener('istante:volume-gesture',event=>{
+ const delta=Number(event.detail?.delta)||0;if(!delta||!settings.audioVolumeGesture)return;
+ const ambientPlaying=!!ambient.inspect?.().playing,radioState=radio.getState?.();let key='';
+ if(ambientPlaying)key='ambientVolume';else if(radioState?.wantsPlay||radioState?.state==='playing')key='radioVolume';else key=settings.audioSource==='ambient'?'ambientVolume':'radioVolume';
+ const next=Math.max(0,Math.min(100,(Number(settings[key])||0)+delta));if(next===settings[key])return;settings=C.cleanSettings({...settings,[key]:next});store.write('settings',settings);radio.apply();ambient.apply();
+ const field=$('#settings-form')?.elements?.[key];if(field){field.value=String(next);field.dispatchEvent(new Event('input',{bubbles:true}));}toast((key==='ambientVolume'?'Volume ambiente':'Volume radio')+' · '+next+'%');
 });
 document.addEventListener('istante:manage-stations',()=>openDialog('stations'));
 document.addEventListener('istante:stations-changed',()=>{if(!stationLibrary.list().length){settings.radioScheduleEnabled=false;if(settings.timerAction==='radio')settings.timerAction='sound';if(settings.timerDuring==='radio')settings.timerDuring='silent';store.write('settings',settings);}moments.apply();if($('#settings-dialog').open)updateSettingsFields();});

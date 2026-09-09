@@ -1,5 +1,25 @@
 # Changelog
 
+## 3.12.9 — 9 settembre 2026
+
+- tooltip resi intenzionalmente ritardati: compaiono solo dopo circa due secondi di permanenza con mouse/trackpad e restano non invasivi su touch;
+- aggiunta la **gesture volume** opzionale e disattivata di default: swipe verticale nell’angolo destro su touch per regolare radio o ambiente, con variazione a passi e feedback percentuale;
+- Calendario Mese reso dinamico a 4/5/6 settimane: non viene più aggiunta una settimana completa del mese successivo quando non serve;
+- Calendario: nuova preferenza **Vista iniziale**, con Anno/Mese/Settimana/Giorno/Agenda oppure **Riprendi l’ultima vista**;
+- Timer: aggiunta la modalità **Pagina**, disattivata di default, che crea una terza vista immersiva a sinistra della Dashboard; la navigazione diventa Timer / Dashboard / Calendario e il punto della vista corrente è disabilitato;
+- il wizard iniziale permette di scegliere subito Timer in Finestra o Pagina e, se il Meteo non è configurato, mostra un esempio temporaneo offrendo solo l’acquisizione della posizione del dispositivo;
+- separati i gesti del Calendario: lo swipe nel contenuto cambia mese/settimana, mentre il ritorno alla Dashboard parte soltanto dalla fascia bassa dello schermo;
+- Calendario Settimana alleggerito ulteriormente e dotato di separatore tra intestazione del giorno ed eventi; Anno rifinito con separatore sotto il mese, indicatore evento a linea sui display compatti e cerchio di oggi ricentrato;
+- i controlli del Calendario diventano icon/glyph-only su tablet e piccoli display; il titolo del periodo apre il selettore data custom senza spostarsi in hover;
+- estesa Excalifont e aggiunta la scelta **Ovunque / Solo calendario**, mantenendo il fallback al font originale e nessun file font incorporato nel pacchetto;
+- Biblioteca resa più compatta: raccolta attiva, ricerca e accesso alle Raccolte condividono la stessa riga; catalogo con ricerca ampia a sinistra e filtri-tab a destra;
+- Timer modale con indicatore circolare più grande e impronta stabile tra configurazione e conto alla rovescia; mantenuti i controlli − / + precisi;
+- generazione cartolina corretta affinché preloader e anteprima occupino lo stesso slot senza spingere il layout;
+- gestione stazioni rifinita per evitare la sovrapposizione della linea di selezione al testo;
+- focus dello slider dimensione testo mostrato soltanto con `:focus-visible`, più distanziato e arrotondato;
+- normalizzata la tipografia del selettore “Ritorna allo screensaver”, inclusi 30 secondi e 10 minuti;
+- consolidati responsive, accessibilità, migrazione impostazioni, cache offline e documentazione di produzione.
+
 ## 3.12.8 — 9 settembre 2026
 
 - cursore personalizzato trasformato in opzione esplicita delle impostazioni, **disattivata di default**; il puntatore viene rimontato nel pannello/dialog attivo per restare sopra al top layer e resta escluso dai campi di testo e dai dispositivi touch;

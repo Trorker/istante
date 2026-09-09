@@ -93,13 +93,23 @@
    if(source&&source.textContent!==note)source.textContent=note;
   }
   document.querySelectorAll('[data-timer-during]').forEach(b=>b.addEventListener('click',()=>{if(state.state!=='idle')return;draftOptions=T.timerOptions({...draftOptions,timerDuring:b.dataset.timerDuring});render();}));
+  function renderPage(ms,progress){
+   const page=$('#timer-page');if(!page)return;const s=getSettings(),text=T.display(ms);page.dataset.state=state.state;
+   const readout=$('#timer-page-readout'),label=$('#timer-page-state'),track=$('#timer-page-progress'),orbit=$('#timer-page-orbit'),toggle=$('#timer-page-toggle'),reset=$('#timer-page-reset');
+   if(readout)readout.textContent=text;if(label)label.textContent=state.state==='running'?'In corso':state.state==='paused'?'In pausa':state.state==='done'?'Tempo finito':'Pronto';
+   if(track){track.setAttribute('aria-valuenow',String(Math.round(progress)));track.querySelector('i').style.width=progress+'%';}
+   if(orbit){orbit.style.setProperty('--timer-progress',progress+'%');orbit.dataset.state=state.state;}
+   if(toggle){const action=state.state==='running'?'pause':state.state==='paused'?'play':state.state==='done'?'reset':'play',textLabel=state.state==='running'?'Pausa':state.state==='paused'?'Riprendi':state.state==='done'?'Nuovo timer':'Inizia';toggle.innerHTML='<span class="icon">'+icon(action==='pause'?'pause':'play')+'</span><span>'+textLabel+'</span>';toggle.disabled=!s.timerEnabled;}
+   if(reset)reset.hidden=state.state==='idle';
+   const note=$('#timer-page-note');if(note)note.textContent=state.state==='running'?'Il resto può aspettare.':state.state==='paused'?'Riprendi quando vuoi.':state.state==='done'?'Il tempo è tuo.':'Una pausa con un confine, senza riempire il resto.';
+  }
   function render(){
    const s=getSettings(),ms=T.remaining(state),active=state.state!=='idle';$('#timer-open').hidden=!s.timerEnabled;$('#timer-chip').hidden=!s.timerEnabled||!active;$('#timer-chip').dataset.state=state.state;
    $('#timer-duration').hidden=active;$('#timer-presets').hidden=active;document.querySelectorAll('[data-duration]').forEach(b=>b.disabled=active);$('#timer-running').hidden=!active;$('#timer-session-options').hidden=active;$('#timer-reset').hidden=!active;$('#timer-dialog').dataset.state=state.state;$('#timer-reset').textContent=state.state==='done'?'Chiudi':'Annulla';
    $('#timer-state-label').textContent=state.state==='paused'?'Il tempo pu\u00f2 aspettare.':state.state==='done'?'Un momento per te.':'Il tuo momento, in corso';
    const text=T.display(ms);$('#timer-readout').textContent=text;$('#timer-chip-time').textContent=state.state==='done'?'Tempo finito':text;$('#timer-chip-label').textContent=state.state==='paused'?'In pausa':state.state==='done'?'Prenditi un respiro':'Un tempo per te';
    $('#timer-chip-toggle').hidden=state.state==='done';$('#timer-chip-dismiss').hidden=state.state!=='done';$('#timer-chip-toggle').innerHTML='<span class="icon">'+icon(state.state==='paused'?'play':'pause')+'</span>';$('#timer-chip-toggle').setAttribute('aria-label',state.state==='paused'?'Riprendi il timer':'Metti in pausa il timer');
-   const progress=state.duration?Math.max(0,Math.min(100,(1-ms/state.duration)*100)):0;$('#timer-progress').setAttribute('aria-valuenow',String(Math.round(progress)));$('#timer-progress i').style.width=progress+'%';const orbit=$('#timer-orbit');if(orbit){orbit.style.setProperty('--timer-progress',progress+'%');orbit.dataset.state=state.state;}
+   const progress=state.duration?Math.max(0,Math.min(100,(1-ms/state.duration)*100)):0;$('#timer-progress').setAttribute('aria-valuenow',String(Math.round(progress)));$('#timer-progress i').style.width=progress+'%';const orbit=$('#timer-orbit');if(orbit){orbit.style.setProperty('--timer-progress',progress+'%');orbit.dataset.state=state.state;}renderPage(ms,progress);
    const view=state.state+':'+s.timerEnabled;if(lastView!==view){lastView=view;const label=state.state==='running'?'Pausa':state.state==='paused'?'Riprendi':state.state==='done'?'Nuovo timer':'Inizia';$('#timer-start').innerHTML='<span class="icon">'+icon(state.state==='running'?'pause':'play')+'</span><span>'+label+'</span>';$('#timer-start').disabled=!s.timerEnabled;}
    renderOptions(active);describe();
   }
@@ -131,8 +141,10 @@
    if(!s.timerEnabled&&state.state!=='idle')reset();if((!s.radioEnabled||!radio.station().id)&&duringOwned)stopDuring();if(!s.ambientEnabled&&ambientOwned)stopDuring();if(!s.radioEnabled){armed=false;if(alarmRadio){alarmRadio=false;result('Radio disattivata. Resta l\u2019avviso visivo.');}}render();evaluate();
   }
   function tick(){if(destroyed)return;if(state.state==='running'&&T.remaining(state)<=0){finish(restored);restored=false;}else restored=false;if(state.state!=='idle')render();evaluate();}
-  function open(){if(!getSettings().timerEnabled)return;render();openTimer();}
+  function open(){if(!getSettings().timerEnabled)return;render();if(getSettings().timerDisplay==='page')document.dispatchEvent(new CustomEvent('istante:timer-page-request'));else openTimer();}
+  function openModal(){if(!getSettings().timerEnabled)return;render();openTimer();}
   $('#timer-open').addEventListener('click',open);$('#timer-chip-open').addEventListener('click',open);$('#timer-start').addEventListener('click',startTimer);$('#timer-reset').addEventListener('click',reset);$('#timer-chip-delete')?.addEventListener('click',reset);$('#timer-chip-dismiss').addEventListener('click',reset);$('#timer-chip-toggle').addEventListener('click',()=>state.state==='running'?pauseTimer():startTimer());
+  $('#timer-page-toggle')?.addEventListener('click',()=>state.state==='running'?pauseTimer():state.state==='done'?reset():startTimer());$('#timer-page-reset')?.addEventListener('click',reset);$('#timer-page-config')?.addEventListener('click',openModal);document.addEventListener('istante:timer-page-visible',render);
   $('#timer-duration-range')?.addEventListener('input',event=>{if(state.state!=='idle')return;setDuration(Math.max(1,Number(event.target.value)||25)*60000);});
   function nudgeDuration(direction){if(state.state!=='idle')return;const current=readDuration()||getSettings().timerMinutes*60000;setDuration(Math.max(60000,Math.min(86400000,current+direction*60000)));}
   $('#timer-duration-decrease')?.addEventListener('click',()=>nudgeDuration(-1));
