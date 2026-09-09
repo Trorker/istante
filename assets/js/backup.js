@@ -15,7 +15,7 @@
   if(x.current!=null){const c=x.current;if(!isRecord(c)||typeof c.slot!=='string'||c.slot.length>200||typeof c.text!=='string'||c.text.length>1000)throw Error('Frase corrente nello storico non valida.');current={slot:c.slot,text:c.text,manual:!!c.manual};}
   return{version:1,revision:0,cycle:Number.isSafeInteger(x.cycle)&&x.cycle>0?x.cycle:1,seen,log,current};
  }
- function validate(payload,{core,library,builtins,solar}){
+ function validate(payload,{core,library,builtins,solar,collections,calendar}){
   if(!isRecord(payload)||payload.format!=='istante-backup'||payload.schemaVersion!==1||!isRecord(payload.data))throw Error('Questo file non contiene un backup Istante compatibile (schema 1).');
   const d=payload.data;if(!isRecord(d.settings))throw Error('Le preferenze sono mancanti o non valide.');
   const settings=core.cleanSettings(d.settings),favorites=listOfText(d.favorites,'Frasi preferite');
@@ -29,6 +29,12 @@
   }
   let collection=null;
   if(d.collection!=null){const parsed=core.parsePhrases(d.collection);collection={version:'1.0',language:'it',count:parsed.length,phrases:parsed.map(x=>x.text)};}
+  const includesCollections=Object.hasOwn(d,'phraseCollections'),includesCalendars=Object.hasOwn(d,'calendars');
+  const phraseCollections=includesCollections?collections.clean(d.phraseCollections,core):null;
+  const calendars=includesCalendars?calendar.cleanSources(d.calendars):null;
+  if(phraseCollections&&JSON.stringify(phraseCollections).length>2200000)throw Error('Biblioteca oltre il limite di memoria.');
+  if(calendars&&JSON.stringify(calendars).length>2000000)throw Error('Calendari oltre il limite di memoria.');
+  if(phraseCollections){const active=phraseCollections.items.find(x=>x.id===phraseCollections.selected);collection=active?{version:'1.0',language:'it',count:active.phrases.length,phrases:active.phrases}:null;}
   let place=null;const includesPlace=Object.hasOwn(d,'place');
   if(includesPlace&&d.place!=null){if(!solar.validPlace(d.place))throw Error('Coordinate nel backup non valide.');place={lat:d.place.lat,lon:d.place.lon,name:String(d.place.name||'La mia posizione').slice(0,80),zone:solar.validZone(d.place.zone)};}
   const available=[...builtins.filter(s=>!radioLibrary.hidden.includes(s.id)),...radioLibrary.custom];
@@ -36,7 +42,7 @@
   if(!available.length){settings.radioScheduleEnabled=false;settings.timerDuring='silent';if(settings.timerAction==='radio')settings.timerAction='sound';}
   // A personal photo is deliberately not part of a portable configuration backup.
   const photoFallback=settings.background==='photo';if(photoFallback)settings.background='ambient';
-  return{settings,favorites,radioLibrary,radioUrls,collection,history:cleanHistory(d.phraseHistory),includesPlace,place,photoFallback,exportedAt:typeof payload.exportedAt==='string'?payload.exportedAt:''};
+  return{settings,favorites,radioLibrary,radioUrls,collection,phraseCollections,includesCollections,calendars,includesCalendars,history:cleanHistory(d.phraseHistory),includesPlace,place,photoFallback,exportedAt:typeof payload.exportedAt==='string'?payload.exportedAt:''};
  }
  function commit(storage,entries){
   const previous={};for(const key of Object.keys(entries))previous[key]=storage.getItem(PREFIX+key);
@@ -47,12 +53,14 @@
  }
  function create({store,core,builtins,getSettings,notify,open,onRestored}){
   const $=id=>document.getElementById(id);let pending=null,importToken=0;
-  const dependencies={core,builtins,library:window.IstanteStationLibrary,solar:window.IstanteSolar};
+  const dependencies={core,builtins,library:window.IstanteStationLibrary,solar:window.IstanteSolar,collections:window.IstanteCollections,calendar:window.IstanteCalendarCore};
   function exportBackup(){
    try{
     const data={settings:core.cleanSettings(store.read('settings',getSettings())),favorites:store.read('favorites',[]),radioLibrary:window.IstanteStationLibrary.clean(store.read('radioLibrary',{}),builtins),radioUrls:store.read('radioUrls',{}),collection:store.read('collection',null),phraseHistory:store.read('phrase-history.v1',null)};
+    data.phraseCollections=window.IstanteCollections.clean(store.read('phrase-collections.v1',{}),core);
+    if($('backup-calendars').checked)data.calendars=window.IstanteCalendarCore.cleanSources(store.read('calendars.v1',[]));
     if($('backup-place').checked)data.place=store.read('place',null);
-    const payload={format:'istante-backup',schemaVersion:1,appVersion:'3.8.0',exportedAt:new Date().toISOString(),sourceOrigin:location.origin,data};
+    const payload={format:'istante-backup',schemaVersion:1,appVersion:'3.10.0',exportedAt:new Date().toISOString(),sourceOrigin:location.origin,data};
     validate(payload,dependencies);
     const text=JSON.stringify(payload,null,2)+'\n',blob=new Blob([text],{type:'application/json;charset=utf-8'});
     if(blob.size>MAX_BYTES)throw Error('Il backup supera 4 MB. Esporta separatamente la raccolta di frasi.');
@@ -62,6 +70,7 @@
   function preview(data,name){
    pending=data;$('backup-confirm').checked=false;$('backup-restore').disabled=true;$('backup-error').hidden=true;$('backup-file-name').textContent=name;
    const values=[['Traguardo',data.settings.goalMode==='custom'?data.settings.goalTitle||'Il mio traguardo':data.settings.goalMode==='off'?'Disattivato':'Il prossimo anno'],['Frasi preferite',data.favorites.length],['Stazioni personali',data.radioLibrary.custom.length],['Radio preferite',data.radioLibrary.favorites.length],['Fasce radio',data.settings.radioSchedules.length],['Raccolta',data.collection?data.collection.count+' frasi personali':'1.000 frasi originali'],['Storico',data.history?.log.length||0]];
+   values.push(['Raccolte personali',data.includesCollections?data.phraseCollections.items.length:'Backup precedente: migrazione della raccolta attiva'],['Calendari',data.includesCalendars?data.calendars.length:'Non inclusi: restano quelli attuali']);
    const summary=$('backup-summary');summary.replaceChildren();for(const [key,value]of values){const row=document.createElement('div'),dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=key;dd.textContent=String(value);row.append(dt,dd);summary.append(row);}
    $('backup-extra-note').textContent=(data.includesPlace?data.place?'Questo backup include la localit\u00e0 salvata.':'La localit\u00e0 verr\u00e0 rimossa.':'La localit\u00e0 attuale non verr\u00e0 modificata.')+(data.photoFallback?' Lo sfondo personale verr\u00e0 sostituito dall\u2019atmosfera: il backup non include fotografie.':'')+' Nessun audio o programmazione si avvia dopo il ripristino: serve una nuova autorizzazione.';
    open();
@@ -77,6 +86,8 @@
   $('backup-restore').addEventListener('click',()=>{
    if(!pending||!$('backup-confirm').checked)return;
    const d=pending,entries={settings:d.settings,favorites:d.favorites,radioLibrary:d.radioLibrary,radioUrls:d.radioUrls,collection:d.collection,'phrase-history.v1':d.history};
+   if(d.includesCollections){entries['phrase-collections.v1']=d.phraseCollections;entries['collections-migrated']=true;}else if(d.collection){entries['phrase-collections.v1']={version:1,selected:'c-backup',items:[{id:'c-backup',title:'Raccolta dal backup',category:'Personale',phrases:d.collection.phrases}]};entries['collections-migrated']=true;}else{entries['phrase-collections.v1']={version:1,selected:'original',items:[]};entries['collections-migrated']=true;}
+   if(d.includesCalendars)entries['calendars.v1']=d.calendars;
    if(d.includesPlace){entries.place=d.place;entries.forecast=null;}
    const effectivePlace=d.includesPlace?d.place:store.read('place',null);
    if(!effectivePlace&&entries.settings.theme==='solar')entries.settings={...entries.settings,theme:'auto'};

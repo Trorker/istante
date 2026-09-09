@@ -65,12 +65,12 @@
    const id=++ticket;playing=false;loading=false;const old=graph;graph=null;release(old,immediate?0:.16);
    setTimeout(()=>{if(ticket===id&&!graph&&context?.state==='running')context.suspend().catch(()=>{});},immediate?0:200);render();
   }
-  async function start(){
+  async function start(reason='manual'){
    const s=getSettings();if(!s.ambientEnabled||!supported){message='Suoni ambientali non disponibili.';render();return false;}
    const id=++ticket;release(graph,0);graph=null;playing=false;loading=true;message='';
    radio.stop();save('audioSource','ambient');
    // A deliberate source switch takes ownership from an automatic radio slot/timer.
-   document.dispatchEvent(new CustomEvent('istante:radio-manual',{detail:{playing:false}}));render();
+   if(reason==='manual')document.dispatchEvent(new CustomEvent('istante:ambient-manual',{detail:{playing:true}}));render();
    try{
     if(!context||context.state==='closed'){
      const AC=window.AudioContext||window.webkitAudioContext;context=new AC();
@@ -101,21 +101,22 @@
   function switchSource(source){
    if(source==='ambient'&&!getSettings().ambientEnabled||source==='radio'&&!getSettings().radioEnabled)return;
    if(source===getSettings().audioSource)return;
-   if(source==='ambient'){radio.stop();document.dispatchEvent(new CustomEvent('istante:radio-manual',{detail:{playing:false}}));}else stop(true);
+   document.dispatchEvent(new CustomEvent('istante:ambient-manual',{detail:{playing:false}}));
+   if(source==='ambient')radio.stop();else stop(true);
    save('audioSource',source);message='';radio.apply();render();
   }
   function apply(){
    const s=getSettings();if(!s.ambientEnabled&&getSettings().audioSource==='ambient')save('audioSource','radio');
    if(!s.radioEnabled&&s.ambientEnabled)save('audioSource','ambient');
-   if(!s.ambientEnabled)stop(true);else if(graph&&activeType!==s.ambientType){void start();return;}else if(graph){graph.gain.gain.setTargetAtTime(level(),context.currentTime,.08);}
+   if(!s.ambientEnabled)stop(true);else if(graph&&activeType!==s.ambientType){void start('settings');return;}else if(graph){graph.gain.gain.setTargetAtTime(level(),context.currentTime,.08);}
    render();
   }
   $('audio-source-radio').addEventListener('click',()=>switchSource('radio'));
   $('audio-source-ambient').addEventListener('click',()=>switchSource('ambient'));
-  document.addEventListener('istante:ambient-toggle',()=>playing||loading?stop():void start());
+  document.addEventListener('istante:ambient-toggle',()=>{document.dispatchEvent(new CustomEvent('istante:ambient-manual',{detail:{playing:!(playing||loading)}}));playing||loading?stop():void start('manual');});
   document.addEventListener('istante:before-radio-start',()=>{stop(true);if(getSettings().audioSource!=='radio')save('audioSource','radio');render();});
   document.addEventListener('istante:radio-ui',render);
-  document.querySelectorAll('[data-ambient-type]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.ambientType===getSettings().ambientType)return;save('ambientType',b.dataset.ambientType);message='';if(playing||loading)void start();else render();}));
+  document.querySelectorAll('[data-ambient-type]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.ambientType===getSettings().ambientType)return;save('ambientType',b.dataset.ambientType);message='';if(playing||loading)void start('settings');else render();}));
   $('ambient-volume').addEventListener('input',e=>{save('ambientVolume',Number(e.target.value));muted=false;if(graph)graph.gain.gain.setTargetAtTime(level(),context.currentTime,.06);render();});
   $('ambient-mute').addEventListener('click',()=>{muted=!muted;if(graph)graph.gain.gain.setTargetAtTime(level(),context.currentTime,.06);render();});
   window.addEventListener('pagehide',()=>stop(true));apply();

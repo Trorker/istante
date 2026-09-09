@@ -1,4 +1,21 @@
-# Changelog di Istante
+# Changelog
+
+## 3.10.0 — 9 settembre 2026
+
+- Ricostruzione grafica completa sulla base della v3.8.0.
+- Ripristinati tipografia, spaziature, superfici, modali e gerarchia delle impostazioni della 3.8.
+- Benvenuto con logo reale animato e testo riscritto sul significato del progetto.
+- Wizard iniziale nuovamente coerente con il design, con preferenze applicabili direttamente.
+- “Prossimo capitolo” configurabile dalla dashboard e dal wizard, anche in mesi o anni.
+- Controlli introdotti dopo la 3.8 adattati al sistema visivo originale.
+- Conservate calendario, raccolte multiple, radio/ambiente, timer, condivisione, backup e funzioni cielo/meteo.
+- Ripuliti i riferimenti alle patch 3.10.1–3.10.4: questa è la nuova 3.10 canonica.
+
+Vedi le [note complete](docs/release/v3.10.0.md).
+
+## 3.9.0 — 8 settembre 2026
+
+Calendario ICS con cinque viste, biblioteca JSON persistente, QR con frase e modale di ricezione, rintocco orario, grana analogica, cielo circolare più caldo, riga ambientale riordinata e countdown in mesi/anni. Modalità leggera per tablet, meno ridisegni e backup esteso. Vedi [note complete](docs/release/v3.9.0.md) per limiti ICS, rete, audio e verifiche.
 
 Le modifiche sono elencate dalla release più recente. Le voci Original 1.x descrivono la base minimale da cui deriva la linea 3.x; non includono gli esperimenti grafici della precedente linea 2.x.
 

@@ -4,6 +4,7 @@
 paths.heartFilled='M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3z';
 paths.wind='M15.5 3a3.5 3.5 0 0 0-3.5 3.5h2A1.5 1.5 0 1 1 15.5 8H2v2h13.5a3.5 3.5 0 0 0 0-7zM19 11H2v2h17a2 2 0 1 1-2 2h-2a4 4 0 1 0 4-4zM9 15H2v2h7a1 1 0 1 1-1 1H6a3 3 0 1 0 3-3z';
 paths.share='M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a3.27 3.27 0 0 0 0-1.4l7.05-4.11A3 3 0 1 0 15 5c0 .24.03.47.09.69L8.04 9.81A3 3 0 1 0 6 15c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65A2.92 2.92 0 1 0 18 16.08z';
+paths.refresh='M17.65 6.35A7.95 7.95 0 0 0 12 4a8 8 0 1 0 7.93 9h-2.02A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z';
 paths.link='M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7a5 5 0 0 0 0 10h4v-1.9H7A3.1 3.1 0 0 1 3.9 12zM8 13h8v-2H8v2zm9-6h-4v1.9h4a3.1 3.1 0 0 1 0 6.2h-4V17h4a5 5 0 0 0 0-10z';
 window.IstanteIcons={render(name){if(name==='heart')return '<svg class="material-icon material-heart" viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path class="heart-outline" d="'+paths.heart+'"/><path class="heart-filled" d="'+paths.heartFilled+'"/></svg>';return '<svg class="material-icon" viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="'+(paths[name]||paths.clock)+'"/></svg>';}};
 })();
