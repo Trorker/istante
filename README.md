@@ -1,6 +1,6 @@
 # Istante
 
-**Versione corrente: 3.10.2**  
+**Versione corrente: 3.10.3**  
 **Un momento, per te.**  
 Un progetto di **Ruslan Dzyuba**.
 
@@ -110,7 +110,7 @@ o riaperta più avanti.
 - `data/`: frasi, catalogo raccolte e stazioni predefinite.
 - `README.md`: descrizione del progetto e release corrente.
 - `CHANGELOG.md`: storico delle modifiche.
-- `docs/release/v3.10.2.md`: note dettagliate di questa release.
+- `docs/release/v3.10.3.md`: note dettagliate di questa release.
 - `docs/LICENZA.md`: licenza non commerciale con attribuzione obbligatoria.
 - `docs/TERZE-PARTI.md`: dipendenze, servizi e attribuzioni.
 - `docs/VISIONE-E-DESIGN.md`: valori, regole grafiche e criteri responsive da mantenere nelle release future.

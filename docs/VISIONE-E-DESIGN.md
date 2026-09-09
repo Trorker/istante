@@ -1,6 +1,6 @@
 # Istante — Visione, valori e sistema di design
 
-**Versione di riferimento:** 3.10.2  
+**Versione di riferimento:** 3.10.3  
 **Sito ufficiale:** https://istante.ruslan-dzyuba.it/
 
 ## 1. Che cos'è Istante
@@ -65,6 +65,8 @@ Il calendario è una **vista virtuale della stessa istanza**, non un'altra appli
 - Su schermi grandi il contenuto deve utilizzare il viewport senza scroll della pagina.
 - Su schermi piccoli o con poco spazio è consentito lo scroll **interno al contenuto calendario**, mai lo scroll orizzontale dell'intera applicazione.
 - Anno, mese, settimana, giorno e agenda devono avere la stessa gerarchia.
+- Comandi del periodo, cambio vista e gestione calendari appartengono a **un’unica barra compatta**; non si impilano intestazioni tecniche separate.
+- Quando lo spazio scarseggia si semplificano font, eventi e sorgenti prima di ridurre il calendario a una miniatura illeggibile.
 - I calendari condivisi sono in sola lettura e visivamente secondari rispetto agli eventi.
 
 ## 6. Biblioteca
@@ -83,6 +85,8 @@ La biblioteca deve ricordare una raccolta editoriale, non uno store:
 Le impostazioni sono divise per significato, tramite accordion. Una sezione aperta alla volta.
 
 Ogni controllo deve seguire uno di questi pattern: toggle, select custom, campo testo/data/ora custom, slider, gruppo segmentato solo quando rappresenta realmente alternative equivalenti. Le note devono essere brevi e occupare tutta la larghezza quando spiegano l'intero gruppo.
+
+Ricerca, selettori e liste devono riutilizzare la stessa geometria. Uno stato selezionato si indica con un accento discreto sul lato o sul testo; **non** si aggiunge un indicatore sulla stessa zona riservata ad azioni come Preferito, Elimina o Altro.
 
 ## 8. Animazioni e prestazioni
 

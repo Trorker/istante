@@ -1,5 +1,18 @@
 # Changelog
 
+## 3.10.3 — Calendario e controlli coerenti
+
+- unificate intestazione e toolbar del calendario in una sola barra compatta;
+- riscritto il comportamento responsive finale del calendario, neutralizzando vecchie regole CSS che cambiavano il layout tra dispositivi;
+- vista Anno a 4/3/2 colonne secondo lo spazio reale, con giorni sempre circolari e scroll confinato al contenuto quando necessario;
+- vista Mese adattata a desktop, tablet, telefoni stretti e landscape senza overflow orizzontale;
+- sui tablet le sorgenti ICS non occupano più una seconda fascia: restano raggiungibili dal pulsante `Calendari`;
+- prossimo impegno trasformato da card marcata a riga editoriale discreta;
+- stazione selezionata indicata a sinistra, lasciando la destra libera per il cuore Preferiti;
+- ricerca del selettore radio e gestione stazioni uniformata al componente di ricerca usato nel resto di Istante;
+- aggiornato `docs/VISIONE-E-DESIGN.md` con le regole permanenti per calendario e stati selezionati;
+- cache offline e riferimenti di release riallineati alla 3.10.3.
+
 ## 3.10.2 — Proporzioni e calendario
 
 - timer: ore, minuti, secondi e conteggio in corso tornano ad avere una dimensione leggibile e centrale;
