@@ -65,7 +65,7 @@ function create({store,core,original,legacy,notify,onChange}){
    const desc=document.createElement('p');desc.textContent=item.description||(kind==='local'?'Una raccolta conservata su questo dispositivo.':'Una raccolta di Istante.');
    const actions=document.createElement('div');actions.className='collection-card-actions';
    const button=(label,fn,primary=false)=>{const b=document.createElement('button');b.type='button';b.className=primary?'primary-button':'secondary-button';b.textContent=label;b.addEventListener('click',fn);actions.append(b);return b;};
-   if(status==='available')button('Scarica',()=>installCatalog(card.source||item),true);
+   if(status==='available'){const downloadButton=button('Scarica',()=>installCatalog(card.source||item),true);downloadButton.classList.add('collection-download-button');}
    else if(status==='installed')button('Usa questa raccolta',()=>select(localId),true);
    else {const current=document.createElement('span');current.className='collection-active-note';current.textContent='Questa è la raccolta attiva';actions.append(current);}
    if(status!=='available'){

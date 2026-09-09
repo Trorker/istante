@@ -1,5 +1,16 @@
 # Changelog
 
+## 3.12.7 — 9 settembre 2026
+
+- Biblioteca: spostato **Vedi raccolte** accanto a ricerca e conteggio frasi; nel catalogo ricerca a sinistra e filtri di stato come tab sulla destra;
+- reso più evidente **Torna alle frasi** e ridotto il pulsante **Scarica**, ora ancorato in basso a destra sulle raccolte da installare;
+- Timer: aggiunti controlli **− / +** attorno al valore principale per rifinire la durata di un minuto alla volta;
+- Calendario Settimana: eventi ridisegnati come mini-card con colore sorgente, orario, titolo, calendario di origine e località quando disponibile;
+- corretta anche la sovrapposizione degli eventi nella Settimana mobile: le regole del titolo del giorno non vengono più ereditate dalle card evento e più appuntamenti si impilano correttamente;
+- aggiunto puntatore esplicito sul traguardo e introdotto un **cursore custom** leggero per mouse/trackpad, disattivato su touch e nei campi di testo;
+- ripristinato il lockup in alto a sinistra con l’**icona reale** di Istante e le due righe `istante.` / `Un momento, per te.` dentro un unico collegamento;
+- riallineati versione, documentazione, cache offline e controlli di produzione.
+
 ## 3.12.6 — 9 settembre 2026
 
 - toolbar inferiore ricomposta come **un unico cluster centrato**, mantenendo i tre gruppi semantici Frasi / Tempo / Schermo e impostazioni;

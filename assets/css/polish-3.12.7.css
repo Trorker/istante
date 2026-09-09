@@ -1,0 +1,182 @@
+/* Istante v3.12.7 — interface finishing layer.
+   Loaded last. Keeps the 3.12.6 production contract and refines navigation,
+   timer precision, calendar clarity, branding and pointer feedback. */
+
+/* --------------------------------------------------------------------------
+   Brand: use the real Istante icon + two stacked lines as one focus target
+   -------------------------------------------------------------------------- */
+.topbar .brand-lockup{display:flex!important;align-items:center!important;min-width:0!important}
+.topbar .brand-home-link{
+  display:flex!important;align-items:center!important;gap:10px!important;padding:3px 5px 3px 3px!important;
+  line-height:1!important;border-radius:11px!important;text-decoration:none!important;color:var(--ink)!important;
+}
+.topbar .brand-home-link:hover,.topbar .brand-home-link:focus-visible{background:color-mix(in srgb,var(--accent-soft) 72%,transparent)!important}
+.brand-logo-image{display:block!important;flex:0 0 auto!important;width:32px!important;height:32px!important;border-radius:9px!important;object-fit:cover!important}
+.brand-home-copy{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;gap:2px!important;min-width:0!important}
+.brand-home-name{font:500 23px/1 var(--serif)!important;letter-spacing:-.04em!important;color:var(--ink)!important}
+.brand-home-tagline{font:500 10px/1.15 var(--sans)!important;letter-spacing:.015em!important;color:var(--muted)!important;white-space:nowrap!important}
+@media(max-width:520px){
+  .brand-logo-image{width:29px!important;height:29px!important;border-radius:8px!important}
+  .brand-home-name{font-size:20px!important}.brand-home-tagline{font-size:9.5px!important}
+}
+
+/* Calendar uses exactly the same real icon and stacked lockup. */
+#calendar-view .calendar-brand-button{
+  display:grid!important;grid-template-columns:30px auto!important;grid-template-rows:auto!important;column-gap:9px!important;
+  align-items:center!important;justify-items:start!important;padding:4px 6px 4px 4px!important;
+}
+#calendar-view .calendar-brand-image{grid-column:1!important;width:30px!important;height:30px!important;border-radius:8px!important;align-self:center!important}
+#calendar-view .calendar-brand-copy{grid-column:2!important;grid-row:1!important}
+#calendar-view .calendar-brand-name{font-size:20px!important}
+#calendar-view .calendar-brand-tagline{font-size:max(9.5px,calc(9.5px * var(--ui-scale,1)))!important}
+@media(max-width:740px){#calendar-view .calendar-brand-button{grid-template-columns:27px auto!important}.calendar-brand-image{width:27px!important;height:27px!important}}
+
+/* --------------------------------------------------------------------------
+   Library: search first, collection entry beside the count, tabs on the right
+   -------------------------------------------------------------------------- */
+.phrase-library-tools{
+  display:grid!important;grid-template-columns:minmax(160px,.7fr) minmax(0,1.5fr)!important;
+  grid-template-areas:'current searchrow' 'tabs tabs'!important;gap:10px 18px!important;align-items:center!important;
+}
+.library-current{grid-area:current!important}
+.library-search-row{grid-area:searchrow!important;display:grid!important;grid-template-columns:minmax(220px,1fr) auto!important;align-items:center!important;gap:12px!important;min-width:0!important}
+.library-search-row>.search-field{min-width:0!important}
+.library-search-actions{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:10px!important;white-space:nowrap!important}
+.library-search-actions .result-count{font-size:max(10.5px,calc(10.5px * var(--ui-scale,1)))!important;color:var(--muted)!important;font-variant-numeric:tabular-nums!important}
+.library-collections-button{min-height:38px!important;padding:8px 13px!important;border-radius:10px!important}
+.library-collections-button .icon{width:15px!important;height:15px!important}
+.library-tabs{grid-area:tabs!important;display:flex!important;justify-content:flex-end!important;margin:0!important;border-bottom:1px solid color-mix(in srgb,var(--line) 78%,transparent)!important}
+.library-tabs>div{display:flex!important;justify-content:flex-end!important;gap:20px!important}
+
+/* Collection catalogue: search on the left, state tabs on the right. */
+.collection-library-inline-head{justify-content:flex-start!important;gap:16px!important}
+.collection-back-button{
+  flex:0 0 auto!important;min-height:40px!important;padding:9px 13px!important;border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line))!important;
+  background:color-mix(in srgb,var(--accent-soft) 54%,transparent)!important;color:var(--ink)!important;font-weight:600!important;
+}
+.collection-back-button .icon{width:15px!important;height:15px!important;transform:rotate(180deg)!important}
+.collection-back-button:hover,.collection-back-button:focus-visible{border-color:color-mix(in srgb,var(--accent) 62%,var(--line))!important;background:var(--accent-soft)!important}
+.collection-library-toolbar{
+  display:grid!important;grid-template-columns:minmax(250px,1fr) auto!important;gap:18px!important;align-items:center!important;
+  padding:10px 28px 9px!important;
+}
+.collection-library-toolbar>.search-field{min-width:0!important}
+.collection-status-filters{
+  justify-self:end!important;display:flex!important;align-items:center!important;gap:3px!important;flex-wrap:nowrap!important;
+  padding:3px!important;border:1px solid var(--line)!important;border-radius:11px!important;background:color-mix(in srgb,var(--bg) 72%,transparent)!important;
+}
+.collection-status-filters button{
+  min-height:34px!important;padding:6px 11px!important;border:0!important;border-radius:8px!important;background:transparent!important;
+  color:var(--muted)!important;font-size:max(10.5px,calc(10.5px * var(--ui-scale,1)))!important;white-space:nowrap!important;
+}
+.collection-status-filters button[aria-pressed='true']{
+  background:var(--surface-2)!important;color:var(--ink)!important;box-shadow:0 1px 0 color-mix(in srgb,var(--line) 70%,transparent)!important;
+}
+#collection-library-inline .collection-card{padding:16px!important;min-height:194px!important}
+#collection-library-inline .collection-card-actions{justify-content:flex-end!important;align-items:flex-end!important;min-height:38px!important;margin-top:auto!important}
+#collection-library-inline .collection-card-actions .collection-download-button{
+  min-height:31px!important;padding:6px 11px!important;border-radius:8px!important;font-size:10px!important;margin-left:auto!important;
+}
+#collection-library-inline .collection-card-actions .icon-button{width:34px!important;height:34px!important;min-width:34px!important}
+.collection-active-note{margin-right:auto!important}
+@media(max-width:760px){
+  .phrase-library-tools{grid-template-columns:1fr!important;grid-template-areas:'current' 'searchrow' 'tabs'!important;gap:9px!important}
+  .library-search-row{grid-template-columns:minmax(0,1fr) auto!important;gap:8px!important}
+  .library-search-actions{gap:6px!important}.library-search-actions .result-count{display:none!important}.library-collections-button{padding-inline:10px!important}.library-collections-button span:last-child{display:none!important}
+  .collection-library-toolbar{grid-template-columns:1fr!important;gap:9px!important;padding-inline:20px!important}
+  .collection-status-filters{justify-self:stretch!important;overflow-x:auto!important;scrollbar-width:none!important}.collection-status-filters button{flex:1 0 auto!important}
+  .collection-library-inline-head{align-items:flex-start!important;flex-wrap:wrap!important}.collection-back-button{order:0!important}
+}
+
+/* --------------------------------------------------------------------------
+   Timer: minute nudges around the primary value; range stays fast and tactile
+   -------------------------------------------------------------------------- */
+.timer-duration-control{display:grid!important;grid-template-columns:46px minmax(0,1fr) 46px!important;align-items:center!important;gap:12px!important;width:min(420px,100%)!important;margin-inline:auto!important}
+.timer-step-button{
+  width:46px!important;height:46px!important;border-radius:50%!important;border:1px solid color-mix(in srgb,var(--accent) 30%,var(--line))!important;
+  background:color-mix(in srgb,var(--surface-2) 74%,transparent)!important;color:var(--ink)!important;display:grid!important;place-items:center!important;
+  font:400 26px/1 var(--sans)!important;transition:transform .16s cubic-bezier(.2,.8,.2,1),background .16s ease,border-color .16s ease!important;
+}
+.timer-step-button:hover,.timer-step-button:focus-visible{background:var(--accent-soft)!important;border-color:color-mix(in srgb,var(--accent) 65%,var(--line))!important;transform:scale(1.04)!important}
+.timer-step-button:active{transform:scale(.96)!important}
+#timer-duration-display{min-width:0!important}
+@media(max-width:520px){.timer-duration-control{grid-template-columns:42px minmax(0,1fr) 42px!important;gap:8px!important}.timer-step-button{width:42px!important;height:42px!important;font-size:24px!important}}
+
+/* --------------------------------------------------------------------------
+   Goal affordance: it is a button-like surface, so make that obvious
+   -------------------------------------------------------------------------- */
+#goal-strip,#idle-goal-summary{cursor:pointer!important}
+#goal-strip{transition:background .18s ease,border-color .18s ease,transform .18s cubic-bezier(.2,.8,.2,1)!important}
+#goal-strip:hover,#goal-strip:focus-visible{background:color-mix(in srgb,var(--accent-soft) 22%,transparent)!important}
+#goal-strip:active{transform:scale(.997)!important}
+#idle-goal-summary:hover,#idle-goal-summary:focus-visible{background:color-mix(in srgb,var(--accent-soft) 26%,transparent)!important}
+
+/* --------------------------------------------------------------------------
+   Week events: source identity, clear time, title hierarchy and location
+   -------------------------------------------------------------------------- */
+#calendar-view .calendar-week-day .calendar-week-event{
+  display:flex!important;flex-direction:column!important;gap:4px!important;position:relative!important;
+  margin:5px 0!important;padding:8px 9px 9px!important;border:1px solid color-mix(in srgb,var(--event-color) 34%,var(--line))!important;
+  border-left:3px solid var(--event-color)!important;border-radius:8px!important;
+  background:color-mix(in srgb,var(--event-color) 9%,var(--surface))!important;color:var(--ink)!important;white-space:normal!important;
+  box-shadow:0 1px 0 color-mix(in srgb,var(--event-color) 12%,transparent)!important;
+  transition:transform .16s cubic-bezier(.2,.8,.2,1),background .16s ease,border-color .16s ease!important;
+}
+#calendar-view .calendar-week-day .calendar-week-event:hover,#calendar-view .calendar-week-day .calendar-week-event:focus-visible{
+  transform:translateY(-1px)!important;background:color-mix(in srgb,var(--event-color) 14%,var(--surface))!important;border-color:color-mix(in srgb,var(--event-color) 58%,var(--line))!important;
+}
+#calendar-view .week-event-top{display:flex!important;align-items:center!important;gap:6px!important;min-width:0!important}
+#calendar-view .week-event-dot{display:block!important;width:7px!important;height:7px!important;flex:0 0 7px!important;border-radius:50%!important;background:var(--event-color)!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--event-color) 14%,transparent)!important}
+#calendar-view .calendar-week-event .event-time{
+  display:block!important;margin:0!important;padding:0!important;font-size:max(10.5px,calc(10.5px * var(--ui-scale,1)))!important;font-weight:700!important;
+  letter-spacing:.015em!important;color:var(--ink)!important;opacity:.82!important;font-variant-numeric:tabular-nums!important;
+}
+#calendar-view .week-event-title{display:block!important;font-size:max(11.8px,calc(12.3px * var(--ui-scale,1)))!important;line-height:1.25!important;font-weight:650!important;overflow-wrap:anywhere!important}
+#calendar-view .week-event-source{display:block!important;font-size:max(9.8px,calc(10px * var(--ui-scale,1)))!important;line-height:1.25!important;color:var(--muted)!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+#calendar-view .calendar-week-day.is-today{background:color-mix(in srgb,var(--accent-soft) 16%,transparent)!important}
+@media(max-width:740px){
+  #calendar-view .calendar-week-day .calendar-week-event{padding:7px 8px!important;margin:4px 0!important}
+  #calendar-view .week-event-source{white-space:normal!important}
+}
+
+/* --------------------------------------------------------------------------
+   Custom cursor: subtle dot + soft ring, only for precise pointing devices.
+   Native text cursor remains available in editable fields.
+   -------------------------------------------------------------------------- */
+.istante-cursor-dot,.istante-cursor-ring{
+  position:fixed!important;left:0!important;top:0!important;z-index:100000!important;pointer-events:none!important;opacity:0;
+  transform:translate3d(-80px,-80px,0) translate(-50%,-50%);will-change:transform,opacity,width,height;background,border-color;
+}
+.istante-cursor-dot{width:5px!important;height:5px!important;border-radius:50%!important;background:var(--accent)!important;box-shadow:0 0 10px color-mix(in srgb,var(--accent) 44%,transparent)!important;transition:opacity .12s ease!important}
+.istante-cursor-ring{
+  width:24px!important;height:24px!important;border-radius:50%!important;border:1px solid color-mix(in srgb,var(--accent) 72%,transparent)!important;
+  background:color-mix(in srgb,var(--accent-soft) 10%,transparent)!important;transition:opacity .12s ease,width .16s cubic-bezier(.2,.8,.2,1),height .16s cubic-bezier(.2,.8,.2,1),background .16s ease,border-color .16s ease!important;
+}
+.istante-cursor-dot.is-visible,.istante-cursor-ring.is-visible{opacity:1!important}
+.istante-cursor-ring.is-action{width:34px!important;height:34px!important;background:color-mix(in srgb,var(--accent-soft) 32%,transparent)!important;border-color:var(--accent)!important}
+.istante-cursor-ring.is-pressed{width:20px!important;height:20px!important;background:color-mix(in srgb,var(--accent-soft) 48%,transparent)!important}
+@media(hover:hover) and (pointer:fine){
+  html.istante-custom-cursor body,html.istante-custom-cursor a,html.istante-custom-cursor button,html.istante-custom-cursor [role='button'],html.istante-custom-cursor summary,html.istante-custom-cursor input[type='range'],html.istante-custom-cursor label.file-button{cursor:none!important}
+  html.istante-custom-cursor input:not([type='range']):not([type='button']):not([type='submit']),html.istante-custom-cursor textarea,html.istante-custom-cursor [contenteditable='true']{cursor:text!important}
+}
+@media(hover:none),(pointer:coarse){.istante-cursor-dot,.istante-cursor-ring{display:none!important}}
+@media(prefers-reduced-motion:reduce){.istante-cursor-ring,.istante-cursor-dot{transition:opacity .08s linear!important}}
+
+/* Collection downloads are a secondary action: compact and anchored to the card corner. */
+#collection-library-inline .collection-card-available{padding-bottom:58px!important}
+#collection-library-inline .collection-card-available .collection-card-actions{
+  position:absolute!important;right:14px!important;bottom:14px!important;width:auto!important;min-width:0!important;min-height:0!important;margin:0!important;
+}
+#collection-library-inline .collection-card-available .collection-download-button{
+  min-height:28px!important;padding:5px 9px!important;border-radius:8px!important;font-size:9.5px!important;margin:0!important;
+}
+
+/* Week header selectors also match event <button>s in the canonical layer.
+   Reset those inherited rules so multiple events stack instead of overlapping. */
+#calendar-view .calendar-week-day>button.calendar-week-event{
+  grid-row:auto!important;text-align:left!important;width:100%!important;color:var(--ink)!important;
+}
+#calendar-view .calendar-week-day>button.calendar-week-event .week-event-title{
+  display:block!important;margin:0!important;font-family:var(--sans)!important;
+  font-size:max(11.8px,calc(12.3px * var(--ui-scale,1)))!important;font-weight:650!important;line-height:1.25!important;
+}

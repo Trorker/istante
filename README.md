@@ -1,6 +1,6 @@
 # Istante
 
-**Versione corrente: 3.12.6**  
+**Versione corrente: 3.12.7**  
 **Un momento, per te.**  
 Un progetto di **Ruslan Dzyuba**.
 
@@ -35,7 +35,7 @@ trasformarla in una dashboard tecnica.
 La raccolta principale contiene 1.000 pensieri e usa una selezione casuale con
 memoria locale per evitare ripetizioni ravvicinate. Dalla biblioteca puoi
 aggiungere altre raccolte incluse nel sito oppure importare file **JSON** o
-**TXT** (una frase per riga). La scelta delle raccolte vive nella **stessa modale** delle frasi: non apre un secondo pannello sopra al primo. Il pulsante **Vedi raccolte** apre un unico catalogo a card; ogni raccolta indica subito se è **In uso**, **Scaricata** o **Da scaricare**, con filtri dedicati per questi stati. Le raccolte personali restano nel browser finché non le elimini.
+**TXT** (una frase per riga). La scelta delle raccolte vive nella **stessa modale** delle frasi: non apre un secondo pannello sopra al primo. Il pulsante **Vedi raccolte** vive accanto alla ricerca e al conteggio delle frasi e apre un unico catalogo a card. Nel catalogo la ricerca resta a sinistra, mentre i filtri a tab **Tutte / In uso / Scaricate / Da scaricare** sono allineati a destra; ogni raccolta indica subito il proprio stato. Le raccolte personali restano nel browser finché non le elimini.
 
 La macchina da scrivere è facoltativa e può usare un ritmo umano, piccole pause
 e correzioni. Preferiti e storico restano locali.
@@ -58,14 +58,14 @@ programmazioni multiple e scelta casuale. In alternativa puoi usare il
 generatore audio offline: rumore rosa, marrone, pioggia o vento sintetizzati
 con Web Audio, senza file audio da scaricare.
 
-Il timer rimane volutamente semplice: la durata principale si sceglie con uno **slider da 1 a 120 minuti**, mentre ore/minuti/secondi precisi restano sotto “Durata precisa”. Quando parte, il tempo residuo entra in un indicatore circolare animato con avanzamento; silenzio, radio o suono rilassante restano configurabili senza appesantire la schermata principale.
+Il timer rimane volutamente semplice: la durata principale si sceglie con uno **slider da 1 a 120 minuti** e può essere rifinita di un minuto alla volta con i pulsanti **− / +** accanto al valore; ore/minuti/secondi precisi restano sotto “Durata precisa”. Quando parte, il tempo residuo entra in un indicatore circolare animato con avanzamento; silenzio, radio o suono rilassante restano configurabili senza appesantire la schermata principale.
 
 ## Calendario, se ti serve
 
 Il calendario è **opzionale** e vive nella stessa istanza della dashboard: su
 dispositivi touch puoi passare alla vista calendario con uno swipe, oppure usare
 i controlli dedicati. Sono disponibili viste mese, settimana, anno, giorno e
-agenda, con fino a 8 calendari ICS e festività italiane facoltative. La vista Anno sfrutta lo spazio disponibile sui desktop normali senza dilatarsi sui monitor ultrawide. Nella vista Settimana l'elenco dei calendari è un **drawer richiamabile**: quando è chiuso, i sette giorni usano tutta la larghezza disponibile e mantengono una soglia tipografica leggibile anche con la scala testo Piccolo.
+agenda, con fino a 8 calendari ICS e festività italiane facoltative. La vista Anno sfrutta lo spazio disponibile sui desktop normali senza dilatarsi sui monitor ultrawide. Nella vista Settimana l'elenco dei calendari è un **drawer richiamabile**: quando è chiuso, i sette giorni usano tutta la larghezza disponibile. Gli eventi sono mini-card con colore della sorgente, ora, titolo e calendario di origine, così restano distinguibili senza ridurre la tipografia.
 
 La vista torna alla dashboard dopo un periodo configurabile di inattività.
 Il prossimo impegno può comparire in modo discreto sulla hero. Nella vista mese, quando un giorno contiene più eventi di quanti possano essere mostrati con calma, compare **“altri eventi”**: apre direttamente quel giorno invece di comprimere il calendario. I feed ICS sono
@@ -97,6 +97,8 @@ nuova frase, preferiti, meteo, calendario, timer, condivisione, schermo intero,
 impostazioni e radio — anche quando Meteo o Calendario non sono ancora
 configurati. Può essere saltata o riaperta più avanti.
 
+Su desktop con mouse, Istante usa inoltre un **cursore personalizzato discreto**: puntino e anello reagiscono agli elementi interattivi, mentre nei campi di testo resta il cursore nativo.
+
 ## Struttura del progetto
 
 - `index.html`: dashboard, viste e pannelli principali.
@@ -104,7 +106,7 @@ configurati. Può essere saltata o riaperta più avanti.
 - `data/`: frasi, catalogo raccolte e stazioni predefinite.
 - `README.md`: descrizione del progetto e release corrente.
 - `CHANGELOG.md`: storico delle modifiche.
-- `docs/release/v3.12.6.md`: note dettagliate di questa release.
+- `docs/release/v3.12.7.md`: note dettagliate di questa release.
 - `docs/LICENZA.md`: licenza non commerciale con attribuzione obbligatoria.
 - `docs/TERZE-PARTI.md`: dipendenze, servizi e attribuzioni.
 - `docs/VISIONE-E-DESIGN.md`: valori, regole grafiche e criteri responsive da mantenere nelle release future.
