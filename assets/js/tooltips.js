@@ -15,8 +15,10 @@
  const observer=new MutationObserver(records=>records.forEach(r=>r.addedNodes.forEach(n=>{if(n.nodeType===1){if(eligible(n)){const title=n.getAttribute('title'),aria=n.getAttribute('aria-label');n.dataset.istanteTooltip=n.dataset.istanteTooltip||title||aria||'';n.removeAttribute('title');}prepare(n);}})));observer.observe(document.documentElement,{childList:true,subtree:true});
  document.addEventListener('pointerover',e=>{if(!supportsHover.matches)return;const el=e.target.closest?.('[data-istante-tooltip]');if(el&&el!==active)show(el);});
  document.addEventListener('pointerout',e=>{const el=e.target.closest?.('[data-istante-tooltip]');if(el&&!el.contains(e.relatedTarget))hide(el);});
- document.addEventListener('focusin',e=>{const el=e.target.closest?.('[data-istante-tooltip]');if(el)show(el);});
+ document.addEventListener('focusin',e=>{if(!supportsHover.matches)return;const el=e.target.closest?.('[data-istante-tooltip]');if(el)show(el);});
  document.addEventListener('focusout',e=>{const el=e.target.closest?.('[data-istante-tooltip]');if(el)hide(el);});
+ document.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse')hide();},{passive:true,capture:true});
+ document.addEventListener('close',()=>hide(),true);
  document.addEventListener('keydown',e=>{if(e.key==='Escape')hide();});
  addEventListener('resize',()=>{if(active)place(active);},{passive:true});
  addEventListener('scroll',()=>{if(active)place(active);},{passive:true,capture:true});

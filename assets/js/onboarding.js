@@ -4,16 +4,16 @@
  function create({store,open}){
   const $=s=>document.querySelector(s),byId=id=>document.getElementById(id),M=window.IstanteMotion;
   const dialog=byId('tour-dialog'),card=byId('tour-card'),seenKey='welcome.3.10';
-  let ready=false,pending=false,index=0,steps=[],raf=0,target=null,transitioning=false,revealed=[];
+  let ready=false,pending=false,index=0,steps=[],raf=0,target=null,transitioning=false,revealed=[],simulations=[];
   const definitions=[
    {target:'.clock-block',fallback:'.clock-section',note:'inizia dal tuo ritmo',title:'Come vuoi vedere il tempo?',copy:"Istante può restare discreto sulla scrivania oppure diventare il centro dello schermo. Scegli l’orologio che ti fa stare meglio.",choices:{key:'clockStyle',items:[['digital','Digitale'],['analog','Analogico']]}},
    {target:'.thought-block',note:'una frase, al momento giusto',title:'Quanto spazio vuoi dare ai pensieri?',copy:'Puoi ricevere un nuovo pensiero al mattino e alla sera, oppure lasciarne uno con te per tutta la giornata.',choices:{key:'mode',items:[['twice','Mattina & sera'],['daily','Una al giorno']]}},
-   {target:'#environment-line',fallback:'#active-info-strip',force:true,note:'il cielo resta leggero',title:'Meteo, alba e tramonto quando servono.',copy:'Il meteo occupa spazio solo quando è disponibile. Puoi attivarlo ora e scegliere la località più tardi nelle impostazioni.',choices:{key:'weather',items:[[true,'Attiva meteo'],[false,'Non ora']]}},
+   {target:'#environment-line',fallback:'#active-info-strip',force:true,simulate:'weather',note:'il cielo resta leggero',title:'Meteo, alba e tramonto quando servono.',copy:'Se vuoi, imposta subito la posizione: puoi usare il dispositivo, cercare una città o inserire le coordinate. Altrimenti continui e lo farai dopo.',choices:{key:'weather',items:[[true,'Attiva meteo'],[false,'Non ora']]}},
    {target:'#goal-strip',note:'una direzione, senza fretta',title:'Dai un orizzonte al prossimo capitolo.',copy:'Scegli la fine dell’anno oppure imposta subito un titolo e una data importante.',choices:{key:'goalPreset',items:[['year','Fine anno'],['custom','Titolo e data']]}},
    {target:'.collection-link',note:'qui ritrovi le tue parole',title:'La mia raccolta apre la biblioteca.',copy:'Frasi, preferiti e raccolte personali restano insieme. Puoi anche importare TXT o JSON senza perdere la raccolta originale.'},
    {target:'#next-phrase',note:'quando vuoi cambiare aria',title:'Un altro pensiero, subito.',copy:'Questo tasto cambia frase senza modificare la tua programmazione automatica.'},
    {target:'#favorite-current',note:'questo cuore conserva',title:'Tieni vicino ciò che ti parla.',copy:'Il cuore salva il pensiero corrente tra i preferiti, così puoi ritrovarlo nella biblioteca.'},
-   {target:'#calendar-open',force:true,note:'i tuoi giorni, senza rumore',title:'Il calendario è sempre raggiungibile.',copy:'Il tasto resta disponibile anche senza calendari collegati: puoi aprire la vista, importare un ICS o collegarne uno in seguito.',choices:{key:'calendarEnabled',items:[[true,'Attiva calendario'],[false,'Non ora']]}},
+   {target:'#calendar-open',force:true,simulate:'calendar',note:'i tuoi giorni, senza rumore',title:'Il calendario è sempre raggiungibile.',copy:'Puoi attivarlo ora e, se hai già un link ICS condiviso, collegarlo direttamente. Altrimenti lo aggiungi quando vuoi.',choices:{key:'calendarEnabled',items:[[true,'Attiva calendario'],[false,'Non ora']]}},
    {target:'#timer-open',force:true,note:'una pausa con un confine',title:'Quanto dura il tuo prossimo momento?',copy:'Apri il timer da qui. Scegli una durata di partenza: potrai cambiarla in qualsiasi momento.',choices:{key:'timerMinutes',items:[[15,'15 min'],[25,'25 min'],[45,'45 min']]}},
    {target:'#share-open',note:'un pensiero da regalare',title:'Porta con te questo istante.',copy:'Condividi una cartolina o un link. Scegli formato e dettagli senza cambiare la schermata principale.'},
    {target:'#fullscreen',note:'quando vuoi togliere il resto',title:'Uno schermo, un solo momento.',copy:'Schermo intero rende Istante più immersivo su monitor, tablet o uno schermo dedicato.'},
@@ -21,16 +21,29 @@
    {target:'#radio-mini',fallback:'#settings-open',note:'un suono può cambiare la stanza',title:'Costruisci la tua atmosfera.',copy:'Radio lo-fi e suoni ambientali possono accompagnare lavoro, lettura o una pausa. Nessun audio parte da solo.'}
   ];
   function visible(el){if(!el||el.hidden||el.closest('[hidden]'))return false;const r=el.getBoundingClientRect();return r.width>0&&r.height>0&&getComputedStyle(el).visibility!=='hidden';}
+  function snapshotNode(el){return el?{el,hidden:el.hidden,text:el.textContent,html:el.innerHTML,title:el.title}:null;}
+  function simulateWeather(){
+   const env=byId('environment-line'),weather=byId('weather-line'),solar=byId('solar-line');if(!env||!weather)return;
+   const nodes=[env,weather,solar,byId('weather-icon'),byId('weather-text'),byId('weather-condition'),byId('weather-place'),byId('weather-age'),byId('sunrise-time'),byId('sunset-time'),byId('solar-note')].map(snapshotNode).filter(Boolean);
+   simulations.push({type:'weather',nodes});
+   env.hidden=false;weather.hidden=false;if(solar)solar.hidden=false;env.classList.add('tour-simulated-weather');
+   const icon=byId('weather-icon');if(icon)icon.innerHTML=window.IstanteIcons?.render?.('sun')||'☀';
+   const text=byId('weather-text'),condition=byId('weather-condition'),place=byId('weather-place'),age=byId('weather-age');if(text)text.textContent='18°';if(condition)condition.textContent='Sereno';if(place)place.textContent='La tua città';if(age)age.textContent='';
+   const rise=byId('sunrise-time'),set=byId('sunset-time'),note=byId('solar-note');if(rise)rise.textContent='07:30';if(set)set.textContent='18:45';if(note)note.textContent='Esempio';
+  }
   function selectSteps(){
-   revealed=[];
+   revealed=[];simulations=[];
    return definitions.map(d=>{
     const primary=$(d.target);
     if(primary&&d.force&&!visible(primary)&&primary.hidden){revealed.push({el:primary,hidden:true});primary.hidden=false;primary.classList.add('tour-temporary-target');}
+    if(d.simulate==='weather'&&primary&&!visible(byId('weather-line')))simulateWeather();
     const fallback=$(d.fallback||'__unused__');return{...d,el:visible(primary)?primary:fallback};
    }).filter(d=>visible(d.el));
   }
   function restoreRevealed(){
    const saved=store.read('settings',{});
+   for(const sim of simulations){for(const snap of sim.nodes){const el=snap.el;if(!el?.isConnected)continue;el.hidden=snap.hidden;el.textContent=snap.text;el.innerHTML=snap.html;el.title=snap.title;el.classList.remove('tour-simulated-weather');}}
+   simulations=[];
    for(const item of revealed){
     const el=item.el;el.classList.remove('tour-temporary-target');
     if(el.id==='calendar-open')el.hidden=saved.calendarEnabled===false;
@@ -72,8 +85,15 @@
    box=document.createElement('div');box.className='tour-goal-editor';
    box.innerHTML='<label>Titolo<input maxlength="90" type="text" placeholder="Il mio prossimo capitolo"></label><label>Data<input type="datetime-local"></label><button type="button" class="secondary-button">Usa questo traguardo</button>';
    const title=box.querySelector('input[type=text]'),end=box.querySelector('input[type=datetime-local]');title.value=saved.goalTitle||'Il mio prossimo capitolo';end.value=saved.goalEnd||localDateTime(fallback);
-   box.querySelector('button').addEventListener('click',()=>{const endDate=new Date(end.value);if(!title.value.trim()||!Number.isFinite(+endDate)||endDate<=new Date()){end.focus();return;}const patch={goalMode:'custom',goalTitle:title.value.trim(),goalStart:localDateTime(new Date()),goalEnd:end.value};store.write('settings',{...store.read('settings',{}),...patch});document.dispatchEvent(new CustomEvent('istante:onboarding-setting',{detail:{key:'goalPreset',value:'custom',patch}}));host.querySelectorAll('button[data-action=custom-goal]').forEach(b=>b.setAttribute('aria-pressed','true'));M.flash(box);});
-   host.append(box);requestAnimationFrame(()=>{title.focus({preventScroll:true});position();});
+   box.querySelector('button').addEventListener('click',()=>{const endDate=new Date(end.value);if(!title.value.trim()||!Number.isFinite(+endDate)||endDate<=new Date()){if(!matchMedia('(pointer:coarse)').matches)end.focus();return;}const patch={goalMode:'custom',goalTitle:title.value.trim(),goalStart:localDateTime(new Date()),goalEnd:end.value};store.write('settings',{...store.read('settings',{}),...patch});document.dispatchEvent(new CustomEvent('istante:onboarding-setting',{detail:{key:'goalPreset',value:'custom',patch}}));host.querySelectorAll('button[data-action=custom-goal]').forEach(b=>b.setAttribute('aria-pressed','true'));M.flash(box);});
+   host.append(box);requestAnimationFrame(()=>{if(!matchMedia('(pointer:coarse)').matches)title.focus({preventScroll:true});position();});
+  }
+  function renderWeatherSetup(host){
+   let box=host.querySelector('.tour-inline-setup');if(box){box.hidden=false;position();return;}box=document.createElement('div');box.className='tour-inline-setup tour-weather-setup';box.innerHTML='<div class="tour-setup-actions"><button type="button" class="secondary-button" data-weather-action="locate">Usa la mia posizione</button><button type="button" class="text-button" data-weather-action="city">Inserisci città</button><button type="button" class="text-button" data-weather-action="coords">Coordinate</button></div><div class="tour-setup-fields" hidden><input type="text" autocomplete="off" placeholder="Città" aria-label="Città"><input type="number" inputmode="decimal" step="any" placeholder="Latitudine" aria-label="Latitudine"><input type="number" inputmode="decimal" step="any" placeholder="Longitudine" aria-label="Longitudine"><button type="button" class="secondary-button" data-weather-action="apply">Apri configurazione posizione</button></div><p class="field-note">La configurazione completa usa la stessa sezione Meteo di Istante.</p>';host.append(box);
+   const fields=box.querySelector('.tour-setup-fields'),inputs=fields.querySelectorAll('input');box.querySelector('[data-weather-action=locate]').onclick=()=>document.dispatchEvent(new CustomEvent('istante:onboarding-weather',{detail:{mode:'locate'}}));box.querySelector('[data-weather-action=city]').onclick=()=>{fields.hidden=false;inputs[0].hidden=false;inputs[1].hidden=inputs[2].hidden=true;if(!matchMedia('(pointer:coarse)').matches)inputs[0].focus({preventScroll:true});position();};box.querySelector('[data-weather-action=coords]').onclick=()=>{fields.hidden=false;inputs[0].hidden=true;inputs[1].hidden=inputs[2].hidden=false;if(!matchMedia('(pointer:coarse)').matches)inputs[1].focus({preventScroll:true});position();};box.querySelector('[data-weather-action=apply]').onclick=()=>{const city=inputs[0].hidden?'':inputs[0].value.trim(),lat=inputs[1].hidden?'':inputs[1].value,lon=inputs[2].hidden?'':inputs[2].value;document.dispatchEvent(new CustomEvent('istante:onboarding-weather',{detail:{mode:city?'city':'coords',city,lat,lon}}));};position();
+  }
+  function renderCalendarSetup(host){
+   let box=host.querySelector('.tour-inline-setup');if(box){box.hidden=false;position();return;}box=document.createElement('div');box.className='tour-inline-setup tour-calendar-setup';box.innerHTML='<label>Link ICS condiviso<input type="url" inputmode="url" autocomplete="off" placeholder="https://…/calendario.ics"></label><div class="tour-setup-actions"><button type="button" class="secondary-button">Collega ICS</button><span class="field-note">oppure lo fai dopo</span></div><p class="form-error" hidden></p>';host.append(box);const input=box.querySelector('input'),button=box.querySelector('button'),error=box.querySelector('.form-error');button.onclick=()=>{const value=input.value.trim();if(!value){error.textContent='Incolla un link ICS oppure continua con Avanti.';error.hidden=false;position();return;}error.hidden=true;document.dispatchEvent(new CustomEvent('istante:onboarding-calendar-url',{detail:{url:value}}));};position();
   }
   function showStep(){
    const d=steps[index];if(!d){M.dismiss(dialog);return;}target=d.el;
@@ -105,6 +125,7 @@
      });choices.append(b);
     }
    }
+   if(d.simulate==='weather')renderWeatherSetup(choices);else if(d.simulate==='calendar')renderCalendarSetup(choices);
    byId('tour-back').disabled=index===0;byId('tour-next').innerHTML=(index===steps.length-1?'Il tempo è mio':'Avanti')+'<span class="icon">'+window.IstanteIcons.render('arrow')+'</span>';
    position();M.flash(card);setTimeout(()=>{card.classList.remove('tour-step-transition');dialog.classList.remove('tour-step-changing');},420);byId('tour-next').focus({preventScroll:true});
   }

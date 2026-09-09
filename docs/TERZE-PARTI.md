@@ -119,3 +119,12 @@ in [Fonti delle citazioni](FONTI-CITAZIONI.md) e nei JSON della raccolta.
 Non è stato incorporato il sito Wikisource o il suo apparato editoriale.
 I nuovi pensieri motivazionali e poetici sono testi originali della raccolta di
 Istante, non citazioni falsamente attribuite.
+
+
+## Excalifont
+
+Istante offre **Excalifont** come stile tipografico facoltativo per i contenuti editoriali. Il font non è incluso nel pacchetto di Istante: viene richiesto soltanto quando selezionato, tramite una risorsa del progetto Excalidraw/CDN. Se la rete non è disponibile, l'interfaccia usa il carattere locale di fallback.
+
+Excalifont è distribuito dal progetto Excalidraw con licenza **SIL Open Font License 1.1**. Istante non modifica né ridistribuisce il file del font.
+
+[Progetto Excalidraw](https://github.com/excalidraw/excalidraw) · [SIL Open Font License 1.1](https://openfontlicense.org/)

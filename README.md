@@ -1,6 +1,6 @@
 # Istante
 
-**Versione corrente: 3.12.7**  
+**Versione corrente: 3.12.8**  
 **Un momento, per te.**  
 Un progetto di **Ruslan Dzyuba**.
 
@@ -35,12 +35,14 @@ trasformarla in una dashboard tecnica.
 La raccolta principale contiene 1.000 pensieri e usa una selezione casuale con
 memoria locale per evitare ripetizioni ravvicinate. Dalla biblioteca puoi
 aggiungere altre raccolte incluse nel sito oppure importare file **JSON** o
-**TXT** (una frase per riga). La scelta delle raccolte vive nella **stessa modale** delle frasi: non apre un secondo pannello sopra al primo. Il pulsante **Vedi raccolte** vive accanto alla ricerca e al conteggio delle frasi e apre un unico catalogo a card. Nel catalogo la ricerca resta a sinistra, mentre i filtri a tab **Tutte / In uso / Scaricate / Da scaricare** sono allineati a destra; ogni raccolta indica subito il proprio stato. Le raccolte personali restano nel browser finché non le elimini.
+**TXT** (una frase per riga). La scelta delle raccolte vive nella **stessa modale** delle frasi: non apre un secondo pannello sopra al primo. Il pulsante **Vedi raccolte** vive accanto alla ricerca, che resta centrata, e apre un unico catalogo a card. Nel catalogo la ricerca resta a sinistra, mentre i filtri a tab **Tutte / In uso / Scaricate / Da scaricare** sono allineati a destra; ogni raccolta indica subito il proprio stato. Le raccolte personali restano nel browser finché non le elimini.
 
 La macchina da scrivere è facoltativa e può usare un ritmo umano, piccole pause
 e correzioni. Preferiti e storico restano locali.
 
 La dimensione dei testi usa una scala a quattro posizioni — **Piccolo, Medio, Grande, Molto grande** — progettata per far crescere soprattutto i contenuti da leggere e solo in misura minore i controlli dell'interfaccia.
+
+Per i contenuti editoriali puoi inoltre scegliere tra il carattere **Attuale** e **Excalifont**, più vicino a una scrittura a mano. Excalifont viene richiesto solo quando selezionato; senza rete o se non disponibile, Istante torna automaticamente al carattere attuale.
 
 ## Il tuo prossimo capitolo
 
@@ -54,7 +56,7 @@ riempire lo schermo con un numero enorme di giorni.
 ## Musica, relax e timer
 
 Il mini player supporta radio lo-fi e stazioni personali, preferiti,
-programmazioni multiple e scelta casuale. In alternativa puoi usare il
+programmazioni multiple e scelta casuale. Dalla gestione delle stazioni puoi anche **spostare una radio più in alto o più in basso** nell’ordine del catalogo. In alternativa puoi usare il
 generatore audio offline: rumore rosa, marrone, pioggia o vento sintetizzati
 con Web Audio, senza file audio da scaricare.
 
@@ -65,7 +67,7 @@ Il timer rimane volutamente semplice: la durata principale si sceglie con uno **
 Il calendario è **opzionale** e vive nella stessa istanza della dashboard: su
 dispositivi touch puoi passare alla vista calendario con uno swipe, oppure usare
 i controlli dedicati. Sono disponibili viste mese, settimana, anno, giorno e
-agenda, con fino a 8 calendari ICS e festività italiane facoltative. La vista Anno sfrutta lo spazio disponibile sui desktop normali senza dilatarsi sui monitor ultrawide. Nella vista Settimana l'elenco dei calendari è un **drawer richiamabile**: quando è chiuso, i sette giorni usano tutta la larghezza disponibile. Gli eventi sono mini-card con colore della sorgente, ora, titolo e calendario di origine, così restano distinguibili senza ridurre la tipografia.
+agenda, con fino a 8 calendari ICS e festività italiane facoltative. La vista Anno sfrutta lo spazio disponibile sui desktop normali senza dilatarsi sui monitor ultrawide. Nella vista Settimana l'elenco dei calendari è un **drawer richiamabile**: quando è chiuso, i sette giorni usano tutta la larghezza disponibile. Gli eventi usano superfici molto leggere con colore della sorgente, ora, titolo e calendario di origine, così restano distinguibili senza trasformare la Settimana in un mosaico di card.
 
 La vista torna alla dashboard dopo un periodo configurabile di inattività.
 Il prossimo impegno può comparire in modo discreto sulla hero. Nella vista mese, quando un giorno contiene più eventi di quanti possano essere mostrati con calma, compare **“altri eventi”**: apre direttamente quel giorno invece di comprimere il calendario. I feed ICS sono
@@ -92,12 +94,12 @@ continuare a essere calcolati localmente quando la rete non è disponibile.
 ## Primo avvio
 
 Il benvenuto spiega perché esiste Istante e propone una breve configurazione
-guidata. La guida passa attraverso tutti i controlli principali — raccolta,
+guidata. Su tablet e display bassi la scheda si compatta per non uscire dal viewport. La guida passa attraverso tutti i controlli principali — raccolta,
 nuova frase, preferiti, meteo, calendario, timer, condivisione, schermo intero,
 impostazioni e radio — anche quando Meteo o Calendario non sono ancora
 configurati. Può essere saltata o riaperta più avanti.
 
-Su desktop con mouse, Istante usa inoltre un **cursore personalizzato discreto**: puntino e anello reagiscono agli elementi interattivi, mentre nei campi di testo resta il cursore nativo.
+Su desktop con mouse o trackpad puoi attivare un **cursore personalizzato discreto** dalle impostazioni. È disattivato di default: puntino e anello reagiscono agli elementi interattivi e restano sopra ai pannelli aperti, mentre nei campi di testo continua a comparire il cursore nativo.
 
 ## Struttura del progetto
 
@@ -106,7 +108,7 @@ Su desktop con mouse, Istante usa inoltre un **cursore personalizzato discreto**
 - `data/`: frasi, catalogo raccolte e stazioni predefinite.
 - `README.md`: descrizione del progetto e release corrente.
 - `CHANGELOG.md`: storico delle modifiche.
-- `docs/release/v3.12.7.md`: note dettagliate di questa release.
+- `docs/release/v3.12.8.md`: note dettagliate di questa release.
 - `docs/LICENZA.md`: licenza non commerciale con attribuzione obbligatoria.
 - `docs/TERZE-PARTI.md`: dipendenze, servizi e attribuzioni.
 - `docs/VISIONE-E-DESIGN.md`: valori, regole grafiche e criteri responsive da mantenere nelle release future.

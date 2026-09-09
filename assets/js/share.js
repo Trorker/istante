@@ -7,17 +7,17 @@
   function download(){if(!file)return;const a=document.createElement('a'),url=URL.createObjectURL(file);a.href=url;a.download=file.name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);status('Immagine pronta. Aggiungi il link quando la pubblichi.');}
   function canShareFile(){try{return !!file&&typeof navigator.share==='function'&&!!navigator.canShare?.({files:[file]});}catch(_){return false;}}
   function render(){
-   const ticket=++generation;file=null;$('share-send').disabled=true;$('share-download').disabled=true;$('share-preview').parentElement.setAttribute('aria-busy','true');status('Preparo il tuo istante...');
+   const ticket=++generation,started=performance.now();file=null;$('share-send').disabled=true;$('share-download').disabled=true;const wrap=$('share-preview').parentElement,pre=$('share-preloader');wrap.setAttribute('aria-busy','true');wrap.classList.add('is-generating');if(pre)pre.hidden=false;$('share-preview').hidden=true;status('Preparo il tuo istante...');
    try{
     const options=Object.fromEntries(['clock','qr','date','sky','goal','radio'].map(k=>[k,$('share-'+k).checked&&!$('share-'+k).disabled]));const canvas=card.draw(snapshot,format,options);
     canvas.toBlob(blob=>{
-     if(ticket!==generation)return;if(!blob){$('share-preview').parentElement.setAttribute('aria-busy','false');status('Immagine non disponibile. Puoi comunque condividere il link.');return;}
+     if(ticket!==generation)return;if(!blob){wrap.setAttribute('aria-busy','false');wrap.classList.remove('is-generating');if(pre)pre.hidden=true;status('Immagine non disponibile. Puoi comunque condividere il link.');return;}
      file=new File([blob],'istante-'+format+'.png',{type:'image/png'});
-     const old=previewURL;previewURL=URL.createObjectURL(blob);$('share-preview').src=previewURL;$('share-preview').hidden=false;if(old)URL.revokeObjectURL(old);
-     $('share-preview').parentElement.setAttribute('aria-busy','false');$('share-send').disabled=false;$('share-download').disabled=false;
-     status(canShareFile()?'La tua cartolina, pronta da condividere.':'Questo browser non condivide immagini direttamente: puoi salvarla e inviarla dalla tua app.');
+     const old=previewURL;previewURL=URL.createObjectURL(blob);$('share-preview').src=previewURL;if(old)URL.revokeObjectURL(old);
+     const finish=()=>{if(ticket!==generation)return;wrap.setAttribute('aria-busy','false');wrap.classList.remove('is-generating');if(pre)pre.hidden=true;$('share-preview').hidden=false;$('share-send').disabled=false;$('share-download').disabled=false;status(canShareFile()?'La tua cartolina, pronta da condividere.':'Questo browser non condivide immagini direttamente: puoi salvarla e inviarla dalla tua app.');};
+     setTimeout(finish,Math.max(0,260-(performance.now()-started)));
     },'image/png');
-   }catch(_){$('share-preview').parentElement.setAttribute('aria-busy','false');status('Immagine non disponibile in questo browser. Il link resta condivisibile.');}
+   }catch(_){wrap.setAttribute('aria-busy','false');wrap.classList.remove('is-generating');if(pre)pre.hidden=true;status('Immagine non disponibile in questo browser. Il link resta condivisibile.');}
   }
   async function copy(){
    try{if(!navigator.clipboard)throw Error('clipboard');await navigator.clipboard.writeText((snapshot?.shareURL||card.URL));notify('Link del pensiero copiato.');}
@@ -36,7 +36,7 @@
    // No awaited generation here: iOS needs this call inside the original tap.
    navigator.share({files:[file],title:'Il tuo istante.',text:snapshot.phrase+'\nUn momento, per te.',url:(snapshot?.shareURL||card.URL)}).then(()=>status('Il tuo istante e\u0300 passato alla condivisione.')).catch(e=>{if(e.name!=='AbortError')status('Condivisione non riuscita. Puoi salvare l\u2019immagine o condividere solo il link.');}).finally(()=>{busy=false;$('share-send').disabled=!file;});
   });
-  $('share-dialog').addEventListener('close',()=>{generation++;if(previewURL){URL.revokeObjectURL(previewURL);previewURL='';}file=null;$('share-preview').hidden=true;$('share-preview').removeAttribute('src');});
+  $('share-dialog').addEventListener('close',()=>{generation++;if(previewURL){URL.revokeObjectURL(previewURL);previewURL='';}file=null;$('share-preview').hidden=true;$('share-preview').removeAttribute('src');$('share-preview').parentElement.classList.remove('is-generating');const pre=$('share-preloader');if(pre)pre.hidden=true;});
   return{prepare(){snapshot=getSnapshot();snapshot.shareURL=window.IstanteShareLink.make(snapshot.phrase);for(const key of ['goal','radio']){$('share-'+key).checked=false;const available=key==='goal'?!!snapshot.goal:!!snapshot.station;$('share-'+key).disabled=!available;$('share-'+key).closest('label').classList.toggle('is-unavailable',!available);}render();}};
  }
  window.IstanteShare={create};

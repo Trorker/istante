@@ -1,5 +1,23 @@
 # Changelog
 
+## 3.12.8 — 9 settembre 2026
+
+- cursore personalizzato trasformato in opzione esplicita delle impostazioni, **disattivata di default**; il puntatore viene rimontato nel pannello/dialog attivo per restare sopra al top layer e resta escluso dai campi di testo e dai dispositivi touch;
+- Biblioteca: ricerca delle frasi centrata, rimosso il conteggio laterale ridondante, catalogo Raccolte con ricerca più ampia, filtri a tab sulla destra, importazione testuale discreta e ritorno alle frasi più evidente;
+- uniformate le azioni delle card Raccolta: download, attivazione, esportazione ed eliminazione sono più piccole e ancorate in basso a destra;
+- Timer: centrati i controlli **− / +** della durata e stabilizzata l'impronta della modale tra configurazione, timer in corso, pausa e conclusione;
+- Calendario: corretto il target hover del lockup, logo leggermente più grande, separazione più netta tra mese e griglia nella vista Anno, indicatori evento a linea sui tablet e giorno corrente ricentrato;
+- Calendario Settimana: eventi alleggeriti visivamente, pulsanti di servizio a sola icona sui display compatti, titolo del periodo trasformato in selettore data e navigazione Month/Week tramite swipe orizzontale su touch;
+- il prossimo impegno rispetta in modo stretto lo switch **Mostra il prossimo impegno** sia nella fascia attiva sia nella fascia sintetica;
+- aggiunto un indice adattivo `vw/vh` esposto come variabile CSS per rifiniture responsive basate sulla forma del viewport;
+- wizard iniziale compattato sui display bassi/orizzontali e arricchito con configurazione Meteo (posizione, città o coordinate) e collegamento ICS del Calendario; quando il meteo non esiste ancora viene mostrato un esempio temporaneo, mai salvato;
+- aggiunta la scelta tipografica **Attuale / Excalifont** per frasi e titoli, con fallback locale e senza includere file font nel pacchetto;
+- tooltip resi non persistenti su touch/tablet e rimossi i focus automatici sui campi di testo nei flussi touch;
+- gestione radio estesa con comandi per spostare ogni stazione più in alto o più in basso nell'ordine;
+- condivisione: rimossa la nota ridondante e aggiunto un placeholder animato durante la generazione della cartolina;
+- consolidata la geometria della dashboard in inattività per evitare spostamenti della frase durante lo scambio tra fascia attiva e riepilogo sintetico;
+- riallineati documentazione, attribuzioni di terze parti, cache offline e controlli di produzione.
+
 ## 3.12.7 — 9 settembre 2026
 
 - Biblioteca: spostato **Vedi raccolte** accanto a ricerca e conteggio frasi; nel catalogo ricerca a sinistra e filtri di stato come tab sulla destra;

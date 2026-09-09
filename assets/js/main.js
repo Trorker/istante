@@ -1,4 +1,4 @@
-/* Istante v3.12.7 - application and local preferences. */
+/* Istante v3.12.8 - application and local preferences. */
 (function () {
 'use strict';
 const C = window.IstanteCore;
@@ -155,11 +155,18 @@ async function copyCurrentPhrase(){
  activity();
 }
 
+const coarsePointer=matchMedia('(pointer:coarse)');
+function mayFocusText(){return !coarsePointer.matches&&matchMedia('(hover:hover) and (pointer:fine)').matches;}
+function updateViewportIndex(){
+ const vp=window.visualViewport,w=Math.max(1,Math.round(vp?.width||innerWidth||1)),h=Math.max(1,Math.round(vp?.height||innerHeight||1)),ratio=w/h;
+ const root=document.documentElement;root.style.setProperty('--viewport-index',ratio.toFixed(4));root.style.setProperty('--viewport-w',w);root.style.setProperty('--viewport-h',h);
+ document.body.dataset.viewportShape=ratio>1.65?'wide':ratio<.78?'tall':'balanced';
+}
 function applyAppearance(now) {
  window.IstantePerformance.apply(settings);companion.apply();
  const min=now.getHours()*60+now.getMinutes(),sun=X.solar(now);
  const lightTime=sun?sun.isDay:(min>=360&&min<1080),theme=X.theme(now),old=document.documentElement.dataset.theme;
- document.documentElement.dataset.theme=theme;document.documentElement.dataset.timeFormat=settings.timeFormat;
+ document.documentElement.dataset.theme=theme;document.documentElement.dataset.timeFormat=settings.timeFormat;document.documentElement.dataset.fontStyle=settings.fontStyle||'current';updateViewportIndex();window.IstanteCursor?.apply(!!settings.customCursor);
  try{localStorage.setItem('istante.original.theme',theme);}catch(_){}
  if(appearanceReady&&old!==theme&&!document.documentElement.classList.contains('is-loading'))X.transition(theme);
  appearanceReady=true;
@@ -236,7 +243,7 @@ function renderLibrary(reset) {
  });
  list.append(fragment); $('#library-empty').hidden=selected.length>0;
  $('#library-empty').textContent=favoriteOnly&&!query?'I pensieri da ritrovare iniziano con un cuore.':'Nessun pensiero trovato. Prova con un\'altra parola.';
- $('#load-more').hidden=selected.length<=visibleLimit; $('#result-count').textContent=selected.length+(selected.length===1?' frase':' frasi');
+ $('#load-more').hidden=selected.length<=visibleLimit; const resultCount=$('#result-count');if(resultCount)resultCount.textContent=selected.length+(selected.length===1?' frase':' frasi');
  $('#filter-all').classList.toggle('active',!favoriteOnly); $('#filter-all').setAttribute('aria-pressed',String(!favoriteOnly));
  $('#filter-favorites').classList.toggle('active',favoriteOnly); $('#filter-favorites').setAttribute('aria-pressed',String(favoriteOnly));
  scroller.scrollTop=reset?0:scrollTop; updateLibraryCounts();
@@ -258,9 +265,9 @@ function syncFontSizeFromRange(){
  const index=Math.max(0,Math.min(FONT_SIZE_LEVELS.length-1,(Number(range.value)||2)-1));hidden.value=FONT_SIZE_LEVELS[index];sectionSummaries();
 }
 function sectionSummaries(){
- const f=$('#settings-form').elements,choice=name=>f[name]?.selectedOptions?.[0]?.textContent||'';
+ const f=$('#settings-form').elements,choice=name=>{const field=f[name];if(!field)return'';if(field instanceof RadioNodeList){const checked=[...document.querySelectorAll('[name="'+name+'"]')].find(x=>x.checked);return checked?.closest('label')?.querySelector('span')?.textContent?.trim()||checked?.value||'';}return field.selectedOptions?.[0]?.textContent?.trim()||field.value||'';};
  const themes={dark:'Notte',light:'Carta',auto:'Tema del dispositivo',solar:'Segui il sole'};
- const fontNames={small:'Piccolo',medium:'Medio',large:'Grande',xlarge:'Molto grande'};const data={appearance:(themes[f.theme.value]||'Tema')+' \u00b7 '+choice('background')+' \u00b7 '+(fontNames[f.fontSize.value]||'Medio'),phrases:(modeNames[f.mode.value]||choice('mode'))+(f.typing.checked?' \u00b7 Macchina da scrivere':''),sky:$('#place-name').textContent,effects:f.effectsEnabled.checked?choice('effect')+(f.weatherFX.value!=='off'?' \u00b7 '+choice('weatherFX'):''):'Disattivati',radio:(f.radioEnabled.checked?'Radio':'')+(f.radioEnabled.checked&&f.ambientEnabled.checked?' \u00b7 ':'')+(f.ambientEnabled.checked?'Ambiente offline':!f.radioEnabled.checked?'Player nascosto':''),timer:f.timerEnabled.checked?f.timerMinutes.value+' min \u00b7 '+choice('timerAction'):'Disattivato',goal:choice('goalMode'),calendar:f.calendarEnabled.checked?(f.calendarUpcoming.checked?'Calendario e prossimo impegno':'Calendario attivo'):'Disattivato',screen:f.hideControls.checked?'Comandi a scomparsa':'Comandi sempre visibili'};
+ const fontNames={small:'Piccolo',medium:'Medio',large:'Grande',xlarge:'Molto grande'},fontStyles={current:'Attuale',excalifont:'Excalifont'};const data={appearance:(themes[f.theme.value]||'Tema')+' \u00b7 '+choice('background')+' \u00b7 '+(fontNames[f.fontSize.value]||'Medio')+' \u00b7 '+(fontStyles[f.fontStyle.value]||'Attuale'),phrases:(modeNames[f.mode.value]||choice('mode'))+(f.typing.checked?' \u00b7 Macchina da scrivere':''),sky:$('#place-name').textContent,effects:f.effectsEnabled.checked?choice('effect')+(f.weatherFX.value!=='off'?' \u00b7 '+choice('weatherFX'):''):'Disattivati',radio:(f.radioEnabled.checked?'Radio':'')+(f.radioEnabled.checked&&f.ambientEnabled.checked?' \u00b7 ':'')+(f.ambientEnabled.checked?'Ambiente offline':!f.radioEnabled.checked?'Player nascosto':''),timer:f.timerEnabled.checked?f.timerMinutes.value+' min \u00b7 '+choice('timerAction'):'Disattivato',goal:choice('goalMode'),calendar:f.calendarEnabled.checked?(f.calendarUpcoming.checked?'Calendario e prossimo impegno':'Calendario attivo'):'Disattivato',screen:f.hideControls.checked?'Comandi a scomparsa':'Comandi sempre visibili'};
  for(const [key,value]of Object.entries(data)){const el=$('[data-summary="'+key+'"]');if(el)el.textContent=value;}
 }
 function expandSection(target){
@@ -270,7 +277,7 @@ function validateSettings(form){
  for(const input of [...form.elements]){
   if(!input.willValidate||input.validity.valid)continue;
   if(input.closest('[hidden]:not(input):not(select)'))continue;
-  expandSection(input);const focus=input.hidden?input.nextElementSibling:input;focus?.focus({preventScroll:true});
+  expandSection(input);const focus=input.hidden?input.nextElementSibling:input;if(focus){focus.scrollIntoView?.({block:'nearest'});const textLike=focus.matches?.('input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=button]),textarea');if(!textLike||mayFocusText())focus.focus?.({preventScroll:true});}
   $('#settings-error').textContent=input.validationMessage||'Controlla il valore inserito.';$('#settings-error').hidden=false;
   return false;
  }
@@ -318,7 +325,7 @@ function updateSettingsFields() {
  const meteoOption=[...f.weatherFX.options].find(o=>o.value==='auto');meteoOption.disabled=!X.draftHasPlace();
  if(meteoOption.disabled&&f.weatherFX.value==='auto')f.weatherFX.value='off';
  scheduleEditor.syncEnabled(f.radioEnabled.checked&&f.radioScheduleEnabled.checked);
- f.radioVolume.disabled=!f.radioEnabled.checked||!hasStations;f.radioStation.disabled=!f.radioEnabled.checked||!hasStations;f.radioScheduleEnabled.disabled=!f.radioEnabled.checked||!hasStations;f.clockStyle.disabled=!f.showClock.checked;window.IstanteControls.refresh();sectionSummaries();previewFX.sync();
+ f.radioVolume.disabled=!f.radioEnabled.checked||!hasStations;f.radioStation.disabled=!f.radioEnabled.checked||!hasStations;f.radioScheduleEnabled.disabled=!f.radioEnabled.checked||!hasStations;document.querySelectorAll('[name=clockStyle]').forEach(el=>el.disabled=!f.showClock.checked);window.IstanteControls.refresh();sectionSummaries();previewFX.sync();
 }
 function setLibraryView(mode='phrases') {
  const dialog=$('#library-dialog');if(!dialog)return;const collectionsMode=mode==='collections';
@@ -328,8 +335,8 @@ function setLibraryView(mode='phrases') {
  $('#collection-library-toggle').setAttribute('aria-pressed',String(collectionsMode));
  const toggleText=$('#collection-library-toggle span:last-child');if(toggleText)toggleText.textContent='Vedi raccolte';
  $('#library-phrases-tab')?.setAttribute('aria-pressed',String(!collectionsMode));
- if(collectionsMode){collections.render();requestAnimationFrame(()=>$('#collection-search')?.focus({preventScroll:true}));}
- else{renderLibrary(true);requestAnimationFrame(()=>$('#phrase-search')?.focus({preventScroll:true}));}
+ if(collectionsMode){collections.render();if(mayFocusText())requestAnimationFrame(()=>$('#collection-search')?.focus({preventScroll:true}));}
+ else{renderLibrary(true);if(mayFocusText())requestAnimationFrame(()=>$('#phrase-search')?.focus({preventScroll:true}));}
 }
 function populateWeatherDialog(){
  const weather=$('#weather-line'),solar=$('#solar-line'),hasWeather=weather&&!weather.hidden,hasSolar=solar&&!solar.hidden;
@@ -366,7 +373,7 @@ function openDialog(which) {
 function closeDialog(dialog) { window.IstanteMotion.dismiss(dialog); }
 $$('dialog').forEach(dialog=>{
  dialog.addEventListener('cancel',event=>{event.preventDefault();closeDialog(dialog);});
- dialog.addEventListener('close',()=>{if(dialog.id==='settings-dialog'){scene.collapseSettings();if(returnToTimer){returnToTimer=false;requestAnimationFrame(()=>moments.open());}}const stillOpen=!!$('dialog[open]');document.body.classList.toggle('has-panel',stillOpen);document.body.style.overflow=stillOpen?'hidden':'';const back=dialog._returnFocus;if(back&&back.isConnected)back.focus({preventScroll:true});lastActivity=0;activity();X.resume();});
+ dialog.addEventListener('close',()=>{if(dialog.id==='settings-dialog'){scene.collapseSettings();if(returnToTimer){returnToTimer=false;requestAnimationFrame(()=>moments.open());}}const stillOpen=!!$('dialog[open]');document.body.classList.toggle('has-panel',stillOpen);document.body.style.overflow=stillOpen?'hidden':'';const back=dialog._returnFocus;if(back&&back.isConnected){const textLike=back.matches?.('input:not([type=button]):not([type=checkbox]):not([type=radio]):not([type=range]),textarea');if(!textLike||mayFocusText())back.focus({preventScroll:true});}lastActivity=0;activity();X.resume();});
  dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)closeDialog(dialog);});
 });
 $$('[data-open]').forEach(b=>b.addEventListener('click',()=>openDialog(b.dataset.open)));
@@ -402,7 +409,7 @@ $('#touch-sound-preview')?.addEventListener('click',()=>touchFeedback.preview(re
 $('#settings-form').addEventListener('submit',event=>{
  event.preventDefault();const f=event.currentTarget,values={...settings,...Object.fromEntries(new FormData(f))};
  values.radioSchedules=scheduleEditor.value();
- for(const key of ['calendarEnabled','calendarUpcoming','calendarHolidays','mouseSwipe','grain','chimeEnabled','chimeQuiet','ambientEnabled','celestialSky','showClock','showSeconds','motion','hideControls','wakeLock','touchSoundEnabled','typing','solarTimes','weather','transitionFX','photoMotion','breathe','typingErase','effectsEnabled','effectSunSync','radioEnabled','radioScheduleEnabled','timerEnabled'])values[key]=f.elements[key].checked;
+ for(const key of ['calendarEnabled','calendarUpcoming','calendarHolidays','mouseSwipe','customCursor','grain','chimeEnabled','chimeQuiet','ambientEnabled','celestialSky','showClock','showSeconds','motion','hideControls','wakeLock','touchSoundEnabled','typing','solarTimes','weather','transitionFX','photoMotion','breathe','typingErase','effectsEnabled','effectSunSync','radioEnabled','radioScheduleEnabled','timerEnabled'])values[key]=f.elements[key].checked;
  values.interval=Number(values.interval);values.photoDim=Number(values.photoDim);let error='';if(!validateSettings(f))return;
  if(values.mode==='twice'&&C.minutes(values.morning,-1)>=C.minutes(values.evening,-1))error='L\'inizio della sera deve essere successivo all\'inizio della mattina.';
  if(values.goalMode==='custom'&&(!values.goalStart||!values.goalEnd||new Date(values.goalEnd)<=new Date(values.goalStart)))error='Inserisci una data finale successiva alla data di inizio.';
@@ -461,6 +468,12 @@ $('#photo-input').addEventListener('change',async event=>{
  catch(error){toast(error.message);}
 });
 
+document.addEventListener('istante:onboarding-weather',event=>{
+ const d=event.detail||{};const openSky=()=>{openDialog('settings');requestAnimationFrame(()=>{expandSection($('#section-sky summary'));const f=$('#settings-form');f.elements.weather.checked=true;updateSettingsFields();if(d.mode==='city'&&d.city){$('#city-search').value=d.city;$('#city-find').click();}else if(d.mode==='coords'&&d.lat!==''&&d.lon!==''){$('#place-lat').value=d.lat;$('#place-lon').value=d.lon;}else if(d.mode==='locate'){$('#locate-me').click();}});};const tour=$('#tour-dialog');if(tour?.open){tour.addEventListener('close',openSky,{once:true});closeDialog(tour);}else openSky();
+});
+document.addEventListener('istante:onboarding-calendar-url',event=>{
+ const url=event.detail?.url;if(!url)return;const next={...settings,calendarEnabled:true};settings=C.cleanSettings(next);store.write('settings',settings);pages.apply();calendar.apply();void calendar.connectURL(url,'Calendario').then(()=>toast('Calendario collegato.')).catch(err=>{toast(err?.message||'Link ICS non leggibile. Puoi aggiungerlo più tardi.');});
+});
 document.addEventListener('istante:onboarding-setting',event=>{
  const d=event.detail||{},allowed={clockStyle:['digital','analog'],theme:['auto','dark','light'],mode:['twice','daily'],timerMinutes:[5,15,25,45,60],calendarEnabled:[true,false],weather:[true,false]};
  if(d.key==='goalPreset'&&d.patch&&typeof d.patch==='object'){
@@ -473,13 +486,13 @@ document.addEventListener('istante:onboarding-setting',event=>{
  applyAppearance(new Date());lastClock='';tick(true);moments.apply();pages.apply();
 });
 function openGoalSettings(){
- const show=()=>{openDialog('settings');requestAnimationFrame(()=>{const goal=$('#section-goal summary');expandSection(goal);const title=$('#settings-form')?.elements?.goalTitle;if(title)title.focus({preventScroll:true});});};
+ const show=()=>{openDialog('settings');requestAnimationFrame(()=>{const goal=$('#section-goal summary');expandSection(goal);const title=$('#settings-form')?.elements?.goalTitle;if(title&&mayFocusText())title.focus({preventScroll:true});});};
  const tour=$('#tour-dialog');
  if(tour?.open){tour.addEventListener('close',()=>requestAnimationFrame(show),{once:true});closeDialog(tour);}else show();
 }
 document.addEventListener('istante:onboarding-goal-custom',()=>{
  settings=C.cleanSettings({...settings,goalMode:'custom'});store.write('settings',settings);
- const show=()=>{openDialog('settings');requestAnimationFrame(()=>{const f=$('#settings-form').elements;f.goalMode.value='custom';window.IstanteControls.refresh();updateSettingsFields();expandSection($('#section-goal summary'));f.goalTitle?.focus({preventScroll:true});});};
+ const show=()=>{openDialog('settings');requestAnimationFrame(()=>{const f=$('#settings-form').elements;f.goalMode.value='custom';window.IstanteControls.refresh();updateSettingsFields();expandSection($('#section-goal summary'));if(mayFocusText())f.goalTitle?.focus({preventScroll:true});});};
  const tour=$('#tour-dialog');if(tour?.open){tour.addEventListener('close',()=>requestAnimationFrame(show),{once:true});closeDialog(tour);}else show();
 });
 document.addEventListener('keydown',event=>{
@@ -505,6 +518,7 @@ $('#goal-offset-apply')?.addEventListener('click',()=>{
  endInput.value=local(end);endInput.dispatchEvent(new Event('change',{bubbles:true}));window.IstanteControls.refresh();
  toast('Traguardo impostato tra '+value+' '+(unit==='years'?(value===1?'anno':'anni'):(value===1?'mese':'mesi'))+'.');
 });
+updateViewportIndex();window.addEventListener('resize',updateViewportIndex,{passive:true});window.visualViewport?.addEventListener('resize',updateViewportIndex,{passive:true});
 window.IstanteControls.enhance($('#settings-form'));window.IstanteControls.enhance($('#radio-panel'));window.IstanteControls.enhance($('#timer-session-options'));applyAppearance(new Date());updateLibraryCounts();startClock();activity();updateWakeLock();
 // The complete collection is local. No redundant fetch is needed during startup.
 if(storageFailed)toast('Il browser non consente il salvataggio locale. La pagina funziona comunque in questa sessione.');

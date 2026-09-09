@@ -67,7 +67,7 @@ function create({store,core,original,legacy,notify,onChange}){
    const button=(label,fn,primary=false)=>{const b=document.createElement('button');b.type='button';b.className=primary?'primary-button':'secondary-button';b.textContent=label;b.addEventListener('click',fn);actions.append(b);return b;};
    if(status==='available'){const downloadButton=button('Scarica',()=>installCatalog(card.source||item),true);downloadButton.classList.add('collection-download-button');}
    else if(status==='installed')button('Usa questa raccolta',()=>select(localId),true);
-   else {const current=document.createElement('span');current.className='collection-active-note';current.textContent='Questa è la raccolta attiva';actions.append(current);}
+   else {/* Lo stato In uso è già espresso dal badge: nessuna azione ridondante. */}
    if(status!=='available'){
     const ex=document.createElement('button');ex.type='button';ex.className='icon-button';ex.innerHTML=root.IstanteIcons.render('download');ex.title='Esporta JSON';ex.setAttribute('aria-label','Esporta '+item.title);ex.addEventListener('click',()=>exportItem(item));actions.append(ex);
     if(localId!=='original'){

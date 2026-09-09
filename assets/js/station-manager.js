@@ -6,8 +6,9 @@
   function render(){
    const list=$('#station-manager-list'),q=$('#station-manager-search').value.trim().toLocaleLowerCase('it'),current=$('#radio-station')?.value||'';list.replaceChildren();
    const stations=library.list().filter(s=>(!filter||library.favorite(s.id))&&s.name.toLocaleLowerCase('it').includes(q));
-   for(const s of stations){
+   for(const [stationIndex,s] of stations.entries()){
     const row=node('article','station-manager-row'+(s.id===current?' is-current':'')),title=node('div','station-manager-title');if(s.id===current)row.setAttribute('aria-current','true');title.append(node('strong',null,s.name),node('small',null,s.custom?'Aggiunta da te':s.provider));row.append(title);
+    const reorder=node('div','station-reorder');for(const [direction,label,disabled] of [[-1,'Sposta più in alto',stationIndex===0],[1,'Sposta più in basso',stationIndex===stations.length-1]]){const b=node('button','icon-button station-move-button');b.type='button';b.innerHTML='<span aria-hidden="true" class="station-move-glyph">'+(direction<0?'↑':'↓')+'</span>';b.setAttribute('aria-label',label+': '+s.name);b.disabled=disabled;b.addEventListener('click',()=>library.move(s.id,direction));reorder.append(b);}row.append(reorder);
     for(const [glyph,label,action,pressed]of [['heart',library.favorite(s.id)?'Rimuovi dai preferiti':'Aggiungi ai preferiti',()=>library.toggleFavorite(s.id),library.favorite(s.id)],['trash','Elimina stazione',()=>{library.remove(s.id);notify('Stazione eliminata. Puoi annullare dalla gestione stazioni.');},null]]){
      const b=node('button','icon-button');b.type='button';b.innerHTML='<span class="icon">'+icon(glyph)+'</span>';b.setAttribute('aria-label',label+': '+s.name);if(pressed!==null)b.setAttribute('aria-pressed',String(pressed));b.addEventListener('click',action);row.append(b);
     }list.append(row);
