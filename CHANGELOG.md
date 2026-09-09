@@ -1,5 +1,19 @@
 # Changelog
 
+## 3.12.4 — 9 settembre 2026
+
+- corretta alla radice la disposizione della dashboard: contenuto centrale, fascia informativa e toolbar ora occupano tre aree strutturali distinte e non possono più sovrapporsi;
+- il ridimensionamento automatico di orologio e frase misura soltanto la propria area e non intercetta più i click sui comandi inferiori;
+- fascia attiva confermata a **80% del viewport** e **Meteo 20% · Conto alla rovescia 60% · Calendario 20%**, con tutti i blocchi forzati sulla stessa riga;
+- fascia attiva ulteriormente alleggerita e timer mantenuto separato e centrato;
+- modalità inattiva confermata come componente distinto, più sottile, nello stesso ordine 20/60/20;
+- calendario reso nuovamente apribile dalla toolbar e consolidato con un solo livello CSS finale autorevole;
+- corretto il nesting HTML della vista calendario e dei dialog: non sono più figli di `#app-shell`, quindi lo stato `inert` della dashboard non disabilita più navigazione, pulsanti ed eventi;
+- aumentata e normalizzata la tipografia del calendario nelle viste Anno, Mese, Settimana, Giorno e Agenda, rispettando Piccolo / Medio / Grande;
+- aggiunto un renderer dedicato alla vista **Giorno**, che non ricade più implicitamente nell'Agenda;
+- rimossi i fallback responsive del calendario che riportavano alcuni testi a 5–7 px;
+- riallineati worker, cache offline, README, Visione e documentazione di release.
+
 ## 3.12.3 — 9 settembre 2026
 
 - corretta definitivamente la sequenza della fascia: **Meteo · Conto alla rovescia · Calendario**;

@@ -1,7 +1,7 @@
 /* Small safe Markdown reader. Text nodes only; embedded HTML and executable URLs are never evaluated. */
 (function(){'use strict';
  const documents={
-  progetto:{path:'README.md',label:'Il progetto'},novita:{path:'CHANGELOG.md',label:'Tutte le novit\u00e0'},release:{path:'docs/release/v3.12.3.md',label:'Release 3.12.3'},visione:{path:'docs/VISIONE-E-DESIGN.md',label:'Visione e design'},
+  progetto:{path:'README.md',label:'Il progetto'},novita:{path:'CHANGELOG.md',label:'Tutte le novit\u00e0'},release:{path:'docs/release/v3.12.4.md',label:'Release 3.12.4'},visione:{path:'docs/VISIONE-E-DESIGN.md',label:'Visione e design'},
   'fonti-citazioni':{path:'docs/FONTI-CITAZIONI.md',label:'Fonti delle citazioni'},'licenza-unicode':{path:'docs/licenses/UNICODE-LICENSE.txt',label:'Licenza Unicode',plain:true},
   licenza:{path:'docs/LICENZA.md',label:'Licenza'},'terze-parti':{path:'docs/TERZE-PARTI.md',label:'Terze parti'},
   'licenza-material':{path:'docs/licenses/MATERIAL-ICONS-LICENSE.txt',label:'Licenza Material Icons',plain:true},

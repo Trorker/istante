@@ -21,7 +21,7 @@ function paintMoon(canvas,phase,light=false){
  c.clearRect(0,0,w,h);c.putImageData(im,0,0);
 }
 function create({getSettings,getSun,getWeather=()=>null,store,openGuide}){
- const $=id=>document.getElementById(id),sky=$('celestial-sky'),body=$('sky-body'),stars=$('sky-stars'),main=$('main'),viewport=document.querySelector('.stage-viewport'),reduced=matchMedia('(prefers-reduced-motion: reduce)');
+ const $=id=>document.getElementById(id),sky=$('celestial-sky'),body=$('sky-body'),stars=$('sky-stars'),main=$('main'),viewport=document.querySelector('.stage-main-slot'),reduced=matchMedia('(prefers-reduced-motion: reduce)');
  let queued=false,lastMoon='',lastSky='',lastSceneKey='',snapshot={},storageBusy=false,welcomeStep=0,ready=false,pending=false;
  const points=Array.from({length:65},(_,i)=>({x:(Math.sin(i*171.3)*12345)%1,y:(Math.sin(i*97.8+1)*6789)%1,r:.5+(i%4)*.28,a:.18+(i%5)*.11}));
  const clouds=document.createElement('div');clouds.className='sky-weather-veil';sky.append(clouds);const twilight=document.createElement('div');twilight.className='sky-twilight';sky.append(twilight);
