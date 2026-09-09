@@ -1,5 +1,19 @@
 # Changelog
 
+## 3.11.0 — Calendario più maturo, una sola biblioteca
+
+- vista **Mese**: quando gli eventi eccedono lo spazio disponibile compare `altri eventi`, che apre direttamente la vista del giorno;
+- testata calendario ulteriormente compattata: **Oggi** e selezione Anno/Mese/Settimana/Giorno/Agenda sono allineati sul lato destro insieme ai comandi;
+- calendario riequilibrato su desktop, tablet, telefono verticale e landscape, mantenendo lo scroll soltanto nella superficie calendario quando serve;
+- **Prossimo evento** riportato a una presenza intermedia: leggibile e coerente, senza tornare alla card pesante delle prime prove;
+- la scelta delle raccolte ora avviene nella **stessa modale** della biblioteca delle frasi, senza aprire un secondo dialog sovrapposto;
+- logo riallineato: il simbolo è centrato rispetto al blocco `istante.` + `Un momento, per te.` sia sulla dashboard sia nel calendario;
+- selezione stazione consolidata con accento laterale, lasciando la destra libera per Preferiti e azioni;
+- ricerche delle stazioni uniformate allo stesso componente usato nel resto di Istante;
+- timbro **Legno** del suono dei tocchi ricostruito con un colpo sintetico più udibile;
+- collegamenti About (`Leggi il progetto`, `Tutte le novità`, release, licenze e Visione) riallineati allo stile del sito e aperti nel lettore interno;
+- nuova release documentata in `docs/release/v3.11.0.md`; cache offline e riferimenti di versione riallineati.
+
 ## 3.10.3 — Calendario e controlli coerenti
 
 - unificate intestazione e toolbar del calendario in una sola barra compatta;

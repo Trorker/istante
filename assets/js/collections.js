@@ -51,14 +51,14 @@ function create({store,core,original,legacy,notify,onChange}){
  }
  document.getElementById('collection-search').addEventListener('input',render);
  document.querySelectorAll('[data-collection-tab]').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.collectionTab;render();}));
- function select(id){try{if(id!=='original'&&!state.items.some(x=>x.id===id))return;persist({...state,selected:id});onChange(id==='original'?null:selected());render();}catch(e){notify(e.message);}}
+ function select(id){try{if(id!=='original'&&!state.items.some(x=>x.id===id))return;persist({...state,selected:id});onChange(id==='original'?null:selected());render();document.dispatchEvent(new CustomEvent('istante:collection-selected',{detail:{id,title:selected().title}}));}catch(e){notify(e.message);}}
  function add(payload,fallback,mergeReceived=false){
   const item=normalize(payload,core,fallback);
   if(mergeReceived){const old=state.items.find(x=>x.title==='Pensieri ricevuti');if(old){const joined=normalize({...old,phrases:[...old.phrases,...item.phrases]},core);persist({...state,items:state.items.map(x=>x.id===old.id?{id:old.id,...joined}:x)});if(state.selected===old.id)onChange(selected());render();notify('Pensiero conservato nella biblioteca e nei preferiti.');return;}}
   const same=state.items.find(x=>JSON.stringify(x.phrases)===JSON.stringify(item.phrases));if(same){if(!mergeReceived)select(same.id);notify('Questa raccolta \u00e8 gi\u00e0 nella biblioteca.');return;}
   if(state.items.length>=30)throw Error('Puoi conservare fino a 30 raccolte personali.');
   const id='c-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7);persist({...state,items:[...state.items,{id,...item}],selected:mergeReceived?state.selected:id});
-  if(!mergeReceived)onChange(selected());render();notify(mergeReceived?'Pensiero conservato nella biblioteca.':'Raccolta aggiunta: '+item.phrases.length+' frasi. Le altre raccolte sono ancora qui.');
+  if(!mergeReceived){onChange(selected());document.dispatchEvent(new CustomEvent('istante:collection-selected',{detail:{id,title:selected().title}}));}render();notify(mergeReceived?'Pensiero conservato nella biblioteca.':'Raccolta aggiunta: '+item.phrases.length+' frasi. Le altre raccolte sono ancora qui.');
  }
  return{render,select,add,payload:()=>state.selected==='original'?null:selected(),name:()=>selected().title};
 }

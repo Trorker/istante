@@ -1,4 +1,4 @@
-/* Istante v3.10.3 - application and local preferences. */
+/* Istante v3.11.0 - application and local preferences. */
 (function () {
 'use strict';
 const C = window.IstanteCore;
@@ -293,9 +293,18 @@ function updateSettingsFields() {
  scheduleEditor.syncEnabled(f.radioEnabled.checked&&f.radioScheduleEnabled.checked);
  f.radioVolume.disabled=!f.radioEnabled.checked||!hasStations;f.radioStation.disabled=!f.radioEnabled.checked||!hasStations;f.radioScheduleEnabled.disabled=!f.radioEnabled.checked||!hasStations;f.clockStyle.disabled=!f.showClock.checked;window.IstanteControls.refresh();sectionSummaries();previewFX.sync();
 }
+function setLibraryView(mode='phrases') {
+ const dialog=$('#library-dialog');if(!dialog)return;const collectionsMode=mode==='collections';
+ dialog.dataset.libraryView=collectionsMode?'collections':'phrases';
+ $('#collection-library-inline').hidden=!collectionsMode;
+ $('#collection-library-toggle').setAttribute('aria-expanded',String(collectionsMode));
+ if(collectionsMode){collections.render();requestAnimationFrame(()=>$('#collection-search')?.focus({preventScroll:true}));}
+ else{renderLibrary(true);requestAnimationFrame(()=>$('#phrase-search')?.focus({preventScroll:true}));}
+}
 function openDialog(which) {
+ const collectionsMode=which==='collections';if(collectionsMode)which='library';
  const dialog=$('#'+which+'-dialog');if(!dialog)return;previousFocus=document.activeElement;dialog._returnFocus=previousFocus;
- if(which==='share')sharing.prepare();radio.close();X.pause();if(which==='settings')fillSettings();else if(which==='library'){collections.render();renderLibrary(true);}else if(which==='collections')collections.render();else if(which==='stations')stationManager.render();
+ if(which==='share')sharing.prepare();radio.close();X.pause();if(which==='settings')fillSettings();else if(which==='library'){collections.render();renderLibrary(true);setLibraryView(collectionsMode?'collections':'phrases');}else if(which==='stations')stationManager.render();
  clearTimeout(idleTimer);document.body.classList.remove('is-idle');document.body.classList.add('has-panel');document.body.style.overflow='hidden';window.IstanteMotion.present(dialog);
  dialog.querySelector('.close-button').focus({preventScroll:true});
 }
@@ -306,6 +315,10 @@ $$('dialog').forEach(dialog=>{
  dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)closeDialog(dialog);});
 });
 $$('[data-open]').forEach(b=>b.addEventListener('click',()=>openDialog(b.dataset.open)));
+$('#collection-library-toggle')?.addEventListener('click',()=>setLibraryView('collections'));
+$('#collection-library-back')?.addEventListener('click',()=>setLibraryView('phrases'));
+$('#collection-library-done')?.addEventListener('click',()=>setLibraryView('phrases'));
+document.addEventListener('istante:collection-selected',()=>{if($('#library-dialog')?.open)setLibraryView('phrases');});
 $$('[data-close]').forEach(b=>b.addEventListener('click',()=>closeDialog(b.closest('dialog'))));
 $('#configure-timer').addEventListener('click',()=>{returnToTimer=true;$('#settings-form').requestSubmit();});
 $('#timer-options-open')?.addEventListener('click',()=>{
