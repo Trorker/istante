@@ -9,14 +9,15 @@
    {target:'.clock-block',fallback:'.clock-section',note:'inizia dal tuo ritmo',title:'Come vuoi vedere il tempo?',copy:"Istante può restare discreto sulla scrivania oppure diventare il centro dello schermo. Scegli subito l’orologio che ti fa stare meglio.",choices:{key:'clockStyle',items:[['digital','Digitale'],['analog','Analogico']]}},
    {target:'.thought-block',note:'una frase, al momento giusto',title:'Quanto spazio vuoi dare ai pensieri?',copy:'Puoi ricevere un nuovo pensiero al mattino e alla sera, oppure lasciarne uno con te per tutta la giornata.',choices:{key:'mode',items:[['twice','Mattina & sera'],['daily','Una al giorno']]}},
    {target:'#favorite-current',note:'questo cuore conserva',title:'Tieni vicino ciò che ti parla.',copy:'Il cuore salva i pensieri che vuoi ritrovare. La biblioteca raccoglie collezioni di Istante e le tue raccolte personali, anche da file TXT con una frase per riga.'},
-   {target:'#goal-strip',note:'una direzione, senza fretta',title:'Dai un orizzonte al prossimo capitolo.',copy:'Puoi tenere il nuovo anno come riferimento oppure scegliere una distanza semplice. Se hai già una data precisa, la personalizzi subito dopo.',choices:{key:'goalPreset',items:[['year','Nuovo anno'],['3m','Tra 3 mesi'],['6m','Tra 6 mesi'],['1y','Tra 1 anno'],['custom','Data precisa']]}},
+   {target:'#goal-strip',note:'una direzione, senza fretta',title:'Dai un orizzonte al prossimo capitolo.',copy:'Scegli la fine dell’anno oppure imposta subito un titolo e una data importante.',choices:{key:'goalPreset',items:[['year','Fine anno'],['custom','Titolo e data']]}},
+   {target:'#calendar-open',fallback:'#settings-open',note:'i tuoi giorni, senza rumore',title:'Il calendario resta nello stesso Istante.',copy:'Puoi collegare più calendari ICS, vedere il prossimo impegno sulla dashboard e passare alla vista calendario con un gesto.',choices:{key:'calendarEnabled',items:[[true,'Attiva calendario'],[false,'Non ora']]}},
    {target:'#radio-mini',note:'un suono può cambiare la stanza',title:'Costruisci la tua atmosfera.',copy:'Radio lo-fi e suoni ambientali possono accompagnare lavoro, lettura o una pausa. Nessun audio parte da solo.'},
    {target:'#timer-open',note:'una pausa con un confine',title:'Quanto dura il tuo prossimo momento?',copy:'Scegli una durata di partenza. Potrai sempre cambiarla quando apri il timer.',choices:{key:'timerMinutes',items:[[15,'15 min'],[25,'25 min'],[45,'45 min']]}},
    {target:'#share-open',note:'un pensiero da regalare',title:"Condividi senza perdere l’atmosfera.",copy:'La cartolina riprende frase, cielo e dettagli del tuo Istante. Il QR può portare chi la riceve direttamente al pensiero condiviso.'},
    {target:'[data-open="settings"]',note:"l’ultimo tocco è tuo",title:'Scegli la luce di partenza.',copy:'Puoi lasciare che Istante segua il dispositivo oppure scegliere subito Carta o Notte. In seguito troverai tutte le regolazioni nelle impostazioni.',choices:{key:'theme',items:[['auto','Auto'],['light','Carta'],['dark','Notte']]}}
   ];
   function visible(el){if(!el||el.hidden||el.closest('[hidden]'))return false;const r=el.getBoundingClientRect();return r.width>0&&r.height>0&&getComputedStyle(el).visibility!=='hidden';}
-  function selectSteps(){return definitions.map(d=>({...d,el:$(d.target)||$(d.fallback||'__unused__')})).filter(d=>visible(d.el));}
+  function selectSteps(){return definitions.map(d=>{const primary=$(d.target),fallback=$(d.fallback||'__unused__');return{...d,el:visible(primary)?primary:fallback};}).filter(d=>visible(d.el));}
   const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
   function rectPath(x,y,w,h){const r=Math.min(16,w/3,h/3);return `M ${x+r} ${y} Q ${x+w*.55} ${y-2} ${x+w-r} ${y} Q ${x+w+1} ${y-1} ${x+w} ${y+r} L ${x+w} ${y+h-r} Q ${x+w+2} ${y+h+1} ${x+w-r} ${y+h} Q ${x+w*.4} ${y+h+2} ${x+r} ${y+h} Q ${x-1} ${y+h} ${x} ${y+h-r} L ${x} ${y+r} Q ${x-2} ${y-1} ${x+r} ${y}`;}
   function position(){
@@ -43,6 +44,16 @@
    const a=Math.atan2(ey-c2y,ex-c2x),tip=11;byId('tour-arrow-tip').setAttribute('d',`M ${ex-tip*Math.cos(a-.48)} ${ey-tip*Math.sin(a-.48)} Q ${ex-2} ${ey+1} ${ex} ${ey} L ${ex-tip*Math.cos(a+.48)} ${ey-tip*Math.sin(a+.48)}`);
   }
   function queue(){if(!raf)raf=requestAnimationFrame(position);}
+  function localDateTime(d){const z=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate())+'T'+z(d.getHours())+':'+z(d.getMinutes());}
+  function renderGoalEditor(host){
+   let box=host.querySelector('.tour-goal-editor');if(box){box.hidden=false;position();return;}
+   const saved=store.read('settings',{}),now=new Date(),fallback=new Date(now.getFullYear()+1,0,1,0,0);
+   box=document.createElement('div');box.className='tour-goal-editor';
+   box.innerHTML='<label>Titolo<input maxlength="90" type="text" placeholder="Il mio prossimo capitolo"></label><label>Data<input type="datetime-local"></label><button type="button" class="secondary-button">Usa questo traguardo</button>';
+   const title=box.querySelector('input[type=text]'),end=box.querySelector('input[type=datetime-local]');title.value=saved.goalTitle||'Il mio prossimo capitolo';end.value=saved.goalEnd||localDateTime(fallback);
+   box.querySelector('button').addEventListener('click',()=>{const endDate=new Date(end.value);if(!title.value.trim()||!Number.isFinite(+endDate)||endDate<=new Date()){end.focus();return;}const patch={goalMode:'custom',goalTitle:title.value.trim(),goalStart:localDateTime(new Date()),goalEnd:end.value};store.write('settings',{...store.read('settings',{}),...patch});document.dispatchEvent(new CustomEvent('istante:onboarding-setting',{detail:{key:'goalPreset',value:'custom',patch}}));host.querySelectorAll('button[data-action=custom-goal]').forEach(b=>b.setAttribute('aria-pressed','true'));M.flash(box);});
+   host.append(box);requestAnimationFrame(()=>{title.focus({preventScroll:true});position();});
+  }
   function showStep(){
    const d=steps[index];if(!d){M.dismiss(dialog);return;}target=d.el;
    card.classList.remove('tour-step-transition');dialog.classList.remove('tour-step-changing');void card.offsetWidth;card.classList.add('tour-step-transition');dialog.classList.add('tour-step-changing');
@@ -50,16 +61,14 @@
    byId('tour-note').textContent=d.note;byId('tour-title').textContent=d.title;byId('tour-copy').textContent=d.copy;
    const choices=byId('tour-choices');choices.replaceChildren();choices.hidden=!d.choices;
    if(d.choices){
-    const defaults={clockStyle:'digital',mode:'twice',timerMinutes:25,theme:'dark',goalPreset:'year'},saved=store.read('settings',{});
+    const defaults={clockStyle:'digital',mode:'twice',timerMinutes:25,theme:'dark',goalPreset:'year',calendarEnabled:true},saved=store.read('settings',{});
     const current=d.choices.key==='goalPreset'?(saved.goalMode==='custom'?'custom':'year'):(saved[d.choices.key]??defaults[d.choices.key]);
     for(const [value,label] of d.choices.items){
      const b=document.createElement('button');b.type='button';b.className='tour-choice';b.textContent=label;b.setAttribute('aria-pressed',String(current===value));
      if(d.choices.key==='goalPreset'&&value==='custom')b.dataset.action='custom-goal';
      b.addEventListener('click',()=>{
-      if(d.choices.key==='goalPreset'&&value==='custom'){
-       document.dispatchEvent(new CustomEvent('istante:onboarding-goal-custom'));return;
-      }
       choices.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');
+      if(d.choices.key==='goalPreset'&&value==='custom'){renderGoalEditor(choices);M.flash(b);return;}
       if(d.choices.key==='goalPreset'){
        const now=new Date(),patch={goalMode:'year'};
        if(value!=='year'){

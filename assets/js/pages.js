@@ -2,7 +2,7 @@
 (function(){'use strict';
 function create({getSettings,calendar,onChange}){
  const $=id=>document.getElementById(id),home=$('app-shell'),cal=$('calendar-view'),dots=$('view-dots');
- let current='dashboard',transition=0,returnTimer=0,touch=null,suppressClickUntil=0,lastActivity=0,initialized=false;
+ let current='dashboard',transition=0,returnTimer=0,touch=null,mouseDrag=null,suppressClickUntil=0,lastActivity=0,initialized=false;
  const hasModal=()=>!!document.querySelector('dialog[open]');
  function activity(){lastActivity=Date.now();arm();}
  function arm(){clearTimeout(returnTimer);const s=getSettings();if(current!=='calendar'||!s.calendarReturn||document.hidden)return;returnTimer=setTimeout(check,s.calendarReturn*1000);}
@@ -29,6 +29,9 @@ function create({getSettings,calendar,onChange}){
  document.addEventListener('touchend',e=>{if(!touch)return;const start=touch;touch=null;if(!e.changedTouches.length||hasModal())return;const t=e.changedTouches[0],dx=t.clientX-start.x,dy=t.clientY-start.y;if(Date.now()-start.at<1200&&Math.abs(dx)>70&&Math.abs(dx)>Math.abs(dy)*1.6){if(dx<0&&current==='dashboard'){suppressClickUntil=Date.now()+600;show('calendar');}else if(dx>0&&current==='calendar'){suppressClickUntil=Date.now()+600;show('dashboard');}}},{passive:true});
  document.addEventListener('click',e=>{if(Date.now()<suppressClickUntil){e.preventDefault();e.stopImmediatePropagation();}},{capture:true});
  document.addEventListener('touchcancel',()=>touch=null,{passive:true});
+ document.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||!getSettings().mouseSwipe||!getSettings().calendarEnabled||hasModal()||e.button!==0||skip(e)){mouseDrag=null;return;}mouseDrag={x:e.clientX,y:e.clientY,at:Date.now(),id:e.pointerId};},{passive:true});
+ document.addEventListener('pointerup',e=>{if(!mouseDrag||e.pointerId!==mouseDrag.id)return;const start=mouseDrag;mouseDrag=null;const dx=e.clientX-start.x,dy=e.clientY-start.y;if(Date.now()-start.at<1400&&Math.abs(dx)>95&&Math.abs(dx)>Math.abs(dy)*1.7){if(dx<0&&current==='dashboard')show('calendar');else if(dx>0&&current==='calendar')show('dashboard');}},{passive:true});
+ document.addEventListener('pointercancel',()=>mouseDrag=null,{passive:true});
  for(const type of ['pointerdown','keydown','wheel','touchstart','input'])cal.addEventListener(type,activity,{passive:true});
  document.addEventListener('pointermove',()=>{if(current==='calendar'&&Date.now()-lastActivity>1000)activity();},{passive:true});
  document.addEventListener('keydown',e=>{if(!getSettings().calendarEnabled||skip(e)||e.ctrlKey||e.metaKey||e.altKey)return;if(e.key==='ArrowLeft'&&current==='calendar'){e.preventDefault();show('dashboard',true);}else if(e.key==='ArrowRight'&&current==='dashboard'){e.preventDefault();show('calendar',true);}});

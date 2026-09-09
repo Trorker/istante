@@ -78,7 +78,7 @@ body.no-motion #app-shell,body.no-motion #calendar-view{transition:none!importan
 
 .calendar-holidays-status{display:flex;gap:8px;align-items:center;padding:10px 0;font-size:11px;color:var(--muted)}.calendar-holidays-status .icon{height:14px;width:14px;color:var(--accent)}
 
-/* 3.10.0 rebuild: compact source feedback and finger-sized view navigation. */
+/* 3.10.1 rebuild: compact source feedback and finger-sized view navigation. */
 #performance-setting small{font-size:11px;line-height:1.55;color:var(--muted);font-weight:400}
 .timer-source-description{font-size:11px;line-height:1.5;color:var(--muted);margin:9px 2px 0;min-height:33px;max-width:100%;overflow-wrap:anywhere}
 .timer-sound-segments button{white-space:normal;line-height:1.2;padding:8px 3px}
@@ -93,7 +93,7 @@ body.no-motion #app-shell,body.no-motion #calendar-view{transition:none!importan
 .share-formats button small{font-size:10px}
 @media(max-width:520px){.share-formats{grid-template-columns:repeat(3,minmax(0,1fr))!important}.share-formats button{min-height:48px;padding-inline:4px}}
 
-/* v3.10.0 rebuild: calendar stays inside one viewport; no page scrollbar. */
+/* v3.10.1 rebuild: calendar stays inside one viewport; no page scrollbar. */
 #calendar-view,#calendar-view .calendar-shell,#calendar-view .calendar-shell>main,#calendar-view .calendar-layout,#calendar-view .calendar-main,#cal-content{min-height:0;max-height:100%;overflow:hidden!important}
 #calendar-view .calendar-shell>main{display:flex;flex-direction:column}
 #calendar-view .calendar-heading{flex:0 0 auto}#calendar-view .calendar-toolbar{flex:0 0 auto;position:static}
@@ -105,7 +105,7 @@ body.no-motion #app-shell,body.no-motion #calendar-view{transition:none!importan
 @media(max-width:740px){#calendar-view .calendar-shell{padding-bottom:42px}#calendar-view .calendar-heading{margin:12px 0 7px}#calendar-view .calendar-toolbar{margin-bottom:7px}#calendar-view .calendar-sidebar{max-height:44px;overflow:hidden}#calendar-view .calendar-cell{padding:2px 1px}#calendar-view .calendar-event{padding:2px;font-size:7px}#calendar-view .calendar-year{gap:6px}#calendar-view .calendar-mini{padding:5px 3px}#calendar-view .calendar-mini h2 button{font-size:14px;margin-bottom:3px}#calendar-view .calendar-mini-grid button{height:18px;font-size:9px}}
 
 
-/* v3.10.0 rebuild: calendar stays a single viewport. Only the calendar content can scroll. */
+/* v3.10.1 rebuild: calendar stays a single viewport. Only the calendar content can scroll. */
 #calendar-view .calendar-agenda{display:block;height:100%;min-height:0;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain;padding-right:6px;scrollbar-width:thin;scrollbar-color:var(--faint) transparent}
 #calendar-view .calendar-agenda-day{display:block;min-height:auto!important}
 #calendar-view .calendar-agenda-day+.calendar-agenda-day{margin-top:24px}
@@ -127,7 +127,7 @@ body.no-motion #app-shell,body.no-motion #calendar-view{transition:none!importan
  #calendar-view .calendar-agenda-day h2{font-size:17px;margin-bottom:6px}
 }
 
-/* v3.10.0 rebuild small-viewport correction: override the legacy 450px content minimum. */
+/* v3.10.1 rebuild small-viewport correction: override the legacy 450px content minimum. */
 #calendar-view #cal-content{min-height:0!important}
 @media(max-height:540px) and (orientation:landscape){
  #calendar-view .calendar-sidebar{display:none!important}
@@ -138,7 +138,7 @@ body.no-motion #app-shell,body.no-motion #calendar-view{transition:none!importan
  #calendar-view .calendar-views button{padding:6px 9px}
 }
 
-/* v3.10.0 rebuild: compact calendar header and quiet timer rhythm. */
+/* v3.10.1 rebuild: compact calendar header and quiet timer rhythm. */
 #calendar-view .calendar-heading-combined{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:18px;margin:0 0 12px;padding:0 0 12px;border-bottom:1px solid var(--line)}
 #calendar-view .calendar-heading-combined .wordmark{background:transparent;align-self:center}
 #calendar-view .calendar-title-copy{min-width:0}

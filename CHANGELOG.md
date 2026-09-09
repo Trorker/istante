@@ -1,5 +1,30 @@
 # Changelog
 
+## 3.10.2 — Proporzioni e calendario
+
+- timer: ore, minuti, secondi e conteggio in corso tornano ad avere una dimensione leggibile e centrale;
+- calendario Anno e Mese non vengono più tagliati: quando lo spazio non basta scorre soltanto il contenuto interno, mai la pagina;
+- vista Anno libera da altezze forzate che nascondevano gli ultimi mesi;
+- vista Mese con righe minime leggibili, così eventi e numeri del giorno non vengono schiacciati;
+- sezione “Il prossimo capitolo” resa più bassa e leggera sulla dashboard;
+- prossimo impegno allargato e reso più leggibile, mantenendo il linguaggio minimale della v3.8;
+- ulteriori correzioni per telefoni in orizzontale e display bassi;
+- cache offline e riferimenti di release riallineati alla 3.10.2.
+
+## 3.10.1 — Coerenza e responsive
+
+- corretto il giorno corrente ovale nella vista Anno del calendario;
+- calendario affinato per telefono orizzontale e display bassi;
+- frase “Un momento, per te.” sempre sotto il logo anche nel calendario;
+- chiarita la gestione contemporanea di più calendari ICS;
+- biblioteca riportata al linguaggio editoriale della v3.8;
+- corretto lo spazio della ricerca rispetto all’icona;
+- aggiunto swipe con il mouse opzionale;
+- aggiunti quattro feedback sonori sintetizzati e opzionali per i tocchi;
+- sole/luna restano visibili anche con meteo coperto o temporalesco, con intensità ridotta;
+- guida iniziale estesa a calendario e configurazione diretta del Prossimo capitolo;
+- aggiunto `docs/VISIONE-E-DESIGN.md` come riferimento permanente per valori, grafica e responsive.
+
 ## 3.10.0 — 9 settembre 2026
 
 - Ricostruzione grafica completa sulla base della v3.8.0.

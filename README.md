@@ -1,6 +1,6 @@
 # Istante
 
-**Versione corrente: 3.10.0**  
+**Versione corrente: 3.10.2**  
 **Un momento, per te.**  
 Un progetto di **Ruslan Dzyuba**.
 
@@ -18,7 +18,7 @@ stesso linguaggio visivo essenziale di Istante.
 
 ## Il cuore della 3.10
 
-La **3.10.0 è stata ricostruita sul design della 3.8.0**, che torna a essere la
+La **3.10 resta costruita sul design della 3.8.0**, che torna a essere la
 base grafica: superfici più pulite, tipografia più equilibrata, controlli
 coerenti, gerarchie più semplici e meno elementi che competono fra loro.
 Le funzioni introdotte in seguito sono state mantenute dove utili, ma riportate
@@ -110,9 +110,10 @@ o riaperta più avanti.
 - `data/`: frasi, catalogo raccolte e stazioni predefinite.
 - `README.md`: descrizione del progetto e release corrente.
 - `CHANGELOG.md`: storico delle modifiche.
-- `docs/release/v3.10.0.md`: note dettagliate di questa release.
+- `docs/release/v3.10.2.md`: note dettagliate di questa release.
 - `docs/LICENZA.md`: licenza non commerciale con attribuzione obbligatoria.
 - `docs/TERZE-PARTI.md`: dipendenze, servizi e attribuzioni.
+- `docs/VISIONE-E-DESIGN.md`: valori, regole grafiche e criteri responsive da mantenere nelle release future.
 
 ## Pubblicazione
 

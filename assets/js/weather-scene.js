@@ -19,9 +19,9 @@
  const look={
   neutral:{orb:1,stars:1,clouds:0,label:''},sun:{orb:1,stars:0,clouds:0,label:'Sereno'},
   'clear-night':{orb:1,stars:1,clouds:0,label:'Sereno'},partly:{orb:.58,stars:.38,clouds:.40,label:'Parzialmente nuvoloso'},
-  clouds:{orb:.14,stars:.035,clouds:.78,label:'Nuvoloso'},rain:{orb:.08,stars:0,clouds:.85,label:'Pioggia'},
-  snow:{orb:.14,stars:.025,clouds:.68,label:'Neve'},fog:{orb:.05,stars:0,clouds:.75,label:'Nebbia'},
-  storm:{orb:0,stars:0,clouds:1,label:'Temporale'}
+  clouds:{orb:.66,stars:.06,clouds:.72,label:'Nuvoloso'},rain:{orb:.58,stars:.02,clouds:.82,label:'Pioggia'},
+  snow:{orb:.66,stars:.04,clouds:.64,label:'Neve'},fog:{orb:.52,stars:.02,clouds:.72,label:'Nebbia'},
+  storm:{orb:.48,stars:.01,clouds:.94,label:'Temporale'}
  };
  function resolve(s={},observation,isDay=true,now=Date.now()){
   const w=fresh(observation,now),manual=s.effectsEnabled&&s.weatherFX&& !['auto','off'].includes(s.weatherFX);

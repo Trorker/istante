@@ -1,4 +1,4 @@
-/* Istante v3.10.0 - application and local preferences. */
+/* Istante v3.10.2 - application and local preferences. */
 (function () {
 'use strict';
 const C = window.IstanteCore;
@@ -61,6 +61,7 @@ const stationManager=window.IstanteStationManager.create({library:stationLibrary
 const scheduleEditor=window.IstanteSchedules.create({icon,onChange:updateSettingsFields});
 let appearanceReady=false;
 const moments=window.IstanteMoments.create({getSettings:()=>settings,getDraft:readDraftSettings,radio,ambient,notify:toast,openTimer:()=>openDialog('timer'),icon});
+const touchFeedback=window.IstanteTouchFeedback.create({getSettings:()=>settings});
 
 const calendar=window.IstanteCalendar.create({getSettings:()=>settings,notify:toast});
 const pages=window.IstantePages.create({getSettings:()=>settings,calendar,onChange:()=>{radio.close();X.pause();effectHub.sync();if(!document.body.classList.contains('view-calendar'))X.resume();}});
@@ -264,7 +265,7 @@ function updateSettingsFields() {
  const f=$('#settings-form').elements,mode=f.mode.value,hasStations=stationLibrary.list().length>0;
  if(!hasStations)f.radioScheduleEnabled.checked=false;
  function group(id,enabled){const box=$(id);const wasHidden=box.hidden;box.hidden=!enabled;if(enabled&&wasHidden&&$('#settings-dialog').open)window.IstanteMotion.flash(box);box.querySelectorAll('input,select,button').forEach(el=>el.disabled=!enabled);}
- group('#calendar-settings-fields',f.calendarEnabled.checked);group('#grain-fields',f.grain.checked);group('#chime-fields',f.chimeEnabled.checked);group('#chime-quiet-fields',f.chimeEnabled.checked&&f.chimeQuiet.checked);
+ group('#calendar-settings-fields',f.calendarEnabled.checked);group('#touch-sound-fields',f.touchSoundEnabled.checked);group('#grain-fields',f.grain.checked);group('#chime-fields',f.chimeEnabled.checked);group('#chime-quiet-fields',f.chimeEnabled.checked&&f.chimeQuiet.checked);
  f.morning.required=false;f.evening.required=false;
  group('#schedule-times',['twice','daily'].includes(mode));group('#evening-field',mode==='twice');$('#interval-field').hidden=mode!=='interval';f.interval.disabled=mode!=='interval';
  group('#goal-fields',f.goalMode.value==='custom');group('#photo-fields',f.background.value==='photo');
@@ -319,10 +320,11 @@ new MutationObserver(()=>{sectionSummaries();if($('#settings-dialog').open)updat
 document.addEventListener('selectstart',event=>event.preventDefault());
 document.addEventListener('dragstart',event=>{if(!event.target.closest('input[type=file]'))event.preventDefault();});
 document.addEventListener('keydown',event=>{if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='a')event.preventDefault();},{capture:true});
+$('#touch-sound-preview')?.addEventListener('click',()=>touchFeedback.preview(readDraftSettings().touchSoundType,readDraftSettings().touchSoundVolume));
 $('#settings-form').addEventListener('submit',event=>{
  event.preventDefault();const f=event.currentTarget,values={...settings,...Object.fromEntries(new FormData(f))};
  values.radioSchedules=scheduleEditor.value();
- for(const key of ['calendarEnabled','calendarUpcoming','calendarHolidays','grain','chimeEnabled','chimeQuiet','ambientEnabled','celestialSky','showClock','showSeconds','motion','hideControls','wakeLock','typing','solarTimes','weather','transitionFX','photoMotion','breathe','typingErase','effectsEnabled','effectSunSync','radioEnabled','radioScheduleEnabled','timerEnabled'])values[key]=f.elements[key].checked;
+ for(const key of ['calendarEnabled','calendarUpcoming','calendarHolidays','mouseSwipe','grain','chimeEnabled','chimeQuiet','ambientEnabled','celestialSky','showClock','showSeconds','motion','hideControls','wakeLock','touchSoundEnabled','typing','solarTimes','weather','transitionFX','photoMotion','breathe','typingErase','effectsEnabled','effectSunSync','radioEnabled','radioScheduleEnabled','timerEnabled'])values[key]=f.elements[key].checked;
  values.interval=Number(values.interval);values.photoDim=Number(values.photoDim);let error='';if(!validateSettings(f))return;
  if(values.mode==='twice'&&C.minutes(values.morning,-1)>=C.minutes(values.evening,-1))error='L\'inizio della sera deve essere successivo all\'inizio della mattina.';
  if(values.goalMode==='custom'&&(!values.goalStart||!values.goalEnd||new Date(values.goalEnd)<=new Date(values.goalStart)))error='Inserisci una data finale successiva alla data di inizio.';
@@ -333,7 +335,7 @@ $('#settings-form').addEventListener('submit',event=>{
  if(values.theme==='solar'&&!X.draftHasPlace())values.theme='auto';
  settings=C.cleanSettings(values);let ok=store.write('settings',settings);
  if(draftPhoto!==photo){photo=draftPhoto;ok=store.write('photo',photo)&&ok;}
- X.commitSettings();radio.apply();ambient.apply();moments.apply();pages.apply();applyAppearance(new Date());lastClock='';tick(true);if(schedule)$('#phrase-meta').textContent=schedule.nextAt?'Prossimo pensiero alle '+timeFormatter.format(schedule.nextAt):'Un nuovo pensiero alla prossima apertura';if(scheduleChanged)syncSchedule(new Date(),true);
+ X.commitSettings();radio.apply();ambient.apply();moments.apply();pages.apply();touchFeedback.apply();applyAppearance(new Date());lastClock='';tick(true);if(schedule)$('#phrase-meta').textContent=schedule.nextAt?'Prossimo pensiero alle '+timeFormatter.format(schedule.nextAt):'Un nuovo pensiero alla prossima apertura';if(scheduleChanged)syncSchedule(new Date(),true);
  closeDialog($('#settings-dialog'));lastActivity=0;activity();
  toast(ok?'Tutto pronto. Questo momento \u00e8 tuo.':'Preferenze applicate solo per questa sessione: memoria del browser non disponibile.');updateWakeLock();
 });
@@ -382,7 +384,7 @@ $('#photo-input').addEventListener('change',async event=>{
 });
 
 document.addEventListener('istante:onboarding-setting',event=>{
- const d=event.detail||{},allowed={clockStyle:['digital','analog'],theme:['auto','dark','light'],mode:['twice','daily'],timerMinutes:[5,15,25,45,60]};
+ const d=event.detail||{},allowed={clockStyle:['digital','analog'],theme:['auto','dark','light'],mode:['twice','daily'],timerMinutes:[5,15,25,45,60],calendarEnabled:[true,false]};
  if(d.key==='goalPreset'&&d.patch&&typeof d.patch==='object'){
   settings=C.cleanSettings({...settings,...d.patch});store.write('settings',settings);
   applyAppearance(new Date());lastClock='';tick(true);moments.apply();pages.apply();return;
