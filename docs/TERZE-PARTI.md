@@ -44,7 +44,7 @@ Le connessioni audio partono su richiesta o da automazioni autorizzate. Istante 
 
 ## Condivisione e pagine informative
 
-Il generatore di cartoline usa Canvas e il lettore Markdown è implementato localmente senza librerie caricate da CDN. Il QR dinamico codifica il sito ufficiale e la frase nel frammento del link; la generazione avviene sul dispositivo. La condivisione usa il menu del dispositivo dove disponibile; l'applicazione di destinazione può gestire separatamente immagine e testo.
+Il generatore di cartoline usa Canvas e il lettore Markdown è implementato localmente senza librerie caricate da CDN. Il QR statico codifica soltanto l'indirizzo pubblico di Istante. La condivisione usa il menu del dispositivo dove disponibile; l'applicazione di destinazione può gestire separatamente immagine e testo.
 
 Preferenze e immagini non vengono inviate a un servizio di generazione. Scegliere una destinazione nel menu di condivisione autorizza invece l'invio a quell'applicazione. Istante non include analytics o tracciamento aggiuntivo.
 
@@ -76,46 +76,3 @@ Riferimenti tecnici: [AudioContext](https://developer.mozilla.org/en-US/docs/Web
 [creazione dei buffer](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createBuffer),
 [buone pratiche Web Audio](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Best_practices),
 [File API](https://developer.mozilla.org/en-US/docs/Web/API/File_API/Using_files_from_web_applications).
-
-
-## QR dinamico e calendari (v3.9.0)
-
-Il modulo JavaScript `assets/js/qr.js` adatta tabelle Reed-Solomon e costruzione
-della matrice byte-mode da python-qrcode 8.2 (Lincoln Loop e contributori), sotto
-licenza BSD-3-Clause. Non esegue Python nel browser. Il testo integrale della
-licenza è conservato qui: [licenza QR](licenses/PYTHON-QRCODE-LICENSE.txt).
-[Riferimento python-qrcode](https://github.com/lincolnloop/python-qrcode).
-
-Il lettore ICS è un'implementazione locale mirata: non include ICAL.js, non
-esegue HTML dagli appuntamenti e non scarica script dal calendario. Non pretende
-di implementare l'intero standard. I calendari remoti appartengono ai rispettivi
-fornitori e vengono richiesti solo quando l'utente li collega. Il fornitore
-riceve la normale richiesta HTTPS; URL con token privati vanno custoditi come
-credenziali. I file importati restano locali.
-[Riferimento iCalendar](https://datatracker.ietf.org/doc/html/rfc5545).
-
-Rintocco e grana usano primitive Web Audio e SVG del browser, senza registrazioni,
-font o librerie di campioni aggiuntivi. Le condizioni delle componenti terze
-restano distinte dalla licenza non commerciale delle parti originali di Istante.
-
-
-## Fusi Windows, festività e citazioni (v3.10.0)
-
-La tabella di alias Windows/IANA in calendar-core.js usa un sottoinsieme delle
-mappature Unicode CLDR. Per W. Europe Standard Time viene usata la zona italiana
-Europe/Rome. Sono conservati attribuzione e testo integrale della
-[Unicode License v3](licenses/UNICODE-LICENSE.txt).
-[Riferimento CLDR](https://raw.githubusercontent.com/unicode-org/cldr/main/common/supplemental/windowsZones.xml).
-
-Le festività nazionali italiane sono generate localmente, senza librerie o feed
-remoti. La festa nazionale di San Francesco d'Assisi (4 ottobre) è inclusa dal
-2026 in base alla [legge 8 ottobre 2025, n. 151](https://www.normattiva.it/eli/id/2025/10/10/25G00153/),
-con decorrenza indicata nell'articolo 3. Il calendario è informativo e non sostituisce
-le disposizioni applicabili a una specifica scuola, azienda o comune.
-
-Le dieci citazioni classiche riportano testi di opere in pubblico dominio, non
-traduzioni moderne; autore, opera e collegamento al testo consultato sono
-in [Fonti delle citazioni](FONTI-CITAZIONI.md) e nei JSON della raccolta.
-Non è stato incorporato il sito Wikisource o il suo apparato editoriale.
-I nuovi pensieri motivazionali e poetici sono testi originali della raccolta di
-Istante, non citazioni falsamente attribuite.

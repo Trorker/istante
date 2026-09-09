@@ -1,12 +1,10 @@
 /* Small safe Markdown reader. Text nodes only; embedded HTML and executable URLs are never evaluated. */
 (function(){'use strict';
  const documents={
-  progetto:{path:'README.md',label:'Il progetto'},novita:{path:'CHANGELOG.md',label:'Tutte le novit\u00e0'},release:{path:'docs/release/v3.10.4.md',label:'Release 3.10.4'},
-  'fonti-citazioni':{path:'docs/FONTI-CITAZIONI.md',label:'Fonti delle citazioni'},'licenza-unicode':{path:'docs/licenses/UNICODE-LICENSE.txt',label:'Licenza Unicode',plain:true},
+  progetto:{path:'README.md',label:'Il progetto'},novita:{path:'CHANGELOG.md',label:'Tutte le novit\u00e0'},release:{path:'docs/release/v3.8.0.md',label:'Release 3.8.0'},
   licenza:{path:'docs/LICENZA.md',label:'Licenza'},'terze-parti':{path:'docs/TERZE-PARTI.md',label:'Terze parti'},
   'licenza-material':{path:'docs/licenses/MATERIAL-ICONS-LICENSE.txt',label:'Licenza Material Icons',plain:true},
   'licenza-suncalc':{path:'docs/licenses/SUNCALC-LICENSE.txt',label:'Licenza SunCalc',plain:true},
-  'licenza-qr':{path:'docs/licenses/PYTHON-QRCODE-LICENSE.txt',label:'Licenza QR',plain:true},
   'licenza-social':{path:'docs/licenses/BOOTSTRAP-ICONS-LICENSE.txt',label:'Licenza icone social',plain:true}
  };
  let sourcePath='README.md';
