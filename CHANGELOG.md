@@ -1,6 +1,14 @@
+
+## v3.13.0
+- Luna ridisegnata con un aspetto più leggibile e riconoscibile, sia nel corpo celeste sia nell’anteprima di fase.
+- Dashboard: linee e strip con estremità più morbide e comparsa di una fase pre-timeout più minimale prima della scomparsa dei controlli.
+- Impostazioni: ritorno alla scelta rapida della dimensione del testo con tre livelli (piccolo, normale, grande).
+- Sezione informazioni: logo affiancato al wordmark di Istante.
+- Biblioteca raccolte: nuova area “Crea la tua raccolta” per aggiungere frasi a mano, una per una, e salvarle come raccolta personale.
+
 # Changelog
 
-## 3.12.9 — 9 settembre 2026
+## 3.13.0 — 9 settembre 2026
 
 - tooltip resi intenzionalmente ritardati: compaiono solo dopo circa due secondi di permanenza con mouse/trackpad e restano non invasivi su touch;
 - aggiunta la **gesture volume** opzionale e disattivata di default: swipe verticale nell’angolo destro su touch per regolare radio o ambiente, con variazione a passi e feedback percentuale;
