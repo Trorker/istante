@@ -13,6 +13,7 @@
   function setDuration(ms){
    const secs=Math.floor(ms/1000),minutes=Math.max(1,Math.round(ms/60000));$('#timer-hours').value=Math.floor(secs/3600);$('#timer-minutes').value=Math.floor(secs/60)%60;$('#timer-seconds').value=secs%60;
    const range=$('#timer-duration-range'),display=$('#timer-duration-display');if(range){range.value=String(Math.min(120,minutes));range.disabled=state.state!=='idle';}if(display)display.textContent=minutes<60?minutes+' minut'+(minutes===1?'o':'i'):minutes%60?Math.floor(minutes/60)+' h '+(minutes%60)+' min':Math.floor(minutes/60)+(minutes===60?' ora':' ore');
+   const dial=$('#timer-duration-dial'),hand=$('#timer-dial-hand'),dialMinutes=Math.max(1,Math.min(60,minutes));if(dial){dial.setAttribute('aria-valuenow',String(dialMinutes));dial.setAttribute('aria-valuetext',dialMinutes+' '+(dialMinutes===1?'minuto':'minuti'));dial.dataset.minutes=String(dialMinutes);}if(hand)hand.style.transform='translateX(-50%) rotate('+(dialMinutes%60)*6+'deg)';document.querySelectorAll('.timer-dial-mark').forEach(mark=>mark.classList.toggle('active',Number(mark.dataset.minute)===dialMinutes));
    document.querySelectorAll('[data-duration]').forEach(b=>b.classList.toggle('active',Number(b.dataset.duration)*60000===ms));
   }
   function readDuration(){const h=+$('#timer-hours').value,m=+$('#timer-minutes').value,s=+$('#timer-seconds').value;if(![h,m,s].every(Number.isInteger)||h<0||h>24||m<0||m>59||s<0||s>59)return 0;const ms=(h*3600+m*60+s)*1000;return ms>=1000&&ms<=86400000?ms:0;}
@@ -29,12 +30,12 @@
    }
    endSoundTimeout=setTimeout(()=>{master.disconnect();compressor.disconnect();soundBus=[];},5500);return true;
   }
-  function result(text,retry=false){if(text)hint('');$('#timer-result').textContent=text;$('#timer-result').hidden=!text;$('#timer-retry-audio').hidden=!retry;$('#timer-chip-time').title=text;}
+  function result(text,retry=false){if(text)hint('');$('#timer-result').textContent=text;$('#timer-result').hidden=!text;$('#timer-retry-audio').hidden=!retry;$('#timer-chip-time').dataset.istanteTooltip=text;}
   function describe(){
    const s=timerSettings();
    const ending=s.timerAction==='radio'?'Radio':s.timerAction==='silent'?'Avviso visivo':({chime:'Piccoli rintocchi',bell:'Campana morbida',pulse:'Segnale delicato'}[s.timerSound])+(s.timerVolume===0?' (senza audio)':'');
    $('#timer-finish-description').textContent='Alla fine \u00b7 '+ending;
-   $('#timer-finish-description').title=s.timerAction==='radio'?radio.station().name:ending;
+   $('#timer-finish-description').dataset.istanteTooltip=s.timerAction==='radio'?radio.station().name:ending;
   }
   function hint(text){$('#timer-audio-hint').textContent=text;$('#timer-audio-hint').hidden=!text;}
   function startDuring(){
@@ -86,7 +87,7 @@
    const s=timerSettings();document.querySelectorAll('[data-timer-during]').forEach(b=>{
     const kind=b.dataset.timerDuring,available=kind==='silent'||kind==='radio'&&getSettings().radioEnabled&&!!radio.station().id||kind==='ambient'&&getSettings().ambientEnabled;
     b.disabled=active||!available;b.setAttribute('aria-pressed',String(kind===s.timerDuring));
-    b.title=!available?'Attiva questa sorgente nelle impostazioni.':active?'Scelta confermata per questo timer.':kind==='ambient'?ambient.label():kind==='radio'?radio.station().name:'Nessun avvio automatico';
+    b.dataset.istanteTooltip=!available?'Attiva questa sorgente nelle impostazioni.':active?'Scelta confermata per questo timer.':kind==='ambient'?ambient.label():kind==='radio'?radio.station().name:'Nessun avvio automatico';
    });$('#timer-dialog').dataset.state=state.state;
    const source=$('#timer-source-description');
    const note=s.timerDuring==='ambient'?ambient.label()+' \u00b7 disponibile offline':s.timerDuring==='radio'?radio.station().name+' \u00b7 richiede Internet':'Solo il timer. Un audio gi\u00e0 avviato a mano non viene interrotto.';
@@ -100,7 +101,7 @@
    if(track){track.setAttribute('aria-valuenow',String(Math.round(progress)));track.querySelector('i').style.width=progress+'%';}
    if(orbit){orbit.style.setProperty('--timer-progress',progress+'%');orbit.dataset.state=state.state;}
    if(toggle){const action=state.state==='running'?'pause':state.state==='paused'?'play':state.state==='done'?'reset':'play',textLabel=state.state==='running'?'Pausa':state.state==='paused'?'Riprendi':state.state==='done'?'Nuovo timer':'Inizia';toggle.innerHTML='<span class="icon">'+icon(action==='pause'?'pause':'play')+'</span><span>'+textLabel+'</span>';toggle.disabled=!s.timerEnabled;}
-   if(reset)reset.hidden=state.state==='idle';
+   if(reset)reset.hidden=state.state==='idle';const nowClock=$('#timer-page-clock');if(nowClock)nowClock.textContent=T.formatTime(Date.now(),s.timeFormat);
    const note=$('#timer-page-note');if(note)note.textContent=state.state==='running'?'Il resto può aspettare.':state.state==='paused'?'Riprendi quando vuoi.':state.state==='done'?'Il tempo è tuo.':'Una pausa con un confine, senza riempire il resto.';
   }
   function render(){
@@ -140,12 +141,14 @@
    if(state.state==='idle'&&changed){draftOptions=T.timerOptions(s);setDuration(s.timerMinutes*60000);}defaultsStamp=stamp;
    if(!s.timerEnabled&&state.state!=='idle')reset();if((!s.radioEnabled||!radio.station().id)&&duringOwned)stopDuring();if(!s.ambientEnabled&&ambientOwned)stopDuring();if(!s.radioEnabled){armed=false;if(alarmRadio){alarmRadio=false;result('Radio disattivata. Resta l\u2019avviso visivo.');}}render();evaluate();
   }
-  function tick(){if(destroyed)return;if(state.state==='running'&&T.remaining(state)<=0){finish(restored);restored=false;}else restored=false;if(state.state!=='idle')render();evaluate();}
+  function tick(){if(destroyed)return;if(state.state==='running'&&T.remaining(state)<=0){finish(restored);restored=false;}else restored=false;if(state.state!=='idle'||document.body.classList.contains('view-timer'))render();evaluate();}
   function open(){if(!getSettings().timerEnabled)return;render();if(getSettings().timerDisplay==='page')document.dispatchEvent(new CustomEvent('istante:timer-page-request'));else openTimer();}
   function openModal(){if(!getSettings().timerEnabled)return;render();openTimer();}
   $('#timer-open').addEventListener('click',open);$('#timer-chip-open').addEventListener('click',open);$('#timer-start').addEventListener('click',startTimer);$('#timer-reset').addEventListener('click',reset);$('#timer-chip-delete')?.addEventListener('click',reset);$('#timer-chip-dismiss').addEventListener('click',reset);$('#timer-chip-toggle').addEventListener('click',()=>state.state==='running'?pauseTimer():startTimer());
   $('#timer-page-toggle')?.addEventListener('click',()=>state.state==='running'?pauseTimer():state.state==='done'?reset():startTimer());$('#timer-page-reset')?.addEventListener('click',reset);$('#timer-page-config')?.addEventListener('click',openModal);document.addEventListener('istante:timer-page-visible',render);
   $('#timer-duration-range')?.addEventListener('input',event=>{if(state.state!=='idle')return;setDuration(Math.max(1,Number(event.target.value)||25)*60000);});
+  function chooseDial(clientX,clientY){if(state.state!=='idle')return;const dial=$('#timer-duration-dial'),r=dial.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,dx=clientX-cx,dy=clientY-cy;if(Math.hypot(dx,dy)<r.width*.18)return;let angle=Math.atan2(dx,-dy);if(angle<0)angle+=Math.PI*2;let minutes=Math.round(angle/(Math.PI*2)*60);if(minutes===0)minutes=60;setDuration(minutes*60000);}
+  let dialDrag=false;$('#timer-duration-dial')?.addEventListener('pointerdown',e=>{if(state.state!=='idle')return;dialDrag=true;e.currentTarget.setPointerCapture?.(e.pointerId);chooseDial(e.clientX,e.clientY);});$('#timer-duration-dial')?.addEventListener('pointermove',e=>{if(dialDrag)chooseDial(e.clientX,e.clientY);});$('#timer-duration-dial')?.addEventListener('pointerup',e=>{if(dialDrag)chooseDial(e.clientX,e.clientY);dialDrag=false;});$('#timer-duration-dial')?.addEventListener('pointercancel',()=>dialDrag=false);$('#timer-duration-dial')?.addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowDown','ArrowRight','ArrowUp','Home','End'].includes(e.key)||state.state!=='idle')return;e.preventDefault();if(e.key==='Home')setDuration(60000);else if(e.key==='End')setDuration(60*60000);else nudgeDuration(['ArrowLeft','ArrowDown'].includes(e.key)?-1:1);});document.querySelectorAll('.timer-dial-mark').forEach(mark=>mark.addEventListener('click',()=>{if(state.state==='idle')setDuration(Number(mark.dataset.minute)*60000);}));
   function nudgeDuration(direction){if(state.state!=='idle')return;const current=readDuration()||getSettings().timerMinutes*60000;setDuration(Math.max(60000,Math.min(86400000,current+direction*60000)));}
   $('#timer-duration-decrease')?.addEventListener('click',()=>nudgeDuration(-1));
   $('#timer-duration-increase')?.addEventListener('click',()=>nudgeDuration(1));

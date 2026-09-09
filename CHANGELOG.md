@@ -1,12 +1,21 @@
-
-## v3.13.0
-- Luna ridisegnata con un aspetto più leggibile e riconoscibile, sia nel corpo celeste sia nell’anteprima di fase.
-- Dashboard: linee e strip con estremità più morbide e comparsa di una fase pre-timeout più minimale prima della scomparsa dei controlli.
-- Impostazioni: ritorno alla scelta rapida della dimensione del testo con tre livelli (piccolo, normale, grande).
-- Sezione informazioni: logo affiancato al wordmark di Istante.
-- Biblioteca raccolte: nuova area “Crea la tua raccolta” per aggiungere frasi a mano, una per una, e salvarle come raccolta personale.
-
 # Changelog
+
+## 3.13.1 — 9 settembre 2026
+
+- Dashboard: sfumatura limitata alle sole estremità delle righe, senza mascherare testo o contenuti; pre-timeout più morbido e minimale senza spostare la frase.
+- Luna principale ricostruita in SVG con fase, ombra e crateri separati; eliminati gli artefatti lineari e mantenuta la resa nella cartolina tramite mirror canvas.
+- tooltip stock del browser eliminati dall'interfaccia; il tooltip custom compare dopo circa 2 secondi di permanenza.
+- gesture audio: feedback volume con toast + slider; doppio tap/click nell'angolo destro alterna Play/Pausa della sorgente attiva.
+- Biblioteca: nuovo flusso Crea raccolta → dettagli → Modifica raccolta; inserimento e rimozione delle frasi una alla volta; raccolte vuote persistenti ma non attivabili.
+- catalogo Raccolte con ricerca e filtri allineati e raccolta attiva evidenziata tramite bordo/superficie, senza riga laterale.
+- Timer: selezione della durata tramite quadrante circolare, cerchio in esecuzione più ampio e stabile, pagina Timer con lockup coerente e orario corrente.
+- Calendario: pittogrammi delle viste al posto dei numeri, Mese a piena altezza, periodo stabile in hover e lockup coerente con la Dashboard.
+- Calendario tablet: periodo sempre leggibile con toolbar compatta su una seconda riga e comandi icon-only; corretta anche la priorità CSS che forzava una sesta settimana vuota.
+- Timer landscape: quadrante ridimensionato solo sui viewport bassi per rimanere interamente visibile, mantenendo le opzioni secondarie scorrevoli.
+- tipografia: tre tab Piccolo / Normale / Grande; font originale rinominato Classic; Excalifont dedicato al Calendario disponibile solo quando il font globale è Classic.
+- selettori custom numerici corretti: 30 secondi e 10 minuti non vengono più trattati come numeri di stazione.
+- wizard: Meteo con Attiva / Non ora, Timer ridotto a Finestra / Pagina, Calendario applicato solo su Avanti e collegamento ICS spostato alla pagina Calendario.
+- consolidati migrazione impostazioni, cache offline, accessibilità e documentazione di produzione.
 
 ## 3.13.0 — 9 settembre 2026
 

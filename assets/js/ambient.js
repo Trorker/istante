@@ -50,7 +50,7 @@
    $('ambient-status').textContent=!supported?'Web Audio non disponibile in questo browser. La radio resta utilizzabile.':message||'Generato sul dispositivo. Nessun file audio, nessuna connessione.';
    if(active){
     mini.dataset.state=playing?'playing':loading?'loading':'paused';
-    $('radio-status').textContent=loading?'Preparo il tuo suono...':names[s.ambientType];$('radio-status').title=names[s.ambientType];
+    $('radio-status').textContent=loading?'Preparo il tuo suono...':names[s.ambientType];$('radio-status').dataset.istanteTooltip=names[s.ambientType];
     const b=$('radio-play');b.disabled=!supported;b.setAttribute('aria-label',playing||loading?'Ferma il suono ambientale':'Ascolta '+names[s.ambientType]);b.setAttribute('aria-pressed',String(playing||loading));b.innerHTML='<span class="icon">'+icon(playing||loading?'pause':'play')+'</span>';
    }
   }

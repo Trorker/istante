@@ -16,22 +16,34 @@ function moon(date){
  return{phase,fraction,name};
 }
 function paintMoon(canvas,phase,light=false){
- const c=canvas.getContext('2d');if(!c)return;const w=canvas.width,h=canvas.height,r=w*.43,cx=w/2,cy=h/2,im=c.createImageData(w,h),sx=sin(2*PI*phase),sz=-cos(2*PI*phase);
+ const c=canvas.getContext('2d');if(!c)return;const w=canvas.width,h=canvas.height,r=w*.41,cx=w/2,cy=h/2,im=c.createImageData(w,h),sx=sin(2*PI*phase),sz=-cos(2*PI*phase);
  for(let y=0;y<h;y++)for(let x=0;x<w;x++){
-  const nx=(x-cx)/r,ny=(y-cy)/r,rr=nx*nx+ny*ny;if(rr>1)continue;
-  const nz=Math.sqrt(1-rr),dot=nx*sx+nz*sz,texture=.9+(sin(x*.42)*sin(y*.37)+sin(x*.14+y*.16)+sin(x*.08-y*.09))*.03,base=dot>0?(light?198:188)+Math.max(0,dot)*(light?50:64):(light?95:42),value=base*texture,i=(y*w+x)*4;
-  im.data[i]=value;im.data[i+1]=value+4;im.data[i+2]=value+9;im.data[i+3]=Math.min(255,(1-rr)*14000);
+  const nx=(x-cx)/r,ny=(y-cy)/r,rr=nx*nx+ny*ny;if(rr>1)continue;const nz=Math.sqrt(1-rr),dot=nx*sx+nz*sz;
+  const limb=Math.pow(Math.max(0,nz),.22),grain=(sin(x*.19+y*.11)+sin(x*.071-y*.083)+sin(x*.39)*sin(y*.31))*.018;
+  const lit=dot>0?(light?210:194)+dot*(light?40:58):(light?112:48),value=Math.max(18,Math.min(255,lit*(.96+grain)*(.88+.12*limb))),i=(y*w+x)*4;
+  im.data[i]=value;im.data[i+1]=value+3;im.data[i+2]=value+7;im.data[i+3]=Math.min(255,(1-rr)*9000);
  }
- c.clearRect(0,0,w,h);
- const halo=c.createRadialGradient(cx-r*.24,cy-r*.28,4,cx,cy,r*1.25);halo.addColorStop(0,light?'rgba(255,250,233,.34)':'rgba(245,244,255,.18)');halo.addColorStop(.72,'rgba(255,255,255,.06)');halo.addColorStop(1,'rgba(255,255,255,0)');
- c.fillStyle=halo;c.fillRect(0,0,w,h);
- c.putImageData(im,0,0);
- c.save();c.beginPath();c.arc(cx,cy,r,0,2*PI);c.clip();
- const craters=[[cx-r*.28,cy-r*.18,r*.12,.11],[cx+r*.1,cy-r*.04,r*.08,.09],[cx-r*.06,cy+r*.2,r*.06,.07],[cx+r*.24,cy+r*.18,r*.045,.08]];
- craters.forEach(([x,y,rr,alpha])=>{c.fillStyle=(light?'rgba(82,88,106,':'rgba(18,22,36,')+alpha+')';c.beginPath();c.arc(x,y,rr,0,2*PI);c.fill();});
+ c.clearRect(0,0,w,h);c.putImageData(im,0,0);c.save();c.beginPath();c.arc(cx,cy,r,0,2*PI);c.clip();
+ const craters=[[-.27,-.22,.13,.12],[.13,-.10,.085,.09],[-.04,.22,.07,.08],[.26,.18,.05,.07],[-.31,.23,.045,.06],[.21,-.31,.04,.05]];
+ for(const [ox,oy,rr,a] of craters){const x=cx+ox*r,y=cy+oy*r,rad=rr*r,g=c.createRadialGradient(x-rad*.24,y-rad*.28,rad*.12,x,y,rad);g.addColorStop(0,light?'rgba(255,255,250,.20)':'rgba(255,255,255,.12)');g.addColorStop(.34,light?'rgba(116,122,136,.10)':'rgba(20,25,37,.10)');g.addColorStop(1,light?'rgba(82,89,104,'+a+')':'rgba(8,12,24,'+a+')');c.fillStyle=g;c.beginPath();c.arc(x,y,rad,0,2*PI);c.fill();}
  c.restore();
- c.strokeStyle=light?'rgba(93,100,124,.22)':'rgba(250,250,255,.18)';c.lineWidth=Math.max(1,r*.04);c.beginPath();c.arc(cx,cy,r*.98,-.78,.78);c.stroke();
- c.strokeStyle=light?'rgba(255,252,240,.6)':'rgba(255,250,236,.42)';c.lineWidth=Math.max(1,r*.022);c.beginPath();c.arc(cx-r*.18,cy-r*.14,r*.82,-1.2,1.12);c.stroke();
+}
+function moonLightPath(phase){
+ const cx=80,cy=80,r=49,k=Math.cos(2*PI*phase),waxing=phase<=.5,edge=[],term=[],steps=48;
+ for(let i=0;i<=steps;i++){const yn=-1+2*i/steps,span=Math.sqrt(Math.max(0,1-yn*yn));const x=(waxing?span:-span),y=yn;edge.push([cx+r*x,cy+r*y]);}
+ for(let i=steps;i>=0;i--){const yn=-1+2*i/steps,span=Math.sqrt(Math.max(0,1-yn*yn));const x=(waxing?k*span:-k*span),y=yn;term.push([cx+r*x,cy+r*y]);}
+ const pts=edge.concat(term);return pts.length?'M '+pts.map((p,i)=>(i?'L ':'')+p[0].toFixed(2)+' '+p[1].toFixed(2)).join(' ')+' Z':'';
+}
+function paintSkyBody(svg,phase,isDay,light=false){
+ if(!svg)return;const sun=svg.querySelector('#sky-sun-art'),moonArt=svg.querySelector('#sky-moon-art');
+ if(sun)sun.style.display=isDay?'':'none';if(moonArt)moonArt.style.display=isDay?'none':'';
+ if(!isDay)svg.querySelector('#sky-moon-light-path')?.setAttribute('d',moonLightPath(phase));
+ const dark=svg.querySelector('.sky-moon-dark'),edge=svg.querySelector('.sky-moon-edge');
+ if(dark)dark.setAttribute('fill',light?'#70787e':'#31383f');
+ if(edge){edge.setAttribute('stroke',light?'rgba(65,72,78,.22)':'rgba(244,244,235,.14)');edge.setAttribute('stroke-width','1.2');}
+ const stops=[svg.querySelector('#sky-moon-stop-a'),svg.querySelector('#sky-moon-stop-b'),svg.querySelector('#sky-moon-stop-c')];
+ const colors=light?['#f0eee4','#c4c4bc','#858b90']:['#f4f1e2','#cfd0c8','#92999e'];stops.forEach((stop,i)=>stop?.setAttribute('stop-color',colors[i]));
+ const mirror=document.getElementById('sky-body-snapshot');if(mirror){if(isDay){const c=mirror.getContext('2d');if(c){c.clearRect(0,0,160,160);const g=c.createRadialGradient(66,60,3,80,80,58);g.addColorStop(0,'#fff9dc');g.addColorStop(.58,'#f4d381');g.addColorStop(1,'#dfa95f');c.fillStyle=g;c.beginPath();c.arc(80,80,49,0,2*PI);c.fill();}}else paintMoon(mirror,phase,light);}
 }
 function create({getSettings,getSun,getWeather=()=>null,store,openGuide}){
  const $=id=>document.getElementById(id),sky=$('celestial-sky'),body=$('sky-body'),stars=$('sky-stars'),main=$('main'),viewport=document.querySelector('.stage-main-slot'),reduced=matchMedia('(prefers-reduced-motion: reduce)');
@@ -56,9 +68,9 @@ function create({getSettings,getSun,getWeather=()=>null,store,openGuide}){
   document.documentElement.style.setProperty('--weather-orb',String(atmosphere.orb));sky.hidden=!s.celestialSky;const nextPeriod=isDay?'day':'night';if(sky.dataset.period!==nextPeriod){sky.classList.add('sky-orbit-reset');setTimeout(()=>sky.classList.remove('sky-orbit-reset'),120);}sky.dataset.period=nextPeriod;sky.classList.toggle('sky-static',!s.motion||reduced.matches||document.hidden);const radius=Math.min(innerWidth*.44,innerHeight*.40),theta=PI+PI*progress;const x=innerWidth*.5+radius*cos(theta),y=innerHeight*.5+radius*sin(theta);sky.style.setProperty('--orbit-x',x.toFixed(2)+'px');sky.style.setProperty('--orbit-y',y.toFixed(2)+'px');
   const warm=sol?.rise&&sol?.set?Math.max(0,1-Math.min(Math.abs(+now-sol.rise),Math.abs(+now-sol.set))/3600000):Math.max(0,1-Math.min(Math.abs(minutes-360),Math.abs(minutes-1080))/60);const dawn=sol?.rise&&sol?.set?Math.abs(+now-sol.rise)<Math.abs(+now-sol.set):minutes<720;sky.style.setProperty('--twilight-strength',(warm*(.55+.45*atmosphere.orb)).toFixed(3));sky.dataset.twilight=dawn?'dawn':'dusk';snapshot.warmth=warm;
   document.getElementById('environment-line').hidden=document.getElementById('weather-line').hidden&&document.getElementById('solar-line').hidden;
-  const phaseKey=Math.round(m.phase*1000)+':'+isDay+':'+document.documentElement.dataset.theme;if(phaseKey!==lastMoon){lastMoon=phaseKey;paintMoon($('moon-phase-mini'),m.phase,document.documentElement.dataset.theme==='light');if(isDay){const c=body.getContext('2d');if(c){c.clearRect(0,0,160,160);const g=c.createRadialGradient(68,62,4,80,80,62);g.addColorStop(0,'#fff9dc');g.addColorStop(.55,'#f7d788');g.addColorStop(1,'#e3b56b');c.fillStyle=g;c.beginPath();c.arc(80,80,49,0,2*PI);c.fill();c.strokeStyle='rgba(255,248,221,.42)';c.lineWidth=6;c.beginPath();c.arc(80,80,57,0,2*PI);c.stroke();c.lineWidth=2.2;for(let i=0;i<10;i++){const ang=i*(2*PI/10),x1=80+cos(ang)*61,y1=80+sin(ang)*61,x2=80+cos(ang)*73,y2=80+sin(ang)*73;c.strokeStyle='rgba(255,228,170,.45)';c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();}}}else paintMoon(body,m.phase,document.documentElement.dataset.theme==='light');}
+  const phaseKey=Math.round(m.phase*1000)+':'+isDay+':'+document.documentElement.dataset.theme;if(phaseKey!==lastMoon){lastMoon=phaseKey;const lightTheme=document.documentElement.dataset.theme==='light';paintMoon($('moon-phase-mini'),m.phase,lightTheme);paintSkyBody(body,m.phase,isDay,lightTheme);}
   const sk=Math.floor(+now/60000)+':'+sky.clientWidth+':'+sky.clientHeight+':'+isDay+':'+atmosphere.kind;if(sk!==lastSky){lastSky=sk;drawStars(now,isDay);}
-  $('moon-caption').hidden=!s.celestialSky;$('moon-caption').title='Fase lunare calcolata sul dispositivo. Il percorso sullo schermo e illustrativo.';document.querySelector('.moon-phase-name').textContent=m.name;document.querySelector('.moon-phase-percent').textContent=Math.round(m.fraction*100)+'%';
+  $('moon-caption').hidden=!s.celestialSky;$('moon-caption').dataset.istanteTooltip='Fase lunare calcolata sul dispositivo. Il percorso sullo schermo è illustrativo.';document.querySelector('.moon-phase-name').textContent=m.name;document.querySelector('.moon-phase-percent').textContent=Math.round(m.fraction*100)+'%';
  }
  function collapseSettings(){document.querySelectorAll('#settings-dialog details').forEach(d=>{const content=d.querySelector(':scope > .settings-section-body');if(content){window.IstanteMotion.cancel(content);content.style.removeProperty('overflow');content.style.removeProperty('height');}d._intent=false;d.open=false;});const content=document.querySelector('#settings-dialog .panel-content');if(content)content.scrollTop=0;}
  async function persistence(){if(storageBusy)return;storageBusy=true;const el=$('persistent-storage-status');try{if(!navigator.storage||typeof navigator.storage.persist!=='function'){el.textContent='Memoria persistente non supportata qui. Le preferenze restano nella normale memoria del browser.';$('storage-request').hidden=true;return;}const granted=(typeof navigator.storage.persisted==='function'&&await navigator.storage.persisted())||await navigator.storage.persist();el.textContent=granted?'Memoria persistente concessa dal browser. Puoi comunque cancellare i dati dalle impostazioni del dispositivo.':'Il browser non ha concesso la persistenza. La cache normale resta attiva, ma potrebbe essere liberata dal sistema.';$('storage-request').hidden=!!granted;}catch(_){el.textContent='Richiesta di persistenza non disponibile. Istante continua con la memoria ordinaria, quando consentita.';}finally{storageBusy=false;}}
@@ -67,5 +79,5 @@ function create({getSettings,getSun,getWeather=()=>null,store,openGuide}){
  document.addEventListener('wheel',e=>{if(!e.ctrlKey&&!e.target.closest('dialog[open],#radio-panel,#calendar-view'))e.preventDefault();},{passive:false});document.addEventListener('touchmove',e=>{if(e.touches.length===1&&!e.target.closest('dialog[open],#radio-panel,#calendar-view'))e.preventDefault();},{passive:false});document.addEventListener('keydown',e=>{if(['ArrowDown','ArrowUp','PageDown','PageUp','Home','End',' '].includes(e.key)&&!e.target.closest('dialog,button,input,select,textarea,a'))e.preventDefault();});
  return{update,describe:()=>({...snapshot}),collapseSettings,ready(){ready=true;queueFit();void persistence();onboarding.ready();}};
 }
-window.IstanteScene={create,moon,paintMoon};
+window.IstanteScene={create,moon,paintMoon,paintSkyBody};
 })();

@@ -57,7 +57,7 @@
   css(document.querySelector('.backdrop>.ambient'));css(document.querySelector('.breathing-light'));
   // Equal z-index layers follow DOM order: environmental effects, then the sky.
   const fx=document.getElementById('ambient-fx');if(visible(fx)){fx.querySelectorAll('.fx-halos i,.fx-aurora,.fx-weather-light,.fx-clouds').forEach(css);copy('#fx-canvas','field');}
-  const sky=document.getElementById('celestial-sky');if(visible(sky)){copy('#sky-stars','field');css(sky.querySelector('.sky-halo'));copy('#sky-body','orb');css(sky.querySelector('.sky-weather-veil'));css(sky.querySelector('.sky-twilight'));}
+  const sky=document.getElementById('celestial-sky');if(visible(sky)){copy('#sky-stars','field');css(sky.querySelector('.sky-halo'));const orb=document.getElementById('sky-body'),mirror=document.getElementById('sky-body-snapshot');if(orb&&mirror&&mirror.width&&mirror.height&&opacity(orb)>.001){const out=document.createElement('canvas');out.width=mirror.width;out.height=mirror.height;out.getContext('2d')?.drawImage(mirror,0,0);const box=orb.getBoundingClientRect();layers.push({kind:'orb',alpha:opacity(orb),canvas:out,rect:{x:box.x/w,y:box.y/h,w:box.width/w,h:box.height/h}});}css(sky.querySelector('.sky-weather-veil'));css(sky.querySelector('.sky-twilight'));}
   // The transition in progress is also an on-screen decorative layer.
   css(document.querySelector('#celestial-transition .transition-horizon'));
   let grain=null;

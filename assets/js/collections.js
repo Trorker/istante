@@ -1,17 +1,17 @@
 /* Named phrase collections, local and persistent. The standard library is read-only. */
 (function(root){'use strict';
-function normalize(payload,core,fallback){
+function normalize(payload,core,fallback,allowEmpty=false){
  const title=String(payload?.title||payload?.name||fallback||'La mia raccolta').trim().slice(0,80),category=String(payload?.category||'Personale').slice(0,40);
  let source=Array.isArray(payload)?payload:payload?.phrases;
  if(!Array.isArray(source))throw Error('Serve un elenco di testi oppure un oggetto con "title" e "phrases".');
  source=source.map(x=>typeof x==='string'?x:x&&typeof x.text==='string'?x.text+(typeof x.author==='string'&&x.author.trim()?' \u2014 '+x.author.trim():''):x);
- const texts=core.parsePhrases(source).map(x=>x.text);return{title,category,description:String(payload?.description||'').slice(0,400),phrases:texts};
+ const texts=source.length===0&&allowEmpty?[]:core.parsePhrases(source).map(x=>x.text);return{title,category,description:String(payload?.description||'').slice(0,400),phrases:texts};
 }
 function clean(value,core){
  const raw=value&&typeof value==='object'?value:{},items=[];if(raw.items!=null&&(!Array.isArray(raw.items)||raw.items.length>30))throw Error("La biblioteca deve contenere al massimo 30 raccolte.");
  for(const x of (Array.isArray(raw.items)?raw.items:[]).slice(0,30)){
   if(!x||typeof x.id!=='string'||!/^c-[a-z0-9-]{1,60}$/.test(x.id))throw Error('Identificativo della raccolta non valido.');
-  if(items.some(i=>i.id===x.id))throw Error('Raccolte duplicate nel backup.');items.push({id:x.id,...normalize(x,core)});
+  if(items.some(i=>i.id===x.id))throw Error('Raccolte duplicate nel backup.');items.push({id:x.id,...normalize(x,core,undefined,true)});
  }
  return{version:1,items,selected:raw.selected==='original'||items.some(i=>i.id===raw.selected)?raw.selected:'original'};
 }
@@ -69,9 +69,12 @@ function create({store,core,original,legacy,notify,onChange}){
    else if(status==='installed')button('Usa questa raccolta',()=>select(localId),true);
    else {/* Lo stato In uso è già espresso dal badge: nessuna azione ridondante. */}
    if(status!=='available'){
-    const ex=document.createElement('button');ex.type='button';ex.className='icon-button';ex.innerHTML=root.IstanteIcons.render('download');ex.title='Esporta JSON';ex.setAttribute('aria-label','Esporta '+item.title);ex.addEventListener('click',()=>exportItem(item));actions.append(ex);
+    if(kind==='local'&&localId!=='original'){
+     const edit=document.createElement('button');edit.type='button';edit.className='icon-button collection-edit-button';edit.innerHTML=root.IstanteIcons.render('settings');edit.setAttribute('aria-label','Modifica '+item.title);edit.addEventListener('click',()=>document.dispatchEvent(new CustomEvent('istante:collection-edit',{detail:{id:localId}})));actions.append(edit);
+    }
+    const ex=document.createElement('button');ex.type='button';ex.className='icon-button';ex.innerHTML=root.IstanteIcons.render('download');ex.setAttribute('aria-label','Esporta '+item.title);ex.addEventListener('click',()=>exportItem(item));actions.append(ex);
     if(localId!=='original'){
-     const del=document.createElement('button');del.type='button';del.className='icon-button';del.innerHTML=root.IstanteIcons.render('trash');del.title='Rimuovi dal dispositivo';del.setAttribute('aria-label','Rimuovi '+item.title+' dal dispositivo');del.addEventListener('click',()=>remove(localId,item.title));actions.append(del);
+     const del=document.createElement('button');del.type='button';del.className='icon-button';del.innerHTML=root.IstanteIcons.render('trash');del.setAttribute('aria-label','Rimuovi '+item.title+' dal dispositivo');del.addEventListener('click',()=>remove(localId,item.title));actions.append(del);
     }
    }
    row.append(top,name,desc,actions);box.append(row);
@@ -87,7 +90,7 @@ function create({store,core,original,legacy,notify,onChange}){
  }
  document.getElementById('collection-search')?.addEventListener('input',render);
  document.querySelectorAll('[data-collection-status]').forEach(b=>b.addEventListener('click',()=>{statusFilter=b.dataset.collectionStatus||'all';render();}));
- function select(id){try{if(id!=='original'&&!state.items.some(x=>x.id===id))return;persist({...state,selected:id});onChange(id==='original'?null:selected());render();document.dispatchEvent(new CustomEvent('istante:collection-selected',{detail:{id,title:selected().title}}));}catch(e){notify(e.message);}}
+ function select(id){try{if(id!=='original'&&!state.items.some(x=>x.id===id))return;const candidate=id==='original'?builtin:state.items.find(x=>x.id===id);if(candidate&&!candidate.phrases.length){notify('Aggiungi almeno una frase prima di usare questa raccolta.');return;}persist({...state,selected:id});onChange(id==='original'?null:selected());render();document.dispatchEvent(new CustomEvent('istante:collection-selected',{detail:{id,title:selected().title}}));}catch(e){notify(e.message);}}
  function add(payload,fallback,mergeReceived=false){
   const item=normalize(payload,core,fallback);
   if(mergeReceived){const old=state.items.find(x=>x.title==='Pensieri ricevuti');if(old){const joined=normalize({...old,phrases:[...old.phrases,...item.phrases]},core);persist({...state,items:state.items.map(x=>x.id===old.id?{id:old.id,...joined}:x)});if(state.selected===old.id)onChange(selected());render();notify('Pensiero conservato nella biblioteca e nei preferiti.');return;}}
@@ -96,7 +99,17 @@ function create({store,core,original,legacy,notify,onChange}){
   const id='c-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7);persist({...state,items:[...state.items,{id,...item}],selected:mergeReceived?state.selected:id});
   if(!mergeReceived){onChange(selected());document.dispatchEvent(new CustomEvent('istante:collection-selected',{detail:{id,title:selected().title}}));}render();notify(mergeReceived?'Pensiero conservato nella biblioteca.':'Raccolta aggiunta: '+item.phrases.length+' frasi. Le altre raccolte sono ancora qui.');
  }
- return{render,select,add,payload:()=>state.selected==='original'?null:selected(),name:()=>selected().title};
+ function createEmpty(meta={}){
+  if(state.items.length>=30)throw Error('Puoi conservare fino a 30 raccolte personali.');
+  const title=String(meta.title||'').trim().slice(0,80);if(!title)throw Error('Dai un titolo alla raccolta.');
+  const id='c-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7),item={id,title,category:String(meta.category||'Personale').trim().slice(0,40)||'Personale',description:String(meta.description||'').trim().slice(0,400),phrases:[]};
+  persist({...state,items:[...state.items,item]});render();return id;
+ }
+ function get(id){if(id==='original')return builtin;return state.items.find(x=>x.id===id)||null;}
+ function updateMeta(id,meta={}){const current=get(id);if(!current||id==='original')throw Error('Questa raccolta non è modificabile.');const title=String(meta.title??current.title).trim().slice(0,80);if(!title)throw Error('Dai un titolo alla raccolta.');const next={...current,title,category:String(meta.category??current.category).trim().slice(0,40)||'Personale',description:String(meta.description??current.description).trim().slice(0,400)};persist({...state,items:state.items.map(x=>x.id===id?next:x)});if(state.selected===id)onChange(selected());render();return next;}
+ function appendPhrase(id,text){const current=get(id);if(!current||id==='original')throw Error('Questa raccolta non è modificabile.');const phrase=String(text||'').trim();if(!phrase)throw Error('Scrivi una frase.');if(current.phrases.length>=1000)throw Error('Questa raccolta ha già 1000 frasi.');const normalized=core.parsePhrases([phrase])[0]?.text;if(!normalized)throw Error('La frase non è valida.');if(current.phrases.includes(normalized))throw Error('Questa frase è già nella raccolta.');const next={...current,phrases:[...current.phrases,normalized]};persist({...state,items:state.items.map(x=>x.id===id?next:x)});if(state.selected===id)onChange(selected());render();return next;}
+ function removePhrase(id,index){const current=get(id);if(!current||id==='original')return null;if(index<0||index>=current.phrases.length)return current;const next={...current,phrases:current.phrases.filter((_,i)=>i!==index)};persist({...state,items:state.items.map(x=>x.id===id?next:x)});if(state.selected===id)onChange(selected());render();return next;}
+ return{render,select,add,createEmpty,get,updateMeta,appendPhrase,removePhrase,currentId:()=>state.selected,payload:()=>state.selected==='original'?null:selected(),name:()=>selected().title};
 }
 root.IstanteCollections={normalize,clean,create};
 })(typeof window==='undefined'?globalThis:window);

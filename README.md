@@ -1,6 +1,6 @@
 # Istante
 
-**Versione corrente: 3.13.0**  
+**Versione corrente: 3.13.1**  
 **Un momento, per te.**  
 Un progetto di **Ruslan Dzyuba**.
 
@@ -35,14 +35,14 @@ trasformarla in una dashboard tecnica.
 La raccolta principale contiene 1.000 pensieri e usa una selezione casuale con
 memoria locale per evitare ripetizioni ravvicinate. Dalla biblioteca puoi
 aggiungere altre raccolte incluse nel sito oppure importare file **JSON** o
-**TXT** (una frase per riga). La scelta delle raccolte vive nella **stessa modale** delle frasi: non apre un secondo pannello sopra al primo. Il pulsante **Vedi raccolte** vive accanto alla ricerca, che resta centrata, e apre un unico catalogo a card. Nel catalogo la ricerca resta a sinistra, mentre i filtri a tab **Tutte / In uso / Scaricate / Da scaricare** sono allineati a destra; ogni raccolta indica subito il proprio stato. Le raccolte personali restano nel browser finché non le elimini.
+**TXT** (una frase per riga). Il pulsante **Vedi raccolte** apre un unico catalogo a card. Nel catalogo la ricerca resta a sinistra e i filtri a tab **Tutte / In uso / Scaricate / Da scaricare** sono allineati a destra. Con **Crea raccolta** inserisci titolo, categoria e descrizione; subito dopo puoi aprire la raccolta in modifica e aggiungere le frasi una alla volta. Le raccolte personali restano nel browser finché non le elimini.
 
 La macchina da scrivere è facoltativa e può usare un ritmo umano, piccole pause
 e correzioni. Preferiti e storico restano locali.
 
-La dimensione dei testi usa una scala a quattro posizioni — **Piccolo, Medio, Grande, Molto grande** — progettata per far crescere soprattutto i contenuti da leggere e solo in misura minore i controlli dell'interfaccia.
+La dimensione dei testi usa tre tab semplici — **Piccolo, Normale, Grande** — così la scelta resta immediata anche su tablet.
 
-Per i contenuti editoriali puoi inoltre scegliere tra il carattere **Attuale** e **Excalifont**, più vicino a una scrittura a mano. Quando scegli Excalifont puoi applicarlo **ovunque** oppure **solo al calendario**, dove viene usato per titoli, date ed eventi senza cambiare i controlli. Excalifont viene richiesto solo quando selezionato; senza rete o se non disponibile, Istante torna automaticamente al carattere attuale.
+Per i contenuti editoriali puoi scegliere tra **Classic** ed **Excalifont**, più vicino a una scrittura a mano. Quando il font globale è Classic, il Calendario offre uno switch separato per usare Excalifont soltanto nelle date, nei titoli e negli eventi. Se Excalifont è già globale, lo switch dedicato scompare. Excalifont viene richiesto solo quando selezionato; senza rete o se non disponibile, Istante torna automaticamente al carattere Classic.
 
 ## Il tuo prossimo capitolo
 
@@ -56,11 +56,11 @@ riempire lo schermo con un numero enorme di giorni.
 ## Musica, relax e timer
 
 Il mini player supporta radio lo-fi e stazioni personali, preferiti,
-programmazioni multiple e scelta casuale. Dalla gestione delle stazioni puoi anche **spostare una radio più in alto o più in basso** nell’ordine del catalogo. Su touch puoi inoltre attivare una gesture volume opzionale, disattivata di default: uno swipe verticale nel bordo destro modifica il volume della sorgente attiva. In alternativa puoi usare il
+programmazioni multiple e scelta casuale. Dalla gestione delle stazioni puoi anche **spostare una radio più in alto o più in basso** nell’ordine del catalogo. Su touch puoi inoltre attivare una gesture volume opzionale, disattivata di default: uno swipe verticale nel bordo destro modifica il volume della sorgente attiva e mostra un toast con slider; un doppio tap nella stessa zona alterna Play/Pausa. In alternativa puoi usare il
 generatore audio offline: rumore rosa, marrone, pioggia o vento sintetizzati
 con Web Audio, senza file audio da scaricare.
 
-Il timer rimane volutamente semplice: la durata principale si sceglie con uno **slider da 1 a 120 minuti** e può essere rifinita di un minuto alla volta con i pulsanti **− / +** accanto al valore; ore/minuti/secondi precisi restano sotto “Durata precisa”. Può aprirsi nella classica **Finestra** oppure, facoltativamente, come **Pagina** immersiva a sinistra della Dashboard. Quando parte, il tempo residuo entra in un indicatore circolare animato con avanzamento; silenzio, radio o suono rilassante restano configurabili senza appesantire la schermata principale.
+Il timer rimane volutamente semplice: la durata principale si sceglie su un **quadrante circolare tipo orologio** da 1 a 60 minuti e può essere rifinita di un minuto alla volta con i pulsanti **− / +**; ore/minuti/secondi precisi restano sotto “Durata precisa”. Può aprirsi nella classica **Finestra** oppure, facoltativamente, come **Pagina** immersiva a sinistra della Dashboard. Quando parte, il tempo residuo entra in un indicatore circolare animato con avanzamento; silenzio, radio o suono rilassante restano configurabili senza appesantire la schermata principale.
 
 ## Calendario, se ti serve
 
@@ -108,7 +108,7 @@ Su desktop con mouse o trackpad puoi attivare un **cursore personalizzato discre
 - `data/`: frasi, catalogo raccolte e stazioni predefinite.
 - `README.md`: descrizione del progetto e release corrente.
 - `CHANGELOG.md`: storico delle modifiche.
-- `docs/release/v3.12.9.md`: note dettagliate di questa release.
+- `docs/release/v3.13.1.md`: note dettagliate di questa release.
 - `docs/LICENZA.md`: licenza non commerciale con attribuzione obbligatoria.
 - `docs/TERZE-PARTI.md`: dipendenze, servizi e attribuzioni.
 - `docs/VISIONE-E-DESIGN.md`: valori, regole grafiche e criteri responsive da mantenere nelle release future.

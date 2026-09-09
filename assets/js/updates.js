@@ -1,7 +1,7 @@
 /* Offline-first shell. New releases wait for an explicit user action. */
 (function(){
  'use strict';
- const VERSION='3.12.9';
+ const VERSION='3.13.1';
  function create({notify}){
   const $=id=>document.getElementById(id),check=$('check-update'),apply=$('apply-update');
   let registration=null,checking=false,lastCheck=0,reloading=false,requested=false,hadController=!!navigator.serviceWorker?.controller;

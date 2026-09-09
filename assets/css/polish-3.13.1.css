@@ -1,0 +1,174 @@
+/* Istante v3.13.1 — production refinement after 3.13.0. */
+
+/* Dashboard rules: only the line tips fade. Never mask content. */
+.goal-strip,#goal-strip,#idle-goal-summary,#environment-line,#upcoming-event,.idle-weather-summary,.idle-upcoming-event{mask-image:none!important;-webkit-mask-image:none!important}
+.active-info-strip,.idle-summary-strip{position:relative!important;border-top:0!important;border-bottom:0!important;overflow:visible!important}
+.active-info-strip::before,.active-info-strip::after,.idle-summary-strip::before{content:'';position:absolute;left:0;right:0;height:1px;pointer-events:none;background:linear-gradient(90deg,transparent 0%,color-mix(in srgb,var(--line) 72%,transparent) 8%,color-mix(in srgb,var(--line) 72%,transparent) 92%,transparent 100%)}
+.active-info-strip::before{top:0}.active-info-strip::after{bottom:0;opacity:.7}.idle-summary-strip::before{top:10px;opacity:.62}
+/* Pre-timeout keeps geometry fixed and only quiets secondary detail. */
+.is-idle-pre:not(.has-panel) .dashboard-lower{opacity:1!important;transform:none!important}
+.is-idle-pre:not(.has-panel) .active-info-strip{opacity:.78!important;transform:none!important}
+.is-idle-pre:not(.has-panel) .active-info-strip :is(.section-label,.progress-labels,.goal-date,#weather-condition,#weather-place,.upcoming-copy small,#upcoming-time){opacity:.48!important;transition:opacity .55s ease!important}
+.is-idle:not(.has-panel) .idle-summary-strip{grid-template-rows:70px!important;min-height:70px!important;max-height:70px!important;animation:istante-idle-summary-in .5s cubic-bezier(.2,.7,.2,1) both!important}
+.is-idle:not(.has-panel) .idle-weather-summary,.is-idle:not(.has-panel) .idle-goal-summary,.is-idle:not(.has-panel) .idle-upcoming-event{height:48px!important;min-height:48px!important;max-height:48px!important;align-self:center!important}
+
+/* Text size is one unbroken three-way tab. */
+.text-size-setting .binary-tabs,.text-size-tabs{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;width:100%!important;gap:4px!important}
+.text-size-setting .binary-tabs label,.text-size-setting .binary-tabs span{min-width:0!important;white-space:nowrap!important;text-align:center!important}
+@media(max-width:380px){.text-size-setting .binary-tabs span{font-size:10px!important}}
+
+/* Excalifont: global when selected, calendar-only via dedicated switch. */
+html[data-font-style='excalifont'] :is(.quote-wrap blockquote,.quote-intro,.panel-head h2,.welcome-content h2,.tour-card h2,.goal-heading h2,#goal-dialog-title,.collection-card>strong,.library-phrase-text,.timer-page-heading h1,.timer-page-orbit strong,.timer-orbit strong,.about-wordmark){font-family:'Excalifont','Segoe Print','Bradley Hand',cursive!important}
+html[data-calendar-font='excalifont'] #calendar-view :is(.calendar-period-title,.calendar-mini h2 button,.calendar-day-date-number,.calendar-day-weekday,.calendar-day-month,.calendar-agenda-day h2,.week-event-title,.calendar-event,.calendar-more){font-family:'Excalifont','Segoe Print','Bradley Hand',cursive!important}
+.calendar-excalifont-setting[hidden]{display:none!important}
+
+/* About lockup. */
+.about-wordmark-lockup{display:inline-flex!important;align-items:center!important;gap:14px!important}.about-wordmark-logo{width:38px!important;height:38px!important;object-fit:contain!important}.about-wordmark{line-height:1!important}
+
+/* Collection catalogue: aligned search and filters, creation is a separate flow. */
+.library-collections-intro{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:18px!important;padding-inline:28px!important}.collection-create-button{flex:none!important;min-height:40px!important;padding:8px 14px!important}
+.collection-library-toolbar{display:grid!important;grid-template-columns:minmax(360px,1fr) auto!important;align-items:center!important;gap:18px!important;padding:12px 28px!important}.collection-library-toolbar>.search-field{height:42px!important;margin:0!important}.collection-library-toolbar>.search-field input{height:42px!important}.collection-status-filters{height:42px!important;align-items:center!important;margin:0!important}.collection-status-filters button{height:34px!important;display:inline-flex!important;align-items:center!important}
+#collection-library-inline .collection-card.is-selected{border-color:var(--accent)!important;background:color-mix(in srgb,var(--accent-soft) 34%,var(--surface))!important;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 42%,transparent)!important}
+#collection-library-inline .collection-card.is-selected::before{display:none!important;content:none!important}
+.collection-create-panel,.collection-edit-panel{width:min(620px,calc(100vw - 24px))!important}.collection-create-content,.collection-edit-content{display:grid!important;gap:16px!important}.collection-edit-meta{margin-top:7px!important;color:var(--muted)!important;font-size:11px!important}.collection-edit-meta-form{padding-bottom:16px!important;border-bottom:1px solid var(--line)!important}.collection-edit-add{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:end!important;gap:12px!important}.collection-edit-add .primary-button{min-height:48px!important}.collection-edit-list-head{display:flex!important;justify-content:space-between!important;align-items:baseline!important;gap:12px!important;color:var(--muted)!important}.collection-edit-list{list-style:none!important;padding:0!important;margin:0!important;display:grid!important;gap:0!important;max-height:300px!important;overflow:auto!important}.collection-edit-item{display:grid!important;grid-template-columns:28px minmax(0,1fr) auto!important;gap:10px!important;align-items:start!important;padding:12px 0!important;border-top:1px solid color-mix(in srgb,var(--line) 62%,transparent)!important}.collection-edit-item>span{font-size:9px!important;color:var(--faint)!important;letter-spacing:.12em!important;padding-top:4px!important}.collection-edit-item p{margin:0!important;line-height:1.5!important}.collection-edit-item .icon-button{width:30px!important;height:30px!important}.collection-edit-panel .empty-state{padding:18px 0!important}
+@media(max-width:700px){.collection-library-toolbar{grid-template-columns:1fr!important;gap:10px!important}.collection-status-filters{justify-self:start!important;max-width:100%!important;overflow:auto!important}.library-collections-intro{padding-inline:20px!important}.collection-edit-add{grid-template-columns:1fr!important}.collection-edit-add .primary-button{width:100%!important}}
+
+/* Volume feedback. */
+#toast.is-volume-toast{width:min(330px,calc(100vw - 34px))!important;padding:12px 16px 13px!important}.volume-toast-row{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:20px!important;margin-bottom:8px!important}.volume-toast-row span{font-size:11px!important;color:var(--muted)!important}.volume-toast-row strong{font-size:12px!important;font-variant-numeric:tabular-nums!important}.is-volume-toast input[type=range]{width:100%!important;height:12px!important;opacity:1!important;accent-color:var(--accent)!important;pointer-events:none!important}
+
+/* Calendar brand is literally the dashboard lockup geometry. */
+#calendar-view .calendar-brand-lockup{padding:0!important;overflow:visible!important}
+#calendar-view .calendar-brand-button,.timer-page-brand{display:flex!important;align-items:center!important;gap:10px!important;padding:3px 5px 3px 3px!important;border-radius:11px!important;overflow:visible!important;transform:none!important;background:transparent!important;color:var(--ink)!important}
+#calendar-view .calendar-brand-button:hover,#calendar-view .calendar-brand-button:focus-visible,.timer-page-brand:hover,.timer-page-brand:focus-visible{background:color-mix(in srgb,var(--accent-soft) 72%,transparent)!important;transform:none!important}
+#calendar-view .calendar-brand-image,#timer-page .brand-logo-image{width:32px!important;height:32px!important;border-radius:9px!important;object-fit:contain!important;flex:0 0 32px!important}
+#calendar-view .calendar-brand-copy,#timer-page .brand-home-copy{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;gap:2px!important;min-height:32px!important}
+#calendar-view .calendar-brand-name,#timer-page .brand-home-name{font:500 23px/1 var(--serif)!important;letter-spacing:-.04em!important}.calendar-brand-tagline,#timer-page .brand-home-tagline{font:500 10px/1.15 var(--sans)!important;padding:0!important;color:var(--muted)!important}
+
+/* Calendar view buttons use pictograms, never 12/31/7/1 text. */
+.calendar-view-glyph{position:relative!important;width:18px!important;height:18px!important;display:inline-block!important;flex:0 0 18px!important;color:currentColor!important}
+.calendar-view-glyph::before,.calendar-view-glyph::after{content:'';position:absolute;inset:2px;border:1.4px solid currentColor;border-radius:3px;opacity:.9}
+.calendar-view-year::after{inset:5px;background:linear-gradient(90deg,transparent 43%,currentColor 44% 56%,transparent 57%),linear-gradient(0deg,transparent 43%,currentColor 44% 56%,transparent 57%);border:0;border-radius:0}
+.calendar-view-month::after{inset:5px 4px;border:0;border-radius:0;background:repeating-linear-gradient(0deg,currentColor 0 1px,transparent 1px 4px)}
+.calendar-view-week::after{inset:5px 4px;border:0;border-radius:0;background:repeating-linear-gradient(90deg,currentColor 0 1px,transparent 1px 3px)}
+.calendar-view-day::after{inset:5px;border-radius:2px;background:color-mix(in srgb,currentColor 12%,transparent)}
+.calendar-view-agenda::before{border:0;border-radius:0;inset:4px 2px;background:repeating-linear-gradient(0deg,currentColor 0 1px,transparent 1px 4px)}.calendar-view-agenda::after{display:none}
+
+/* Calendar month expands to available height and uses only the required week rows. */
+#calendar-view .calendar-layout,#calendar-view .calendar-main,#calendar-view #cal-content{min-height:0!important;height:100%!important}
+#calendar-view .calendar-main{display:flex!important;flex-direction:column!important}#calendar-view #cal-content{flex:1 1 auto!important;display:flex!important;flex-direction:column!important}
+#calendar-view #cal-content>.calendar-month{flex:1 1 auto!important;height:100%!important;min-height:0!important}
+#calendar-view .calendar-grid{grid-template-rows:repeat(var(--month-weeks,6),minmax(0,1fr))!important;min-height:0!important;height:100%!important}
+/* Stable period hover: no padding or geometry changes. */
+#calendar-view .calendar-period-button,#calendar-view .calendar-period-button:hover,#calendar-view .calendar-period-button:focus-visible{padding:4px 7px!important;margin:0!important;transform:none!important;translate:none!important}
+
+/* Timer modal: clock-like dial in setup and equally large orbit while running. */
+#timer-dialog{width:min(560px,calc(100vw - 24px))!important}.timer-time-stage{min-height:360px!important;flex-basis:360px!important;height:360px!important}.timer-duration,.timer-running{height:100%!important;display:grid!important;place-items:center!important}.timer-range-picker.timer-dial-picker{position:relative!important;width:100%!important;display:grid!important;justify-items:center!important;gap:10px!important}.timer-dial-picker>#timer-duration-range{position:absolute!important;opacity:0!important;pointer-events:none!important;width:1px!important;height:1px!important}.timer-duration-dial{width:min(330px,72vw)!important;aspect-ratio:1!important;border-radius:50%!important;position:relative!important;touch-action:none!important;outline:none!important}.timer-duration-dial:focus-visible{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 28%,transparent)!important}.timer-dial-face{position:absolute!important;inset:0!important;border-radius:50%!important;background:radial-gradient(circle at 50% 46%,color-mix(in srgb,var(--surface-2) 58%,transparent),transparent 62%),conic-gradient(from 0deg,color-mix(in srgb,var(--line) 70%,transparent),color-mix(in srgb,var(--line) 18%,transparent),color-mix(in srgb,var(--line) 70%,transparent));box-shadow:inset 0 0 0 1px var(--line),0 24px 60px rgba(0,0,0,.08)!important}.timer-dial-face::before{content:'';position:absolute;inset:10px;border-radius:50%;background:var(--surface)!important;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--line) 72%,transparent)!important}.timer-dial-mark{position:absolute!important;left:50%!important;top:50%!important;width:28px!important;height:28px!important;margin:-14px!important;display:grid!important;place-items:center!important;border-radius:50%!important;font-size:10px!important;color:var(--muted)!important;z-index:3!important;transform:rotate(calc(var(--i,0)*30deg)) translateY(-140px) rotate(calc(var(--i,0)*-30deg))!important;cursor:pointer!important}.timer-dial-mark:nth-child(1){--i:1}.timer-dial-mark:nth-child(2){--i:2}.timer-dial-mark:nth-child(3){--i:3}.timer-dial-mark:nth-child(4){--i:4}.timer-dial-mark:nth-child(5){--i:5}.timer-dial-mark:nth-child(6){--i:6}.timer-dial-mark:nth-child(7){--i:7}.timer-dial-mark:nth-child(8){--i:8}.timer-dial-mark:nth-child(9){--i:9}.timer-dial-mark:nth-child(10){--i:10}.timer-dial-mark:nth-child(11){--i:11}.timer-dial-mark:nth-child(12){--i:12}.timer-dial-mark.active{background:var(--accent)!important;color:var(--bg)!important}.timer-dial-hand{position:absolute!important;left:50%!important;top:50%!important;width:2px!important;height:37%!important;background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent) 30%,transparent))!important;transform-origin:50% 100%!important;z-index:2!important;border-radius:2px!important}.timer-dial-knob{position:absolute!important;left:50%!important;top:50%!important;width:10px!important;height:10px!important;border-radius:50%!important;background:var(--accent)!important;transform:translate(-50%,-50%)!important;z-index:4!important}.timer-dial-face output{position:absolute!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;z-index:3!important;font:400 30px/1 var(--serif)!important;white-space:nowrap!important}.timer-dial-nudge{position:absolute!important;left:50%!important;bottom:8px!important;transform:translateX(-50%)!important;display:flex!important;align-items:center!important;gap:10px!important;z-index:5!important}.timer-dial-nudge>span{font-size:9px!important;color:var(--faint)!important;white-space:nowrap!important}.timer-dial-nudge .timer-step-button{width:34px!important;height:34px!important}.timer-dial-nudge .timer-step-button>span{display:block!important;position:relative!important;width:14px!important;height:14px!important}.timer-dial-nudge #timer-duration-decrease span::before,.timer-dial-nudge #timer-duration-increase span::before,.timer-dial-nudge #timer-duration-increase span::after{content:''!important;position:absolute!important;left:2px!important;right:2px!important;top:6px!important;height:1.5px!important;background:currentColor!important;border-radius:2px!important}.timer-dial-nudge #timer-duration-increase span::after{left:6px!important;right:auto!important;top:2px!important;bottom:2px!important;width:1.5px!important;height:auto!important}
+#timer-dialog .timer-running{min-height:360px!important}#timer-dialog .timer-orbit{width:min(340px,74vw)!important;height:min(340px,74vw)!important;max-width:340px!important;max-height:340px!important;margin:auto!important}#timer-dialog #timer-readout{font-size:clamp(58px,12vw,86px)!important}.timer-panel .timer-presets{margin-top:8px!important}
+
+/* Timer page: same brand, current time, more intentional composition. */
+.timer-page-shell{position:relative!important;background:radial-gradient(circle at 50% 46%,color-mix(in srgb,var(--accent-soft) 22%,transparent),transparent 42%)!important}.timer-page-main{gap:16px!important}.timer-page-heading{display:grid!important;justify-items:center!important}.timer-page-now{margin:10px 0 3px!important;display:inline-flex!important;align-items:baseline!important;gap:9px!important;color:var(--muted)!important}.timer-page-now span{font-size:9px!important;letter-spacing:.14em!important;text-transform:uppercase!important}.timer-page-now strong{font:400 19px/1 var(--serif)!important;font-variant-numeric:tabular-nums!important;color:var(--ink)!important}.timer-page-orbit{box-shadow:0 34px 100px color-mix(in srgb,var(--ink) 7%,transparent),inset 0 0 0 1px color-mix(in srgb,var(--line) 70%,transparent)!important}.timer-page-footer{letter-spacing:.08em!important}
+
+/* Custom select: non-station numeric labels are normal options. */
+.select-popup:not(.station-select-popup) .custom-option .option-title{font:500 12px/1.35 var(--sans)!important;letter-spacing:0!important;color:inherit!important}.select-popup:not(.station-select-popup) .custom-option{font-variant-numeric:normal!important}
+
+/* Wizard: compact on tablets and low viewports. */
+.tour-card{max-width:min(380px,calc(100vw - 24px))!important}.tour-card h2{font-size:clamp(22px,3vw,30px)!important;line-height:1.08!important}.tour-card #tour-copy,.tour-card .field-note{font-size:11px!important;line-height:1.45!important}.tour-choices{gap:6px!important}.tour-choice{min-height:34px!important;padding:7px 10px!important}.tour-inline-setup{margin-top:8px!important}.tour-weather-actions{display:grid!important;grid-template-columns:1fr auto!important;gap:8px!important}.tour-calendar-open-link{padding-inline:0!important;justify-content:flex-start!important}.tour-mini-tabs{margin-top:4px!important}
+@media(max-height:720px),(max-width:900px) and (orientation:landscape){.tour-card{max-height:calc(100dvh - 18px)!important;padding:14px 16px!important}.tour-card h2{font-size:21px!important;margin-block:5px 7px!important}.tour-card #tour-copy{font-size:10px!important;line-height:1.35!important}.tour-choice{font-size:10px!important;min-height:30px!important}.tour-inline-setup .field-note{font-size:9px!important}.tour-weather-actions{grid-template-columns:1fr 1fr!important}.tour-card .section-label{margin-bottom:3px!important}}
+
+@media(max-width:740px){#calendar-view .calendar-brand-image,#timer-page .brand-logo-image{width:29px!important;height:29px!important;flex-basis:29px!important}#calendar-view .calendar-brand-name,#timer-page .brand-home-name{font-size:20px!important}#calendar-view .calendar-brand-tagline,#timer-page .brand-home-tagline{font-size:9.5px!important}.timer-time-stage{min-height:315px!important;flex-basis:315px!important;height:315px!important}.timer-duration-dial,#timer-dialog .timer-orbit{width:min(286px,76vw)!important;height:min(286px,76vw)!important}.timer-dial-mark{transform:rotate(calc(var(--i,0)*30deg)) translateY(-119px) rotate(calc(var(--i,0)*-30deg))!important}}
+#tour-dialog[data-step='2'] .tour-card{width:min(340px,calc(100vw - 24px))!important}#tour-dialog[data-step='2'] #tour-copy{max-width:30ch!important}#tour-dialog[data-step='3'] .tour-card,#tour-dialog[data-step='8'] .tour-card,#tour-dialog[data-step='9'] .tour-card{width:min(350px,calc(100vw - 24px))!important}
+.moon-phase-mini{border-radius:50%!important;filter:drop-shadow(0 2px 4px rgba(0,0,0,.20)) drop-shadow(0 0 5px color-mix(in srgb,var(--accent) 16%,transparent))!important}html[data-theme='light'] .moon-phase-mini{filter:drop-shadow(0 1px 3px rgba(42,46,55,.28))!important}
+/* SVG celestial body: recognizable moon without canvas streaks. */
+#sky-body{overflow:visible!important}
+#sky-body .sky-moon-dark{opacity:.82}
+#sky-body .sky-moon-crater{fill:rgba(62,66,70,.20)}
+html[data-theme='dark'] #sky-body .sky-moon-crater{fill:rgba(36,39,43,.24)}
+#sky-body .sky-moon-edge{opacity:.28}
+#sky-body .sky-sun-rays{opacity:.5}
+/* Final geometry: Calendar and Timer use the exact dashboard brand proportions. */
+#calendar-view .calendar-brand-image,#timer-page .brand-logo-image{width:36px!important;height:36px!important;flex-basis:36px!important;border-radius:10px!important}
+#calendar-view .calendar-brand-copy,#timer-page .brand-home-copy{min-height:36px!important}
+#calendar-view .calendar-brand-name,#timer-page .brand-home-name{font-size:23px!important}
+#calendar-view .calendar-brand-tagline,#timer-page .brand-home-tagline{font-size:10px!important}
+
+/* The timer circle is the main surface, not a small widget inside the modal. */
+@media(min-width:741px) and (min-height:760px){
+ #timer-dialog{width:min(620px,calc(100vw - 28px))!important}
+ #timer-dialog .timer-time-stage{min-height:430px!important;flex-basis:430px!important;height:430px!important}
+ #timer-dialog .timer-duration-dial{width:398px!important;height:398px!important}
+ #timer-dialog .timer-orbit{width:410px!important;height:410px!important;max-width:410px!important;max-height:410px!important}
+ #timer-dialog .timer-dial-mark{transform:rotate(calc(var(--i,0)*30deg)) translateY(-168px) rotate(calc(var(--i,0)*-30deg))!important}
+}
+
+/* Step 2 needs breathing room; special action steps remain compact. */
+#tour-dialog[data-step='2'] .tour-card{width:min(380px,calc(100vw - 24px))!important}
+#tour-dialog[data-step='2'] #tour-copy{max-width:34ch!important}
+
+/* Timer hand rotates around the real centre, like a clock. */
+.timer-dial-hand{top:auto!important;bottom:50%!important;transform-origin:50% 100%!important}
+
+
+/* Final production precedence: dynamic month height, date picker and collections toolbar. */
+#cal-date-picker + .custom-trigger{display:none!important}
+#calendar-view #cal-content>.calendar-month .calendar-grid{
+  grid-template-rows:repeat(var(--month-weeks,6),minmax(0,1fr))!important;
+  height:100%!important;
+  min-height:0!important;
+  align-content:stretch!important;
+}
+.collection-library-toolbar>.search-field{width:100%!important;max-width:none!important;min-width:0!important}
+
+/* Keep the lunar body recognisable even near new moon without drawing hard lines. */
+#sky-body .sky-moon-halo{fill:#aebcb9;opacity:.075;filter:blur(4px)}
+html[data-theme='light'] #sky-body .sky-moon-halo{fill:#5f6a70;opacity:.09}
+
+/* Minute nudges stay inside the dial but read as secondary controls. */
+.timer-dial-nudge{gap:12px!important;bottom:13px!important}
+.timer-dial-nudge>span{font-size:9px!important;letter-spacing:.08em!important;text-transform:uppercase!important;opacity:.64!important}
+.timer-step-button{width:34px!important;height:34px!important;min-width:34px!important}
+#timer-duration-increase>span::before,#timer-duration-decrease>span::before{content:''!important;position:absolute!important;left:5px!important;right:5px!important;top:50%!important;height:1.5px!important;background:currentColor!important;transform:translateY(-50%)!important;border-radius:2px!important}
+#timer-duration-increase>span::after{content:''!important;position:absolute!important;top:5px!important;bottom:5px!important;left:50%!important;width:1.5px!important;background:currentColor!important;transform:translateX(-50%)!important;border-radius:2px!important}
+#timer-duration-decrease>span::after{display:none!important}
+.timer-step-button>span{position:relative!important;width:14px!important;height:14px!important;font-size:0!important;display:block!important;transform:none!important}
+
+#sky-body .sky-moon-shadow-detail{fill:#131a1d;opacity:.30}
+html[data-theme='light'] #sky-body .sky-moon-shadow-detail{fill:#39444a;opacity:.20}
+@media(max-height:650px){
+  #timer-dialog{max-height:calc(100dvh - 14px)!important}
+  #timer-dialog .timer-content{padding-top:7px!important}
+  #timer-dialog .timer-time-stage,#timer-dialog[data-state='running'] .timer-time-stage,#timer-dialog[data-state='paused'] .timer-time-stage,#timer-dialog[data-state='done'] .timer-time-stage{min-height:250px!important;flex-basis:250px!important;height:250px!important}
+  #timer-dialog .timer-duration-dial{width:232px!important;height:232px!important}
+  #timer-dialog .timer-dial-mark{width:24px!important;height:24px!important;margin:-12px!important;font-size:9px!important;transform:rotate(calc(var(--i,0)*30deg)) translateY(-96px) rotate(calc(var(--i,0)*-30deg))!important}
+  #timer-dialog .timer-dial-face output{font-size:27px!important}
+  #timer-dialog .timer-running{min-height:240px!important}
+  #timer-dialog .timer-orbit{width:238px!important;height:238px!important;max-width:238px!important;max-height:238px!important}
+  #timer-dialog #timer-readout{font-size:52px!important}
+  #timer-dialog .timer-presets{margin:4px 0 8px!important}
+  #timer-dialog .timer-dial-nudge{bottom:8px!important}
+}
+
+/* Tablet calendar: protect the period label by moving compact controls to their own row. */
+@media(min-width:741px) and (max-width:980px){
+  #calendar-view .calendar-heading-combined{
+    grid-template-columns:auto minmax(0,1fr) auto!important;
+    grid-template-areas:'brand title actions' 'toolbar toolbar toolbar'!important;
+    column-gap:14px!important;
+    row-gap:6px!important;
+    align-items:center!important;
+  }
+  #calendar-view .calendar-brand-lockup{grid-area:brand!important}
+  #calendar-view .calendar-title-copy{grid-area:title!important;min-width:0!important;padding:0!important}
+  #calendar-view .calendar-heading-actions{grid-area:actions!important;display:flex!important;align-items:center!important;gap:4px!important}
+  #calendar-view .calendar-toolbar{grid-area:toolbar!important;width:100%!important;justify-self:stretch!important;justify-content:space-between!important;gap:8px!important;padding:2px 0 0!important}
+  #calendar-view .calendar-period-title{font-size:calc(22px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-view-label,#calendar-view .calendar-today-label,#calendar-view .calendar-sidebar-toggle>span:not(.icon),#calendar-view .calendar-manage-label{display:none!important}
+  #calendar-view .calendar-views button,#calendar-view .calendar-navigation .icon-button,#calendar-view .calendar-navigation .secondary-button{width:34px!important;min-width:34px!important;height:34px!important;min-height:34px!important;padding:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important}
+  #calendar-view .calendar-sidebar-toggle,#calendar-view #cal-manage{width:34px!important;min-width:34px!important;height:34px!important;min-height:34px!important;padding:0!important;justify-content:center!important}
+}
+
+/* Low-height timer: keep the dial fully visible; the secondary options can scroll below it. */
+@media(max-height:650px){
+  #timer-dialog .timer-duration-dial{width:210px!important;height:210px!important}
+  #timer-dialog .timer-dial-mark{transform:rotate(calc(var(--i,0)*30deg)) translateY(-86px) rotate(calc(var(--i,0)*-30deg))!important}
+  #timer-dialog .timer-orbit{width:218px!important;height:218px!important;max-width:218px!important;max-height:218px!important}
+}
