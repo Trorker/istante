@@ -1,4 +1,4 @@
-/* Istante v3.11.0 - application and local preferences. */
+/* Istante v3.12.3 - application and local preferences. */
 (function () {
 'use strict';
 const C = window.IstanteCore;
@@ -159,20 +159,27 @@ function applyAppearance(now) {
  document.body.dataset.background=X.photoAvailable()?'photo':['photo','picsum'].includes(settings.background)?'ambient':settings.background;
  document.body.classList.toggle('no-motion',!settings.motion);document.body.classList.toggle('no-clock',!settings.showClock);
  document.body.style.setProperty('--photo-dim',String(settings.photoDim/100));$('#clock-seconds').hidden=!settings.showSeconds;
- $('#mode-label').textContent=settings.mode==='interval'?'Ogni '+settings.interval+' minuti':modeNames[settings.mode];
+ const modeLabel=$('#mode-label');if(modeLabel)modeLabel.textContent=settings.mode==='interval'?'Ogni '+settings.interval+' minuti':modeNames[settings.mode];
  X.update(now);
+}
+function syncIdleGoal(now,goal,parts,value){
+ const track=$('#idle-goal-progress'),fill=$('#idle-goal-progress-fill'),count=$('#idle-goal-countdown');if(!track||!fill||!count)return;
+ if(!goal){$('#idle-goal-label').textContent='Conto alla rovescia';$('#idle-goal-title').textContent='Nessun traguardo';$('#idle-goal-progress-value').textContent='';fill.style.width='0%';track.setAttribute('aria-valuenow','0');track.setAttribute('aria-valuetext','Nessun traguardo configurato');count.hidden=true;return;}
+ count.hidden=false;$('#idle-goal-label').textContent=goal.done?'Traguardo raggiunto':goal.waiting?'Inizia presto':'Il prossimo capitolo';$('#idle-goal-title').textContent=goal.title;$('#idle-goal-progress-value').textContent=value+'%';fill.style.width=goal.progress.toFixed(3)+'%';track.setAttribute('aria-valuenow',goal.progress.toFixed(1));track.setAttribute('aria-valuetext',value+' per cento');['idle-goal-days','idle-goal-hours','idle-goal-minutes'].forEach((id,i)=>{$('#'+id).textContent=pad(parts[i].value);});
 }
 function syncGoal(now, force) {
  const stamp = now.getFullYear()+':'+now.getMonth()+':'+now.getDate()+':'+now.getHours()+':'+now.getMinutes();
  if (stamp === lastGoalMinute && !force) return; lastGoalMinute = stamp;
- const goal = C.getGoal(now,settings); $('#goal-strip').hidden = !goal; if (!goal) return;
+ const goal = C.getGoal(now,settings),strip=$('#goal-strip'),progress=strip.querySelector('.goal-progress'),countdown=$('#countdown');strip.hidden=false;strip.classList.toggle('is-empty',!goal);
+ if(!goal){$('#goal-label').textContent='Conto alla rovescia';$('#goal-title').textContent='Nessun traguardo';countdown.hidden=true;progress.hidden=true;syncIdleGoal(now,null,null,'');return;}
+ countdown.hidden=false;progress.hidden=false;
  $('#goal-title').textContent = goal.title; const parts=window.IstanteCompanion.goalParts(now,goal.end);['goal-days','goal-hours','goal-minutes'].forEach((id,i)=>{ $('#'+id).textContent=pad(parts[i].value);$('#goal-unit'+(i+1)).textContent=parts[i].unit;});
  $('#goal-label').textContent = goal.done ? 'Traguardo raggiunto' : goal.waiting ? 'Il percorso deve ancora iniziare' : 'Il prossimo capitolo';
  $('#progress-label').textContent = goal.done ? 'Hai raggiunto la tua data' : goal.waiting ? 'Inizia il '+goalDateFormatter.format(goal.start) : settings.goalMode === 'year' ? 'Il percorso di quest\'anno' : 'Il tuo percorso';
  const value = goal.progress.toLocaleString('it-IT',{minimumFractionDigits:1,maximumFractionDigits:1});
  $('#progress-value').textContent = value+'%'; $('#progress-fill').style.width = goal.progress.toFixed(3)+'%';
  $('#goal-progress').setAttribute('aria-valuenow',goal.progress.toFixed(1)); $('#goal-progress').setAttribute('aria-valuetext',value+' per cento');
- $('#goal-date').textContent = goalDateFormatter.format(goal.end)+' \u00b7 '+timeFormatter.format(goal.end);
+ $('#goal-date').textContent = goalDateFormatter.format(goal.end)+' \u00b7 '+timeFormatter.format(goal.end);syncIdleGoal(now,goal,parts,value);
 }
 function tick(force) {
  const now = new Date(), hhmm = pad(now.getHours())+':'+pad(now.getMinutes());
@@ -187,10 +194,13 @@ function tick(force) {
 function startClock() { clearTimeout(clockTimer); tick(false); if (!document.hidden) clockTimer = setTimeout(startClock,1000-Date.now()%1000+15); }
 function updateLibraryCounts() {
  const count = phrases.filter(p=>favorites.has(p.text)).length;
- $('#collection-count').textContent = phrases.length; $('#all-count').textContent = phrases.length; $('#favorites-count').textContent = count;
+ const setText=(id,value)=>{const el=$('#'+id);if(el)el.textContent=String(value);};
+ setText('collection-count',phrases.length);
+ setText('all-count',phrases.length);
+ setText('favorites-count',count);
  const progress=phraseHistory.stats(phrases);
- $('#library-subtitle').textContent=phrases.length.toLocaleString('it-IT')+' pensieri. '+(customPayload?'La tua raccolta. ':'')+'Casuale senza ripetizioni: '+progress.seen+' / '+progress.total+' in questo ciclo.';
- $('#restore-phrases').hidden = !customPayload;
+ setText('library-subtitle',phrases.length.toLocaleString('it-IT')+' pensieri. '+(customPayload?'La tua raccolta. ':'')+'Casuale senza ripetizioni: '+progress.seen+' / '+progress.total+' in questo ciclo.');
+ const restore=$('#restore-phrases');if(restore)restore.hidden=!customPayload;
 }
 function toggleFavorite(phrase) {
  if (favorites.has(phrase.text)) favorites.delete(phrase.text); else favorites.add(phrase.text);
@@ -233,7 +243,7 @@ function readDraftSettings(){
 function sectionSummaries(){
  const f=$('#settings-form').elements,choice=name=>f[name]?.selectedOptions?.[0]?.textContent||'';
  const themes={dark:'Notte',light:'Carta',auto:'Tema del dispositivo',solar:'Segui il sole'};
- const data={appearance:(themes[f.theme.value]||'Tema')+' \u00b7 '+choice('background'),phrases:(modeNames[f.mode.value]||choice('mode'))+(f.typing.checked?' \u00b7 Macchina da scrivere':''),sky:$('#place-name').textContent,effects:f.effectsEnabled.checked?choice('effect')+(f.weatherFX.value!=='off'?' \u00b7 '+choice('weatherFX'):''):'Disattivati',radio:(f.radioEnabled.checked?'Radio':'')+(f.radioEnabled.checked&&f.ambientEnabled.checked?' \u00b7 ':'')+(f.ambientEnabled.checked?'Ambiente offline':!f.radioEnabled.checked?'Player nascosto':''),timer:f.timerEnabled.checked?f.timerMinutes.value+' min \u00b7 '+choice('timerAction'):'Disattivato',goal:choice('goalMode'),calendar:f.calendarEnabled.checked?(f.calendarUpcoming.checked?'Calendario e prossimo impegno':'Calendario attivo'):'Disattivato',screen:f.hideControls.checked?'Comandi a scomparsa':'Comandi sempre visibili'};
+ const fontNames={small:'Piccolo',medium:'Medio',large:'Grande'};const data={appearance:(themes[f.theme.value]||'Tema')+' \u00b7 '+choice('background')+' \u00b7 '+(fontNames[f.fontSize.value]||'Medio'),phrases:(modeNames[f.mode.value]||choice('mode'))+(f.typing.checked?' \u00b7 Macchina da scrivere':''),sky:$('#place-name').textContent,effects:f.effectsEnabled.checked?choice('effect')+(f.weatherFX.value!=='off'?' \u00b7 '+choice('weatherFX'):''):'Disattivati',radio:(f.radioEnabled.checked?'Radio':'')+(f.radioEnabled.checked&&f.ambientEnabled.checked?' \u00b7 ':'')+(f.ambientEnabled.checked?'Ambiente offline':!f.radioEnabled.checked?'Player nascosto':''),timer:f.timerEnabled.checked?f.timerMinutes.value+' min \u00b7 '+choice('timerAction'):'Disattivato',goal:choice('goalMode'),calendar:f.calendarEnabled.checked?(f.calendarUpcoming.checked?'Calendario e prossimo impegno':'Calendario attivo'):'Disattivato',screen:f.hideControls.checked?'Comandi a scomparsa':'Comandi sempre visibili'};
  for(const [key,value]of Object.entries(data)){const el=$('[data-summary="'+key+'"]');if(el)el.textContent=value;}
 }
 function expandSection(target){
@@ -298,6 +308,8 @@ function setLibraryView(mode='phrases') {
  dialog.dataset.libraryView=collectionsMode?'collections':'phrases';
  $('#collection-library-inline').hidden=!collectionsMode;
  $('#collection-library-toggle').setAttribute('aria-expanded',String(collectionsMode));
+ $('#collection-library-toggle').setAttribute('aria-pressed',String(collectionsMode));
+ $('#library-phrases-tab')?.setAttribute('aria-pressed',String(!collectionsMode));
  if(collectionsMode){collections.render();requestAnimationFrame(()=>$('#collection-search')?.focus({preventScroll:true}));}
  else{renderLibrary(true);requestAnimationFrame(()=>$('#phrase-search')?.focus({preventScroll:true}));}
 }
@@ -316,6 +328,7 @@ $$('dialog').forEach(dialog=>{
 });
 $$('[data-open]').forEach(b=>b.addEventListener('click',()=>openDialog(b.dataset.open)));
 $('#collection-library-toggle')?.addEventListener('click',()=>setLibraryView('collections'));
+$('#library-phrases-tab')?.addEventListener('click',()=>setLibraryView('phrases'));
 $('#collection-library-back')?.addEventListener('click',()=>setLibraryView('phrases'));
 $('#collection-library-done')?.addEventListener('click',()=>setLibraryView('phrases'));
 document.addEventListener('istante:collection-selected',()=>{if($('#library-dialog')?.open)setLibraryView('phrases');});

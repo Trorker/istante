@@ -1,5 +1,57 @@
 # Changelog
 
+## 3.12.3 — 9 settembre 2026
+
+- corretta definitivamente la sequenza della fascia: **Meteo · Conto alla rovescia · Calendario**;
+- larghezza desktop portata all'**80% del viewport** con proporzioni interne fisse **20% / 60% / 20%**;
+- ridotta l'altezza e rimossi gli elementi da card per rendere la fascia normale più leggera e meno simile a una dashboard gestionale;
+- introdotta una **seconda fascia dedicata all'inattività**: la fascia normale scompare dopo il timeout e viene sostituita da un riepilogo molto più sottile;
+- riepilogo inattivo: meteo essenziale con alba/tramonto, traguardo con descrizione breve, percentuale, barra di avanzamento e giorni/ore/minuti, prossimo evento sintetico;
+- il prossimo evento per la fascia inattiva viene calcolato quando il calendario è attivo anche se il riquadro prossimo evento della vista normale è disabilitato;
+- timer mantenuto separato e centrato sopra la fascia;
+- corretta la struttura della shell affinché timer, fascia e footer appartengano allo stesso viewport e la sostituzione attiva/inattiva sia stabile;
+- aggiunta la release `docs/release/v3.12.3.md` e riallineati versione, worker, documentazione e cache offline.
+
+## 3.12.2 — 9 settembre 2026
+
+- ridisegnata la parte bassa come fascia unica a tre zone: Meteo, Conto alla rovescia e Calendario;
+- timer riportato al centro sopra la fascia;
+- la fascia informativa resta visibile in inattività mentre la toolbar dei comandi scompare;
+- sostituita la vecchia scala testo con il selettore Piccolo / Medio / Grande;
+- aumento ulteriore della tipografia del calendario, comprese viste mese, anno, settimana e agenda;
+- aggiunto un riepilogo calendario utile anche quando il prossimo impegno non è mostrato;
+- corretto il focus da tastiera del logo, che ora comprende anche la tagline;
+- aggiunta la release `docs/release/v3.12.2.md` e riallineati riferimenti e cache offline.
+
+## 3.12.1 — 9 settembre 2026
+
+- ricomposta la parte bassa della dashboard: prossimo evento e timer a sinistra, Prossimo capitolo al centro, meteo e astronomia a destra;
+- rimosso dalla dashboard il collegamento permanente “Mattina & sera”; la modalità delle frasi resta configurabile nelle impostazioni;
+- meteo ridisegnato con temperatura e condizione in primo piano, località come metadato e alba/tramonto/fase lunare su un secondo livello compatto;
+- prossimo evento reso editoriale e leggibile, senza card pesante e senza occupare il centro della hero;
+- tipografia del calendario aumentata in Mese, Anno, Settimana e Agenda, compresi tablet e telefoni landscape;
+- su schermi bassi gli eventi del mese tornano leggibili come testo invece di essere compressi in barre da pochi pixel;
+- vista Anno dei display landscape bassi portata a tre colonne con scroll interno, privilegiando la leggibilità rispetto al mostrare tutti i mesi in una sola schermata;
+- corretto il caso in cui il calendario continuava a riservare la colonna delle sorgenti anche quando la sidebar era nascosta;
+- aggiornate le regole di `VISIONE-E-DESIGN.md` per gerarchia degli angoli e leggibilità minima.
+
+## 3.12.0 — 9 settembre 2026
+
+- corretto il crash all’avvio della biblioteca causato dal vecchio `#collection-count` rimosso dalla toolbar;
+- `updateLibraryCounts()` ora aggiorna in modo sicuro solo gli elementi effettivamente presenti nel DOM;
+- audit degli ID usati dai moduli principali per evitare regressioni analoghe;
+- riallineati versione, worker calendario, backup, lettore documenti e cache offline;
+- nessun cambiamento alla disposizione grafica consolidata nella v3.11.1.
+
+## 3.11.1 — 9 settembre 2026
+
+- Dashboard più ariosa: meteo/alba/tramonto/fase lunare nell’angolo basso destro; timer e prossimo evento nell’angolo basso sinistro.
+- Biblioteca spostata nella toolbar centrale come sola icona e ridisegnata come un’unica modale con viste Frasi/Raccolte.
+- Prossimo evento reso leggibile senza occupare il centro della hero.
+- Nuovo sistema di tooltip personalizzati coerenti con i temi Carta/Notte.
+- Timer: nuova icona dedicata al Silenzio.
+- Calendario: tipografia aumentata mantenendo la geometria responsive della 3.11.
+
 ## 3.11.0 — Calendario più maturo, una sola biblioteca
 
 - vista **Mese**: quando gli eventi eccedono lo spazio disponibile compare `altri eventi`, che apre direttamente la vista del giorno;

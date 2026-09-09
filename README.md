@@ -1,6 +1,6 @@
 # Istante
 
-**Versione corrente: 3.11.0**  
+**Versione corrente: 3.12.3**  
 **Un momento, per te.**  
 Un progetto di **Ruslan Dzyuba**.
 
@@ -16,9 +16,9 @@ il tuo prossimo capitolo, musica lo-fi o suoni rilassanti, cielo e meteo,
 un timer per una pausa e, se lo desideri, il calendario. Tutto resta nello
 stesso linguaggio visivo essenziale di Istante.
 
-## Il cuore della 3.11
+## Il cuore della 3.12
 
-La **3.11 resta costruita sul design della 3.8.0**, che torna a essere la
+La **3.12 resta costruita sul design della 3.8.0**, che torna a essere la
 base grafica: superfici più pulite, tipografia più equilibrata, controlli
 coerenti, gerarchie più semplici e meno elementi che competono fra loro.
 Le funzioni introdotte in seguito sono state mantenute dove utili, ma riportate
@@ -69,7 +69,7 @@ la configurazione disponibile.
 Il calendario è **opzionale** e vive nella stessa istanza della dashboard: su
 dispositivi touch puoi passare alla vista calendario con uno swipe, oppure usare
 i controlli dedicati. Sono disponibili viste mese, settimana, anno, giorno e
-agenda, con fino a più calendari ICS e festività italiane facoltative.
+agenda, con fino a 8 calendari ICS e festività italiane facoltative.
 
 La vista torna alla dashboard dopo un periodo configurabile di inattività.
 Il prossimo impegno può comparire in modo discreto sulla hero. Nella vista mese, quando un giorno contiene più eventi di quanti possano essere mostrati con calma, compare **“altri eventi”**: apre direttamente quel giorno invece di comprimere il calendario. I feed ICS sono
@@ -110,7 +110,7 @@ o riaperta più avanti.
 - `data/`: frasi, catalogo raccolte e stazioni predefinite.
 - `README.md`: descrizione del progetto e release corrente.
 - `CHANGELOG.md`: storico delle modifiche.
-- `docs/release/v3.11.0.md`: note dettagliate di questa release.
+- `docs/release/v3.12.3.md`: note dettagliate di questa release.
 - `docs/LICENZA.md`: licenza non commerciale con attribuzione obbligatoria.
 - `docs/TERZE-PARTI.md`: dipendenze, servizi e attribuzioni.
 - `docs/VISIONE-E-DESIGN.md`: valori, regole grafiche e criteri responsive da mantenere nelle release future.

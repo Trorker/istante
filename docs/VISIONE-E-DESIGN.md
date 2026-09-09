@@ -1,6 +1,6 @@
 # Istante — Visione, valori e sistema di design
 
-**Versione di riferimento:** 3.11.0  
+**Versione di riferimento:** 3.12.3  
 **Sito ufficiale:** https://istante.ruslan-dzyuba.it/
 
 ## 1. Che cos'è Istante
@@ -57,6 +57,22 @@ Ordine visivo da proteggere:
 
 Nessun nuovo elemento deve competere con ora e frase.
 
+### Fascia informativa bassa
+
+Il centro della dashboard appartiene a **ora e pensiero**. Le informazioni contestuali vivono in una fascia bassa unica e molto leggera, non in card laterali indipendenti.
+
+Su desktop la fascia occupa circa **l'80% del viewport** ed è suddivisa in modo stabile:
+
+- **20% Meteo:** temperatura/condizione e, come secondo livello, alba e tramonto;
+- **60% Conto alla rovescia:** è il contenuto dominante della fascia, con titolo, tempo residuo e avanzamento;
+- **20% Calendario:** un solo prossimo evento o un accesso sintetico al calendario.
+
+La fascia attiva deve sembrare una riga editoriale: sfondo trasparente, separatori sottili, nessuna ombra, nessun bordo da card. Il timer resta indipendente e centrato sopra di essa.
+
+Dopo il timeout di inattività la fascia attiva **non viene semplicemente ridotta**: viene sostituita da una seconda fascia ancora più sottile. In questa modalità restano soltanto segnali glanceable: meteo + alba/tramonto, titolo breve del traguardo + percentuale/barra + tempo residuo essenziale, prossimo evento. I comandi e i metadati non necessari scompaiono.
+
+Su schermi stretti si può ricomporre la fascia, ma si preservano sempre l'ordine **Meteo → Conto alla rovescia → Calendario** e la priorità del traguardo. Prima si eliminano metadati secondari, poi si riduce la tipografia; non si torna a testi illeggibili solo per far entrare tutto.
+
 ## 5. Calendario
 
 Il calendario è una **vista virtuale della stessa istanza**, non un'altra applicazione. Deve mantenere logo, frase “Un momento, per te.”, colori, tipografia e ritmo di Istante.
@@ -66,12 +82,14 @@ Il calendario è una **vista virtuale della stessa istanza**, non un'altra appli
 - Su schermi piccoli o con poco spazio è consentito lo scroll **interno al contenuto calendario**, mai lo scroll orizzontale dell'intera applicazione.
 - Anno, mese, settimana, giorno e agenda devono avere la stessa gerarchia.
 - Comandi del periodo, cambio vista e gestione calendari appartengono a **un’unica barra compatta**; non si impilano intestazioni tecniche separate. **Oggi** e il cambio vista stanno sul lato destro, come strumenti, non come contenuto principale.
-- Quando lo spazio scarseggia si semplificano font, eventi e sorgenti prima di ridurre il calendario a una miniatura illeggibile. Nella vista mese gli eventi in eccesso diventano un collegamento **“altri eventi”** verso il giorno: non si comprimono indefinitamente le righe.
+- Quando lo spazio scarseggia si semplificano eventi e sorgenti, ma **non** si riduce il calendario a una miniatura illeggibile: la leggibilità tipografica viene prima del tentativo di mostrare tutto contemporaneamente. Nella vista mese gli eventi in eccesso diventano un collegamento **“altri eventi”** verso il giorno: non si comprimono indefinitamente le righe.
 - I calendari condivisi sono in sola lettura e visivamente secondari rispetto agli eventi.
 
 ## 6. Biblioteca
 
 La biblioteca deve ricordare una raccolta editoriale, non uno store. **Frasi e gestione delle raccolte condividono la stessa modale**: non si apre un secondo dialog sopra al primo. La transizione tra elenco frasi e scaffale raccolte è una vista interna dello stesso spazio.
+
+L’accesso alla biblioteca vive nella toolbar principale come **icona**, senza etichetta permanente: il significato viene chiarito dal tooltip personalizzato e dall’`aria-label`.
 
 Regole:
 
@@ -89,6 +107,11 @@ Le impostazioni sono divise per significato, tramite accordion. Una sezione aper
 Ogni controllo deve seguire uno di questi pattern: toggle, select custom, campo testo/data/ora custom, slider, gruppo segmentato solo quando rappresenta realmente alternative equivalenti. Le note devono essere brevi e occupare tutta la larghezza quando spiegano l'intero gruppo.
 
 Ricerca, selettori e liste devono riutilizzare la stessa geometria. Uno stato selezionato si indica con un accento discreto sul lato o sul testo; **non** si aggiunge un indicatore sulla stessa zona riservata ad azioni come Preferito, Elimina o Altro.
+
+
+### Tooltip
+
+I tooltip devono essere una superficie di Istante: carta/vetro leggermente sfocato, bordo sottile, testo breve, angoli morbidi e una piccola punta direzionale. Non usare i balloon neri predefiniti del browser come parte dell’esperienza visiva. Su touch il tooltip non deve bloccare il gesto né richiedere un tap aggiuntivo per chiudersi.
 
 ## 8. Animazioni e prestazioni
 
