@@ -1,6 +1,6 @@
 # Istante
 
-**Versione corrente: 3.13.5**  
+**Versione corrente: 3.13.6**  
 **Un momento, per te.**  
 Un progetto di **Ruslan Dzyuba**.
 
@@ -57,7 +57,7 @@ riempire lo schermo con un numero enorme di giorni.
 Il mini player supporta radio lo-fi e stazioni personali, preferiti,
 programmazioni multiple e scelta casuale. Dalla gestione delle stazioni puoi anche **spostare una radio più in alto o più in basso** nell’ordine del catalogo. Sui dispositivi touch le gesture audio sono attive di default nella sola zona destra della Dashboard: un doppio tap alterna Play/Pausa e uno swipe verticale modifica il volume di **10 punti esatti**. Le gesture possono essere disattivate dalle Impostazioni e non vengono mai applicate nel Calendario. In alternativa puoi usare il generatore audio offline: rumore rosa, marrone, pioggia o vento sintetizzati con Web Audio, senza file audio da scaricare.
 
-Il timer rimane volutamente semplice: la durata principale si sceglie su un **quadrante circolare tipo orologio** da 1 a 60 minuti e può essere rifinita di un minuto alla volta con i pulsanti **− / +** esterni al cerchio. Per questa prima release pubblica il Timer usa una sola esperienza: una **modale** ottimizzata per mouse e touch. Durante il conto alla rovescia l’anello si riempie seguendo il tempo trascorso, un dot compie un giro ogni minuto seguendo i secondi e un alone morbido respira attorno al cerchio. Silenzio, radio o suono rilassante restano configurabili senza appesantire la schermata principale.
+Il timer rimane volutamente semplice: la durata principale si sceglie su un **quadrante circolare tipo orologio** da 1 a 60 minuti e può essere rifinita di un minuto alla volta con i pulsanti **− / +** esterni al cerchio. Per questa prima release pubblica il Timer usa una sola esperienza: una **modale** ottimizzata per mouse e touch. Durante il conto alla rovescia l’anello si riempie seguendo il tempo trascorso, un dot compie un giro ogni minuto seguendo i secondi e un alone più evidente respira attorno al cerchio. Non c’è una seconda progress bar: tutto l’avanzamento vive nel quadrante. Silenzio, radio o suono rilassante restano configurabili senza appesantire la schermata principale.
 
 ## Calendario, se ti serve
 

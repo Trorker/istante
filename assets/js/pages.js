@@ -22,7 +22,7 @@ function create({getSettings,calendar,onChange}){
   home.inert=isCalendar;home.setAttribute('aria-hidden',String(isCalendar));cal.inert=!isCalendar;cal.setAttribute('aria-hidden',String(!isCalendar));syncDots();
   if(focus&&!matchMedia('(pointer:coarse)').matches)focusFor(next)?.focus({preventScroll:true});
   onChange();document.dispatchEvent(new CustomEvent('istante:view-change',{detail:{view:next,previous:prev}}));activity();
-  transition=setTimeout(()=>{if(current!=='calendar')cal.hidden=true;},getSettings().motion?300:0);
+  const transitionDelay=(preview||document.body.classList.contains('is-touring'))?0:(getSettings().motion?300:0);if(!isCalendar&&transitionDelay===0)cal.hidden=true;else transition=setTimeout(()=>{if(current!=='calendar')cal.hidden=true;},transitionDelay);
  }
  function apply(){const s=getSettings();$('calendar-open').hidden=!s.calendarEnabled;$('timer-open').hidden=!s.timerEnabled;syncDots();calendar.apply();if(current==='calendar'&&!calendarAvailable()){const d=document.querySelector('dialog[open]');if(d)d.addEventListener('close',()=>show('dashboard'),{once:true});else show('dashboard');}arm();if(!initialized){initialized=true;if(location.hash==='#calendario')setTimeout(()=>{if(calendarAvailable())show('calendar');},900);}}
  $('calendar-open').addEventListener('click',()=>show('calendar',true));

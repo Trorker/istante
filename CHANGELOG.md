@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.13.6 — 10 settembre 2026
+
+- Timer: alone respirante reso più evidente; eliminata la progress bar separata sotto il cerchio, lasciando l’avanzamento soltanto sull’anello circolare.
+- Timer: il selettore non usa più una lancetta dal centro; la durata scelta è indicata da un singolo punto circolare sul quadrante. All’avvio scompaiono completamente −/+, insieme al testo della durata impostata.
+- Wizard: aggiunto un prossimo evento simulato subito dopo Il prossimo capitolo quando non esiste un appuntamento reale, così la guida mostra anche questa capacità della dashboard.
+- Wizard touch: l’area gesture mostrata è la stessa area reale usata da doppio tap e swipe volume sul lato destro; il contorno è tratteggiato perché è una zona invisibile nell’interfaccia.
+- Wizard Calendario: eliminato il passaggio che evidenziava l’intero calendario; la guida entra direttamente nella vista Anno e passa subito alla spiegazione delle viste.
+- Wizard: Avanti/Indietro resi deterministici. Le simulazioni vengono preparate prima del primo step, le transizioni Dashboard ↔ Calendario vengono sospese e il ritardo di 300 ms della vista Calendario viene azzerato durante la guida, evitando coordinate calcolate mentre gli elementi sono ancora in movimento.
+
 ## 3.13.5 — 10 settembre 2026
 
 - Wizard: resta una presentazione del prodotto; l’unica configurazione consentita durante la guida è la posizione. Sequenza aggiornata fino a Calendario, viste e gestione calendari, con step gesture mostrato solo sui dispositivi touch.
