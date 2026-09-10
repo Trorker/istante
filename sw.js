@@ -2,7 +2,7 @@
 'use strict';
 const VERSION="3.13.11";
 const PREFIX='istante-'+encodeURIComponent(self.registration.scope)+'-';
-const CACHE=PREFIX+VERSION+'-39f6c6e75456';
+const CACHE=PREFIX+VERSION+'-ics-fallback-9f21a7';
 const FILES=[
   {
     "url": "./CHANGELOG.md",
@@ -218,7 +218,7 @@ const FILES=[
   },
   {
     "url": "./assets/js/calendar.js?v=3.13.11",
-    "integrity": "sha256-HyjjOcmQw8jn27X59+kZA+d5QcSmLKpSbH0hwijdYVM="
+    "integrity": "sha256-eSxkZyeWJZSsTtxTRJnONrpb0z5PMnbYVwIpN+Ci3eE="
   },
   {
     "url": "./assets/js/collections.js?v=3.13.11",
@@ -351,10 +351,6 @@ const FILES=[
   {
     "url": "./assets/js/weather-scene.js?v=3.13.11",
     "integrity": "sha256-1d94NsdzeehITi9XR9HJ3UKJ+SIsGxvJtRbMZ8Dd8vA="
-  },
-  {
-    "url": "./calendario.html",
-    "integrity": "sha256-52XlRXDfbT/CHTlrF8s4biTxpOgXbzEyhdIdVyaXGy0="
   },
   {
     "url": "./data/collection-catalog.js?v=3.13.11",
