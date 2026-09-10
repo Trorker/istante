@@ -1,0 +1,113 @@
+/* Istante v3.13.8 - tablet Timer uses the available modal space again. */
+
+/*
+ * v3.13.7 correctly removed the quick-duration row, but its tablet override
+ * kept the old compact dial footprint. On portrait/coarse devices this left
+ * too much empty space in the lower half of the dialog. Reinvest that room in
+ * the dial and keep the whole composition scroll-free.
+ */
+@media (pointer:coarse) and (min-width:600px) and (max-width:1100px) and (min-height:701px){
+  #timer-dialog{
+    width:min(680px,calc(100vw - 20px))!important;
+    max-height:calc(100dvh - 18px)!important
+  }
+  #timer-dialog .panel-head{
+    padding:20px 24px 15px!important
+  }
+  #timer-dialog .timer-content,
+  #timer-dialog[data-state='running'] .timer-content,
+  #timer-dialog[data-state='paused'] .timer-content,
+  #timer-dialog[data-state='done'] .timer-content{
+    min-height:0!important;
+    height:auto!important;
+    padding:10px 24px 8px!important;
+    overflow:hidden!important
+  }
+  #timer-dialog .timer-time-stage,
+  #timer-dialog[data-state='running'] .timer-time-stage,
+  #timer-dialog[data-state='paused'] .timer-time-stage,
+  #timer-dialog[data-state='done'] .timer-time-stage{
+    height:432px!important;
+    min-height:432px!important;
+    flex:0 0 432px!important
+  }
+  #timer-dialog .timer-range-picker.timer-dial-picker{
+    gap:11px!important
+  }
+  #timer-dialog .timer-dial-shell{
+    --dial-size:390px;
+    --dial-radius:-163px;
+    --timer-side:46px;
+    column-gap:18px!important
+  }
+  #timer-dialog .timer-dial-mark{
+    width:30px!important;
+    height:30px!important;
+    margin:-15px!important;
+    font-size:11px!important
+  }
+  #timer-dialog .timer-dial-face output{
+    font-size:clamp(38px,6.1vw,48px)!important
+  }
+  #timer-dialog{
+    --timer-orbit-size:390px
+  }
+  #timer-dialog .timer-orbit{
+    --timer-orbit-dot-origin:199px
+  }
+  #timer-dialog .timer-session-options{
+    min-height:0!important;
+    margin:8px 0 0!important;
+    padding:8px 0 4px!important
+  }
+  #timer-dialog .timer-sound-segments button{
+    min-height:52px!important;
+    font-size:12px!important
+  }
+  #timer-dialog .timer-actions{
+    min-height:72px!important;
+    padding:12px 24px max(12px,env(safe-area-inset-bottom))!important
+  }
+  #timer-dialog .timer-actions>.primary-button{
+    min-height:52px!important;
+    font-size:13px!important
+  }
+}
+
+/* Medium-height portrait tablets still get a generous dial without scrolling. */
+@media (pointer:coarse) and (min-width:600px) and (max-width:1100px) and (min-height:621px) and (max-height:700px) and (orientation:portrait){
+  #timer-dialog{
+    width:min(640px,calc(100vw - 16px))!important
+  }
+  #timer-dialog .timer-content,
+  #timer-dialog[data-state='running'] .timer-content,
+  #timer-dialog[data-state='paused'] .timer-content,
+  #timer-dialog[data-state='done'] .timer-content{
+    min-height:0!important;
+    height:auto!important;
+    overflow:hidden!important
+  }
+  #timer-dialog .timer-time-stage,
+  #timer-dialog[data-state='running'] .timer-time-stage,
+  #timer-dialog[data-state='paused'] .timer-time-stage,
+  #timer-dialog[data-state='done'] .timer-time-stage{
+    height:300px!important;
+    min-height:300px!important;
+    flex:0 0 300px!important
+  }
+  #timer-dialog .timer-dial-shell{
+    --dial-size:276px;
+    --dial-radius:-113px;
+    --timer-side:40px
+  }
+  #timer-dialog{
+    --timer-orbit-size:276px
+  }
+  #timer-dialog .timer-orbit{
+    --timer-orbit-dot-origin:142px
+  }
+  #timer-dialog .timer-session-options{
+    min-height:0!important;
+    margin-top:4px!important
+  }
+}

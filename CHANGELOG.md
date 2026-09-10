@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.13.8 — 10 settembre 2026
+
+- Timer tablet: recuperato lo spazio liberato da **Durate rapide** per ingrandire il quadrante invece di comprimere il contenuto.
+- Timer tablet: modale più larga e composizione ridistribuita, con quadrante, testi e controlli audio più grandi ma senza reintrodurre lo scroll.
+- Timer: rimossa la vecchia altezza minima che lasciava troppo spazio vuoto tra le opzioni audio e il footer sui tablet portrait.
+
 ## 3.13.7 — 10 settembre 2026
 
 - Timer: respiro reso nettamente più visibile con un alone radiale che non viene tagliato dal contenitore della modale; colori derivati dall’accento del tema con una sfumatura calda coerente con la palette di Istante.
