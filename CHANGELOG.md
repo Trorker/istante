@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.13.11 — 10 settembre 2026
+
+- Timer tablet landscape: la modale usa quasi tutta la larghezza del viewport touch, eliminando il vecchio limite da 760/800 px e sfruttando meglio 1024/1280/1366/1368 px.
+- Timer: **Silenzio / Radio / Suono relax** restano attivi anche a countdown avviato o in pausa; il cambio viene applicato subito alla sessione corrente senza riavviare il timer.
+
 ## 3.13.10 — 10 settembre 2026
 
 - Timer avviato: dentro il cerchio resta soltanto il countdown numerico `00:00`, senza etichetta testuale.

@@ -84,17 +84,46 @@
    else if(s.timerAction==='silent'){result('Il tuo momento \u00e8 terminato. Prenditi ancora un respiro.');}
    else {const played=playSound(s.timerSound,s.timerVolume);result(played?'Il tuo momento \u00e8 terminato. Prenditi ancora un respiro.':'Il tempo \u00e8 terminato. Tocca per ascoltare l\u2019avviso.',!played);}
   }
+  function timerDuringAvailable(kind){
+   return kind==='silent'||kind==='radio'&&getSettings().radioEnabled&&!!radio.station().id||kind==='ambient'&&getSettings().ambientEnabled;
+  }
+  function selectTimerDuring(kind){
+   if(!timerDuringAvailable(kind)||state.state==='done')return;
+   if(state.state==='idle'){draftOptions=T.timerOptions({...draftOptions,timerDuring:kind});render();return;}
+   if(kind===timerSettings().timerDuring&&!duringSuppressed)return;
+   // A choice made from the timer is explicit: it replaces the source owned by
+   // this timer, persists with the running session and takes effect immediately.
+   stopDuring();
+   duringSuppressed=false;
+   if(kind==='silent'){
+    // Silence is an explicit live choice from the timer: stop either audible
+    // source now, even if it was already playing before this timer.
+    ambient.stop(true);
+    if(radio.getState().wantsPlay)radio.stop('paused','Timer in silenzio.');
+    duringOwned=false;ambientOwned=false;scheduleOwned=false;
+    if(T.windowAt(new Date(),getSettings()))attempted='active';
+   }
+   state.options=T.timerOptions({...timerSettings(),timerDuring:kind});
+   save();
+   hint('');
+   if(state.state==='running'){
+    void unlockSound();
+    if(kind==='radio')void radio.unlock();
+    startDuring();
+   }
+   render();
+  }
   function renderOptions(active){
    const s=timerSettings();document.querySelectorAll('[data-timer-during]').forEach(b=>{
-    const kind=b.dataset.timerDuring,available=kind==='silent'||kind==='radio'&&getSettings().radioEnabled&&!!radio.station().id||kind==='ambient'&&getSettings().ambientEnabled;
-    b.disabled=active||!available;b.setAttribute('aria-pressed',String(kind===s.timerDuring));
-    b.dataset.istanteTooltip=!available?'Attiva questa sorgente nelle impostazioni.':active?'Scelta confermata per questo timer.':kind==='ambient'?ambient.label():kind==='radio'?radio.station().name:'Nessun avvio automatico';
+    const kind=b.dataset.timerDuring,available=timerDuringAvailable(kind),finished=state.state==='done';
+    b.disabled=finished||!available;b.setAttribute('aria-pressed',String(kind===s.timerDuring));
+    b.dataset.istanteTooltip=!available?'Attiva questa sorgente nelle impostazioni.':finished?'Avvia un nuovo timer per scegliere l\u2019audio.':active?'Puoi cambiare sorgente anche durante il timer.':kind==='ambient'?ambient.label():kind==='radio'?radio.station().name:'Nessun avvio automatico';
    });$('#timer-dialog').dataset.state=state.state;
    const source=$('#timer-source-description');
    const note=s.timerDuring==='ambient'?ambient.label()+' \u00b7 disponibile offline':s.timerDuring==='radio'?radio.station().name+' \u00b7 richiede Internet':'Solo il timer. Un audio gi\u00e0 avviato a mano non viene interrotto.';
    if(source&&source.textContent!==note)source.textContent=note;
   }
-  document.querySelectorAll('[data-timer-during]').forEach(b=>b.addEventListener('click',()=>{if(state.state!=='idle')return;draftOptions=T.timerOptions({...draftOptions,timerDuring:b.dataset.timerDuring});render();}));
+  document.querySelectorAll('[data-timer-during]').forEach(b=>b.addEventListener('click',()=>selectTimerDuring(b.dataset.timerDuring)));
   function render(){
    const s=getSettings(),ms=T.remaining(state),active=state.state!=='idle';$('#timer-open').hidden=!s.timerEnabled;$('#timer-chip').hidden=!s.timerEnabled||!active;$('#timer-chip').dataset.state=state.state;
    $('#timer-duration').hidden=active;const timerPresets=$('#timer-presets');if(timerPresets)timerPresets.hidden=active;document.querySelectorAll('[data-duration]').forEach(b=>b.disabled=active);$('#timer-running').hidden=!active;$('#timer-session-options').hidden=false;$('#timer-reset').hidden=!active;$('#timer-dialog').dataset.state=state.state;$('#timer-reset').textContent=state.state==='done'?'Chiudi':'Annulla';
