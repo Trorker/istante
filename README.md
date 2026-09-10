@@ -1,6 +1,6 @@
 # Istante
 
-**Versione corrente: 3.14.0**  
+**Versione corrente: 3.14.1**  
 **Un momento, per te.**  
 Un progetto di **Ruslan Dzyuba**.
 
@@ -109,7 +109,7 @@ Su desktop con mouse o trackpad puoi attivare un **cursore personalizzato discre
 - `data/`: frasi, catalogo raccolte e stazioni predefinite.
 - `README.md`: descrizione del progetto e release corrente.
 - `CHANGELOG.md`: storico delle modifiche.
-- `docs/release/v3.14.0.md`: note dettagliate di questa release.
+- `docs/release/v3.14.1.md`: note dettagliate di questa release.
 - `docs/LICENZA.md`: licenza non commerciale con attribuzione obbligatoria.
 - `docs/TERZE-PARTI.md`: dipendenze, servizi e attribuzioni.
 - `docs/VISIONE-E-DESIGN.md`: valori, regole grafiche e criteri responsive da mantenere nelle release future.

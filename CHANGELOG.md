@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.14.1 — 10 settembre 2026
+
+- **Calendario telefono corretto:** eliminato il conflitto legacy che nascondeva le etichette Anno / Mese / Settimana / Giorno / Agenda senza fornire icone sostitutive.
+- **Telefono verticale:** nuova testata a tre livelli, mese con indicatori evento, settimana in lista, giorno e agenda ridimensionati sul viewport reale.
+- **Telefono orizzontale:** testata a due righe, settimana a 7 colonne e vista Giorno a due colonne per sfruttare la larghezza senza consumare altezza.
+- **Drawer e modali:** Le tue giornate resta un drawer da destra; gestione calendari e dettaglio evento ora hanno dimensioni dedicate ai telefoni portrait/landscape.
+
 ## 3.14.0 — 10 settembre 2026
 
 - **Revisione responsive per produzione:** introdotto un indice di viewport basato su `visualViewport.width / visualViewport.height`, con composizioni esplicite per telefono verticale/orizzontale, tablet e desktop.
