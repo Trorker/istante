@@ -1,0 +1,451 @@
+/* Istante 3.14.0 - viewport composition layer.
+   Loaded after istante.css. The visual language is unchanged: this file only
+   decides how the validated components compose at different aspect ratios.
+
+   JS exposes:
+     --viewport-index = visualViewport.width / visualViewport.height
+     --viewport-w / --viewport-h = unitless viewport dimensions
+     --viewport-w-px / --viewport-h-px / --viewport-short-px
+     data-viewport-shape = tall | balanced | wide
+     data-viewport-layout = phone-portrait | phone-landscape |
+                            tablet-portrait | tablet-landscape |
+                            desktop | desktop-wide
+*/
+
+:root{
+  --viewport-index:1.7778;
+  --viewport-w:1440;
+  --viewport-h:810;
+  --viewport-w-px:100vw;
+  --viewport-h-px:100dvh;
+  --viewport-short-px:min(100vw,100dvh);
+  --responsive-edge:clamp(12px,2.4vw,34px)
+}
+
+/* Never let a dashboard-level composition create horizontal page scrolling. */
+#app-shell,.stage-viewport,.stage-main-slot,.dashboard-lower,.bottom-bar{min-width:0}
+
+/* -------------------------------------------------------------------------
+   Phone portrait
+   Weather -> goal -> agenda becomes a real vertical composition. The central
+   phrase keeps priority, so metadata and decorative spacing are reduced before
+   core text is made smaller.
+   ------------------------------------------------------------------------- */
+html[data-viewport-layout='phone-portrait'] #app-shell{
+  padding-left:max(12px,env(safe-area-inset-left))!important;
+  padding-right:max(12px,env(safe-area-inset-right))!important;
+  padding-top:max(9px,env(safe-area-inset-top))!important;
+  padding-bottom:max(4px,env(safe-area-inset-bottom))!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .stage-viewport{
+  grid-template-rows:minmax(0,1fr) auto auto!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell #main.main-stage{
+  padding:clamp(8px,1.8vh,18px) 2px 3px!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .thought-block{
+  margin-top:clamp(14px,2.7vh,26px)!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .quote-wrap{
+  margin-top:clamp(10px,1.7vh,16px)!important;
+  min-height:0!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .phrase-meta{
+  margin-top:clamp(7px,1.2vh,11px)!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .dashboard-lower{
+  width:100%!important;
+  max-width:none!important;
+  min-height:0!important;
+  margin:0 auto 1px!important;
+  gap:2px!important;
+  align-content:end!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip{
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-template-rows:none!important;
+  grid-auto-flow:row!important;
+  grid-auto-rows:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:visible!important;
+  align-items:stretch!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip::before,
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip::after{
+  display:none!important;
+  content:none!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip>#environment-line,
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip>.goal-strip,
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip>#upcoming-event{
+  grid-column:1!important;
+  grid-row:auto!important;
+  width:100%!important;
+  height:auto!important;
+  max-height:none!important;
+  overflow:hidden!important;
+  margin:0!important;
+  border-left:0!important;
+  border-right:0!important;
+  border-radius:0!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip>#environment-line{
+  min-height:42px!important;
+  padding:5px 7px!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  grid-template-rows:auto!important;
+  grid-template-areas:'weather solar'!important;
+  align-items:center!important;
+  align-content:center!important;
+  gap:8px!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip>#environment-line::before,
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip #weather-place,
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .solar-label,
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .solar-path,
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .solar-note,
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .moon-caption{
+  display:none!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .weather-line{
+  grid-template-columns:17px auto minmax(0,1fr)!important;
+  grid-template-rows:auto!important;
+  grid-template-areas:'icon temp condition'!important;
+  gap:0 6px!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .weather-line>.icon{
+  width:16px!important;height:16px!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip #weather-text{
+  font-size:calc(16px * var(--ui-scale,1))!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip #weather-condition{
+  font-size:max(9.5px,calc(9.5px * var(--ui-scale,1)))!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .solar-line{
+  width:auto!important;
+  gap:7px!important;
+  white-space:nowrap!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .solar-time{
+  gap:3px!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .solar-time>.icon{
+  width:11px!important;height:11px!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .solar-time time{
+  font-size:max(9px,calc(9px * var(--ui-scale,1)))!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip>.goal-strip{
+  min-height:55px!important;
+  padding:6px 7px 7px!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  grid-template-rows:auto auto!important;
+  grid-template-areas:'heading countdown' 'progress progress'!important;
+  gap:4px 10px!important;
+  border-top:1px solid color-mix(in srgb,var(--line) 48%,transparent)!important;
+  border-bottom:1px solid color-mix(in srgb,var(--line) 48%,transparent)!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .goal-heading{
+  gap:2px!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .goal-heading .section-label{
+  font-size:max(8px,calc(8px * var(--ui-scale,1)))!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .goal-heading h2{
+  font-size:max(12px,calc(12.5px * var(--ui-scale,1)))!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .countdown{
+  gap:6px!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .countdown>div{
+  min-width:26px!important;gap:2px!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .countdown strong{
+  font-size:calc(16px * var(--ui-scale,1))!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .countdown>div>span{
+  font-size:max(7px,calc(7px * var(--ui-scale,1)))!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .count-separator{
+  display:none!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .goal-progress{
+  min-height:0!important;max-width:none!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .progress-labels{
+  justify-content:flex-end!important;
+  font-size:max(8px,calc(8px * var(--ui-scale,1)))!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip #progress-label{
+  display:none!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .progress-track{
+  height:3px!important;margin-top:2px!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .goal-date{
+  display:none!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip>#upcoming-event{
+  min-height:42px!important;
+  padding:5px 7px!important;
+  grid-template-columns:17px minmax(0,1fr) auto!important;
+  grid-template-areas:'icon copy time'!important;
+  gap:7px!important;
+  align-items:center!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip>#upcoming-event>.icon:first-child{
+  width:15px!important;height:15px!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .upcoming-copy{
+  gap:1px!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .upcoming-copy small{
+  font-size:max(8px,calc(8px * var(--ui-scale,1)))!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip #upcoming-title{
+  font-size:max(11px,calc(11.5px * var(--ui-scale,1)))!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip #upcoming-time{
+  min-height:0!important;
+  padding:0!important;
+  font-size:max(8.5px,calc(8.5px * var(--ui-scale,1)))!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .upcoming-arrow{
+  display:none!important
+}
+
+/* Compact idle composition follows exactly the same vertical order. */
+html[data-viewport-layout='phone-portrait'] #app-shell .idle-summary-strip{
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-template-rows:none!important;
+  grid-auto-flow:row!important;
+  grid-auto-rows:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:visible!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .idle-summary-strip::before,
+html[data-viewport-layout='phone-portrait'] #app-shell .idle-summary-strip::after{
+  display:none!important;content:none!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .idle-summary-strip>.idle-weather-summary,
+html[data-viewport-layout='phone-portrait'] #app-shell .idle-summary-strip>.idle-goal-summary,
+html[data-viewport-layout='phone-portrait'] #app-shell .idle-summary-strip>.idle-upcoming-event,
+html[data-viewport-layout='phone-portrait'] body.is-idle:not(.has-panel) #app-shell .idle-summary-strip>.idle-weather-summary,
+html[data-viewport-layout='phone-portrait'] body.is-idle:not(.has-panel) #app-shell .idle-summary-strip>.idle-goal-summary,
+html[data-viewport-layout='phone-portrait'] body.is-idle:not(.has-panel) #app-shell .idle-summary-strip>.idle-upcoming-event{
+  grid-column:1!important;
+  grid-row:auto!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:37px!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:5px 7px!important;
+  border-left:0!important;
+  border-right:0!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .idle-summary-strip>.idle-goal-summary{
+  min-height:45px!important;
+  border-top:1px solid color-mix(in srgb,var(--line) 42%,transparent)!important;
+  border-bottom:1px solid color-mix(in srgb,var(--line) 42%,transparent)!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .idle-summary-strip .idle-progress-track{height:2px!important}
+html[data-viewport-layout='phone-portrait'] #app-shell .idle-summary-strip .idle-upcoming-event{grid-template-columns:16px minmax(0,1fr) auto!important}
+html[data-viewport-layout='phone-portrait'] #app-shell .idle-summary-strip #idle-upcoming-time{min-height:0!important;padding:0!important}
+
+/* Toolbar stays usable but no longer steals a complete content row on narrow phones. */
+html[data-viewport-layout='phone-portrait'] #app-shell .bottom-bar{
+  min-height:36px!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .bottom-bar .toolbar{
+  width:100%!important;
+  max-width:none!important;
+  gap:2px!important;
+  padding:2px 0 max(2px,env(safe-area-inset-bottom))!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .toolbar-group{
+  gap:0!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .toolbar-group-center{
+  padding-inline:clamp(4px,1.4vw,8px)!important
+}
+html[data-viewport-layout='phone-portrait'] #app-shell .toolbar-group .icon-button{
+  width:clamp(34px,9.6vw,40px)!important;
+  min-width:clamp(34px,9.6vw,40px)!important;
+  height:clamp(34px,9.6vw,40px)!important
+}
+
+/* Very short portrait phones: scale spacing first, then the two hero text sizes. */
+@media (max-height:700px) and (orientation:portrait){
+  html[data-viewport-layout='phone-portrait'] #app-shell .clock{font-size:clamp(78px,25vw,98px)!important}
+  html[data-viewport-layout='phone-portrait'] #app-shell .quote-wrap blockquote{font-size:clamp(23px,7.1vw,30px)!important;line-height:1.2!important}
+  html[data-viewport-layout='phone-portrait'] #app-shell .thought-block{margin-top:10px!important}
+  html[data-viewport-layout='phone-portrait'] #app-shell .quote-wrap{margin-top:8px!important}
+  html[data-viewport-layout='phone-portrait'] #app-shell .phrase-meta{margin-top:6px!important}
+  html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip>#environment-line,
+  html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip>#upcoming-event{min-height:36px!important;padding-top:3px!important;padding-bottom:3px!important}
+  html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip>.goal-strip{min-height:48px!important;padding-top:4px!important;padding-bottom:4px!important}
+}
+
+/* -------------------------------------------------------------------------
+   Phone landscape / low-height displays
+   The information ribbon must stay visually subordinate to clock + phrase.
+   ------------------------------------------------------------------------- */
+html[data-viewport-layout='phone-landscape'] #app-shell{
+  padding:max(5px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(3px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left))!important
+}
+html[data-viewport-layout='phone-landscape'] #app-shell .dashboard-lower{
+  width:min(92vw,860px)!important;
+  max-width:calc(100vw - 24px)!important;
+  min-height:0!important;
+  margin:0 auto 1px!important;
+  gap:2px!important
+}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip{
+  grid-template-columns:20% 60% 20%!important;
+  grid-template-rows:38px!important;
+  grid-auto-rows:0!important;
+  min-height:38px!important;
+  max-height:38px!important;
+  overflow:hidden!important
+}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip::before,
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip::after{
+  display:none!important;content:none!important
+}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip>#environment-line,
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip>.goal-strip,
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip>#upcoming-event{
+  grid-row:1!important;
+  height:38px!important;
+  min-height:38px!important;
+  max-height:38px!important;
+  overflow:hidden!important
+}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip>#environment-line{
+  grid-column:1!important;
+  padding:3px 7px!important;
+  grid-template-rows:auto!important;
+  grid-template-areas:'weather'!important;
+  align-content:center!important
+}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip>#environment-line::before,
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip #weather-place,
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .solar-line,
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .moon-caption{
+  display:none!important
+}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .weather-line{
+  grid-template-columns:15px auto minmax(0,1fr)!important;
+  grid-template-rows:auto!important;
+  grid-template-areas:'icon temp condition'!important;
+  gap:0 5px!important
+}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .weather-line>.icon{width:14px!important;height:14px!important}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip #weather-text{font-size:calc(14px * var(--ui-scale,1))!important}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip #weather-condition{font-size:max(8px,calc(8.5px * var(--ui-scale,1)))!important}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip>.goal-strip{
+  grid-column:2!important;
+  padding:3px 9px!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  grid-template-rows:minmax(0,1fr) 2px!important;
+  grid-template-areas:'heading countdown' 'progress progress'!important;
+  gap:2px 8px!important
+}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .goal-heading .section-label{display:none!important}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .goal-heading h2{font-size:max(9.5px,calc(10.5px * var(--ui-scale,1)))!important;line-height:1!important}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .countdown{gap:5px!important}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .countdown>div{min-width:23px!important;gap:1px!important}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .countdown strong{font-size:calc(14px * var(--ui-scale,1))!important}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .countdown>div>span{font-size:max(6.5px,calc(6.5px * var(--ui-scale,1)))!important}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .count-separator{display:none!important}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .goal-progress{min-height:0!important;max-width:none!important;align-self:end!important}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .progress-labels,
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .goal-date{display:none!important}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .progress-track{height:2px!important;margin:0!important}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip>#upcoming-event{
+  grid-column:3!important;
+  padding:3px 7px!important;
+  grid-template-columns:14px minmax(0,1fr)!important;
+  grid-template-rows:auto auto!important;
+  grid-template-areas:'icon copy' 'icon time'!important;
+  gap:0 5px!important;
+  align-content:center!important
+}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip>#upcoming-event>.icon:first-child{width:13px!important;height:13px!important}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .upcoming-copy small{display:none!important}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip #upcoming-title{font-size:max(8.5px,calc(9.5px * var(--ui-scale,1)))!important;line-height:1.05!important}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip #upcoming-time{min-height:0!important;padding:0!important;font-size:max(7.5px,calc(7.5px * var(--ui-scale,1)))!important;line-height:1!important}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .upcoming-arrow{display:none!important}
+
+/* Keep the legacy dynamic-column behaviour when one of the side modules is hidden. */
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip:has(>#environment-line[hidden]):has(>#upcoming-event:not([hidden])){grid-template-columns:75% 25%!important}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip:has(>#environment-line[hidden]):has(>#upcoming-event:not([hidden]))>.goal-strip{grid-column:1!important;border-left:0!important}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip:has(>#environment-line[hidden]):has(>#upcoming-event:not([hidden]))>#upcoming-event{grid-column:2!important}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip:has(>#environment-line:not([hidden])):has(>#upcoming-event[hidden]){grid-template-columns:25% 75%!important}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip:has(>#environment-line:not([hidden])):has(>#upcoming-event[hidden])>#environment-line{grid-column:1!important}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip:has(>#environment-line:not([hidden])):has(>#upcoming-event[hidden])>.goal-strip{grid-column:2!important;border-right:0!important}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip:has(>#environment-line[hidden]):has(>#upcoming-event[hidden]){grid-template-columns:100%!important}
+html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip:has(>#environment-line[hidden]):has(>#upcoming-event[hidden])>.goal-strip{grid-column:1!important;border-inline:0!important}
+
+html[data-viewport-layout='phone-landscape'] #app-shell .idle-summary-strip,
+html[data-viewport-layout='phone-landscape'] body.is-idle:not(.has-panel) #app-shell .idle-summary-strip{
+  grid-template-rows:34px!important;
+  min-height:34px!important;
+  max-height:34px!important
+}
+html[data-viewport-layout='phone-landscape'] #app-shell .idle-summary-strip::before,
+html[data-viewport-layout='phone-landscape'] #app-shell .idle-summary-strip::after{display:none!important;content:none!important}
+html[data-viewport-layout='phone-landscape'] #app-shell .idle-summary-strip>.idle-weather-summary,
+html[data-viewport-layout='phone-landscape'] #app-shell .idle-summary-strip>.idle-goal-summary,
+html[data-viewport-layout='phone-landscape'] #app-shell .idle-summary-strip>.idle-upcoming-event,
+html[data-viewport-layout='phone-landscape'] body.is-idle:not(.has-panel) #app-shell .idle-summary-strip>.idle-weather-summary,
+html[data-viewport-layout='phone-landscape'] body.is-idle:not(.has-panel) #app-shell .idle-summary-strip>.idle-goal-summary,
+html[data-viewport-layout='phone-landscape'] body.is-idle:not(.has-panel) #app-shell .idle-summary-strip>.idle-upcoming-event{
+  height:34px!important;min-height:34px!important;max-height:34px!important;padding-top:3px!important;padding-bottom:3px!important
+}
+html[data-viewport-layout='phone-landscape'] #app-shell .idle-summary-strip .idle-goal-countdown{display:none!important}
+html[data-viewport-layout='phone-landscape'] #app-shell .idle-summary-strip .idle-progress-track{height:2px!important}
+html[data-viewport-layout='phone-landscape'] #app-shell .idle-summary-strip #idle-upcoming-time{min-height:0!important;padding:0!important}
+
+html[data-viewport-layout='phone-landscape'] #app-shell .bottom-bar{min-height:30px!important}
+html[data-viewport-layout='phone-landscape'] #app-shell .bottom-bar .toolbar{
+  width:min(92vw,860px)!important;
+  max-width:calc(100vw - 24px)!important;
+  gap:1px!important;
+  padding:1px 0 max(1px,env(safe-area-inset-bottom))!important
+}
+html[data-viewport-layout='phone-landscape'] #app-shell .toolbar-group{gap:0!important}
+html[data-viewport-layout='phone-landscape'] #app-shell .toolbar-group-center{padding-inline:6px!important}
+html[data-viewport-layout='phone-landscape'] #app-shell .toolbar-group .icon-button{
+  width:clamp(30px,8vh,34px)!important;
+  min-width:clamp(30px,8vh,34px)!important;
+  height:clamp(30px,8vh,34px)!important
+}
+html[data-viewport-layout='phone-landscape'] #app-shell .timer-chip{max-height:30px!important}
+html[data-viewport-layout='phone-landscape'] #app-shell .timer-chip-main{min-height:26px!important}
+
+/* -------------------------------------------------------------------------
+   Tablet / desktop safeguards. Existing 3.13.11 visual choices are preserved;
+   these rules only make the available viewport explicit and prevent overflow.
+   ------------------------------------------------------------------------- */
+html[data-viewport-layout='tablet-portrait'] .panel,
+html[data-viewport-layout='tablet-landscape'] .panel,
+html[data-viewport-layout='desktop-wide'] .panel{
+  max-height:calc(var(--viewport-h-px,100dvh) - 16px)
+}
+html[data-viewport-layout='tablet-portrait'] #app-shell .dashboard-lower{
+  max-width:calc(100vw - 32px)!important
+}
+html[data-viewport-layout='desktop-wide'] #app-shell .dashboard-lower,
+html[data-viewport-layout='desktop-wide'] #app-shell .bottom-bar .toolbar{
+  width:min(76vw,1600px)!important
+}
+
+@media (prefers-reduced-motion:reduce){
+  html[data-viewport-layout] #app-shell .active-info-strip,
+  html[data-viewport-layout] #app-shell .idle-summary-strip{transition:none!important}
+}

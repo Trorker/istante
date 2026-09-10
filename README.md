@@ -1,6 +1,6 @@
 # Istante
 
-**Versione corrente: 3.13.11**  
+**Versione corrente: 3.14.0**  
 **Un momento, per te.**  
 Un progetto di **Ruslan Dzyuba**.
 
@@ -69,7 +69,10 @@ agenda; puoi scegliere una vista iniziale fissa oppure **riprendere l’ultima v
 La vista torna alla dashboard dopo un periodo configurabile di inattività.
 Il prossimo impegno può comparire in modo discreto sulla hero. Nella vista mese, quando un giorno contiene più eventi di quanti possano essere mostrati con calma, compare **“altri eventi”**: apre direttamente quel giorno invece di comprimere il calendario. I feed ICS sono
 letti in sola lettura; alcuni fusi Windows/Outlook comuni vengono normalizzati
-in fusi IANA quando possibile.
+in fusi IANA quando possibile. Per i calendari remoti la release include una
+**API ICS PHP provider-agnostic**: Google Calendar, Outlook / Microsoft 365,
+iCloud e altri feed HTTPS passano dallo stesso relay locale all'installazione,
+superando i limiti CORS senza introdurre account o un database applicativo.
 
 ## Condivisione
 
@@ -78,9 +81,13 @@ la frase condivisa. Firma e indirizzo ufficiale restano parte della composizione
 
 ## Offline, privacy e backup
 
-Istante è un sito statico: **non richiede account né backend applicativo**.
+Istante resta un'applicazione **senza account e senza database applicativo**.
 Preferenze, raccolte personali, calendari importati, stazioni e preferiti sono
-salvati nel browser. Puoi esportare e ripristinare un backup JSON.
+salvati nel browser. Puoi esportare e ripristinare un backup JSON. L'unica
+componente server della release di produzione è `api/calendar.php`: un piccolo
+relay PHP sola lettura usato esclusivamente per scaricare feed ICS remoti che
+il browser non può leggere direttamente per CORS. Il link del feed non viene
+salvato dall'API.
 
 L'interfaccia e i contenuti locali possono essere conservati dal service worker.
 Radio live, nuove foto automatiche, sincronizzazione di calendari remoti e meteo
@@ -97,11 +104,12 @@ Su desktop con mouse o trackpad puoi attivare un **cursore personalizzato discre
 ## Struttura del progetto
 
 - `index.html`: dashboard, viste e pannelli principali.
-- `assets/`: CSS, JavaScript, icone e immagine social.
+- `assets/`: JavaScript, icone, immagini e i fogli CSS consolidati di produzione.
+- `api/calendar.php`: relay ICS HTTPS sola lettura per Google, Outlook, iCloud e provider compatibili.
 - `data/`: frasi, catalogo raccolte e stazioni predefinite.
 - `README.md`: descrizione del progetto e release corrente.
 - `CHANGELOG.md`: storico delle modifiche.
-- `docs/release/v3.13.4.md`: note dettagliate di questa release.
+- `docs/release/v3.14.0.md`: note dettagliate di questa release.
 - `docs/LICENZA.md`: licenza non commerciale con attribuzione obbligatoria.
 - `docs/TERZE-PARTI.md`: dipendenze, servizi e attribuzioni.
 - `docs/VISIONE-E-DESIGN.md`: valori, regole grafiche e criteri responsive da mantenere nelle release future.
@@ -109,9 +117,11 @@ Su desktop con mouse o trackpad puoi attivare un **cursore personalizzato discre
 ## Pubblicazione
 
 Pubblica **tutto il contenuto della cartella** sullo stesso percorso HTTPS,
-compresi `sw.js`, `version.json`, `assets`, `data` e `docs`. Non mescolare file
-di release diverse: il controllo aggiornamenti e la cache verificano una copia
-coerente prima di attivarla.
+compresi `sw.js`, `version.json`, `assets`, `data`, `docs` e `api`. Per la
+sincronizzazione dei calendari remoti l'hosting deve eseguire PHP 8.1+ con
+l'estensione **cURL** abilitata; i calendari importati da file continuano a
+funzionare anche senza PHP. Non mescolare file di release diverse: il controllo
+aggiornamenti e la cache verificano una copia coerente prima di attivarla.
 
 ## Autore e licenza
 

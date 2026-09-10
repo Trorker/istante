@@ -1,6 +1,6 @@
 # Istante — Visione, valori e sistema di design
 
-**Versione di riferimento:** 3.12.9  
+**Versione di riferimento:** 3.14.0  
 **Sito ufficiale:** https://istante.ruslan-dzyuba.it/
 
 ## 1. Che cos'è Istante
@@ -131,14 +131,16 @@ Il cielo è persistente: **un solo sole di giorno, una sola luna di notte**. Met
 
 ## 9. Responsive
 
-Istante deve essere progettato anche per dispositivi dedicati e orientamenti insoliti. I breakpoint non bastano: conta soprattutto l'altezza disponibile.
+Istante deve essere progettato anche per dispositivi dedicati e orientamenti insoliti. I breakpoint non bastano: conta soprattutto l'altezza disponibile e il rapporto tra i due lati.
+
+Dalla 3.14.0 il bootstrap espone l'indice **`viewport-index = visualViewport.width / visualViewport.height`**, insieme a larghezza, altezza, forma (`tall / balanced / wide`) e composizione (`phone-portrait`, `phone-landscape`, `tablet-portrait`, `tablet-landscape`, `desktop`, `desktop-wide`). La classificazione usa `visualViewport`, quindi segue anche la superficie realmente disponibile sui browser mobile quando le barre del browser cambiano dimensione.
 
 - Desktop: composizione ampia e ariosa.
-- Tablet: testi abbastanza grandi da essere letti a distanza.
-- Telefono verticale: priorità a ora, frase e azioni principali.
-- Telefono orizzontale / display bassi: composizione compatta, traguardo sempre leggibile, timer senza spostare il layout, calendario a pieno spazio residuo.
+- Tablet: testi abbastanza grandi da essere letti a distanza; non si applicano automaticamente le riduzioni pensate per i telefoni.
+- Telefono verticale: priorità a ora e frase; la fascia bassa si ricompone in colonna nell'ordine **Meteo → Traguardo → Agenda**, eliminando prima metadati e spazi superflui.
+- Telefono orizzontale / display bassi: la fascia resta su una riga ma diventa realmente sottile; i suoi testi e i comandi devono rimanere subordinati a ora e frase.
 
-Non è accettabile uno scroll orizzontale della dashboard.
+Le correzioni di composizione vivono nel solo `assets/css/responsive.css`. Non si aggiungono nuovi file `polish-*` per correggere singole risoluzioni. Non è accettabile uno scroll orizzontale della dashboard.
 
 ## 10. Criterio per nuove funzioni
 

@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.14.0 — 10 settembre 2026
+
+- **Revisione responsive per produzione:** introdotto un indice di viewport basato su `visualViewport.width / visualViewport.height`, con composizioni esplicite per telefono verticale/orizzontale, tablet e desktop.
+- **Telefono verticale:** Meteo, Prossimo capitolo e Agenda si ricompongono in colonna; ridotti gli spazi tra pensiero e fascia inferiore e alleggeriti i metadati secondari.
+- **Telefono orizzontale:** fascia informativa e toolbar rese sensibilmente più sottili e proporzionate rispetto a ora e frase.
+- **CSS consolidato:** eliminata la pubblicazione dei numerosi `polish-*`; la dashboard usa `istante.css` più un unico `responsive.css`, mentre la documentazione ha un bundle autonomo.
+- **Calendari ICS:** aggiunto `api/calendar.php`, relay HTTPS sola lettura e indipendente dal provider per Google Calendar, Outlook / Microsoft 365, iCloud e feed ICS compatibili, con protezioni SSRF, limite 1 MiB e redirect controllati.
+- **Offline:** rigenerata la precache del service worker rimuovendo il riferimento obsoleto a `calendario.html`; l'API calendario non viene intercettata né memorizzata nella cache offline.
+
 ## 3.13.11 — 10 settembre 2026
 
 - Timer tablet landscape: la modale usa quasi tutta la larghezza del viewport touch, eliminando il vecchio limite da 760/800 px e sfruttando meglio 1024/1280/1366/1368 px.
