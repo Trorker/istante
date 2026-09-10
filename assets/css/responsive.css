@@ -1,1377 +1,689 @@
-/* Istante 3.14.1 - viewport composition layer.
-   Loaded after istante.css. The visual language is unchanged: this file only
-   decides how the validated components compose at different aspect ratios.
+/* Istante 3.15.0 - responsive architecture.
+   Four device families: phone, tablet, computer, display.
+   Orientation and aspect index are secondary signals, never separate devices.
 
-   JS exposes:
-     --viewport-index = visualViewport.width / visualViewport.height
-     --viewport-w / --viewport-h = unitless viewport dimensions
+   JS exposes on <html>:
+     data-device      = phone | tablet | computer | display
+     data-orientation = portrait | landscape | square
+     data-viewport-shape = tall | balanced | wide | ultrawide
+     --viewport-index = width / height (composition index)
+     --viewport-size-index = sqrt(width * height) / sqrt(1440 * 900)
      --viewport-w-px / --viewport-h-px / --viewport-short-px
-     data-viewport-shape = tall | balanced | wide
-     data-viewport-layout = phone-portrait | phone-landscape |
-                            tablet-portrait | tablet-landscape |
-                            desktop | desktop-wide
+     --device-font-scale / --device-ui-scale
+
+   --text-scale and --ui-scale combine the selected user size with the
+   current device scale. This file is the single responsive composition layer.
 */
 
 :root{
   --viewport-index:1.7778;
+  --viewport-size-index:1;
   --viewport-w:1440;
-  --viewport-h:810;
+  --viewport-h:900;
   --viewport-w-px:100vw;
   --viewport-h-px:100dvh;
   --viewport-short-px:min(100vw,100dvh);
-  --responsive-edge:clamp(12px,2.4vw,34px)
+  --device-font-scale:1;
+  --device-ui-scale:1;
+  --responsive-edge:clamp(12px,2.2vw,36px);
+  --touch-target:42px;
 }
 
-/* Never let a dashboard-level composition create horizontal page scrolling. */
-#app-shell,.stage-viewport,.stage-main-slot,.dashboard-lower,.bottom-bar{min-width:0}
+html,body{max-width:100%;}
+#app-shell,.stage-viewport,.stage-main-slot,.dashboard-lower,.active-info-strip,.idle-summary-strip,.bottom-bar,
+#calendar-view,.calendar-shell,.calendar-layout,.calendar-main,#cal-content{min-width:0;}
 
-/* -------------------------------------------------------------------------
-   Phone portrait
-   Weather -> goal -> agenda becomes a real vertical composition. The central
-   phrase keeps priority, so metadata and decorative spacing are reduced before
-   core text is made smaller.
-   ------------------------------------------------------------------------- */
-html[data-viewport-layout='phone-portrait'] #app-shell{
+/* Keep generated content inside its own page instead of allowing a child to
+   enlarge the visual viewport. */
+#calendar-view .calendar-main,#calendar-view #cal-content{overscroll-behavior:contain;}
+
+/* ========================================================================== */
+/* PHONE                                                                      */
+/* ========================================================================== */
+html[data-device='phone']{
+  --responsive-edge:max(11px,env(safe-area-inset-left));
+  --touch-target:42px;
+}
+html[data-device='phone'] #app-shell{
   padding-left:max(12px,env(safe-area-inset-left))!important;
   padding-right:max(12px,env(safe-area-inset-right))!important;
-  padding-top:max(9px,env(safe-area-inset-top))!important;
-  padding-bottom:max(4px,env(safe-area-inset-bottom))!important
 }
-html[data-viewport-layout='phone-portrait'] #app-shell .stage-viewport{
-  grid-template-rows:minmax(0,1fr) auto auto!important
+html[data-device='phone'] #app-shell .topbar{min-width:0!important;}
+html[data-device='phone'] #app-shell .topbar .brand-logo-image{width:29px!important;height:29px!important;flex-basis:29px!important;}
+html[data-device='phone'] #app-shell .topbar .brand-home-name{font-size:20px!important;}
+html[data-device='phone'] #app-shell .topbar .brand-home-tagline{font-size:9px!important;}
+html[data-device='phone'] #app-shell .toolbar .icon-button{
+  width:var(--touch-target)!important;
+  min-width:var(--touch-target)!important;
+  height:var(--touch-target)!important;
+  min-height:var(--touch-target)!important;
 }
-html[data-viewport-layout='phone-portrait'] #app-shell #main.main-stage{
-  padding:clamp(8px,1.8vh,18px) 2px 3px!important
+html[data-device='phone'] #app-shell .toolbar-cluster{max-width:100%!important;}
+html[data-device='phone'] .panel,
+html[data-device='phone'] dialog.panel{
+  width:min(620px,calc(100vw - 12px))!important;
+  max-width:calc(100vw - 12px)!important;
+  max-height:calc(100dvh - 10px)!important;
 }
-html[data-viewport-layout='phone-portrait'] #app-shell .thought-block{
-  margin-top:clamp(14px,2.7vh,26px)!important
+
+/* Phone portrait ----------------------------------------------------------- */
+html[data-device='phone'][data-orientation='portrait'] #app-shell{
+  padding-top:max(8px,env(safe-area-inset-top))!important;
+  padding-bottom:max(4px,env(safe-area-inset-bottom))!important;
 }
-html[data-viewport-layout='phone-portrait'] #app-shell .quote-wrap{
-  margin-top:clamp(10px,1.7vh,16px)!important;
-  min-height:0!important
+html[data-device='phone'][data-orientation='portrait'] #app-shell .stage-viewport{
+  display:grid!important;
+  grid-template-rows:minmax(0,1fr) auto auto!important;
+  min-height:0!important;
 }
-html[data-viewport-layout='phone-portrait'] #app-shell .phrase-meta{
-  margin-top:clamp(7px,1.2vh,11px)!important
+html[data-device='phone'][data-orientation='portrait'] #app-shell #main.main-stage{
+  min-height:0!important;
+  padding:clamp(6px,1.25vh,12px) 1px 1px!important;
 }
-html[data-viewport-layout='phone-portrait'] #app-shell .dashboard-lower{
+html[data-device='phone'][data-orientation='portrait'] #app-shell .thought-block{
+  margin-top:clamp(10px,1.8vh,18px)!important;
+}
+html[data-device='phone'][data-orientation='portrait'] #app-shell .quote-wrap{
+  min-height:0!important;
+  margin-top:clamp(9px,1.3vh,14px)!important;
+}
+html[data-device='phone'][data-orientation='portrait'] #app-shell .phrase-meta{
+  margin-top:clamp(6px,1vh,9px)!important;
+}
+
+/* The hidden timer must not reserve a 42px phantom row on a phone. */
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower .timer-slot:has(.timer-chip[hidden]){
+  display:none!important;
+  min-height:0!important;
+  height:0!important;
+  margin:0!important;
+  padding:0!important;
+}
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower{
   width:100%!important;
   max-width:none!important;
   min-height:0!important;
+  height:auto!important;
   margin:0 auto 1px!important;
+  padding:0!important;
   gap:2px!important;
-  align-content:end!important
+  align-content:end!important;
 }
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip{
+
+/* Three meanings, three rows: weather -> goal -> agenda. IDs are intentional:
+   this wins over legacy :has() desktop column rules in the consolidated base. */
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #active-info-strip{
+  display:grid!important;
   grid-template-columns:minmax(0,1fr)!important;
   grid-template-rows:none!important;
   grid-auto-flow:row!important;
   grid-auto-rows:auto!important;
   min-height:0!important;
   max-height:none!important;
+  height:auto!important;
   overflow:visible!important;
-  align-items:stretch!important
+  align-items:stretch!important;
+  border:0!important;
 }
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip::before,
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip::after{
-  display:none!important;
-  content:none!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip>#environment-line,
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip>.goal-strip,
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip>#upcoming-event{
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #active-info-strip::before,
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #active-info-strip::after{display:none!important;content:none!important;}
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #active-info-strip>#environment-line,
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #active-info-strip>#goal-strip,
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #active-info-strip>#upcoming-event{
   grid-column:1!important;
   grid-row:auto!important;
   width:100%!important;
+  max-width:none!important;
   height:auto!important;
+  min-height:0!important;
   max-height:none!important;
-  overflow:hidden!important;
   margin:0!important;
-  border-left:0!important;
-  border-right:0!important;
-  border-radius:0!important
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  background:transparent!important;
+  overflow:hidden!important;
 }
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip>#environment-line{
-  min-height:42px!important;
-  padding:5px 7px!important;
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #active-info-strip>#environment-line{
+  min-height:34px!important;
+  padding:4px 6px!important;
+  display:grid!important;
   grid-template-columns:minmax(0,1fr) auto!important;
   grid-template-rows:auto!important;
   grid-template-areas:'weather solar'!important;
   align-items:center!important;
   align-content:center!important;
-  gap:8px!important
+  gap:8px!important;
 }
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip>#environment-line::before,
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip #weather-place,
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .solar-label,
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .solar-path,
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .solar-note,
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .moon-caption{
-  display:none!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .weather-line{
-  grid-template-columns:17px auto minmax(0,1fr)!important;
-  grid-template-rows:auto!important;
-  grid-template-areas:'icon temp condition'!important;
-  gap:0 6px!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .weather-line>.icon{
-  width:16px!important;height:16px!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip #weather-text{
-  font-size:calc(16px * var(--ui-scale,1))!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip #weather-condition{
-  font-size:max(9.5px,calc(9.5px * var(--ui-scale,1)))!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .solar-line{
-  width:auto!important;
-  gap:7px!important;
-  white-space:nowrap!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .solar-time{
-  gap:3px!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .solar-time>.icon{
-  width:11px!important;height:11px!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .solar-time time{
-  font-size:max(9px,calc(9px * var(--ui-scale,1)))!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip>.goal-strip{
-  min-height:55px!important;
-  padding:6px 7px 7px!important;
-  grid-template-columns:minmax(0,1fr) auto!important;
-  grid-template-rows:auto auto!important;
-  grid-template-areas:'heading countdown' 'progress progress'!important;
-  gap:4px 10px!important;
-  border-top:1px solid color-mix(in srgb,var(--line) 48%,transparent)!important;
-  border-bottom:1px solid color-mix(in srgb,var(--line) 48%,transparent)!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .goal-heading{
-  gap:2px!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .goal-heading .section-label{
-  font-size:max(8px,calc(8px * var(--ui-scale,1)))!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .goal-heading h2{
-  font-size:max(12px,calc(12.5px * var(--ui-scale,1)))!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .countdown{
-  gap:6px!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .countdown>div{
-  min-width:26px!important;gap:2px!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .countdown strong{
-  font-size:calc(16px * var(--ui-scale,1))!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .countdown>div>span{
-  font-size:max(7px,calc(7px * var(--ui-scale,1)))!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .count-separator{
-  display:none!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .goal-progress{
-  min-height:0!important;max-width:none!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .progress-labels{
-  justify-content:flex-end!important;
-  font-size:max(8px,calc(8px * var(--ui-scale,1)))!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip #progress-label{
-  display:none!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .progress-track{
-  height:3px!important;margin-top:2px!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .goal-date{
-  display:none!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip>#upcoming-event{
-  min-height:42px!important;
-  padding:5px 7px!important;
-  grid-template-columns:17px minmax(0,1fr) auto!important;
-  grid-template-areas:'icon copy time'!important;
-  gap:7px!important;
-  align-items:center!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip>#upcoming-event>.icon:first-child{
-  width:15px!important;height:15px!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .upcoming-copy{
-  gap:1px!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .upcoming-copy small{
-  font-size:max(8px,calc(8px * var(--ui-scale,1)))!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip #upcoming-title{
-  font-size:max(11px,calc(11.5px * var(--ui-scale,1)))!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip #upcoming-time{
-  min-height:0!important;
-  padding:0!important;
-  font-size:max(8.5px,calc(8.5px * var(--ui-scale,1)))!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip .upcoming-arrow{
-  display:none!important
-}
-
-/* Compact idle composition follows exactly the same vertical order. */
-html[data-viewport-layout='phone-portrait'] #app-shell .idle-summary-strip{
-  grid-template-columns:minmax(0,1fr)!important;
-  grid-template-rows:none!important;
-  grid-auto-flow:row!important;
-  grid-auto-rows:auto!important;
-  min-height:0!important;
-  max-height:none!important;
-  overflow:visible!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .idle-summary-strip::before,
-html[data-viewport-layout='phone-portrait'] #app-shell .idle-summary-strip::after{
-  display:none!important;content:none!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .idle-summary-strip>.idle-weather-summary,
-html[data-viewport-layout='phone-portrait'] #app-shell .idle-summary-strip>.idle-goal-summary,
-html[data-viewport-layout='phone-portrait'] #app-shell .idle-summary-strip>.idle-upcoming-event,
-html[data-viewport-layout='phone-portrait'] body.is-idle:not(.has-panel) #app-shell .idle-summary-strip>.idle-weather-summary,
-html[data-viewport-layout='phone-portrait'] body.is-idle:not(.has-panel) #app-shell .idle-summary-strip>.idle-goal-summary,
-html[data-viewport-layout='phone-portrait'] body.is-idle:not(.has-panel) #app-shell .idle-summary-strip>.idle-upcoming-event{
-  grid-column:1!important;
-  grid-row:auto!important;
-  width:100%!important;
-  height:auto!important;
-  min-height:37px!important;
-  max-height:none!important;
-  margin:0!important;
-  padding:5px 7px!important;
-  border-left:0!important;
-  border-right:0!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .idle-summary-strip>.idle-goal-summary{
-  min-height:45px!important;
-  border-top:1px solid color-mix(in srgb,var(--line) 42%,transparent)!important;
-  border-bottom:1px solid color-mix(in srgb,var(--line) 42%,transparent)!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .idle-summary-strip .idle-progress-track{height:2px!important}
-html[data-viewport-layout='phone-portrait'] #app-shell .idle-summary-strip .idle-upcoming-event{grid-template-columns:16px minmax(0,1fr) auto!important}
-html[data-viewport-layout='phone-portrait'] #app-shell .idle-summary-strip #idle-upcoming-time{min-height:0!important;padding:0!important}
-
-/* Toolbar stays usable but no longer steals a complete content row on narrow phones. */
-html[data-viewport-layout='phone-portrait'] #app-shell .bottom-bar{
-  min-height:36px!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .bottom-bar .toolbar{
-  width:100%!important;
-  max-width:none!important;
-  gap:2px!important;
-  padding:2px 0 max(2px,env(safe-area-inset-bottom))!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .toolbar-group{
-  gap:0!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .toolbar-group-center{
-  padding-inline:clamp(4px,1.4vw,8px)!important
-}
-html[data-viewport-layout='phone-portrait'] #app-shell .toolbar-group .icon-button{
-  width:clamp(34px,9.6vw,40px)!important;
-  min-width:clamp(34px,9.6vw,40px)!important;
-  height:clamp(34px,9.6vw,40px)!important
-}
-
-/* Very short portrait phones: scale spacing first, then the two hero text sizes. */
-@media (max-height:700px) and (orientation:portrait){
-  html[data-viewport-layout='phone-portrait'] #app-shell .clock{font-size:clamp(78px,25vw,98px)!important}
-  html[data-viewport-layout='phone-portrait'] #app-shell .quote-wrap blockquote{font-size:clamp(23px,7.1vw,30px)!important;line-height:1.2!important}
-  html[data-viewport-layout='phone-portrait'] #app-shell .thought-block{margin-top:10px!important}
-  html[data-viewport-layout='phone-portrait'] #app-shell .quote-wrap{margin-top:8px!important}
-  html[data-viewport-layout='phone-portrait'] #app-shell .phrase-meta{margin-top:6px!important}
-  html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip>#environment-line,
-  html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip>#upcoming-event{min-height:36px!important;padding-top:3px!important;padding-bottom:3px!important}
-  html[data-viewport-layout='phone-portrait'] #app-shell .active-info-strip>.goal-strip{min-height:48px!important;padding-top:4px!important;padding-bottom:4px!important}
-}
-
-/* -------------------------------------------------------------------------
-   Phone landscape / low-height displays
-   The information ribbon must stay visually subordinate to clock + phrase.
-   ------------------------------------------------------------------------- */
-html[data-viewport-layout='phone-landscape'] #app-shell{
-  padding:max(5px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(3px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left))!important
-}
-html[data-viewport-layout='phone-landscape'] #app-shell .dashboard-lower{
-  width:min(92vw,860px)!important;
-  max-width:calc(100vw - 24px)!important;
-  min-height:0!important;
-  margin:0 auto 1px!important;
-  gap:2px!important
-}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip{
-  grid-template-columns:20% 60% 20%!important;
-  grid-template-rows:38px!important;
-  grid-auto-rows:0!important;
-  min-height:38px!important;
-  max-height:38px!important;
-  overflow:hidden!important
-}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip::before,
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip::after{
-  display:none!important;content:none!important
-}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip>#environment-line,
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip>.goal-strip,
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip>#upcoming-event{
-  grid-row:1!important;
-  height:38px!important;
-  min-height:38px!important;
-  max-height:38px!important;
-  overflow:hidden!important
-}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip>#environment-line{
-  grid-column:1!important;
-  padding:3px 7px!important;
-  grid-template-rows:auto!important;
-  grid-template-areas:'weather'!important;
-  align-content:center!important
-}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip>#environment-line::before,
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip #weather-place,
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .solar-line,
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .moon-caption{
-  display:none!important
-}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .weather-line{
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #environment-line::before,
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #environment-line #weather-place,
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #environment-line .solar-label,
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #environment-line .solar-path,
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #environment-line .solar-note,
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #environment-line .moon-caption{display:none!important;}
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #environment-line .weather-line{
+  display:grid!important;
   grid-template-columns:15px auto minmax(0,1fr)!important;
   grid-template-rows:auto!important;
   grid-template-areas:'icon temp condition'!important;
-  gap:0 5px!important
-}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .weather-line>.icon{width:14px!important;height:14px!important}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip #weather-text{font-size:calc(14px * var(--ui-scale,1))!important}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip #weather-condition{font-size:max(8px,calc(8.5px * var(--ui-scale,1)))!important}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip>.goal-strip{
-  grid-column:2!important;
-  padding:3px 9px!important;
-  grid-template-columns:minmax(0,1fr) auto!important;
-  grid-template-rows:minmax(0,1fr) 2px!important;
-  grid-template-areas:'heading countdown' 'progress progress'!important;
-  gap:2px 8px!important
-}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .goal-heading .section-label{display:none!important}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .goal-heading h2{font-size:max(9.5px,calc(10.5px * var(--ui-scale,1)))!important;line-height:1!important}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .countdown{gap:5px!important}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .countdown>div{min-width:23px!important;gap:1px!important}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .countdown strong{font-size:calc(14px * var(--ui-scale,1))!important}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .countdown>div>span{font-size:max(6.5px,calc(6.5px * var(--ui-scale,1)))!important}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .count-separator{display:none!important}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .goal-progress{min-height:0!important;max-width:none!important;align-self:end!important}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .progress-labels,
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .goal-date{display:none!important}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .progress-track{height:2px!important;margin:0!important}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip>#upcoming-event{
-  grid-column:3!important;
-  padding:3px 7px!important;
-  grid-template-columns:14px minmax(0,1fr)!important;
-  grid-template-rows:auto auto!important;
-  grid-template-areas:'icon copy' 'icon time'!important;
   gap:0 5px!important;
-  align-content:center!important
+  min-width:0!important;
 }
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip>#upcoming-event>.icon:first-child{width:13px!important;height:13px!important}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .upcoming-copy small{display:none!important}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip #upcoming-title{font-size:max(8.5px,calc(9.5px * var(--ui-scale,1)))!important;line-height:1.05!important}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip #upcoming-time{min-height:0!important;padding:0!important;font-size:max(7.5px,calc(7.5px * var(--ui-scale,1)))!important;line-height:1!important}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip .upcoming-arrow{display:none!important}
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #environment-line .weather-line>.icon{width:14px!important;height:14px!important;}
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #environment-line #weather-text{font-size:calc(15px * var(--ui-scale,1))!important;}
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #environment-line #weather-condition{
+  font-size:calc(8.7px * var(--ui-scale,1))!important;
+  white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
+}
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #environment-line .solar-line{
+  width:auto!important;
+  display:flex!important;
+  gap:7px!important;
+  white-space:nowrap!important;
+}
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #environment-line .solar-time{gap:3px!important;}
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #environment-line .solar-time>.icon{width:10px!important;height:10px!important;}
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #environment-line .solar-time time{font-size:calc(8.2px * var(--ui-scale,1))!important;}
 
-/* Keep the legacy dynamic-column behaviour when one of the side modules is hidden. */
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip:has(>#environment-line[hidden]):has(>#upcoming-event:not([hidden])){grid-template-columns:75% 25%!important}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip:has(>#environment-line[hidden]):has(>#upcoming-event:not([hidden]))>.goal-strip{grid-column:1!important;border-left:0!important}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip:has(>#environment-line[hidden]):has(>#upcoming-event:not([hidden]))>#upcoming-event{grid-column:2!important}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip:has(>#environment-line:not([hidden])):has(>#upcoming-event[hidden]){grid-template-columns:25% 75%!important}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip:has(>#environment-line:not([hidden])):has(>#upcoming-event[hidden])>#environment-line{grid-column:1!important}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip:has(>#environment-line:not([hidden])):has(>#upcoming-event[hidden])>.goal-strip{grid-column:2!important;border-right:0!important}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip:has(>#environment-line[hidden]):has(>#upcoming-event[hidden]){grid-template-columns:100%!important}
-html[data-viewport-layout='phone-landscape'] #app-shell .active-info-strip:has(>#environment-line[hidden]):has(>#upcoming-event[hidden])>.goal-strip{grid-column:1!important;border-inline:0!important}
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #active-info-strip>#goal-strip{
+  min-height:44px!important;
+  padding:5px 6px 6px!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  grid-template-rows:auto 3px!important;
+  grid-template-areas:'heading countdown' 'progress progress'!important;
+  align-items:center!important;
+  gap:4px 8px!important;
+  border-top:1px solid color-mix(in srgb,var(--line) 52%,transparent)!important;
+  border-bottom:1px solid color-mix(in srgb,var(--line) 52%,transparent)!important;
+}
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #goal-strip .goal-heading{grid-area:heading!important;gap:1px!important;}
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #goal-strip .goal-heading .section-label{font-size:calc(7px * var(--ui-scale,1))!important;margin:0!important;}
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #goal-strip .goal-heading h2{font-size:calc(11.5px * var(--ui-scale,1))!important;line-height:1.05!important;}
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #goal-strip .countdown{grid-area:countdown!important;gap:5px!important;}
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #goal-strip .countdown>div{min-width:24px!important;gap:0!important;}
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #goal-strip .countdown strong{font-size:calc(14px * var(--ui-scale,1))!important;}
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #goal-strip .countdown>div>span{font-size:calc(6.3px * var(--ui-scale,1))!important;}
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #goal-strip .count-separator{display:none!important;}
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #goal-strip .goal-progress{grid-area:progress!important;min-height:0!important;max-width:none!important;}
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #goal-strip .progress-labels{display:none!important;}
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #goal-strip .progress-track{height:3px!important;min-height:3px!important;margin:0!important;}
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #goal-strip .goal-date{display:none!important;}
 
-html[data-viewport-layout='phone-landscape'] #app-shell .idle-summary-strip,
-html[data-viewport-layout='phone-landscape'] body.is-idle:not(.has-panel) #app-shell .idle-summary-strip{
-  grid-template-rows:34px!important;
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #active-info-strip>#upcoming-event{
   min-height:34px!important;
-  max-height:34px!important
+  padding:4px 6px!important;
+  display:grid!important;
+  grid-template-columns:15px minmax(0,1fr) auto!important;
+  grid-template-areas:'icon copy time'!important;
+  align-items:center!important;
+  gap:6px!important;
 }
-html[data-viewport-layout='phone-landscape'] #app-shell .idle-summary-strip::before,
-html[data-viewport-layout='phone-landscape'] #app-shell .idle-summary-strip::after{display:none!important;content:none!important}
-html[data-viewport-layout='phone-landscape'] #app-shell .idle-summary-strip>.idle-weather-summary,
-html[data-viewport-layout='phone-landscape'] #app-shell .idle-summary-strip>.idle-goal-summary,
-html[data-viewport-layout='phone-landscape'] #app-shell .idle-summary-strip>.idle-upcoming-event,
-html[data-viewport-layout='phone-landscape'] body.is-idle:not(.has-panel) #app-shell .idle-summary-strip>.idle-weather-summary,
-html[data-viewport-layout='phone-landscape'] body.is-idle:not(.has-panel) #app-shell .idle-summary-strip>.idle-goal-summary,
-html[data-viewport-layout='phone-landscape'] body.is-idle:not(.has-panel) #app-shell .idle-summary-strip>.idle-upcoming-event{
-  height:34px!important;min-height:34px!important;max-height:34px!important;padding-top:3px!important;padding-bottom:3px!important
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #upcoming-event>.icon:first-child{width:14px!important;height:14px!important;}
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #upcoming-event .upcoming-copy{gap:0!important;}
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #upcoming-event .upcoming-copy small{font-size:calc(6.8px * var(--ui-scale,1))!important;}
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #upcoming-event #upcoming-title{font-size:calc(10.5px * var(--ui-scale,1))!important;}
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #upcoming-event #upcoming-time{
+  min-height:0!important;padding:0!important;line-height:1.1!important;font-size:calc(7.8px * var(--ui-scale,1))!important;
 }
-html[data-viewport-layout='phone-landscape'] #app-shell .idle-summary-strip .idle-goal-countdown{display:none!important}
-html[data-viewport-layout='phone-landscape'] #app-shell .idle-summary-strip .idle-progress-track{height:2px!important}
-html[data-viewport-layout='phone-landscape'] #app-shell .idle-summary-strip #idle-upcoming-time{min-height:0!important;padding:0!important}
+html[data-device='phone'][data-orientation='portrait'] body #app-shell .dashboard-lower #upcoming-event .upcoming-arrow{display:none!important;}
 
-html[data-viewport-layout='phone-landscape'] #app-shell .bottom-bar{min-height:30px!important}
-html[data-viewport-layout='phone-landscape'] #app-shell .bottom-bar .toolbar{
-  width:min(92vw,860px)!important;
-  max-width:calc(100vw - 24px)!important;
-  gap:1px!important;
-  padding:1px 0 max(1px,env(safe-area-inset-bottom))!important
+/* Idle uses the same vertical information order. */
+html[data-device='phone'][data-orientation='portrait'] body #app-shell #idle-summary-strip{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-template-rows:none!important;
+  grid-auto-rows:auto!important;
+  min-height:0!important;max-height:none!important;height:auto!important;
 }
-html[data-viewport-layout='phone-landscape'] #app-shell .toolbar-group{gap:0!important}
-html[data-viewport-layout='phone-landscape'] #app-shell .toolbar-group-center{padding-inline:6px!important}
-html[data-viewport-layout='phone-landscape'] #app-shell .toolbar-group .icon-button{
-  width:clamp(30px,8vh,34px)!important;
-  min-width:clamp(30px,8vh,34px)!important;
-  height:clamp(30px,8vh,34px)!important
+html[data-device='phone'][data-orientation='portrait'] body #app-shell #idle-summary-strip::before,
+html[data-device='phone'][data-orientation='portrait'] body #app-shell #idle-summary-strip::after{display:none!important;content:none!important;}
+html[data-device='phone'][data-orientation='portrait'] body #app-shell #idle-summary-strip>.idle-weather-summary,
+html[data-device='phone'][data-orientation='portrait'] body #app-shell #idle-summary-strip>.idle-goal-summary,
+html[data-device='phone'][data-orientation='portrait'] body #app-shell #idle-summary-strip>.idle-upcoming-event{
+  grid-column:1!important;grid-row:auto!important;width:100%!important;height:auto!important;min-height:32px!important;max-height:none!important;
 }
-html[data-viewport-layout='phone-landscape'] #app-shell .timer-chip{max-height:30px!important}
-html[data-viewport-layout='phone-landscape'] #app-shell .timer-chip-main{min-height:26px!important}
+html[data-device='phone'][data-orientation='portrait'] body #app-shell #idle-summary-strip>.idle-goal-summary{border-block:1px solid color-mix(in srgb,var(--line) 52%,transparent)!important;}
+html[data-device='phone'][data-orientation='portrait'] #app-shell .bottom-bar{min-height:44px!important;}
+html[data-device='phone'][data-orientation='portrait'] #app-shell .bottom-bar .toolbar{
+  width:100%!important;max-width:none!important;padding-bottom:max(1px,env(safe-area-inset-bottom))!important;
+}
+html[data-device='phone'][data-orientation='portrait'] #app-shell .toolbar-cluster{width:100%!important;justify-content:space-between!important;}
 
-/* -------------------------------------------------------------------------
-   Tablet / desktop safeguards. Existing 3.13.11 visual choices are preserved;
-   these rules only make the available viewport explicit and prevent overflow.
-   ------------------------------------------------------------------------- */
-html[data-viewport-layout='tablet-portrait'] .panel,
-html[data-viewport-layout='tablet-landscape'] .panel,
-html[data-viewport-layout='desktop-wide'] .panel{
-  max-height:calc(var(--viewport-h-px,100dvh) - 16px)
+/* Phone landscape ---------------------------------------------------------- */
+html[data-device='phone'][data-orientation='landscape'] #app-shell{
+  padding:max(5px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) max(3px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left))!important;
 }
-html[data-viewport-layout='tablet-portrait'] #app-shell .dashboard-lower{
-  max-width:calc(100vw - 32px)!important
+html[data-device='phone'][data-orientation='landscape'] #app-shell .stage-viewport{
+  display:grid!important;grid-template-rows:minmax(0,1fr) auto auto!important;
 }
-html[data-viewport-layout='desktop-wide'] #app-shell .dashboard-lower,
-html[data-viewport-layout='desktop-wide'] #app-shell .bottom-bar .toolbar{
-  width:min(76vw,1600px)!important
+html[data-device='phone'][data-orientation='landscape'] #app-shell #main.main-stage{
+  min-height:0!important;
+  padding:2px 0 1px!important;
+  display:grid!important;
+  grid-template-columns:minmax(150px,.8fr) minmax(0,1.45fr)!important;
+  gap:4px clamp(16px,3vw,34px)!important;
+  align-items:center!important;
 }
+html[data-device='phone'][data-orientation='landscape'] #app-shell .time-block{align-self:center!important;}
+html[data-device='phone'][data-orientation='landscape'] #app-shell .thought-block{margin:0!important;align-self:center!important;}
+html[data-device='phone'][data-orientation='landscape'] #app-shell .quote-wrap{min-height:0!important;margin-top:7px!important;}
+html[data-device='phone'][data-orientation='landscape'] #app-shell .phrase-meta{margin-top:6px!important;}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower .timer-slot:has(.timer-chip[hidden]){display:none!important;height:0!important;min-height:0!important;}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower{
+  width:100%!important;max-width:none!important;min-height:0!important;height:auto!important;margin:0 auto!important;gap:1px!important;
+}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #active-info-strip{
+  display:grid!important;
+  grid-template-columns:20% 56% 24%!important;
+  grid-template-rows:36px!important;
+  min-height:36px!important;max-height:36px!important;height:36px!important;
+  overflow:hidden!important;
+}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #active-info-strip::before,
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #active-info-strip::after{display:none!important;content:none!important;}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #active-info-strip>#environment-line,
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #active-info-strip>#goal-strip,
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #active-info-strip>#upcoming-event{
+  grid-row:1!important;height:36px!important;min-height:36px!important;max-height:36px!important;margin:0!important;overflow:hidden!important;border-radius:0!important;
+}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #active-info-strip>#environment-line{
+  grid-column:1!important;padding:3px 6px!important;grid-template-areas:'weather'!important;align-content:center!important;
+}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #environment-line::before,
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #environment-line #weather-place,
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #environment-line .solar-line,
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #environment-line .moon-caption{display:none!important;}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #environment-line .weather-line{
+  grid-template-columns:14px auto minmax(0,1fr)!important;grid-template-rows:auto!important;grid-template-areas:'icon temp condition'!important;gap:4px!important;
+}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #environment-line .weather-line>.icon{width:13px!important;height:13px!important;}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #environment-line #weather-text{font-size:calc(13px * var(--ui-scale,1))!important;}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #environment-line #weather-condition{font-size:calc(7.6px * var(--ui-scale,1))!important;}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #active-info-strip>#goal-strip{
+  grid-column:2!important;padding:3px 8px!important;grid-template-columns:minmax(0,1fr) auto!important;grid-template-rows:1fr 2px!important;grid-template-areas:'heading countdown' 'progress progress'!important;gap:2px 7px!important;
+}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #goal-strip .section-label{display:none!important;}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #goal-strip .goal-heading h2{font-size:calc(9.5px * var(--ui-scale,1))!important;line-height:1!important;}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #goal-strip .countdown{gap:4px!important;}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #goal-strip .countdown>div{min-width:22px!important;gap:0!important;}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #goal-strip .countdown strong{font-size:calc(12.5px * var(--ui-scale,1))!important;}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #goal-strip .countdown>div>span{font-size:calc(5.8px * var(--ui-scale,1))!important;}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #goal-strip .count-separator,
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #goal-strip .progress-labels,
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #goal-strip .goal-date{display:none!important;}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #goal-strip .progress-track{height:2px!important;min-height:2px!important;margin:0!important;}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #active-info-strip>#upcoming-event{
+  grid-column:3!important;padding:3px 6px!important;grid-template-columns:13px minmax(0,1fr)!important;grid-template-rows:auto auto!important;grid-template-areas:'icon copy' 'icon time'!important;gap:0 5px!important;align-content:center!important;
+}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #upcoming-event>.icon:first-child{width:12px!important;height:12px!important;}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #upcoming-event .upcoming-copy small{display:none!important;}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #upcoming-event #upcoming-title{font-size:calc(8.5px * var(--ui-scale,1))!important;line-height:1!important;}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #upcoming-event #upcoming-time{min-height:0!important;padding:0!important;font-size:calc(6.8px * var(--ui-scale,1))!important;line-height:1!important;}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell .dashboard-lower #upcoming-event .upcoming-arrow{display:none!important;}
 
-@media (prefers-reduced-motion:reduce){
-  html[data-viewport-layout] #app-shell .active-info-strip,
-  html[data-viewport-layout] #app-shell .idle-summary-strip{transition:none!important}
-}
+/* Dynamic landscape columns when one side module is hidden. */
+html[data-device='phone'][data-orientation='landscape'] body #app-shell #active-info-strip:has(>#environment-line[hidden]):has(>#upcoming-event:not([hidden])){grid-template-columns:72% 28%!important;}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell #active-info-strip:has(>#environment-line[hidden]):has(>#upcoming-event:not([hidden]))>#goal-strip{grid-column:1!important;}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell #active-info-strip:has(>#environment-line[hidden]):has(>#upcoming-event:not([hidden]))>#upcoming-event{grid-column:2!important;}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell #active-info-strip:has(>#environment-line:not([hidden])):has(>#upcoming-event[hidden]){grid-template-columns:25% 75%!important;}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell #active-info-strip:has(>#environment-line:not([hidden])):has(>#upcoming-event[hidden])>#environment-line{grid-column:1!important;}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell #active-info-strip:has(>#environment-line:not([hidden])):has(>#upcoming-event[hidden])>#goal-strip{grid-column:2!important;}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell #active-info-strip:has(>#environment-line[hidden]):has(>#upcoming-event[hidden]){grid-template-columns:100%!important;}
+html[data-device='phone'][data-orientation='landscape'] body #app-shell #active-info-strip:has(>#environment-line[hidden]):has(>#upcoming-event[hidden])>#goal-strip{grid-column:1!important;}
+html[data-device='phone'][data-orientation='landscape'] #app-shell #idle-summary-strip{min-height:32px!important;max-height:32px!important;height:32px!important;grid-template-rows:32px!important;}
+html[data-device='phone'][data-orientation='landscape'] #app-shell #idle-summary-strip>*{min-height:32px!important;max-height:32px!important;height:32px!important;padding-block:2px!important;}
+html[data-device='phone'][data-orientation='landscape'] #app-shell .bottom-bar{min-height:30px!important;}
+html[data-device='phone'][data-orientation='landscape'] #app-shell .bottom-bar .toolbar{width:min(92vw,820px)!important;gap:0!important;padding:0 0 max(1px,env(safe-area-inset-bottom))!important;}
+html[data-device='phone'][data-orientation='landscape'] #app-shell .toolbar-group{gap:0!important;}
+html[data-device='phone'][data-orientation='landscape'] #app-shell .toolbar-group-center{padding-inline:5px!important;}
+html[data-device='phone'][data-orientation='landscape'] #app-shell .toolbar-group .icon-button{--touch-target:32px;}
 
-/* ========================================================================
-   v3.14.1 - Calendar mobile layout
-   The calendar is composed independently from the dashboard on phones.
-   These rules intentionally live in the viewport layer so old 3.13.x
-   breakpoint decisions cannot leak back into the mobile calendar.
-   ======================================================================== */
-
-/* Shared phone calendar foundation. */
-html[data-viewport-layout='phone-portrait'] #calendar-view,
-html[data-viewport-layout='phone-landscape'] #calendar-view{
-  --cal-phone-edge:max(8px,env(safe-area-inset-left));
-  --cal-phone-control:34px;
-  touch-action:pan-y!important
+/* ========================================================================== */
+/* CALENDAR - PHONE                                                           */
+/* ========================================================================== */
+html[data-device='phone'] #calendar-view{
+  overflow:hidden!important;
 }
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-shell,
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-shell{
+html[data-device='phone'] #calendar-view .calendar-shell{
   width:100%!important;
-  max-width:none!important;
-  height:var(--viewport-h-px,100dvh)!important;
-  margin:0!important;
+  height:100dvh!important;
+  min-height:0!important;
+  max-height:100dvh!important;
   display:grid!important;
   grid-template-rows:auto minmax(0,1fr)!important;
-  overflow:hidden!important
+  overflow:hidden!important;
 }
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-shell>main,
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-shell>main,
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-layout,
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-layout,
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-main,
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-main,
-html[data-viewport-layout='phone-portrait'] #calendar-view #cal-content,
-html[data-viewport-layout='phone-landscape'] #calendar-view #cal-content{
-  min-width:0!important;
+html[data-device='phone'] #calendar-view .calendar-shell>main,
+html[data-device='phone'] #calendar-view .calendar-layout,
+html[data-device='phone'] #calendar-view .calendar-main,
+html[data-device='phone'] #calendar-view #cal-content{
   min-height:0!important;
-  width:100%!important;
-  height:100%!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-layout,
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-layout{
-  grid-template-columns:minmax(0,1fr)!important;
-  grid-template-rows:minmax(0,1fr)!important;
-  padding-top:6px!important;
-  gap:0!important;
-  overflow:hidden!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-main,
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-main{
-  display:flex!important;
-  flex-direction:column!important;
-  overflow:hidden!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view #cal-content,
-html[data-viewport-layout='phone-landscape'] #calendar-view #cal-content{
-  flex:1 1 auto!important;
-  display:block!important;
-  overflow:auto!important;
-  padding:0!important;
-  overscroll-behavior:contain!important;
-  -webkit-overflow-scrolling:touch
-}
-
-/* Undo the old <=980px rule that hid every view label without adding glyphs. */
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-view-label,
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-view-label,
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-today-label,
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-today-label{
-  display:inline!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-view-glyph,
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-view-glyph{
-  display:none!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-heading-actions .calendar-sidebar-toggle>span.icon,
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-heading-actions .calendar-sidebar-toggle>span.icon{
-  display:block!important
-}
-
-/* The source list is a real drawer on phones, not part of the calendar grid. */
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-sidebar,
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-sidebar{
-  display:block!important;
-  position:absolute!important;
-  z-index:30!important;
-  left:auto!important;
-  right:0!important;
-  top:6px!important;
-  bottom:0!important;
+  height:100%!important;
   max-height:none!important;
-  transform:translateX(calc(100% + 18px))!important;
-  opacity:0!important;
-  pointer-events:none!important;
-  overflow:auto!important;
-  -webkit-overflow-scrolling:touch!important
 }
-html[data-viewport-layout='phone-portrait'] #calendar-view.sidebar-open .calendar-sidebar,
-html[data-viewport-layout='phone-landscape'] #calendar-view.sidebar-open .calendar-sidebar{
-  transform:translateX(0)!important;
-  opacity:1!important;
-  pointer-events:auto!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-sidebar-head,
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-sidebar-head{
-  display:flex!important
-}
+html[data-device='phone'] #calendar-view .calendar-layout{display:block!important;padding-top:5px!important;overflow:hidden!important;}
+html[data-device='phone'] #calendar-view .calendar-main{display:block!important;width:100%!important;overflow:hidden!important;}
+html[data-device='phone'] #calendar-view #cal-content{width:100%!important;overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch;scrollbar-gutter:stable;}
+html[data-device='phone'] #calendar-view .calendar-subtitle,
+html[data-device='phone'] #calendar-view .calendar-title-copy>.section-label{display:none!important;}
+html[data-device='phone'] #calendar-view .calendar-view-label,
+html[data-device='phone'] #calendar-view .calendar-today-label{display:inline!important;}
+html[data-device='phone'] #calendar-view .calendar-view-glyph{display:none!important;}
+html[data-device='phone'] #calendar-view .calendar-heading-actions .calendar-sidebar-toggle>span.icon{display:block!important;}
+html[data-device='phone'] #calendar-view .calendar-back-button,
+html[data-device='phone'] #calendar-view .calendar-back-button .icon,
+html[data-device='phone'] #calendar-view .cal-prev-icon,
+html[data-device='phone'] #calendar-view .cal-next-icon{transform:none!important;}
+html[data-device='phone'] #calendar-view .calendar-heading-actions .calendar-back-button{position:static!important;inset:auto!important;margin:0!important;}
+/* When there is no connected source, + already opens calendar management.
+   Avoid showing two management actions next to the back button. */
+html[data-device='phone'] #calendar-view .calendar-heading-actions:has(#cal-empty-add:not([hidden])) #cal-sidebar-toggle{display:none!important;}
 
-/* ----------------------------- portrait ----------------------------- */
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-shell{
-  padding:max(8px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left))!important
+/* Phone calendar controls use three coherent rails: actions, navigation and view. */
+html[data-device='phone'] #calendar-view .calendar-heading-actions,
+html[data-device='phone'] #calendar-view .calendar-navigation{
+  padding:2px!important;
+  border:1px solid color-mix(in srgb,var(--line) 72%,transparent)!important;
+  border-radius:999px!important;
+  background:color-mix(in srgb,var(--surface-2) 34%,transparent)!important;
+  box-shadow:0 1px 0 color-mix(in srgb,#fff 3%,transparent) inset!important;
 }
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-heading-combined{
-  display:grid!important;
-  grid-template-columns:minmax(0,1fr) auto!important;
-  grid-template-areas:
-    'brand actions'
-    'title title'
-    'toolbar toolbar'!important;
-  align-items:center!important;
-  column-gap:8px!important;
-  row-gap:5px!important;
-  padding:0 0 6px!important;
-  margin:0!important
+html[data-device='phone'] #calendar-view :is(.calendar-heading-actions .icon-button,.calendar-heading-actions .secondary-button,.calendar-navigation .icon-button,.calendar-navigation .secondary-button){
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  border:0!important;background:transparent!important;color:var(--muted)!important;
+  box-shadow:none!important;transform:none!important;
 }
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-brand-lockup{
-  grid-area:brand!important;
-  min-width:0!important
+html[data-device='phone'] #calendar-view :is(.calendar-heading-actions .icon-button,.calendar-heading-actions .secondary-button,.calendar-navigation .icon-button,.calendar-navigation .secondary-button):is(:hover,:focus-visible,:active){
+  background:var(--accent-soft)!important;color:var(--ink)!important;transform:none!important;
 }
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-brand-lockup .brand-home-link{
-  min-width:0!important;
-  padding:0!important;
-  gap:8px!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-brand-lockup .brand-logo-image{
-  width:28px!important;
-  height:28px!important;
-  flex:0 0 28px!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-brand-lockup .brand-home-name{
-  font-size:19px!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-brand-lockup .brand-home-tagline{
-  font-size:8.5px!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-title-copy{
-  grid-area:title!important;
-  min-width:0!important;
-  padding:0!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-period-button{
-  max-width:100%!important;
-  padding:0!important;
-  min-height:27px!important;
-  display:inline-flex!important;
-  align-items:center!important;
-  gap:7px!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-period-title{
-  display:block!important;
-  min-width:0!important;
-  max-width:calc(100vw - 58px)!important;
-  overflow:hidden!important;
-  text-overflow:ellipsis!important;
-  white-space:nowrap!important;
-  font:400 clamp(19px,5.5vw,24px)/1.08 var(--serif)!important;
-  letter-spacing:-.025em!important;
-  text-transform:capitalize!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-period-icon{
-  width:15px!important;
-  height:15px!important;
-  flex:0 0 15px!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-heading-actions{
-  grid-area:actions!important;
-  gap:4px!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-heading-actions .calendar-sidebar-toggle,
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-back-button{
-  display:inline-flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  width:34px!important;
-  min-width:34px!important;
-  height:34px!important;
-  min-height:34px!important;
-  padding:0!important;
-  border-radius:50%!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-toolbar{
-  grid-area:toolbar!important;
-  width:100%!important;
-  min-width:0!important;
-  display:grid!important;
-  grid-template-columns:auto minmax(0,1fr)!important;
-  align-items:center!important;
-  justify-content:stretch!important;
-  gap:6px!important;
-  padding:0!important;
-  margin:0!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-navigation{
-  display:grid!important;
-  grid-template-columns:30px auto 30px!important;
-  gap:2px!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-navigation .icon-button{
-  width:30px!important;
-  min-width:30px!important;
-  height:30px!important;
-  min-height:30px!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-navigation .secondary-button{
-  width:auto!important;
-  min-width:40px!important;
-  min-height:30px!important;
-  height:30px!important;
-  padding:0 6px!important;
-  font-size:9px!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-views{
-  width:100%!important;
-  min-width:0!important;
+html[data-device='phone'] #calendar-view .calendar-navigation .secondary-button{color:var(--ink)!important;border-radius:999px!important;}
+html[data-device='phone'] #calendar-view #cal-empty-add{color:var(--accent)!important;}
+html[data-device='phone'] #calendar-view #cal-sidebar-toggle[aria-expanded='true']{background:var(--accent-soft)!important;color:var(--ink)!important;}
+html[data-device='phone'] #calendar-view .calendar-views{
   display:grid!important;
   grid-template-columns:repeat(5,minmax(0,1fr))!important;
-  gap:1px!important;
-  padding:2px!important;
-  overflow:visible!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-views button{
-  width:auto!important;
   min-width:0!important;
-  height:30px!important;
-  min-height:30px!important;
-  padding:0 2px!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  font-size:clamp(7.5px,2.25vw,9px)!important;
-  line-height:1!important;
-  overflow:hidden!important;
-  text-overflow:clip!important
-}
-
-/* Portrait month: real calendar geometry, event markers rather than crushed text. */
-html[data-viewport-layout='phone-portrait'] #calendar-view #cal-content>.calendar-month{
-  width:100%!important;
-  height:100%!important;
-  min-height:0!important;
-  border-radius:11px!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-weekdays span{
-  padding:7px 1px!important;
-  font-size:9px!important;
-  line-height:1!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-grid{
-  height:auto!important;
-  min-height:0!important;
-  grid-template-rows:repeat(var(--month-weeks,6),minmax(0,1fr))!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-cell{
-  min-height:0!important;
-  padding:3px 2px!important;
-  overflow:hidden!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-day-number{
-  width:25px!important;
-  min-width:25px!important;
-  height:25px!important;
-  min-height:25px!important;
-  margin:0 auto 2px!important;
-  font-size:12px!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-cell>.calendar-event{
-  width:calc(100% - 8px)!important;
-  height:4px!important;
-  min-height:4px!important;
-  margin:2px 4px!important;
-  padding:0!important;
-  border:0!important;
-  border-radius:999px!important;
-  background:var(--event-color)!important;
-  color:transparent!important;
-  font-size:0!important;
-  line-height:0!important;
-  opacity:.78!important;
-  overflow:hidden!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-cell>.calendar-event .event-time{
-  display:none!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-more{
-  width:calc(100% - 8px)!important;
-  min-height:3px!important;
-  height:3px!important;
-  margin:1px 4px 0!important;
-  padding:0!important;
-  border-radius:999px!important;
-  background:color-mix(in srgb,var(--accent) 68%,transparent)!important;
-  color:transparent!important;
-  font-size:0!important;
-  line-height:0!important;
-  overflow:hidden!important
-}
-
-/* Portrait year / week / day / agenda become scrollable mobile reading surfaces. */
-html[data-viewport-layout='phone-portrait'] #calendar-view #cal-content>.calendar-year{
-  height:auto!important;
-  min-height:0!important;
-  grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  gap:8px!important;
-  padding:1px 0 12px!important;
-  overflow:visible!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-mini{
-  padding:7px 4px!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-mini h2{
-  padding:0 1px 5px!important;
-  margin-bottom:4px!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-mini h2 button{
-  font-size:12.5px!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-mini-weekdays span{
-  font-size:7px!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-mini-grid{
-  row-gap:3px!important;
-  column-gap:1px!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-mini-grid button{
-  width:clamp(18px,5vw,22px)!important;
-  min-width:18px!important;
-  height:clamp(18px,5vw,22px)!important;
-  min-height:18px!important;
-  font-size:9px!important;
-  line-height:1!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view #cal-content>.calendar-week{
-  display:grid!important;
-  grid-template-columns:1fr!important;
-  gap:7px!important;
-  width:100%!important;
-  min-height:0!important;
-  height:auto!important;
   overflow:visible!important;
-  padding-bottom:10px!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-week-day{
-  min-height:0!important;
-  width:100%!important;
-  display:grid!important;
-  grid-template-columns:50px minmax(0,1fr)!important;
-  align-items:start!important;
-  gap:0 9px!important;
-  padding:8px 9px!important;
-  overflow:visible!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-week-date{
-  grid-column:1!important;
-  grid-row:1 / span 100!important;
-  margin:0!important;
-  padding:3px 0!important;
-  border:0!important;
-  text-align:left!important;
-  font-size:9.5px!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-week-date strong{
-  margin-top:3px!important;
-  font-size:23px!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-week-day .calendar-week-event,
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-week-day .calendar-empty-day{
-  grid-column:2!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-week-day .calendar-week-event{
-  height:auto!important;
-  min-height:0!important;
-  margin:2px 0!important;
-  padding:6px 7px!important;
-  font-size:10.5px!important;
-  line-height:1.2!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-week-day .calendar-week-event .event-time{
-  display:block!important;
-  font-size:8px!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-day-view{
-  width:100%!important;
-  max-width:none!important;
-  min-height:0!important;
-  margin:0!important;
-  padding:7px 2px 18px!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-day-view-head{
-  grid-template-columns:minmax(0,1fr) auto!important;
-  align-items:end!important;
-  gap:10px!important;
-  padding:2px 2px 10px!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-day-date-number{
-  font-size:42px!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-day-weekday{
-  font-size:9px!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-day-month{
-  font-size:15px!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-day-summary{
-  justify-items:end!important;
-  text-align:right!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-day-events .calendar-agenda-row,
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-agenda-row{
-  grid-template-columns:68px minmax(0,1fr)!important;
-  gap:8px!important;
-  padding:10px 1px!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view #cal-content>.calendar-agenda{
-  width:100%!important;
-  max-width:none!important;
-  height:auto!important;
-  min-height:0!important;
-  margin:0!important;
-  padding:3px 2px 18px!important;
-  gap:16px!important;
-  overflow:visible!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-agenda-day h2{
-  margin-bottom:6px!important;
-  font-size:16px!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-agenda-row time{
-  font-size:9px!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-agenda-row strong{
-  font-size:11.5px!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-agenda-row small{
-  font-size:8.5px!important
-}
-html[data-viewport-layout='phone-portrait'] #calendar-view .calendar-sidebar{
-  width:min(300px,calc(100vw - 24px))!important;
-  padding:14px!important;
-  border-radius:13px!important
-}
-
-/* ----------------------------- landscape ----------------------------- */
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-shell{
-  padding:max(5px,env(safe-area-inset-top)) max(9px,env(safe-area-inset-right)) max(7px,env(safe-area-inset-bottom)) max(9px,env(safe-area-inset-left))!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-heading-combined{
-  display:grid!important;
-  grid-template-columns:auto minmax(90px,1fr) auto!important;
-  grid-template-areas:
-    'brand title actions'
-    'toolbar toolbar toolbar'!important;
-  align-items:center!important;
-  column-gap:8px!important;
-  row-gap:3px!important;
-  padding:0 0 4px!important;
-  margin:0!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-brand-lockup{
-  grid-area:brand!important;
-  min-width:0!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-brand-lockup .brand-home-link{
-  padding:0!important;
-  gap:6px!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-brand-lockup .brand-logo-image{
-  width:23px!important;
-  height:23px!important;
-  flex:0 0 23px!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-brand-lockup .brand-home-name{
-  font-size:16px!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-brand-lockup .brand-home-tagline{
-  display:none!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-title-copy{
-  grid-area:title!important;
-  min-width:0!important;
-  padding:0!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-period-button{
-  width:100%!important;
-  min-height:24px!important;
-  padding:0!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  gap:5px!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-period-title{
-  min-width:0!important;
-  max-width:100%!important;
-  overflow:hidden!important;
-  white-space:nowrap!important;
-  text-overflow:ellipsis!important;
-  font:400 clamp(14px,3.4vh,17px)/1 var(--serif)!important;
-  letter-spacing:-.02em!important;
-  text-transform:capitalize!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-period-icon{
-  width:12px!important;
-  height:12px!important;
-  flex:0 0 12px!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-heading-actions{
-  grid-area:actions!important;
-  gap:3px!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-heading-actions .calendar-sidebar-toggle,
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-back-button{
-  display:inline-flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  width:29px!important;
-  min-width:29px!important;
-  height:29px!important;
-  min-height:29px!important;
-  padding:0!important;
-  border-radius:50%!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-heading-actions .icon{
-  width:13px!important;
-  height:13px!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-toolbar{
-  grid-area:toolbar!important;
-  width:100%!important;
-  min-width:0!important;
-  display:grid!important;
-  grid-template-columns:auto minmax(0,1fr)!important;
-  align-items:center!important;
-  gap:7px!important;
-  padding:0!important;
-  margin:0!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-navigation{
-  display:grid!important;
-  grid-template-columns:28px auto 28px!important;
-  gap:2px!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-navigation .icon-button{
-  width:28px!important;
-  min-width:28px!important;
-  height:28px!important;
-  min-height:28px!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-navigation .secondary-button{
-  width:auto!important;
-  min-width:38px!important;
-  height:28px!important;
-  min-height:28px!important;
-  padding:0 6px!important;
-  font-size:8px!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-views{
-  width:100%!important;
-  min-width:0!important;
-  display:grid!important;
-  grid-template-columns:repeat(5,minmax(0,1fr))!important;
-  gap:1px!important;
-  padding:2px!important;
-  overflow:visible!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-views button{
-  width:auto!important;
-  min-width:0!important;
-  height:28px!important;
-  min-height:28px!important;
-  padding:0 3px!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  font-size:clamp(7px,2.15vh,8.5px)!important;
-  line-height:1!important;
-  overflow:hidden!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-layout{
-  padding-top:4px!important
-}
-
-/* Landscape month uses the wide axis for titles but protects the short axis. */
-html[data-viewport-layout='phone-landscape'] #calendar-view #cal-content>.calendar-month{
-  width:100%!important;
-  height:100%!important;
-  min-height:0!important;
-  border-radius:9px!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-weekdays span{
-  padding:4px 2px!important;
-  font-size:8px!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-grid{
-  height:auto!important;
-  min-height:0!important;
-  grid-template-rows:repeat(var(--month-weeks,6),minmax(0,1fr))!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-cell{
-  min-height:0!important;
-  padding:2px 3px!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-day-number{
-  width:20px!important;
-  min-width:20px!important;
-  height:20px!important;
-  min-height:20px!important;
-  margin:0 0 1px!important;
-  font-size:9px!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-cell>.calendar-event{
-  width:100%!important;
-  height:13px!important;
-  min-height:13px!important;
-  margin:1px 0!important;
-  padding:1px 3px!important;
-  border:0!important;
-  border-left:2px solid var(--event-color)!important;
-  border-radius:3px!important;
-  background:color-mix(in srgb,var(--event-color) 7%,transparent)!important;
-  font-size:7px!important;
-  line-height:11px!important;
-  white-space:nowrap!important;
-  overflow:hidden!important;
-  text-overflow:ellipsis!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-cell>.calendar-event .event-time{
-  display:none!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-more{
-  min-height:2px!important;
-  height:2px!important;
-  margin:1px 0 0!important;
-  padding:0!important;
-  background:color-mix(in srgb,var(--accent) 62%,transparent)!important;
-  color:transparent!important;
+  border:1px solid color-mix(in srgb,var(--line) 82%,transparent)!important;
+  background:color-mix(in srgb,var(--surface-2) 35%,transparent)!important;
   border-radius:999px!important;
-  font-size:0!important;
-  line-height:0!important;
-  overflow:hidden!important
+}
+html[data-device='phone'] #calendar-view .calendar-views button{
+  width:auto!important;min-width:0!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  border-radius:999px!important;
+  color:var(--muted)!important;background:transparent!important;
+  white-space:nowrap!important;overflow:hidden!important;text-overflow:clip!important;
+}
+html[data-device='phone'] #calendar-view .calendar-views button[aria-pressed='true']{
+  background:var(--surface)!important;
+  color:var(--ink)!important;
+  box-shadow:0 2px 12px color-mix(in srgb,#000 12%,transparent)!important;
 }
 
-html[data-viewport-layout='phone-landscape'] #calendar-view #cal-content>.calendar-year{
-  height:auto!important;
-  min-height:0!important;
-  grid-template-columns:repeat(4,minmax(0,1fr))!important;
-  gap:5px 6px!important;
-  padding:0 0 8px!important;
-  overflow:visible!important
+/* Calendar source list is always a real right drawer on phones. */
+html[data-device='phone'] #calendar-view .calendar-sidebar{
+  position:fixed!important;z-index:30!important;top:0!important;right:0!important;bottom:0!important;left:auto!important;
+  width:min(86vw,360px)!important;max-width:calc(100vw - 30px)!important;height:100dvh!important;max-height:100dvh!important;
+  display:flex!important;flex-direction:column!important;
+  transform:translateX(calc(100% + 28px))!important;transition:transform .28s cubic-bezier(.2,.75,.2,1)!important;
 }
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-mini{
-  padding:4px 3px!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-mini h2{
-  padding:0 1px 3px!important;
-  margin-bottom:2px!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-mini h2 button{
-  font-size:9px!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-mini-weekdays span{
-  font-size:5.5px!important;
-  padding-bottom:1px!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-mini-grid{
-  row-gap:1px!important;
-  column-gap:0!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-mini-grid button{
-  width:14px!important;
-  min-width:14px!important;
-  height:14px!important;
-  min-height:14px!important;
-  font-size:6.5px!important;
-  line-height:1!important
-}
+html[data-device='phone'] #calendar-view.sidebar-open .calendar-sidebar{transform:translateX(0)!important;}
+html[data-device='phone'] #calendar-view .calendar-sidebar-head{padding-top:max(16px,env(safe-area-inset-top))!important;}
 
-/* Landscape week: seven compact columns, independently scrollable as a surface. */
-html[data-viewport-layout='phone-landscape'] #calendar-view #cal-content>.calendar-week{
-  width:100%!important;
-  min-width:0!important;
-  height:100%!important;
-  min-height:0!important;
+/* Portrait header: brand/actions, then period/navigation, then views. */
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-shell{
+  padding:max(8px,env(safe-area-inset-top)) max(9px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(9px,env(safe-area-inset-left))!important;
+}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-heading-combined{
   display:grid!important;
-  grid-template-columns:repeat(7,minmax(0,1fr))!important;
-  gap:4px!important;
-  overflow:visible!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-week-day{
-  min-width:0!important;
-  min-height:0!important;
-  height:100%!important;
-  padding:5px 4px!important;
-  border-radius:7px!important;
-  overflow:auto!important;
-  -webkit-overflow-scrolling:touch!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-week-date{
-  margin:0 0 3px!important;
-  padding:1px 0 4px!important;
-  font-size:7px!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-week-date strong{
-  margin-top:1px!important;
-  font-size:17px!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-week-day .calendar-week-event{
-  min-height:0!important;
-  margin:2px 0!important;
-  padding:4px 4px!important;
-  font-size:7.5px!important;
-  line-height:1.14!important;
-  overflow-wrap:anywhere!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-week-day .calendar-week-event .event-time{
-  display:block!important;
-  margin-bottom:1px!important;
-  font-size:6.5px!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-week-day .calendar-week-event .week-event-source{
-  display:none!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-empty-day{
-  font-size:7px!important;
-  line-height:1.2!important
-}
-
-/* Landscape day: date/summary on the left, appointments on the right. */
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-day-view{
-  width:100%!important;
-  max-width:none!important;
-  height:100%!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  grid-template-areas:'brand actions' 'title nav' 'views views'!important;
+  align-items:center!important;
+  column-gap:7px!important;row-gap:4px!important;
   min-height:0!important;
   margin:0!important;
-  padding:3px 0 2px!important;
+  padding:0 1px 6px!important;
+  border-bottom:1px solid color-mix(in srgb,var(--line) 66%,transparent)!important;
+}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-brand-lockup{grid-area:brand!important;min-width:0!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-brand-lockup .brand-home-link{gap:7px!important;padding:2px!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-brand-lockup .brand-logo-image{width:23px!important;height:23px!important;flex-basis:23px!important;border-radius:7px!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-brand-lockup .brand-home-copy{min-height:23px!important;gap:1px!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-brand-lockup .brand-home-name{font-size:17px!important;line-height:1!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-brand-lockup .brand-home-tagline{font-size:7.5px!important;line-height:1!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-heading-actions{grid-area:actions!important;display:flex!important;gap:1px!important;align-items:center!important;position:static!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-heading-actions .calendar-add-shortcut{
+  display:inline-flex!important;width:30px!important;min-width:30px!important;height:30px!important;min-height:30px!important;padding:0!important;border-radius:50%!important;font-size:0!important;
+}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-heading-actions .calendar-add-shortcut[hidden]{display:none!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-heading-actions .calendar-sidebar-toggle,
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-back-button{
+  display:inline-flex!important;width:30px!important;min-width:30px!important;height:30px!important;min-height:30px!important;padding:0!important;border-radius:50%!important;
+}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-heading-actions .icon{width:15px!important;height:15px!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-title-copy{grid-area:title!important;min-width:0!important;padding:0!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-period-button{display:flex!important;align-items:center!important;gap:5px!important;max-width:100%!important;padding:0!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-period-title{
+  max-width:100%!important;font:400 calc(22px * var(--ui-scale,1))/1 var(--serif)!important;letter-spacing:-.04em!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
+}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-period-icon{width:13px!important;height:13px!important;opacity:.65!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-toolbar{display:contents!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-navigation{grid-area:nav!important;display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:1px!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-navigation .icon-button{
+  width:28px!important;min-width:28px!important;height:28px!important;min-height:28px!important;padding:0!important;border-radius:50%!important;
+}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-navigation .secondary-button{
+  width:auto!important;min-width:42px!important;height:28px!important;min-height:28px!important;padding:0 7px!important;font-size:8.5px!important;
+}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-views{grid-area:views!important;width:100%!important;padding:2px!important;gap:1px!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-views button{
+  height:32px!important;min-height:32px!important;padding:0 2px!important;font-size:clamp(8.2px,2.35vw,9.6px)!important;line-height:1!important;
+}
+
+/* Portrait content. */
+html[data-device='phone'][data-orientation='portrait'] #calendar-view #cal-content>.calendar-year{
+  width:100%!important;height:auto!important;min-height:0!important;
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;padding:0 0 12px!important;overflow:visible!important;
+}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view #cal-content>.calendar-year .calendar-mini{min-height:158px!important;padding:8px 6px 7px!important;border-radius:13px!important;overflow:hidden!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view #cal-content>.calendar-year .calendar-mini h2{padding:0 1px 5px!important;margin-bottom:4px!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view #cal-content>.calendar-year .calendar-mini h2 button{font-size:calc(14px * var(--ui-scale,1))!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view #cal-content>.calendar-year .calendar-mini-weekdays{margin:0 0 3px!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view #cal-content>.calendar-year .calendar-mini-weekdays span{font-size:calc(6.8px * var(--ui-scale,1))!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view #cal-content>.calendar-year .calendar-mini-grid{gap:2px!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view #cal-content>.calendar-year .calendar-mini-grid button{
+  width:clamp(17px,4.7vw,19px)!important;height:clamp(17px,4.7vw,19px)!important;min-width:17px!important;min-height:17px!important;line-height:1!important;font-size:calc(8.2px * var(--ui-scale,1))!important;
+}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view #cal-content>.calendar-month{width:100%!important;height:100%!important;min-height:0!important;border-radius:13px!important;overflow:hidden!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-weekdays span{padding:6px 1px!important;font-size:calc(8px * var(--ui-scale,1))!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-grid{min-height:0!important;height:calc(100% - 29px)!important;grid-template-rows:repeat(var(--month-weeks,6),minmax(44px,1fr))!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-cell{min-height:0!important;padding:3px 2px!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-day-number{width:25px!important;min-width:25px!important;height:25px!important;min-height:25px!important;margin:0 auto 1px!important;font-size:calc(9.5px * var(--ui-scale,1))!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-cell>.calendar-event{
+  width:5px!important;height:5px!important;min-width:5px!important;min-height:5px!important;margin:2px auto 0!important;padding:0!important;border:0!important;border-radius:50%!important;background:var(--event-color)!important;color:transparent!important;font-size:0!important;overflow:hidden!important;
+}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-cell>.calendar-event .event-time{display:none!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-more{width:10px!important;height:2px!important;min-height:2px!important;margin:2px auto 0!important;padding:0!important;border:0!important;border-radius:999px!important;background:color-mix(in srgb,var(--accent) 65%,transparent)!important;color:transparent!important;font-size:0!important;overflow:hidden!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view #cal-content>.calendar-week{display:grid!important;grid-template-columns:1fr!important;gap:6px!important;padding-bottom:10px!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-week-day{min-height:0!important;padding:8px 9px!important;display:grid!important;grid-template-columns:48px minmax(0,1fr)!important;gap:0 8px!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-week-date{grid-row:1/span 50!important;padding:2px 0!important;text-align:left!important;font-size:calc(8.5px * var(--ui-scale,1))!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-week-date strong{font-size:calc(22px * var(--ui-scale,1))!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-week-day .calendar-week-event,
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-week-day .calendar-empty-day{grid-column:2!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-week-day .calendar-week-event{margin:2px 0!important;padding:5px 6px!important;font-size:calc(9px * var(--ui-scale,1))!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-day-view{padding:5px 1px 16px!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-day-view-head{grid-template-columns:minmax(0,1fr)!important;gap:5px!important;padding-bottom:9px!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-day-date-number{font-size:calc(38px * var(--ui-scale,1))!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-day-summary{justify-items:start!important;text-align:left!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-day-events .calendar-agenda-row,
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-agenda-row{grid-template-columns:68px minmax(0,1fr)!important;gap:8px!important;padding:9px 1px!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view #cal-content>.calendar-agenda{width:100%!important;max-width:none!important;gap:14px!important;padding:2px 0 14px!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-agenda-day h2{margin-bottom:5px!important;font-size:calc(15px * var(--ui-scale,1))!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-agenda-row time{font-size:calc(8px * var(--ui-scale,1))!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-agenda-row strong{font-size:calc(10px * var(--ui-scale,1))!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-agenda-row small{font-size:calc(7.5px * var(--ui-scale,1))!important;}
+
+/* Landscape header: one compact identity row and one control row. */
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-shell{
+  padding:max(4px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(5px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))!important;
+}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-heading-combined{
   display:grid!important;
-  grid-template-columns:minmax(145px,22vw) minmax(0,1fr)!important;
-  grid-template-rows:minmax(0,1fr)!important;
-  gap:10px!important;
-  overflow:hidden!important
+  grid-template-columns:auto minmax(0,1fr) auto!important;
+  grid-template-areas:'brand title actions' 'nav views views'!important;
+  align-items:center!important;
+  gap:4px 8px!important;
+  margin:0!important;padding:0 1px 5px!important;
+  border-bottom:1px solid color-mix(in srgb,var(--line) 60%,transparent)!important;
 }
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-day-view-head{
-  min-width:0!important;
-  min-height:0!important;
-  display:flex!important;
-  flex-direction:column!important;
-  justify-content:center!important;
-  align-items:flex-start!important;
-  gap:8px!important;
-  padding:5px 10px 5px 3px!important;
-  border-bottom:0!important;
-  border-right:1px solid var(--line)!important
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-brand-lockup{grid-area:brand!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-brand-lockup .brand-home-link{gap:5px!important;padding:1px!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-brand-lockup .brand-logo-image{width:22px!important;height:22px!important;flex-basis:22px!important;border-radius:6px!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-brand-lockup .brand-home-copy{min-height:22px!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-brand-lockup .brand-home-name{font-size:16px!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-brand-lockup .brand-home-tagline{display:none!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-title-copy{grid-area:title!important;min-width:0!important;padding:0!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-period-button{display:flex!important;align-items:center!important;gap:4px!important;padding:0!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-period-title{max-width:100%!important;font:400 calc(18px * var(--ui-scale,1))/1 var(--serif)!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-period-icon{width:11px!important;height:11px!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-heading-actions{grid-area:actions!important;display:flex!important;gap:1px!important;position:static!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-heading-actions .calendar-add-shortcut,
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-heading-actions .calendar-sidebar-toggle,
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-back-button{
+  display:inline-flex!important;width:30px!important;min-width:30px!important;height:30px!important;min-height:30px!important;padding:0!important;border-radius:50%!important;font-size:0!important;
 }
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-day-date-number{
-  font-size:39px!important
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-heading-actions .calendar-add-shortcut[hidden]{display:none!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-heading-actions .icon{width:13px!important;height:13px!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-toolbar{display:contents!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-navigation{grid-area:nav!important;display:flex!important;gap:3px!important;align-items:center!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-navigation .icon-button{width:29px!important;min-width:29px!important;height:29px!important;min-height:29px!important;border-radius:50%!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-navigation .secondary-button{width:auto!important;min-width:38px!important;height:29px!important;min-height:29px!important;padding:0 6px!important;font-size:7.5px!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-views{grid-area:views!important;width:100%!important;padding:2px!important;gap:1px!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-views button{height:29px!important;min-height:29px!important;padding:0 2px!important;font-size:clamp(7px,2.2vh,8.5px)!important;line-height:1!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-layout{padding-top:4px!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view #cal-content>.calendar-year{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-auto-rows:auto!important;gap:6px!important;padding-bottom:8px!important;overflow:visible!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view #cal-content>.calendar-year .calendar-mini{min-height:118px!important;padding:5px 5px!important;border-radius:10px!important;overflow:hidden!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view #cal-content>.calendar-year .calendar-mini h2{padding:0 1px 2px!important;margin-bottom:2px!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view #cal-content>.calendar-year .calendar-mini h2 button{font-size:calc(10.5px * var(--ui-scale,1))!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view #cal-content>.calendar-year .calendar-mini-weekdays{margin:0 0 1px!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view #cal-content>.calendar-year .calendar-mini-weekdays span{font-size:calc(5.8px * var(--ui-scale,1))!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view #cal-content>.calendar-year .calendar-mini-grid{gap:0!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view #cal-content>.calendar-year .calendar-mini-grid button{width:14px!important;height:14px!important;min-width:14px!important;min-height:14px!important;line-height:1!important;font-size:calc(6.7px * var(--ui-scale,1))!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view #cal-content>.calendar-month{height:100%!important;min-height:0!important;border-radius:9px!important;overflow:hidden!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-weekdays span{padding:3px 1px!important;font-size:7px!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-grid{height:calc(100% - 23px)!important;min-height:0!important;grid-template-rows:repeat(var(--month-weeks,6),minmax(0,1fr))!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-cell{min-height:0!important;padding:1px 2px!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-day-number{width:19px!important;min-width:19px!important;height:19px!important;min-height:19px!important;margin:0 0 1px!important;font-size:8px!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-cell>.calendar-event{width:100%!important;height:12px!important;min-height:12px!important;margin:1px 0!important;padding:1px 3px!important;border:0!important;border-left:2px solid var(--event-color)!important;border-radius:3px!important;background:color-mix(in srgb,var(--event-color) 7%,transparent)!important;font-size:6.5px!important;line-height:10px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-cell>.calendar-event .event-time{display:none!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-more{height:2px!important;min-height:2px!important;margin:1px 0 0!important;padding:0!important;background:color-mix(in srgb,var(--accent) 62%,transparent)!important;color:transparent!important;border-radius:999px!important;font-size:0!important;line-height:0!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view #cal-content>.calendar-week{display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr))!important;gap:4px!important;padding-bottom:4px!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-week-day{display:block!important;min-height:0!important;height:100%!important;padding:4px 3px!important;overflow:hidden!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-week-date{padding:1px 0 4px!important;text-align:center!important;font-size:6.5px!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-week-date strong{font-size:14px!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-week-day .calendar-week-event{padding:3px!important;margin:2px 0!important;font-size:6.5px!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-week-event .week-event-source{display:none!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-day-view{height:100%!important;display:grid!important;grid-template-columns:minmax(155px,.7fr) minmax(0,1.3fr)!important;gap:12px!important;padding:4px 2px 7px!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-day-view-head{display:block!important;padding:7px 10px!important;border-right:1px solid var(--line)!important;border-bottom:0!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-day-date-number{font-size:34px!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-day-events{overflow-y:auto!important;padding-right:3px!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-day-events .calendar-agenda-row{grid-template-columns:56px minmax(0,1fr)!important;padding:6px 1px!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view #cal-content>.calendar-agenda{gap:10px!important;padding:1px 2px 8px!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-agenda-day h2{font-size:12px!important;margin-bottom:3px!important;}
+html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-agenda-row{grid-template-columns:60px minmax(0,1fr)!important;gap:6px!important;padding:6px 0!important;}
+
+/* ========================================================================== */
+/* TABLET                                                                     */
+/* ========================================================================== */
+html[data-device='tablet']{
+  --responsive-edge:clamp(18px,3vw,34px);
+  --touch-target:44px;
 }
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-day-weekday{
-  font-size:8px!important
+html[data-device='tablet'] #app-shell{padding-inline:var(--responsive-edge)!important;}
+html[data-device='tablet'] #app-shell .dashboard-lower{width:min(94vw,1240px)!important;max-width:calc(100vw - 28px)!important;}
+html[data-device='tablet'] .panel,html[data-device='tablet'] dialog.panel{max-height:calc(100dvh - 18px)!important;}
+html[data-device='tablet'] #calendar-view .calendar-view-label,
+html[data-device='tablet'] #calendar-view .calendar-today-label{display:inline!important;}
+html[data-device='tablet'] #calendar-view .calendar-view-glyph{display:none!important;}
+html[data-device='tablet'] #calendar-view .calendar-heading-combined{
+  display:grid!important;grid-template-columns:auto minmax(0,1fr) auto!important;grid-template-areas:'brand title actions' 'toolbar toolbar toolbar'!important;gap:8px 14px!important;align-items:center!important;
 }
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-day-month{
-  font-size:13px!important
+html[data-device='tablet'] #calendar-view .calendar-toolbar{grid-area:toolbar!important;width:100%!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;}
+html[data-device='tablet'] #calendar-view .calendar-navigation{flex:0 0 auto!important;}
+html[data-device='tablet'] #calendar-view .calendar-views{flex:1 1 auto!important;max-width:620px!important;margin-left:auto!important;}
+html[data-device='tablet'] #calendar-view .calendar-views button{width:auto!important;min-width:0!important;padding-inline:10px!important;font-size:calc(10.5px * var(--ui-scale,1))!important;}
+html[data-device='tablet'][data-orientation='portrait'] #calendar-view #cal-content>.calendar-year{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:9px!important;}
+html[data-device='tablet'][data-orientation='landscape'] #calendar-view #cal-content>.calendar-year{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;}
+html[data-device='tablet'][data-orientation='portrait'] #app-shell .active-info-strip{grid-template-columns:28% 72%!important;grid-template-rows:auto auto!important;max-height:none!important;}
+html[data-device='tablet'][data-orientation='portrait'] #app-shell .active-info-strip>#environment-line{grid-column:1!important;grid-row:1!important;}
+html[data-device='tablet'][data-orientation='portrait'] #app-shell .active-info-strip>#goal-strip{grid-column:2!important;grid-row:1!important;}
+html[data-device='tablet'][data-orientation='portrait'] #app-shell .active-info-strip>#upcoming-event{grid-column:1/-1!important;grid-row:2!important;min-height:48px!important;height:48px!important;border-top:1px solid var(--line)!important;}
+
+/* ========================================================================== */
+/* COMPUTER                                                                   */
+/* ========================================================================== */
+html[data-device='computer']{
+  --responsive-edge:clamp(24px,3vw,48px);
+  --touch-target:42px;
 }
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-day-summary{
-  justify-items:start!important;
-  text-align:left!important;
-  gap:2px!important
+html[data-device='computer'] #app-shell{padding-inline:var(--responsive-edge)!important;}
+/* Small laptops must not inherit the legacy icon-only tablet calendar. */
+html[data-device='computer'] #calendar-view .calendar-view-label,
+html[data-device='computer'] #calendar-view .calendar-today-label{display:inline!important;}
+html[data-device='computer'] #calendar-view .calendar-view-glyph{display:none!important;}
+html[data-device='computer'] #calendar-view .calendar-views button{width:auto!important;min-width:0!important;}
+html[data-device='computer'][data-viewport-shape='wide'] #app-shell .dashboard-lower{width:min(86vw,1480px)!important;}
+html[data-device='computer'][data-viewport-shape='tall'] #app-shell .dashboard-lower{width:min(92vw,1320px)!important;}
+
+/* ========================================================================== */
+/* LARGE DISPLAY / TV                                                         */
+/* ========================================================================== */
+html[data-device='display']{
+  --responsive-edge:clamp(38px,4vw,86px);
+  --touch-target:48px;
 }
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-day-summary .section-label{
-  font-size:7px!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-day-summary strong{
-  font-size:9.5px!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-day-events{
-  min-width:0!important;
-  min-height:0!important;
-  height:100%!important;
-  padding:0 3px 0 0!important;
-  overflow:auto!important;
-  -webkit-overflow-scrolling:touch!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-day-events .calendar-agenda-row{
-  grid-template-columns:60px minmax(0,1fr)!important;
-  gap:7px!important;
-  padding:7px 1px!important
+html[data-device='display'] #app-shell{padding-inline:var(--responsive-edge)!important;}
+html[data-device='display'] #app-shell .dashboard-lower,
+html[data-device='display'] #app-shell .bottom-bar .toolbar{width:min(82vw,1900px)!important;}
+html[data-device='display'] #app-shell .toolbar .icon-button{width:48px!important;height:48px!important;}
+html[data-device='display'] #calendar-view .calendar-shell{padding:clamp(26px,2.2vw,52px)!important;}
+html[data-device='display'] #calendar-view .calendar-heading-combined{max-width:1900px!important;margin-inline:auto!important;width:100%!important;}
+html[data-device='display'] #calendar-view .calendar-layout{max-width:1900px!important;margin-inline:auto!important;width:100%!important;}
+html[data-device='display'] #calendar-view .calendar-period-title{font-size:calc(36px * var(--ui-scale,1))!important;}
+html[data-device='display'] #calendar-view .calendar-views button{font-size:calc(13px * var(--ui-scale,1))!important;min-height:42px!important;}
+html[data-device='display'] #calendar-view .calendar-mini h2 button{font-size:calc(17px * var(--ui-scale,1))!important;}
+html[data-device='display'] #calendar-view .calendar-mini-grid button{font-size:calc(11px * var(--ui-scale,1))!important;}
+html[data-device='display'] #sky-body{width:clamp(170px,9vw,260px)!important;height:clamp(170px,9vw,260px)!important;}
+html[data-device='display'] .celestial-sky[data-period=day] #sky-body{width:clamp(190px,10vw,290px)!important;height:clamp(190px,10vw,290px)!important;}
+
+/* ========================================================================== */
+/* ASPECT INDEX REFINEMENTS                                                   */
+/* ========================================================================== */
+/* Extremely tall phones prioritize phrase + three lower rows. */
+html[data-device='phone'][data-viewport-shape='tall'][data-orientation='portrait'] #app-shell .thought-block{margin-top:clamp(8px,1.5vh,15px)!important;}
+html[data-device='phone'][data-viewport-shape='tall'][data-orientation='portrait'] #app-shell .quote-wrap blockquote{line-height:1.22!important;}
+
+/* Ultrawide computer/display keeps the composition centered instead of
+   stretching the quote and information strip indefinitely. */
+html[data-viewport-shape='ultrawide'] #app-shell .thought-block{max-width:min(1100px,52vw)!important;}
+html[data-viewport-shape='ultrawide'] #app-shell .dashboard-lower{max-width:1700px!important;}
+
+/* Very short landscape phone: hide secondary labels before shrinking content. */
+@media (max-height:390px){
+  html[data-device='phone'][data-orientation='landscape'] #app-shell .date-label,
+  html[data-device='phone'][data-orientation='landscape'] #app-shell .phrase-meta{font-size:7px!important;}
+  html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-brand-lockup .brand-home-name{font-size:15px!important;}
+  html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-period-title{font-size:16px!important;}
+  html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-views button{height:27px!important;min-height:27px!important;}
+  html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-navigation .icon-button,
+  html[data-device='phone'][data-orientation='landscape'] #calendar-view .calendar-navigation .secondary-button{height:27px!important;min-height:27px!important;}
 }
 
-/* Landscape agenda stays chronological and uses the full width. */
-html[data-viewport-layout='phone-landscape'] #calendar-view #cal-content>.calendar-agenda{
-  width:100%!important;
-  max-width:none!important;
-  height:auto!important;
-  min-height:0!important;
-  margin:0!important;
-  padding:2px 3px 10px!important;
-  display:grid!important;
-  gap:10px!important;
-  overflow:visible!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-agenda-day h2{
-  margin:0 0 3px!important;
-  font-size:12px!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-agenda-row{
-  grid-template-columns:58px minmax(0,1fr)!important;
-  gap:7px!important;
-  padding:6px 0!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-agenda-row time{
-  font-size:8px!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-agenda-row strong{
-  font-size:10px!important;
-  line-height:1.25!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-agenda-row small{
-  font-size:7.5px!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-sidebar{
-  width:min(285px,42vw)!important;
-  padding:10px!important;
-  border-radius:10px!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-sidebar-head{
-  margin-bottom:5px!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-source-toggle{
-  padding:6px 0!important;
-  font-size:9px!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-local-note,
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-sync-status{
-  margin-top:7px!important;
-  font-size:7.5px!important;
-  line-height:1.3!important
-}
-html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-sidebar-actions .primary-button{
-  min-height:30px!important;
-  padding:5px 8px!important;
-  font-size:8px!important
-}
-
-/* Very short landscape phones: keep content, reduce chrome one more step. */
-@media (orientation:landscape) and (max-height:390px){
-  html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-heading-combined{row-gap:2px!important}
-  html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-brand-lockup .brand-home-copy{display:none!important}
-  html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-period-title{font-size:14px!important}
-  html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-navigation{grid-template-columns:26px auto 26px!important}
-  html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-navigation .icon-button{width:26px!important;min-width:26px!important;height:26px!important;min-height:26px!important}
-  html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-navigation .secondary-button{height:26px!important;min-height:26px!important}
-  html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-views button{height:26px!important;min-height:26px!important;font-size:7px!important}
-  html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-weekdays span{padding-block:3px!important}
-  html[data-viewport-layout='phone-landscape'] #calendar-view .calendar-day-number{width:18px!important;min-width:18px!important;height:18px!important;min-height:18px!important;font-size:8px!important}
-}
-
-/* Calendar dialogs follow the same mobile viewport model. */
-html[data-viewport-layout='phone-portrait'] .calendar-source-panel,
-html[data-viewport-layout='phone-portrait'] .calendar-event-panel{
-  width:calc(100vw - 16px)!important;
-  max-width:none!important;
-  max-height:calc(var(--viewport-h-px,100dvh) - 16px)!important;
-  border-radius:16px!important
-}
-html[data-viewport-layout='phone-portrait'] .calendar-source-panel .panel-head,
-html[data-viewport-layout='phone-portrait'] .calendar-event-panel .panel-head{
-  padding:18px 16px 14px!important
-}
-html[data-viewport-layout='phone-portrait'] .calendar-source-panel .panel-content,
-html[data-viewport-layout='phone-portrait'] .calendar-event-panel .panel-content{
-  padding:16px!important
-}
-html[data-viewport-layout='phone-portrait'] .calendar-event-panel .panel-head h2{
-  font-size:24px!important
-}
-html[data-viewport-layout='phone-landscape'] .calendar-source-panel,
-html[data-viewport-layout='phone-landscape'] .calendar-event-panel{
-  width:min(680px,calc(100vw - 18px))!important;
-  max-width:none!important;
-  max-height:calc(var(--viewport-h-px,100dvh) - 10px)!important;
-  border-radius:13px!important
-}
-html[data-viewport-layout='phone-landscape'] .calendar-source-panel .panel-head,
-html[data-viewport-layout='phone-landscape'] .calendar-event-panel .panel-head{
-  padding:10px 14px 8px!important
-}
-html[data-viewport-layout='phone-landscape'] .calendar-source-panel .panel-content,
-html[data-viewport-layout='phone-landscape'] .calendar-event-panel .panel-content{
-  padding:10px 14px 12px!important
-}
-html[data-viewport-layout='phone-landscape'] .calendar-source-panel .panel-head h2,
-html[data-viewport-layout='phone-landscape'] .calendar-event-panel .panel-head h2{
-  font-size:19px!important
-}
-html[data-viewport-layout='phone-landscape'] #cal-sources-dialog .calendar-import{
-  padding-bottom:10px!important;
-  margin-bottom:9px!important
-}
-html[data-viewport-layout='phone-landscape'] .calendar-source-panel .stacked-label{
-  margin:8px 0 6px!important;
-  gap:4px!important;
-  font-size:9px!important
-}
-html[data-viewport-layout='phone-landscape'] .calendar-source-panel input[type='text'],
-html[data-viewport-layout='phone-landscape'] .calendar-source-panel input[type='url']{
-  min-height:34px!important;
-  padding:7px 9px!important;
-  font-size:10px!important
-}
-html[data-viewport-layout='phone-landscape'] #cal-sources-dialog .calendar-source-item{
-  padding:7px 0!important
-}
-html[data-viewport-layout='phone-landscape'] #cal-sources-dialog .calendar-privacy,
-html[data-viewport-layout='phone-landscape'] #cal-sources-dialog .calendar-message,
-html[data-viewport-layout='phone-landscape'] .calendar-event-panel .panel-content p,
-html[data-viewport-layout='phone-landscape'] #cal-event-description{
-  font-size:9px!important;
-  line-height:1.4!important;
-  margin-block:7px!important
+/* Accessibility ------------------------------------------------------------ */
+@media (prefers-reduced-motion:reduce){
+  html[data-device] #app-shell .active-info-strip,
+  html[data-device] #app-shell .idle-summary-strip,
+  html[data-device] #calendar-view .calendar-sidebar{transition:none!important;}
 }

@@ -14,24 +14,64 @@
   </style>
 <script>
    (function(){
-    var root=document.documentElement;
+    var root=document.documentElement,state={userText:1,userUi:1,last:null};
     window.ISTANTE_BOOT_AT=Date.now();
     root.dataset.touchCapable=((navigator.maxTouchPoints||0)>0||matchMedia('(pointer:coarse)').matches)?'true':'false';
+    function clamp(min,value,max){return Math.max(min,Math.min(max,value));}
+    function family(w,h,ratio,touch){
+      var shortSide=Math.min(w,h),longSide=Math.max(w,h);
+      if((touch&&shortSide<=600)||(shortSide<=520&&longSide<=1180))return 'phone';
+      if(touch&&shortSide<=1100&&longSide<=1700)return 'tablet';
+      if(w>=1900&&h>=900)return 'display';
+      return 'computer';
+    }
+    function scales(device,w,h,ratio,orientation){
+      var shortSide=Math.min(w,h),geom=Math.sqrt(w*h),font=1,ui=1;
+      if(device==='phone'){
+        font=clamp(.92,.94+(shortSide-360)/700,1.04);
+        ui=clamp(.92,.95+(shortSide-360)/900,1.00);
+        if(orientation==='landscape'&&ratio>1.85){font*=.94;ui*=.95;}
+      }else if(device==='tablet'){
+        font=clamp(.98,.98+(shortSide-700)/1150,1.10);
+        ui=clamp(.98,.99+(shortSide-700)/1500,1.07);
+        if(orientation==='landscape'&&ratio>1.55){font*=.98;ui*=.985;}
+      }else if(device==='display'){
+        font=clamp(1.12,1.12+(geom-1440)/4300,1.36);
+        ui=clamp(1.08,1.08+(geom-1440)/6000,1.24);
+      }else{
+        font=clamp(.98,1+(geom-1100)/5200,1.10);
+        ui=clamp(.98,1+(geom-1100)/7000,1.07);
+      }
+      return {font:font,ui:ui};
+    }
+    function applyScales(m){
+      root.style.setProperty('--device-font-scale',m.fontScale.toFixed(4));
+      root.style.setProperty('--device-ui-scale',m.uiScale.toFixed(4));
+      root.style.setProperty('--text-scale',(state.userText*m.fontScale).toFixed(4));
+      root.style.setProperty('--ui-scale',(state.userUi*m.uiScale).toFixed(4));
+    }
     function updateViewport(){
       var vp=window.visualViewport,w=Math.max(1,Math.round((vp&&vp.width)||innerWidth||1)),h=Math.max(1,Math.round((vp&&vp.height)||innerHeight||1)),ratio=w/h,touch=root.dataset.touchCapable==='true';
-      var shape=ratio>1.65?'wide':ratio<.78?'tall':'balanced',layout='desktop';
-      if(w<=620&&h>=w)layout='phone-portrait';
-      else if(h<=560&&w>h&&w<=1100)layout='phone-landscape';
-      else if(touch&&h>w&&w<=1024)layout='tablet-portrait';
-      else if(touch&&w>=h&&w<=1600)layout='tablet-landscape';
-      else if(ratio>=2.10)layout='desktop-wide';
+      var shortSide=Math.min(w,h),geom=Math.sqrt(w*h),sizeIndex=geom/Math.sqrt(1440*900);
+      var orientation=ratio>1.12?'landscape':ratio<.89?'portrait':'square';
+      var shape=ratio>=2.2?'ultrawide':ratio>1.55?'wide':ratio<.72?'tall':'balanced';
+      var device=family(w,h,ratio,touch),scale=scales(device,w,h,ratio,orientation),layout=device+(device==='phone'||device==='tablet'?'-'+orientation:'');
       root.style.setProperty('--viewport-index',ratio.toFixed(4));
+      root.style.setProperty('--viewport-size-index',sizeIndex.toFixed(4));
       root.style.setProperty('--viewport-w',String(w));root.style.setProperty('--viewport-h',String(h));
-      root.style.setProperty('--viewport-w-px',w+'px');root.style.setProperty('--viewport-h-px',h+'px');root.style.setProperty('--viewport-short-px',Math.min(w,h)+'px');
-      root.dataset.viewportShape=shape;root.dataset.viewportLayout=layout;
-      return {w:w,h:h,ratio:ratio,shape:shape,layout:layout};
+      root.style.setProperty('--viewport-w-px',w+'px');root.style.setProperty('--viewport-h-px',h+'px');root.style.setProperty('--viewport-short-px',shortSide+'px');
+      root.dataset.viewportShape=shape;root.dataset.viewportLayout=layout;root.dataset.device=device;root.dataset.orientation=orientation;
+      state.last={w:w,h:h,shortSide:shortSide,ratio:ratio,sizeIndex:sizeIndex,shape:shape,layout:layout,device:device,orientation:orientation,fontScale:scale.font,uiScale:scale.ui};
+      applyScales(state.last);
+      return state.last;
     }
-    window.IstanteViewport={update:updateViewport};updateViewport();
+    function setUserScale(text,ui){
+      state.userText=Number.isFinite(Number(text))?Number(text):1;
+      state.userUi=Number.isFinite(Number(ui))?Number(ui):1;
+      root.dataset.userTextScale=state.userText.toFixed(3);root.dataset.userUiScale=state.userUi.toFixed(3);
+      return updateViewport();
+    }
+    window.IstanteViewport={update:updateViewport,setUserScale:setUserScale,get:function(){return state.last||updateViewport();}};updateViewport();
     try{var t=localStorage.getItem('istante.original.theme');if(t==='light'||t==='dark')root.dataset.theme=t;}catch(e){}
     window.ISTANTE_FAILSAFE=setTimeout(function(){var b=document.getElementById('boot-note');if(b){b.textContent='Avvio non riuscito. Ricarica la pagina.';document.getElementById('boot-retry').hidden=false;}},10000);
    })();
@@ -39,50 +79,50 @@
 <link href="assets/icons/icon.svg" rel="icon" type="image/svg+xml"/>
 <link href="assets/icons/icon-192.png" rel="apple-touch-icon"/>
 <link href="manifest.webmanifest" rel="manifest"/>
-<link href="assets/css/istante.css?v=3.14.1" rel="stylesheet"/>
-<link href="assets/css/responsive.css?v=3.14.1" rel="stylesheet"/>
-<script defer="" src="data/phrases.js?v=3.14.1">
+<link href="assets/css/istante.css?v=3.15.0" rel="stylesheet"/>
+<link href="assets/css/responsive.css?v=3.15.0" rel="stylesheet"/>
+<script defer="" src="data/phrases.js?v=3.15.0">
 </script>
-<script defer="" src="data/stations.js?v=3.14.1">
+<script defer="" src="data/stations.js?v=3.15.0">
 </script>
-<script defer="" src="assets/js/core.js?v=3.14.1">
+<script defer="" src="assets/js/core.js?v=3.15.0">
 </script>
-<script defer="" src="assets/js/collections.js?v=3.14.1"></script><script defer="" src="assets/js/companion.js?v=3.14.1"></script><script defer="" src="assets/js/qr.js?v=3.14.1"></script><script defer="" src="assets/js/share-link.js?v=3.14.1"></script><script defer="" src="assets/js/phrase-history.js?v=3.14.1"></script>
-<script defer="" src="assets/js/weather-scene.js?v=3.14.1"></script>
-<script defer="" src="assets/js/solar.js?v=3.14.1">
+<script defer="" src="assets/js/collections.js?v=3.15.0"></script><script defer="" src="assets/js/companion.js?v=3.15.0"></script><script defer="" src="assets/js/qr.js?v=3.15.0"></script><script defer="" src="assets/js/share-link.js?v=3.15.0"></script><script defer="" src="assets/js/phrase-history.js?v=3.15.0"></script>
+<script defer="" src="assets/js/weather-scene.js?v=3.15.0"></script>
+<script defer="" src="assets/js/solar.js?v=3.15.0">
 </script>
-<script defer="" src="assets/js/icons.js?v=3.14.1">
+<script defer="" src="assets/js/icons.js?v=3.15.0">
 </script>
-<script defer="" src="assets/js/typing.js?v=3.14.1">
+<script defer="" src="assets/js/typing.js?v=3.15.0">
 </script>
-<script defer="" src="assets/js/effects.js?v=3.14.1">
+<script defer="" src="assets/js/effects.js?v=3.15.0">
 </script>
-<script defer="" src="assets/js/radio.js?v=3.14.1">
+<script defer="" src="assets/js/radio.js?v=3.15.0">
 </script>
-<script defer="" src="./assets/js/motion.js?v=3.14.1">
+<script defer="" src="./assets/js/motion.js?v=3.15.0">
 </script>
-<script defer="" src="assets/js/controls.js?v=3.14.1">
+<script defer="" src="assets/js/controls.js?v=3.15.0">
 </script>
-<script defer="" src="assets/js/experience.js?v=3.14.1">
+<script defer="" src="assets/js/experience.js?v=3.15.0">
 </script>
-<script defer="" src="./assets/js/time-core.js?v=3.14.1">
+<script defer="" src="./assets/js/time-core.js?v=3.15.0">
 </script>
-<script defer="" src="./assets/js/moments.js?v=3.14.1">
+<script defer="" src="./assets/js/moments.js?v=3.15.0">
 </script>
-<script defer="" src="assets/js/station-library.js?v=3.14.1">
+<script defer="" src="assets/js/station-library.js?v=3.15.0">
 </script>
-<script defer="" src="assets/js/station-manager.js?v=3.14.1">
+<script defer="" src="assets/js/station-manager.js?v=3.15.0">
 </script>
-<script defer="" src="assets/js/schedules.js?v=3.14.1">
+<script defer="" src="assets/js/schedules.js?v=3.15.0">
 </script>
-<script defer="" src="assets/js/updates.js?v=3.14.1">
+<script defer="" src="assets/js/updates.js?v=3.15.0">
 </script>
-<script defer="" src="assets/js/share-card.js?v=3.14.1">
+<script defer="" src="assets/js/share-card.js?v=3.15.0">
 </script>
-<script defer="" src="assets/js/share.js?v=3.14.1">
+<script defer="" src="assets/js/share.js?v=3.15.0">
 </script>
-<script defer="" src="assets/js/scene.js?v=3.14.1"></script><script defer="" src="assets/js/ambient.js?v=3.14.1"></script><script defer="" src="assets/js/calendar-core.js?v=3.14.1"></script><script defer="" src="assets/js/backup.js?v=3.14.1"></script><script defer="" src="assets/js/onboarding.js?v=3.14.1"></script><script defer="" src="data/collection-catalog.js?v=3.14.1"></script><script defer="" src="assets/js/calendar-holidays.js?v=3.14.1"></script><script defer="" src="assets/js/calendar.js?v=3.14.1"></script><script defer="" src="assets/js/pages.js?v=3.14.1"></script><script defer="" src="assets/js/scene-snapshot.js?v=3.14.1"></script><script defer="" src="assets/js/touch-feedback.js?v=3.14.1"></script><script defer="" src="assets/js/main.js?v=3.14.1">
-</script><script defer="" src="assets/js/tooltips.js?v=3.14.1"></script><script defer="" src="assets/js/cursor.js?v=3.14.1"></script><script defer="" src="assets/js/gestures.js?v=3.14.1"></script>
+<script defer="" src="assets/js/scene.js?v=3.15.0"></script><script defer="" src="assets/js/ambient.js?v=3.15.0"></script><script defer="" src="assets/js/calendar-core.js?v=3.15.0"></script><script defer="" src="assets/js/backup.js?v=3.15.0"></script><script defer="" src="assets/js/onboarding.js?v=3.15.0"></script><script defer="" src="data/collection-catalog.js?v=3.15.0"></script><script defer="" src="assets/js/calendar-holidays.js?v=3.15.0"></script><script defer="" src="assets/js/calendar.js?v=3.15.0"></script><script defer="" src="assets/js/pages.js?v=3.15.0"></script><script defer="" src="assets/js/scene-snapshot.js?v=3.15.0"></script><script defer="" src="assets/js/touch-feedback.js?v=3.15.0"></script><script defer="" src="assets/js/main.js?v=3.15.0">
+</script><script defer="" src="assets/js/tooltips.js?v=3.15.0"></script><script defer="" src="assets/js/cursor.js?v=3.15.0"></script><script defer="" src="assets/js/gestures.js?v=3.15.0"></script>
 <meta content="website" property="og:type"/>
 <meta content="Istante" property="og:site_name"/>
 <meta content="Istante - Prenditi un momento per te." property="og:title"/>
@@ -474,7 +514,7 @@
 </footer>
 </div>
 </div>
-<section aria-label="Il tuo calendario" class="virtual-calendar" hidden="" id="calendar-view" inert=""><div class="calendar-shell"><header class="calendar-heading calendar-heading-combined"><div class="brand-lockup calendar-brand-lockup"><a aria-label="Torna al tuo istante" class="wordmark brand-home-link" data-calendar-back="" href="./"><img alt="" aria-hidden="true" class="brand-logo-image" height="32" src="assets/icons/icon.svg" width="32"/><span class="brand-home-copy"><span class="brand-home-name">istante<span class="brand-point">.</span></span><span class="brand-home-tagline">Un momento, per te.</span></span></a></div><div class="calendar-title-copy"><p class="section-label">Il tempo che scegli</p><button aria-controls="cal-date-picker" aria-label="Scegli una data" class="calendar-period-button" id="cal-period-button" type="button"><span aria-level="1" class="calendar-period-title" id="cal-title" role="heading">Il tuo calendario.</span><span aria-hidden="true" class="icon calendar-period-icon" data-icon="calendar"></span></button><input aria-label="Vai a una data" class="calendar-date-picker" id="cal-date-picker" tabindex="-1" type="date"/><p class="calendar-subtitle" id="cal-subtitle">Un po' di ordine. Senza fretta.</p></div><nav aria-label="Navigazione e visualizzazione calendario" class="calendar-toolbar"><div class="calendar-navigation"><button aria-label="Periodo precedente" class="icon-button" id="cal-prev" type="button"><span class="icon cal-prev-icon" data-icon="chevron"></span></button><button aria-label="Vai a oggi" class="secondary-button" id="cal-today" type="button"><span class="calendar-today-label">Oggi</span></button><button aria-label="Periodo successivo" class="icon-button" id="cal-next" type="button"><span class="icon cal-next-icon" data-icon="chevron"></span></button></div><div aria-label="Visualizzazione" class="calendar-views" role="group"><button aria-label="Vista anno" data-cal-view="year" type="button"><span class="calendar-view-label">Anno</span></button><button aria-label="Vista mese" aria-pressed="true" data-cal-view="month" type="button"><span class="calendar-view-label">Mese</span></button><button aria-label="Vista settimana" data-cal-view="week" type="button"><span class="calendar-view-label">Settimana</span></button><button aria-label="Vista giorno" data-cal-view="day" type="button"><span class="calendar-view-label">Giorno</span></button><button aria-label="Vista agenda" data-cal-view="agenda" type="button"><span class="calendar-view-label">Agenda</span></button></div></nav><div class="calendar-heading-actions"><button class="secondary-button calendar-add-shortcut" hidden="" id="cal-empty-add" type="button"><span class="icon" data-icon="plus"></span>Aggiungi</button><button aria-controls="calendar-sidebar" aria-expanded="false" aria-label="Apri Le tue giornate" class="secondary-button calendar-sidebar-toggle" id="cal-sidebar-toggle" type="button"><span class="icon" data-icon="calendar"></span></button><button aria-label="Torna al tuo istante" class="icon-button calendar-back-button" data-calendar-back="" data-istante-tooltip="Torna al tuo istante" type="button"><span class="icon" data-icon="arrow"></span></button></div></header><main><div hidden="" id="cal-empty"></div>
+<section aria-label="Il tuo calendario" class="virtual-calendar" hidden="" id="calendar-view" inert=""><div class="calendar-shell"><header class="calendar-heading calendar-heading-combined"><div class="brand-lockup calendar-brand-lockup"><a aria-label="Torna al tuo istante" class="wordmark brand-home-link" data-calendar-back="" href="./"><img alt="" aria-hidden="true" class="brand-logo-image" height="32" src="assets/icons/icon.svg" width="32"/><span class="brand-home-copy"><span class="brand-home-name">istante<span class="brand-point">.</span></span><span class="brand-home-tagline">Un momento, per te.</span></span></a></div><div class="calendar-title-copy"><p class="section-label">Il tempo che scegli</p><button aria-controls="cal-date-picker" aria-label="Scegli una data" class="calendar-period-button" id="cal-period-button" type="button"><span aria-level="1" class="calendar-period-title" id="cal-title" role="heading">Il tuo calendario.</span><span aria-hidden="true" class="icon calendar-period-icon" data-icon="calendar"></span></button><input aria-label="Vai a una data" class="calendar-date-picker" id="cal-date-picker" tabindex="-1" type="date"/><p class="calendar-subtitle" id="cal-subtitle">Un po' di ordine. Senza fretta.</p></div><nav aria-label="Navigazione e visualizzazione calendario" class="calendar-toolbar"><div class="calendar-navigation"><button aria-label="Periodo precedente" class="icon-button" id="cal-prev" type="button"><span class="icon cal-prev-icon" data-icon="left"></span></button><button aria-label="Vai a oggi" class="secondary-button" id="cal-today" type="button"><span class="calendar-today-label">Oggi</span></button><button aria-label="Periodo successivo" class="icon-button" id="cal-next" type="button"><span class="icon cal-next-icon" data-icon="right"></span></button></div><div aria-label="Visualizzazione" class="calendar-views" role="group"><button aria-label="Vista anno" data-cal-view="year" type="button"><span class="calendar-view-label">Anno</span></button><button aria-label="Vista mese" aria-pressed="true" data-cal-view="month" type="button"><span class="calendar-view-label">Mese</span></button><button aria-label="Vista settimana" data-cal-view="week" type="button"><span class="calendar-view-label">Settimana</span></button><button aria-label="Vista giorno" data-cal-view="day" type="button"><span class="calendar-view-label">Giorno</span></button><button aria-label="Vista agenda" data-cal-view="agenda" type="button"><span class="calendar-view-label">Agenda</span></button></div></nav><div class="calendar-heading-actions"><button class="secondary-button calendar-add-shortcut" hidden="" id="cal-empty-add" type="button"><span class="icon" data-icon="plus"></span>Aggiungi</button><button aria-controls="calendar-sidebar" aria-expanded="false" aria-label="Apri Le tue giornate" class="secondary-button calendar-sidebar-toggle" id="cal-sidebar-toggle" type="button"><span class="icon" data-icon="calendar"></span></button><button aria-label="Torna al tuo istante" class="icon-button calendar-back-button" data-calendar-back="" data-istante-tooltip="Torna al tuo istante" type="button"><span class="icon" data-icon="left"></span></button></div></header><main><div hidden="" id="cal-empty"></div>
 <div class="calendar-layout"><aside class="calendar-sidebar" id="calendar-sidebar"><div class="calendar-sidebar-head"><h2>Le tue giornate</h2><div class="calendar-sidebar-head-actions"><button aria-label="Aggiorna calendari condivisi" class="icon-button" id="cal-refresh" data-istante-tooltip="Aggiorna calendari condivisi" type="button"><span class="icon" data-icon="refresh"></span></button><button aria-label="Chiudi Le tue giornate" class="icon-button" id="cal-sidebar-close" data-istante-tooltip="Chiudi" type="button"><span class="icon" data-icon="close"></span></button></div></div><div id="cal-source-list"></div><p class="calendar-local-note">Calendari in sola lettura.<br/>File e ultime copie restano su questo dispositivo.</p><p class="calendar-local-note" id="cal-zone"></p><p class="calendar-sync-status" id="cal-sync-status" role="status"></p><div class="calendar-sidebar-actions"><button aria-label="Gestisci i tuoi calendari" class="primary-button" id="cal-manage" type="button"><span class="icon" data-icon="settings"></span><span>Gestisci calendari</span></button></div></aside><section aria-label="Eventi del periodo" class="calendar-main"><div aria-busy="false" id="cal-content"></div></section></div><details class="calendar-warnings" hidden="" id="cal-warnings"><summary>Alcuni eventi richiedono attenzione</summary><ul id="cal-warning-list"></ul></details></main><footer class="calendar-footer"><span>Ogni giorno, un nuovo istante.</span><a href="leggi.html?doc=progetto">Il progetto</a></footer></div></section>
 <dialog aria-labelledby="settings-title" class="panel" id="settings-dialog">
 <div class="panel-head">
@@ -1429,7 +1469,7 @@
          Informazioni su Istante
         </strong>
 <small data-summary="about">
-         Versione 3.14.1 · costruita sulla visione della 3.8
+         Versione 3.15.0 · costruita sulla visione della 3.8
         </small>
 </span>
 <span class="icon section-chevron" data-icon="chevron">
@@ -1481,7 +1521,7 @@
 <strong>
           Versione
           <span id="app-version">
-           3.14.1
+           3.15.0
           </span>
 </strong>
 <span class="small-chip" hidden="" id="update-status-chip">
@@ -1529,7 +1569,7 @@
       </span>
 </p>
 <small class="build-note">
-      Istante 3.14.1
+      Istante 3.15.0
      </small>
 <div class="keyboard-note">
 <kbd>

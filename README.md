@@ -1,6 +1,6 @@
 # Istante
 
-**Versione corrente: 3.14.1**  
+**Versione corrente: 3.15.0**  
 **Un momento, per te.**  
 Un progetto di **Ruslan Dzyuba**.
 
@@ -39,7 +39,7 @@ aggiungere altre raccolte incluse nel sito oppure importare file **JSON** o
 La macchina da scrivere è facoltativa e può usare un ritmo umano, piccole pause
 e correzioni. Preferiti e storico restano locali.
 
-La dimensione dei testi usa tre tab semplici — **Piccolo, Normale, Grande** — così la scelta resta immediata anche su tablet.
+La dimensione scelta dall’utente viene combinata con la scala automatica del dispositivo. Istante distingue **Telefono, Tablet, Computer e Display grande/TV**: il rapporto `vw/vh` decide la forma della composizione, mentre un secondo indice basato sulla dimensione reale del viewport regola la scala tipografica. In questo modo la stessa proporzione di schermo non produce font identici su un telefono e su una TV.
 
 Per i contenuti editoriali puoi scegliere tra **Classic** ed **Excalifont**, più vicino a una scrittura a mano. Quando il font globale è Classic, il Calendario offre uno switch separato per usare Excalifont soltanto nelle date, nei titoli e negli eventi. Se Excalifont è già globale, lo switch dedicato scompare. Excalifont viene richiesto solo quando selezionato; senza rete o se non disponibile, Istante torna automaticamente al carattere Classic.
 
@@ -109,10 +109,11 @@ Su desktop con mouse o trackpad puoi attivare un **cursore personalizzato discre
 - `data/`: frasi, catalogo raccolte e stazioni predefinite.
 - `README.md`: descrizione del progetto e release corrente.
 - `CHANGELOG.md`: storico delle modifiche.
-- `docs/release/v3.14.1.md`: note dettagliate di questa release.
+- `docs/release/v3.15.0.md`: note dettagliate di questa release.
 - `docs/LICENZA.md`: licenza non commerciale con attribuzione obbligatoria.
 - `docs/TERZE-PARTI.md`: dipendenze, servizi e attribuzioni.
 - `docs/VISIONE-E-DESIGN.md`: valori, regole grafiche e criteri responsive da mantenere nelle release future.
+- `docs/RESPONSIVE-ARCHITECTURE.md`: classificazione Telefono / Tablet / Computer / Display, indici viewport e regole per la composizione responsive.
 
 ## Pubblicazione
 

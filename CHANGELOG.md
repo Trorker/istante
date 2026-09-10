@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.15.0 — 10 settembre 2026
+
+- **Nuova architettura responsive:** quattro famiglie reali — Telefono, Tablet, Computer e Display grande/TV — con orientamento e aspect ratio come segnali secondari.
+- **Doppio indice viewport:** `vw/vh` governa la composizione; l’indice dimensionale basato sull’area del viewport contribuisce alla scala di font e interfaccia senza confondere telefoni e TV con lo stesso rapporto.
+- **Dashboard telefono portrait:** Meteo/Luce, Prossimo capitolo e Prossimo impegno sono ora tre righe reali; neutralizzate le vecchie regole `:has()` che potevano rimetterli affiancati.
+- **Calendario mobile:** testata ripulita, pulsanti non sovrapposti, frecce direzionali native, rail coerenti per azioni/navigazione e viste sempre leggibili.
+- **Vista Anno:** due colonne leggibili in portrait; tre colonne con scroll verticale in landscape invece di comprimere quattro mesi per riga.
+- **Manutenzione:** tutta la logica dipendente dal viewport resta in `assets/css/responsive.css`; documentata in `docs/RESPONSIVE-ARCHITECTURE.md`.
+
 ## 3.14.1 — 10 settembre 2026
 
 - **Calendario telefono corretto:** eliminato il conflitto legacy che nascondeva le etichette Anno / Mese / Settimana / Giorno / Agenda senza fornire icone sostitutive.
