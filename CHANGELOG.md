@@ -1,5 +1,16 @@
 # Changelog
 
+## 3.13.4 — 10 settembre 2026
+
+- Timer modale: rimossi Durata precisa, dettagli e nota del passo; controlli −/+ spostati davvero fuori dal quadrante, con icone Material centrate e senza effetto hover.
+- Timer: corrette geometria del quadrante e cerchio in esecuzione; aumentato lo spazio dai preset rapidi e riservato sempre lo spazio del chip per evitare spostamenti della dashboard.
+- Dashboard: aggiunta l’impostazione per disattivare la compattazione automatica della barra dati durante l’inattività; hover mantenuto solo su Meteo e Il prossimo capitolo.
+- Wizard: trasformato in presentazione senza configurazioni, sempre in Excalifont; simula il meteo quando manca e presenta anche la vista Calendario con Le tue giornate.
+- Calendario: Le tue giornate ora entra da destra; Gestisci calendari è stato spostato in fondo al pannello e rimosso dalla testata della pagina.
+- Gesture touch: abilitate di default; doppio tap Play/Pausa più affidabile, swipe volume a passi esatti di 10 e gesture audio escluse completamente dalla vista Calendario.
+- Toast: spostati in alto al centro; rimosso il rendering speciale del toast volume in favore del toast standard.
+- Dashboard: premendo il logo viene riaperto il wizard invece di ricaricare la pagina.
+
 ## 3.13.3 — 10 settembre 2026
 
 - Timer: rimossa temporaneamente la modalità a pagina; una sola modale più stabile e coerente su touch.

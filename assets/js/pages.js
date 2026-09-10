@@ -3,7 +3,7 @@
 function create({getSettings,calendar,onChange}){
  const $=id=>document.getElementById(id),home=$('app-shell'),cal=$('calendar-view'),dots=$('view-dots');
  let current='dashboard',transition=0,returnTimer=0,touch=null,mouseDrag=null,suppressClickUntil=0,lastActivity=0,initialized=false;
- const hasModal=()=>!!document.querySelector('dialog[open]');
+ const hasModal=()=>!!document.querySelector('dialog[open]:not(#tour-dialog)');
  const calendarAvailable=()=>!!getSettings().calendarEnabled;
  const lowZone=y=>{const h=window.visualViewport?.height||innerHeight;return y>=h-Math.max(155,Math.min(260,h*.29));};
  function activity(){lastActivity=Date.now();arm();}
@@ -14,8 +14,8 @@ function create({getSettings,calendar,onChange}){
   const showDots=calendarAvailable();if(dots)dots.hidden=!showDots;document.body.classList.toggle('has-view-dots',showDots);
  }
  function focusFor(view){return view==='calendar'?$('cal-today'):$('timer-open');}
- function show(next,focus=false){
-  if(!['dashboard','calendar'].includes(next)||next==='calendar'&&!calendarAvailable()||hasModal())return;
+ function show(next,focus=false,preview=false){
+  if(!['dashboard','calendar'].includes(next)||next==='calendar'&&!calendarAvailable()&&!preview||hasModal())return;
   if(next===current){activity();return;}clearTimeout(transition);const prev=current,isCalendar=next==='calendar';current=next;
   if(isCalendar){cal.hidden=false;cal.getBoundingClientRect();calendar.open();}
   document.body.classList.remove('is-idle','view-calendar','view-timer');document.body.classList.toggle('view-calendar',isCalendar);document.documentElement.dataset.view=next;
@@ -41,6 +41,7 @@ function create({getSettings,calendar,onChange}){
  document.addEventListener('pointercancel',()=>mouseDrag=null,{passive:true});
  for(const type of ['pointerdown','keydown','wheel','touchstart','input'])cal.addEventListener(type,activity,{passive:true});document.addEventListener('pointermove',()=>{if(current==='calendar'&&Date.now()-lastActivity>1000)activity();},{passive:true});
  document.addEventListener('keydown',e=>{if(controlTarget(e)||e.ctrlKey||e.metaKey||e.altKey)return;if(e.key==='ArrowLeft'&&current==='calendar'){e.preventDefault();show('dashboard',true);}else if(e.key==='ArrowRight'&&current==='dashboard'&&calendarAvailable()){e.preventDefault();show('calendar',true);}});
+ document.addEventListener('istante:onboarding-preview-view',e=>show(e.detail?.view||'dashboard',false,true));
  document.querySelectorAll('dialog').forEach(d=>d.addEventListener('close',activity));document.addEventListener('visibilitychange',()=>{if(!document.hidden)activity();else clearTimeout(returnTimer);});
  apply();return{show,apply,current:()=>current};
 }

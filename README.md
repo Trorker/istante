@@ -1,6 +1,6 @@
 # Istante
 
-**Versione corrente: 3.13.3**  
+**Versione corrente: 3.13.4**  
 **Un momento, per te.**  
 Un progetto di **Ruslan Dzyuba**.
 
@@ -47,7 +47,7 @@ Per i contenuti editoriali puoi scegliere tra **Classic** ed **Excalifont**, pi�
 
 Il traguardo non è un promemoria aggressivo: è una direzione. Puoi usare il
 nuovo anno, scegliere una data precisa oppure impostare rapidamente una distanza
-in **mesi o anni**. Dalla dashboard il riepilogo apre una **modale dedicata** con avanzamento e tempo residuo; da lì puoi passare alla configurazione completa. Se nessun traguardo è impostato, il blocco non occupa spazio vuoto. Il wizard iniziale può aiutarti a impostarlo senza entrare prima nelle impostazioni complete.
+in **mesi o anni**. Dalla dashboard il riepilogo apre una **modale dedicata** con avanzamento e tempo residuo; da lì puoi passare alla configurazione completa. Se nessun traguardo è impostato, il blocco non occupa spazio vuoto. Il wizard iniziale lo presenta senza modificarlo: eventuali configurazioni si fanno soltanto dalle Impostazioni.
 
 Quando la distanza è lunga, il riepilogo usa anche mesi e anni invece di
 riempire lo schermo con un numero enorme di giorni.
@@ -96,7 +96,7 @@ Il benvenuto spiega perché esiste Istante e propone una breve configurazione
 guidata. Su tablet e display bassi la scheda si compatta per non uscire dal viewport. La guida passa attraverso tutti i controlli principali — raccolta,
 nuova frase, preferiti, meteo, calendario, timer, condivisione, schermo intero,
 impostazioni e radio — anche quando Meteo o Calendario non sono ancora
-configurati. Se il Meteo manca, il passaggio mostra un esempio temporaneo e propone soltanto l’acquisizione della posizione del dispositivo; il passaggio Timer presenta direttamente la pausa e il suo utilizzo, senza modalità alternative. Può essere saltata o riaperta più avanti.
+configurati. La guida è solo una presentazione: non modifica preferenze, non richiede la posizione e non salva configurazioni. Se il Meteo manca mostra un esempio temporaneo; per il Calendario apre anche la vista reale e il pannello Le tue giornate. Può essere saltata o riaperta più avanti.
 
 Su desktop con mouse o trackpad puoi attivare un **cursore personalizzato discreto** dalle impostazioni. È disattivato di default: puntino e anello reagiscono agli elementi interattivi e restano sopra ai pannelli aperti, mentre nei campi di testo continua a comparire il cursore nativo.
 
@@ -107,7 +107,7 @@ Su desktop con mouse o trackpad puoi attivare un **cursore personalizzato discre
 - `data/`: frasi, catalogo raccolte e stazioni predefinite.
 - `README.md`: descrizione del progetto e release corrente.
 - `CHANGELOG.md`: storico delle modifiche.
-- `docs/release/v3.13.3.md`: note dettagliate di questa release.
+- `docs/release/v3.13.4.md`: note dettagliate di questa release.
 - `docs/LICENZA.md`: licenza non commerciale con attribuzione obbligatoria.
 - `docs/TERZE-PARTI.md`: dipendenze, servizi e attribuzioni.
 - `docs/VISIONE-E-DESIGN.md`: valori, regole grafiche e criteri responsive da mantenere nelle release future.

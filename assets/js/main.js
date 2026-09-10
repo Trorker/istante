@@ -1,4 +1,4 @@
-/* Istante v3.13.3 - application and local preferences. */
+/* Istante v3.13.4 - application and local preferences. */
 (function () {
 'use strict';
 const C = window.IstanteCore;
@@ -79,18 +79,10 @@ function toast(message) {
   const parent=$('dialog[open]:not(.is-leaving)')||document.body;
   parent.append(host);
  }
- el.classList.remove('is-volume-toast');el.style.removeProperty('opacity');el.style.removeProperty('transform');el.textContent=message;window.IstanteMotion.show(el);
+el.style.removeProperty('opacity');el.style.removeProperty('transform');el.textContent=message;window.IstanteMotion.show(el);
  toastTimer=setTimeout(()=>window.IstanteMotion.hide(el),4100);
 }
 
-function volumeToast(label,value){
- const el=$('#toast'),host=$('#toast-host');clearTimeout(toastTimer);
- if(typeof host.showPopover==='function'){try{if(host.matches(':popover-open'))host.hidePopover();host.showPopover();}catch(_){}}else{host.classList.add('toast-fallback');($('dialog[open]:not(.is-leaving)')||document.body).append(host);}
- el.replaceChildren();el.classList.add('is-volume-toast');el.hidden=false;el.style.opacity='1';el.style.transform='none';
- const row=document.createElement('div');row.className='volume-toast-row';const text=document.createElement('span');text.textContent=label;const valueText=document.createElement('strong');valueText.textContent=value+'%';row.append(text,valueText);
- const range=document.createElement('input');range.type='range';range.min='0';range.max='100';range.value=String(value);range.disabled=true;range.setAttribute('aria-label',label+' '+value+'%');
- el.append(row,range);toastTimer=setTimeout(()=>{el.hidden=true;el.style.removeProperty('opacity');el.style.removeProperty('transform');el.classList.remove('is-volume-toast');},1750);
-}
 function saveNotice(ok) { if (!ok) toast('Memoria del browser non disponibile o piena: le modifiche restano solo in questa sessione.'); }
 function isPanelOpen() { return !!$('dialog[open]')||$('#radio-mini').classList.contains('is-open'); }
 function activity() {
@@ -184,6 +176,7 @@ function applyAppearance(now) {
  if(appearanceReady&&old!==theme&&!document.documentElement.classList.contains('is-loading'))X.transition(theme);
  appearanceReady=true;
  $('meta[name="theme-color"]').content=theme==='light'?'#f1eee7':'#131615';
+ document.body.dataset.compactIdleBar=settings.compactIdleBar?'true':'false';
  document.body.dataset.background=X.photoAvailable()?'photo':['photo','picsum'].includes(settings.background)?'ambient':settings.background;
  document.body.classList.toggle('no-motion',!settings.motion);document.body.classList.toggle('no-clock',!settings.showClock);
  document.body.style.setProperty('--photo-dim',String(settings.photoDim/100));$('#clock-seconds').hidden=!settings.showSeconds;
@@ -420,7 +413,7 @@ $('#touch-sound-preview')?.addEventListener('click',()=>touchFeedback.preview(re
 $('#settings-form').addEventListener('submit',event=>{
  event.preventDefault();const f=event.currentTarget,values={...settings,...Object.fromEntries(new FormData(f))};
  values.radioSchedules=scheduleEditor.value();
- for(const key of ['calendarEnabled','calendarUpcoming','calendarHolidays','calendarExcalifont','mouseSwipe','audioVolumeGesture','customCursor','grain','chimeEnabled','chimeQuiet','ambientEnabled','celestialSky','showClock','showSeconds','motion','hideControls','wakeLock','touchSoundEnabled','typing','solarTimes','weather','transitionFX','photoMotion','breathe','typingErase','effectsEnabled','effectSunSync','radioEnabled','radioScheduleEnabled','timerEnabled'])values[key]=f.elements[key].checked;
+ for(const key of ['calendarEnabled','calendarUpcoming','calendarHolidays','calendarExcalifont','mouseSwipe','audioVolumeGesture','customCursor','grain','chimeEnabled','chimeQuiet','ambientEnabled','celestialSky','showClock','showSeconds','motion','hideControls','compactIdleBar','wakeLock','touchSoundEnabled','typing','solarTimes','weather','transitionFX','photoMotion','breathe','typingErase','effectsEnabled','effectSunSync','radioEnabled','radioScheduleEnabled','timerEnabled'])values[key]=f.elements[key].checked;
  values.interval=Number(values.interval);values.photoDim=Number(values.photoDim);let error='';if(!validateSettings(f))return;
  if(values.mode==='twice'&&C.minutes(values.morning,-1)>=C.minutes(values.evening,-1))error='L\'inizio della sera deve essere successivo all\'inizio della mattina.';
  if(values.goalMode==='custom'&&(!values.goalStart||!values.goalEnd||new Date(values.goalEnd)<=new Date(values.goalStart)))error='Inserisci una data finale successiva alla data di inizio.';
@@ -564,7 +557,7 @@ document.addEventListener('istante:volume-gesture',event=>{
  const ambientPlaying=!!ambient.inspect?.().playing,radioState=radio.getState?.();let key='';
  if(ambientPlaying)key='ambientVolume';else if(radioState?.wantsPlay||radioState?.state==='playing')key='radioVolume';else key=settings.audioSource==='ambient'?'ambientVolume':'radioVolume';
  const next=Math.max(0,Math.min(100,(Number(settings[key])||0)+delta));if(next===settings[key])return;settings=C.cleanSettings({...settings,[key]:next});store.write('settings',settings);radio.apply();ambient.apply();
- const field=$('#settings-form')?.elements?.[key];if(field){field.value=String(next);field.dispatchEvent(new Event('input',{bubbles:true}));}volumeToast(key==='ambientVolume'?'Volume ambiente':'Volume radio',next);
+ const field=$('#settings-form')?.elements?.[key];if(field){field.value=String(next);field.dispatchEvent(new Event('input',{bubbles:true}));}toast((key==='ambientVolume'?'Volume ambiente':'Volume radio')+' · '+next+'%');
 });
 function toggleAudioZone(){if(!settings.audioVolumeGesture)return false;const useAmbient=settings.audioSource==='ambient'&&settings.ambientEnabled;if(useAmbient){const was=!!ambient.inspect?.().playing;if(was)ambient.stop();else void ambient.start('manual');document.dispatchEvent(new CustomEvent('istante:ambient-manual',{detail:{playing:!was}}));toast((was?'Pausa':'Play')+' · suono ambiente');return true;}if(!settings.radioEnabled)return false;const state=radio.getState?.()||{};if(state.wantsPlay){radio.stop();document.dispatchEvent(new CustomEvent('istante:radio-manual',{detail:{playing:false}}));toast('Pausa · radio');}else{void radio.start('manual');document.dispatchEvent(new CustomEvent('istante:radio-manual',{detail:{playing:true}}));toast('Play · radio');}return true;}
 window.IstanteAudioZoneToggle=toggleAudioZone;document.addEventListener('istante:audio-zone-toggle',toggleAudioZone);
