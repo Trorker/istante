@@ -1,89 +1,46 @@
-# Architettura responsive di Istante
+# Responsive architecture - 4 famiglie
 
-**Riferimento:** v4.0.0
+La UI usa quattro famiglie: **Phone**, **Tablet**, **Computer** e **Display/TV**.
 
-La v4 separa in modo netto **aspetto** e **composizione**. `assets/css/istante.css` contiene il linguaggio visuale condiviso; `assets/css/layout.css` e l'unico livello autorizzato a decidere geometria, densita e ricomposizione in base al dispositivo. Non esistono piu file `polish-*` o una catena di override responsive di release in release.
+`src/vue/core/viewport.js` assegna `data-device` e calcola due misure diverse:
 
-## Le quattro famiglie
+- `--viewport-index`: rapporto larghezza / altezza, usato per la composizione;
+- `--viewport-size-index`: dimensione ottica del viewport, usata per font e controlli.
 
-1. **Telefono (`phone`)** — esperienza touch compatta, con composizioni indipendenti portrait e landscape.
-2. **Tablet (`tablet`)** — piu spazio simultaneo, senza trattarlo come un desktop ristretto.
-3. **Computer (`computer`)** — laptop e desktop normali; modali a finestra, contenuti centrati e controlli completi.
-4. **Display (`display`)** — viewport realmente grandi, ultrawide e TV; scala maggiore ma con limiti di larghezza per non disperdere i contenuti. Un normale viewport Full-HD resta nella famiglia Computer per non ingrandire inutilmente l'interfaccia su laptop.
+## Phone
 
-La famiglia viene calcolata sul `visualViewport` quando disponibile. Questo permette a Safari/iOS di reagire alla rotazione e alle variazioni dell'area realmente visibile dovute alle barre del browser.
+Short side <= 600 CSS px. Portrait e landscape sono due composizioni reali, non lo stesso layout ristretto.
 
-## Due indici, due responsabilita
+In portrait:
+- home in colonna;
+- blocchi Meteo / Traguardo / Agenda verticali;
+- toolbar inferiore con posizioni deterministiche;
+- calendario: riga 1 logo + Oggi + Calendari, riga 2 periodo, riga 3 viste.
 
-Il controller reattivo Vue `src/vue/core/viewport.js` espone:
+## Tablet
 
-- `--viewport-index = width / height`: descrive la **forma** del viewport e contribuisce a scegliere portrait, landscape, tall, wide o ultrawide;
-- `--viewport-size-index = sqrt(width * height) / sqrt(1440 * 900)`: descrive la **dimensione ottica** del viewport e alimenta la scala automatica di font e UI.
+Classificato soprattutto tramite touch + dimensione. Mantiene touch target ampi e usa piu colonne dove c'e spazio.
 
-Il secondo indice evita l'errore di legare la tipografia soltanto al rapporto dello schermo: un telefono 16:9 e una TV 16:9 hanno una forma simile, ma non devono avere gli stessi corpi tipografici. La scala scelta dall'utente viene poi moltiplicata per quella automatica del dispositivo.
+## Computer
 
-## Variabili runtime
+Laptop e desktop standard. Modali centrate e dimensionate; il timer non diventa fullscreen.
 
-Su `<html>` vengono mantenuti:
+## Display / TV
 
-- `data-device="phone|tablet|computer|display"`;
-- `data-orientation="portrait|landscape|square"`;
-- `data-viewport-shape="tall|balanced|wide|ultrawide"`;
-- `data-viewport-layout`;
-- `--viewport-index`;
-- `--viewport-size-index`;
-- `--viewport-w-px`, `--viewport-h-px`, `--viewport-short-px`;
-- `--device-font-scale`, `--device-ui-scale`;
-- `--text-scale`, `--ui-scale`.
+Viewport CSS molto grandi o ultrawide. Aumenta scala tipografica e distanze senza trasformare la UI in un semplice desktop stirato.
 
-## Dashboard
+## Regola
 
-### Telefono portrait
+I breakpoint non devono essere sparsi nei componenti. La geometria condivisa vive solo in `assets/css/responsive.css`.
 
-La scena principale occupa lo spazio flessibile. Sotto di essa, la fascia informativa usa una vera colonna: **Meteo/Luce**, **Prossimo capitolo**, **Prossimo impegno**. Ogni blocco ha altezza propria e non puo essere riportato in una griglia orizzontale da regole storiche. La toolbar resta un livello separato e stabile.
+## TV 1080p e forzatura del profilo
 
-### Telefono landscape
+Dal solo CSS non e possibile conoscere la diagonale fisica dello schermo: un televisore 1920x1080 e un monitor 1920x1080 espongono la stessa area CSS. In automatico, quindi, il profilo **Display/TV** viene scelto solo per canvas realmente grandi (tipicamente 4K).
 
-La priorita e preservare spazio verticale per ora e pensiero. La fascia informativa usa una riga molto compatta e nasconde prima i dettagli secondari, senza ridurre i touch target essenziali.
+Per un TV Full HD si puo impostare senza ricompilare in `config/runtime.js`:
 
-### Tablet
+```js
+deviceProfile: 'display'
+```
 
-Il tablet ha composizioni proprie portrait/landscape. Non eredita automaticamente la colonna del telefono e non viene trattato come un computer soltanto piu stretto.
-
-### Computer e Display
-
-La Dashboard mantiene il ritmo editoriale. I display grandi aumentano scala e respiro in funzione del `viewport-size-index`, con limiti massimi di larghezza.
-
-## Timer
-
-Su **Computer** la modale Timer e una finestra centrata con larghezza e altezza massime. Non usa dimensioni fullscreen. Tablet e Display hanno limiti propri; il telefono puo invece usare piu superficie quando serve alla leggibilita e al touch.
-
-## Calendario
-
-### Telefono portrait
-
-La testata segue tre livelli fissi:
-
-1. **logo** a sinistra, **Oggi** e **Calendari** a destra;
-2. **periodo centrato**, con precedente/successivo ai lati;
-3. segmented control con **Anno / Mese / Settimana / Giorno / Agenda**.
-
-Il pulsante Calendari contiene solo l'icona calendario. Il vecchio pulsante freccia separato e nascosto su telefono. La vista Anno usa due colonne elastiche e griglie interne a sette colonne senza larghezze rigide che possano tagliare l'ultima colonna.
-
-### Telefono landscape
-
-Resta la composizione compatta a due righe. Il pulsante Calendari mantiene solo l'icona calendario e la vista Anno usa tre colonne elastiche.
-
-### Tablet / Computer / Display
-
-Mantengono etichette complete e maggiore densita informativa, con numero di colonne e spaziature coerenti alla famiglia.
-
-## Regola per le release future
-
-Non creare nuovi `polish-x.y.z.css` e non reintrodurre `responsive.css`.
-
-- **Aspetto condiviso:** `assets/css/istante.css`.
-- **Geometria e responsive:** `assets/css/layout.css`.
-- **Documentazione:** `assets/css/documents.css`.
-
-Prima di aggiungere una regola responsive va deciso se il problema appartiene alla famiglia (`data-device`), all'orientamento, alla forma del viewport oppure alla scala ottica. Una correzione per una singola risoluzione e l'ultima scelta, non la prima.
+Valori ammessi: `auto`, `phone`, `tablet`, `computer`, `display`.

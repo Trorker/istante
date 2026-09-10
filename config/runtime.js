@@ -1,7 +1,6 @@
-/* Istante runtime configuration.
- * For GitHub Pages + external PHP API, replace calendarApiUrl with the full HTTPS endpoint.
- * Example: https://api.istante.ruslan-dzyuba.it/calendar.php
- */
+/* Istante runtime configuration - editable without rebuilding. */
 window.ISTANTE_CONFIG = Object.assign({
-  calendarApiUrl: 'api/calendar.php'
+  calendarApiUrl: 'https://api.istante.ruslan-dzyuba.it/calendar.php',
+  // auto | phone | tablet | computer | display
+  deviceProfile: 'auto'
 }, window.ISTANTE_CONFIG || {});

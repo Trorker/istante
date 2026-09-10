@@ -1,4 +1,4 @@
-/* Istante v4 · Vue application bootstrap */
+/* Istante v4.1 · Vue application bootstrap */
 (function(){
   'use strict';
   const components=window.IstanteVueComponents||{};

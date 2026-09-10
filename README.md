@@ -1,6 +1,26 @@
+# Istante 4.1.0
+
+Questa release riparte dalla **3.13.11** e mantiene i motori funzionali esistenti, ma ricostruisce l'interfaccia come applicazione **Vue 3 a componenti**.
+
+## Struttura
+
+- `index.html`: shell e mount point Vue.
+- `src/vue/components/`: componenti dell'interfaccia.
+- `src/vue/core/viewport.js`: classificazione Phone / Tablet / Computer / Display-TV.
+- `assets/css/istante.css`: baseline visuale 3.13.11 consolidata.
+- `assets/css/responsive.css`: unica geometria responsive.
+- `assets/js/`: motori applicativi caricati dopo Vue.
+- `config/runtime.js`: endpoint ICS configurabile.
+
+L'app e pronta per hosting statico/GitHub Pages. L'API ICS puo restare separata su `https://api.istante.ruslan-dzyuba.it/calendar.php`.
+
+Per i dettagli vedere `docs/ARCHITETTURA-VUE.md` e `docs/RESPONSIVE-ARCHITECTURE.md`.
+
+---
+
 # Istante
 
-**Versione corrente: 4.0.0**  
+**Versione corrente: 4.1.0**  
 **Un momento, per te.**  
 Un progetto di **Ruslan Dzyuba**.
 
@@ -18,10 +38,9 @@ stesso linguaggio visivo essenziale di Istante.
 
 ## Il cuore di Istante
 
-La linea grafica usa superfici pulite, tipografia equilibrata, controlli coerenti,
-gerarchie semplici e pochi elementi in competizione. La v4 separa finalmente
-**interfaccia Vue**, **motore responsive**, **servizi applicativi** e **dati**,
-così un cambiamento di layout non richiede più correzioni sparse nel progetto.
+La linea grafica usa un unico sistema visivo: superfici pulite, tipografia equilibrata, controlli
+coerenti e gerarchie semplici. Le funzioni storiche sono mantenute dove utili, ma la composizione
+responsive della 4.1.0 è governata dalla nuova architettura a componenti Vue.
 
 La dashboard principale resta senza scroll. Puoi scegliere orologio digitale
 o analogico, formato 24/12 ore, tema Notte, Carta, tema del dispositivo oppure
@@ -39,7 +58,7 @@ aggiungere altre raccolte incluse nel sito oppure importare file **JSON** o
 La macchina da scrivere è facoltativa e può usare un ritmo umano, piccole pause
 e correzioni. Preferiti e storico restano locali.
 
-La dimensione scelta dall’utente viene combinata con la scala automatica del dispositivo. Istante distingue **Telefono, Tablet, Computer e Display grande/TV**: il rapporto `vw/vh` decide la forma della composizione, mentre un secondo indice basato sulla dimensione reale del viewport regola la scala tipografica. In questo modo la stessa proporzione di schermo non produce font identici su un telefono e su una TV.
+La dimensione dei testi usa tre tab semplici — **Piccolo, Normale, Grande** — così la scelta resta immediata anche su tablet.
 
 Per i contenuti editoriali puoi scegliere tra **Classic** ed **Excalifont**, più vicino a una scrittura a mano. Quando il font globale è Classic, il Calendario offre uno switch separato per usare Excalifont soltanto nelle date, nei titoli e negli eventi. Se Excalifont è già globale, lo switch dedicato scompare. Excalifont viene richiesto solo quando selezionato; senza rete o se non disponibile, Istante torna automaticamente al carattere Classic.
 
@@ -69,10 +88,7 @@ agenda; puoi scegliere una vista iniziale fissa oppure **riprendere l’ultima v
 La vista torna alla dashboard dopo un periodo configurabile di inattività.
 Il prossimo impegno può comparire in modo discreto sulla hero. Nella vista mese, quando un giorno contiene più eventi di quanti possano essere mostrati con calma, compare **“altri eventi”**: apre direttamente quel giorno invece di comprimere il calendario. I feed ICS sono
 letti in sola lettura; alcuni fusi Windows/Outlook comuni vengono normalizzati
-in fusi IANA quando possibile. Per i calendari remoti la release include una
-**API ICS PHP provider-agnostic**: Google Calendar, Outlook / Microsoft 365,
-iCloud e altri feed HTTPS passano dallo stesso relay locale all'installazione,
-superando i limiti CORS senza introdurre account o un database applicativo.
+in fusi IANA quando possibile.
 
 ## Condivisione
 
@@ -81,13 +97,9 @@ la frase condivisa. Firma e indirizzo ufficiale restano parte della composizione
 
 ## Offline, privacy e backup
 
-Istante resta un'applicazione **senza account e senza database applicativo**.
+Istante è un sito statico: **non richiede account né backend applicativo**.
 Preferenze, raccolte personali, calendari importati, stazioni e preferiti sono
-salvati nel browser. Puoi esportare e ripristinare un backup JSON. L'unica
-componente server della release di produzione è `api/calendar.php`: un piccolo
-relay PHP sola lettura usato esclusivamente per scaricare feed ICS remoti che
-il browser non può leggere direttamente per CORS. Il link del feed non viene
-salvato dall'API.
+salvati nel browser. Puoi esportare e ripristinare un backup JSON.
 
 L'interfaccia e i contenuti locali possono essere conservati dal service worker.
 Radio live, nuove foto automatiche, sincronizzazione di calendari remoti e meteo
@@ -103,36 +115,22 @@ Su desktop con mouse o trackpad puoi attivare un **cursore personalizzato discre
 
 ## Struttura del progetto
 
-La v4 usa **Vue 3.5.13 locale**, senza CDN e senza build obbligatoria. Il browser
-carica il runtime vendorizzato e i componenti già assemblati; i sorgenti dei
-componenti restano leggibili in `src/vue/`.
-
-- `index.html`: shell minima, boot screen e mount point Vue.
-- `src/vue/components/`: componenti Vue della Dashboard, Calendario, toolbar e modali.
-- `src/vue/core/viewport.js`: classificazione reattiva Phone / Tablet / Computer / Display e scale ottiche.
-- `src/vue/core/service-loader.js`: avvio ordinato dei motori non visuali.
-- `assets/vue/istante-vue.js`: bundle browser dei componenti e del bootstrap Vue.
-- `vendor/vue.global.prod.js`: Vue 3.5.13 locale, licenza MIT.
-- `assets/js/`: servizi applicativi (calendario ICS, radio, timer, meteo, scene, backup, gesture).
-- `assets/css/istante.css`: fondazione visuale.
-- `assets/css/layout.css`: composizione responsive per le quattro famiglie di dispositivo.
-- `config/runtime.js`: configurazione modificabile senza ricompilare, compreso l'endpoint ICS.
-- `api/calendar.php`: relay ICS HTTPS sola lettura.
-- `data/`: frasi, raccolte e stazioni.
-- `docs/ARCHITETTURA-VUE.md`: mappa dei componenti e regole di sviluppo della v4.
-- `docs/RESPONSIVE-ARCHITECTURE.md`: classificazione dei viewport e criteri di scala.
-- `docs/release/v4.0.0.md`: note della migrazione.
+- `index.html`: dashboard, viste e pannelli principali.
+- `assets/`: CSS, JavaScript, icone e immagine social.
+- `data/`: frasi, catalogo raccolte e stazioni predefinite.
+- `README.md`: descrizione del progetto e release corrente.
+- `CHANGELOG.md`: storico delle modifiche.
+- `docs/release/v3.13.4.md`: note dettagliate di questa release.
+- `docs/LICENZA.md`: licenza non commerciale con attribuzione obbligatoria.
+- `docs/TERZE-PARTI.md`: dipendenze, servizi e attribuzioni.
+- `docs/VISIONE-E-DESIGN.md`: valori, regole grafiche e criteri responsive da mantenere nelle release future.
 
 ## Pubblicazione
 
-La v4 supporta entrambe le modalità:
-
-1. **Tutto sullo stesso hosting**: lascia `calendarApiUrl: 'api/calendar.php'` in `config/runtime.js`.
-2. **Frontend statico su GitHub Pages + API PHP sul tuo hosting**: imposta in `config/runtime.js` un URL HTTPS assoluto, ad esempio `https://api.example.it/calendar.php`, e abilita CORS nell'API solo per il dominio pubblico di Istante.
-
-Il frontend non richiede Node.js, npm o un server applicativo. Per i calendari
-remoti l'endpoint PHP richiede PHP 8.1+ e cURL. Service worker, Vue, icone, dati e
-componenti sono locali e possono funzionare dalla cache una volta installati.
+Pubblica **tutto il contenuto della cartella** sullo stesso percorso HTTPS,
+compresi `sw.js`, `version.json`, `assets`, `data` e `docs`. Non mescolare file
+di release diverse: il controllo aggiornamenti e la cache verificano una copia
+coerente prima di attivarla.
 
 ## Autore e licenza
 

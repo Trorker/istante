@@ -957,7 +957,7 @@
          Informazioni su Istante
         </strong>
 <small data-summary="about">
-         Versione 4.0.0
+         Versione 4.1.0
         </small>
 </span>
 <span class="icon section-chevron" data-icon="chevron">
@@ -1009,7 +1009,7 @@
 <strong>
           Versione
           <span id="app-version">
-           4.0.0
+           4.1.0
           </span>
 </strong>
 <span class="small-chip" hidden="" id="update-status-chip">
@@ -1057,7 +1057,7 @@
       </span>
 </p>
 <small class="build-note">
-      Istante 4.0.0
+      Istante 4.1.0
      </small>
 <div class="keyboard-note">
 <kbd>

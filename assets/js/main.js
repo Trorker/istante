@@ -1,4 +1,4 @@
-/* Istante v4.0.0 - application and local preferences. */
+/* Istante v4.1.0 - application service layer and local preferences. */
 (function () {
 'use strict';
 const C = window.IstanteCore;
@@ -163,12 +163,9 @@ async function copyCurrentPhrase(){
 const coarsePointer=matchMedia('(pointer:coarse)');
 function mayFocusText(){return !coarsePointer.matches&&matchMedia('(hover:hover) and (pointer:fine)').matches;}
 function updateViewportIndex(){
- const metrics=window.IstanteViewport?.update?.();
- const root=document.documentElement;
- if(metrics){document.body.dataset.viewportShape=metrics.shape;document.body.dataset.viewportLayout=metrics.layout;document.body.dataset.device=metrics.device;document.body.dataset.orientation=metrics.orientation;return;}
- const vp=window.visualViewport,w=Math.max(1,Math.round(vp?.width||innerWidth||1)),h=Math.max(1,Math.round(vp?.height||innerHeight||1)),ratio=w/h,shape=ratio>1.65?'wide':ratio<.78?'tall':'balanced';
- root.style.setProperty('--viewport-index',ratio.toFixed(4));root.style.setProperty('--viewport-w',w);root.style.setProperty('--viewport-h',h);root.style.setProperty('--viewport-w-px',w+'px');root.style.setProperty('--viewport-h-px',h+'px');
- root.dataset.viewportShape=shape;root.dataset.orientation=ratio>1.12?'landscape':ratio<.89?'portrait':'square';root.dataset.device=(Math.min(w,h)<=600?'phone':'computer');document.body.dataset.viewportShape=shape;document.body.dataset.device=root.dataset.device;document.body.dataset.orientation=root.dataset.orientation;
+ const vp=window.visualViewport,w=Math.max(1,Math.round(vp?.width||innerWidth||1)),h=Math.max(1,Math.round(vp?.height||innerHeight||1)),ratio=w/h;
+ const root=document.documentElement;root.style.setProperty('--viewport-index',ratio.toFixed(4));root.style.setProperty('--viewport-w',w);root.style.setProperty('--viewport-h',h);
+ document.body.dataset.viewportShape=ratio>1.65?'wide':ratio<.78?'tall':'balanced';
 }
 function applyAppearance(now) {
  window.IstantePerformance.apply(settings);companion.apply();

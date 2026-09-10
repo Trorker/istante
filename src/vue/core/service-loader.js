@@ -1,7 +1,7 @@
-/* Istante v4 · service loader for the non-visual application engines used by Vue components. */
+/* Istante v4.1 · service loader for the non-visual application engines used by Vue components. */
 (function(){
   'use strict';
-  const VERSION='4.0.0';
+  const VERSION='4.1.0';
   const scripts = [
     'data/phrases.js','data/stations.js','assets/js/core.js','assets/js/collections.js','assets/js/companion.js',
     'assets/js/qr.js','assets/js/share-link.js','assets/js/phrase-history.js','assets/js/weather-scene.js','assets/js/solar.js',

@@ -1,7 +1,7 @@
-/* Istante 4.0.0 - layout engine.
+/* Istante 4.1.0 - responsive composition engine.
    One composition layer for four device families:
    phone, tablet, computer, display.
-   Base visuals live in istante.css; this file owns geometry and responsive rules. */
+   Base visuals come from the v3.13.11 visual baseline. This file is the single owner of responsive geometry. */
 
 :root{
   --viewport-index:1.7778;
@@ -447,7 +447,8 @@ html[data-device='phone'] #calendar-view .calendar-layout{display:block!importan
 html[data-device='phone'] #calendar-view .calendar-main{display:block!important;width:100%!important;overflow:hidden!important;}
 html[data-device='phone'] #calendar-view #cal-content{
   width:100%!important;
-  padding-inline:2px!important;
+  box-sizing:border-box!important;
+  padding-inline:3px!important;
   overflow-y:auto!important;
   overflow-x:hidden!important;
   -webkit-overflow-scrolling:touch;
@@ -605,7 +606,7 @@ html[data-device='phone'][data-orientation='portrait'] #calendar-view #cal-conte
   justify-self:center!important;line-height:1!important;font-size:calc(8px * var(--ui-scale,1))!important;
 }
 
-html[data-device='phone'][data-orientation='portrait'] #calendar-view #cal-content>.calendar-month{width:100%!important;height:100%!important;min-height:0!important;border-radius:13px!important;overflow:hidden!important;}
+html[data-device='phone'][data-orientation='portrait'] #calendar-view #cal-content>.calendar-month{width:100%!important;height:100%!important;min-height:0!important;box-sizing:border-box!important;border-radius:13px!important;overflow:hidden!important;}
 html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-weekdays span{padding:6px 1px!important;font-size:calc(8px * var(--ui-scale,1))!important;}
 html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-grid{min-height:0!important;height:calc(100% - 29px)!important;grid-template-rows:repeat(var(--month-weeks,6),minmax(42px,1fr))!important;}
 html[data-device='phone'][data-orientation='portrait'] #calendar-view .calendar-cell{min-height:0!important;padding:3px 2px!important;}

@@ -1,7 +1,7 @@
 {
   "name": "istante",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "private": true,
-  "description": "Istante - dashboard/screensaver Vue 3, un momento per te.",
+  "description": "Istante - Vue 3 component architecture based on v3.13.11",
   "license": "SEE LICENSE IN docs/LICENZA.md"
 }

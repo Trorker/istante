@@ -2,15 +2,6 @@
 
 Istante usa risorse locali per la propria interfaccia. Solo le funzioni online attivate dall'utente contattano servizi esterni. La licenza del progetto non attribuisce diritti sulle fotografie, sui marchi o sui brani delle radio.
 
-
-## Vue 3
-
-L'interfaccia della v4 usa **Vue 3.5.13**, incluso localmente nel pacchetto come
-`vendor/vue.global.prod.js`. Non viene caricato da CDN. Vue è distribuito sotto
-licenza MIT.
-
-[Vue](https://vuejs.org/) · [Licenza Vue](licenses/VUE-LICENSE.txt)
-
 ## Material Icons
 
 Le icone dei comandi sono un sottoinsieme SVG locale di Material Icons, con adattamenti. Licenza Apache 2.0. Sono conservati il testo della licenza e il notice originali.
@@ -137,3 +128,8 @@ Istante offre **Excalifont** come stile tipografico facoltativo per i contenuti 
 Excalifont è distribuito dal progetto Excalidraw con licenza **SIL Open Font License 1.1**. Istante non modifica né ridistribuisce il file del font.
 
 [Progetto Excalidraw](https://github.com/excalidraw/excalidraw) · [SIL Open Font License 1.1](https://openfontlicense.org/)
+
+## Vue 3
+
+La UI della v4.1 usa Vue 3.5.13 incluso localmente in `vendor/vue.global.prod.js`.
+Licenza MIT: `docs/licenses/VUE-LICENSE.txt`.

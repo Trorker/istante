@@ -1,53 +1,14 @@
 # Changelog
 
-## 4.0.0 — 10 settembre 2026
+## 4.1.0 - 2026-09-10
 
-- **Interfaccia riscritta in Vue 3:** Dashboard, calendario, toolbar, schermate informative e modali sono ora componenti Vue montati da un `index.html` ridotto al solo shell di avvio.
-- **26 componenti UI:** la nuova struttura separa layout, calendario, dialoghi, documentazione e shell applicativa; il contratto DOM mantiene tutti i 411 ID necessari ai servizi esistenti, evitando regressioni nelle funzioni già stabili.
-- **Vue locale, nessuna CDN:** inclusa Vue 3.5.13 nel pacchetto di produzione; l'app resta pubblicabile come sito statico e non richiede `npm` o una fase di build sull'hosting.
-- **Responsive reattivo:** `src/vue/core/viewport.js` classifica Telefono, Tablet, Computer e Display/TV e aggiorna indici, orientamento, proporzioni e scale tipografiche/UI usate da `assets/css/layout.css`.
-- **Layout corretti preservati:** timer non fullscreen su laptop/PC; navbar calendario phone portrait su tre righe; vista Anno elastica senza tagli; pulsante Calendari senza freccia; fascia informativa e toolbar telefono con geometria deterministica.
-- **Service layer separato dalla UI:** motori calendario/ICS, timer, radio, meteo, raccolte e persistenza restano moduli JavaScript indipendenti, caricati in ordine dopo il mount Vue per conservare il comportamento verificato.
-- **Deploy statico + API separata:** `config/runtime.js` consente di impostare l'endpoint ICS senza ricostruire l'app, utile per GitHub Pages con `calendar.php` sul proprio hosting.
-- **CORS API sicuro:** `api/calendar.php` supporta una allowlist di origin HTTPS esatti tramite `ISTANTE_ALLOWED_ORIGINS`, preflight `OPTIONS` e nessun wildcard, mantenendo le protezioni SSRF già presenti.
-- **Documentazione Vue:** aggiunti `docs/ARCHITETTURA-VUE.md`, licenza Vue e release note dedicate; anche `leggi.html` viene montata tramite un componente Vue.
-
-## 3.16.0 — 10 settembre 2026
-
-- **Architettura responsive riscritta:** eliminato il vecchio `responsive.css`; la geometria di Dashboard, Calendario e modali vive ora nel solo `assets/css/layout.css`, separata dalla base visuale di `istante.css`.
-- **Quattro famiglie di dispositivo:** Telefono, Tablet, Computer e Display/TV; rapporto `vw/vh` per la composizione e `viewport-size-index` per la scala ottica di font e controlli.
-- **Timer su laptop/PC:** la modale torna ad essere una finestra centrata con dimensioni massime definite e non occupa più tutto il viewport.
-- **Calendario telefono portrait:** prima riga con logo a sinistra e `Oggi` + Calendari a destra; periodo centrato nella seconda riga con navigazione laterale; viste Anno/Mese/Settimana/Giorno/Agenda nella terza riga.
-- **Calendario telefono:** rimosso il comando freccia accanto al pulsante Calendari; il drawer si apre sempre dal solo pulsante con icona calendario.
-- **Vista Anno:** griglia dei mesi resa elastica e con margini di sicurezza per evitare il taglio dell'ultima colonna/giorni sui viewport stretti.
-- **Dashboard telefono portrait:** Meteo/Luce, Prossimo capitolo e prossimo impegno sono tre righe reali; rimossi i conflitti con vecchie regole `:has()` che potevano rimetterli affiancati.
-- **Toolbar inferiore telefono:** struttura deterministica in tre gruppi (3/2/3), touch target uniformi e nessun riposizionamento dovuto a pulsanti nascosti.
-- **Testo UI:** rimossa dalla schermata Informazioni la vecchia dicitura che richiamava la 3.8.
-
-## 3.15.0 — 10 settembre 2026
-
-- **Nuova architettura responsive:** quattro famiglie reali — Telefono, Tablet, Computer e Display grande/TV — con orientamento e aspect ratio come segnali secondari.
-- **Doppio indice viewport:** `vw/vh` governa la composizione; l’indice dimensionale basato sull’area del viewport contribuisce alla scala di font e interfaccia senza confondere telefoni e TV con lo stesso rapporto.
-- **Dashboard telefono portrait:** Meteo/Luce, Prossimo capitolo e Prossimo impegno sono ora tre righe reali; neutralizzate le vecchie regole `:has()` che potevano rimetterli affiancati.
-- **Calendario mobile:** testata ripulita, pulsanti non sovrapposti, frecce direzionali native, rail coerenti per azioni/navigazione e viste sempre leggibili.
-- **Vista Anno:** due colonne leggibili in portrait; tre colonne con scroll verticale in landscape invece di comprimere quattro mesi per riga.
-- **Manutenzione:** tutta la logica dipendente dal viewport resta in `assets/css/responsive.css`; documentata in `docs/RESPONSIVE-ARCHITECTURE.md`.
-
-## 3.14.1 — 10 settembre 2026
-
-- **Calendario telefono corretto:** eliminato il conflitto legacy che nascondeva le etichette Anno / Mese / Settimana / Giorno / Agenda senza fornire icone sostitutive.
-- **Telefono verticale:** nuova testata a tre livelli, mese con indicatori evento, settimana in lista, giorno e agenda ridimensionati sul viewport reale.
-- **Telefono orizzontale:** testata a due righe, settimana a 7 colonne e vista Giorno a due colonne per sfruttare la larghezza senza consumare altezza.
-- **Drawer e modali:** Le tue giornate resta un drawer da destra; gestione calendari e dettaglio evento ora hanno dimensioni dedicate ai telefoni portrait/landscape.
-
-## 3.14.0 — 10 settembre 2026
-
-- **Revisione responsive per produzione:** introdotto un indice di viewport basato su `visualViewport.width / visualViewport.height`, con composizioni esplicite per telefono verticale/orizzontale, tablet e desktop.
-- **Telefono verticale:** Meteo, Prossimo capitolo e Agenda si ricompongono in colonna; ridotti gli spazi tra pensiero e fascia inferiore e alleggeriti i metadati secondari.
-- **Telefono orizzontale:** fascia informativa e toolbar rese sensibilmente più sottili e proporzionate rispetto a ora e frase.
-- **CSS consolidato:** eliminata la pubblicazione dei numerosi `polish-*`; la dashboard usa `istante.css` più un unico `responsive.css`, mentre la documentazione ha un bundle autonomo.
-- **Calendari ICS:** aggiunto `api/calendar.php`, relay HTTPS sola lettura e indipendente dal provider per Google Calendar, Outlook / Microsoft 365, iCloud e feed ICS compatibili, con protezioni SSRF, limite 1 MiB e redirect controllati.
-- **Offline:** rigenerata la precache del service worker rimuovendo il riferimento obsoleto a `calendario.html`; l'API calendario non viene intercettata né memorizzata nella cache offline.
+- Refactor UI in Vue 3 a componenti partendo dalla 3.13.11.
+- Nuovo responsive engine a quattro famiglie: Phone, Tablet, Computer, Display/TV.
+- Scala font/UI separata dalla sola aspect ratio.
+- Calendario mobile e toolbar home governati da un solo foglio responsive.
+- Timer su laptop/desktop mantenuto come modale centrata.
+- Feed ICS: tentativo diretto e fallback automatico al proxy remoto.
+- Service worker aggiornato per la nuova struttura Vue.
 
 ## 3.13.11 — 10 settembre 2026
 

@@ -1,102 +1,60 @@
-# Architettura Vue di Istante
+# Architettura Vue di Istante 4.1
 
-**Riferimento:** v4.0.0  
-**Obiettivo:** separare UI, responsive, servizi e dati senza alterare il linguaggio visivo di Istante.
+**Base funzionale:** Istante 3.13.11  
+**Obiettivo:** conservare le funzionalita stabili della 3.13.11 e sostituire la struttura monolitica della UI con componenti Vue.
 
 ## Principio
 
-La v4 non considera più `index.html` come l'applicazione. `index.html` contiene solo
-metadata, boot screen e il mount point `#app`. Tutta l'interfaccia viene creata da
-Vue 3.
+`index.html` non contiene piu l'interfaccia completa. Contiene solo metadata, boot screen e il mount point `#app`.
+Vue monta la UI prima dell'avvio dei motori applicativi storici, cosi i servizi trovano tutti gli ID attesi senza race condition.
 
-La UI è composta da componenti, mentre i motori che non hanno responsabilità di
-rendering restano moduli JavaScript separati. Questo evita di riscrivere logiche
-stabili (ICS, audio, backup, astronomia) ogni volta che cambia la disposizione.
-
-## Albero dei componenti
+## Albero principale
 
 ```text
-IstanteApplication
-└─ AppRoot
-   ├─ AppBackdrop
-   ├─ AppShell
-   │  ├─ AppTopbar
-   │  └─ StageViewport
-   │     ├─ HomeMainStage
-   │     ├─ HomeInfoDock
-   │     └─ BottomToolbar
-   ├─ CalendarView
-   ├─ SettingsDialog
-   ├─ TimerDialog
-   ├─ WeatherDialog
-   ├─ GoalDialog
-   ├─ LibraryDialog
-   ├─ CollectionCreateDialog
-   ├─ CollectionEditDialog
-   ├─ StationsDialog
-   ├─ ShareDialog
-   ├─ WelcomeDialog
-   ├─ TourDialog
-   ├─ BackupDialog
-   ├─ ReceivedDialog
-   ├─ CalendarSourcesDialog
-   ├─ CalendarEventDialog
-   ├─ ToastHost
-   └─ ViewDots
+AppRoot
+├─ AppBackdrop
+├─ AppShell
+│  ├─ AppTopbar
+│  ├─ HomeMainStage
+│  ├─ HomeInfoDock
+│  └─ BottomToolbar
+├─ CalendarView
+├─ TimerDialog
+├─ SettingsDialog
+├─ WeatherDialog
+├─ GoalDialog
+├─ LibraryDialog
+├─ ShareDialog
+├─ CalendarSourcesDialog
+├─ CalendarEventDialog
+└─ altri dialog/componenti secondari
 ```
 
-Anche `leggi.html` usa un componente Vue dedicato (`DocumentApp`).
+I componenti sono in `src/vue/components/`. Il bundle browser pronto per GitHub Pages e in `assets/vue/istante-vue.js`.
 
-## Responsive
+## Servizi
 
-Il responsive è una responsabilità globale unica. `viewport.js` calcola:
+Audio, calendario ICS, astronomia, meteo, backup, raccolte e persistenza restano moduli separati in `assets/js/`.
+Sono caricati **dopo** il mount Vue da `src/vue/core/service-loader.js`.
 
-- famiglia: `phone`, `tablet`, `computer`, `display`;
-- orientamento: `portrait`, `landscape`, `square`;
-- forma: `tall`, `balanced`, `wide`, `ultrawide`;
-- `--viewport-index`: rapporto `vw / vh`;
-- `--viewport-size-index`: dimensione ottica del viewport;
-- `--device-font-scale`: scala tipografica automatica;
-- `--device-ui-scale`: scala dei controlli.
+Questa separazione consente di riscrivere gradualmente lo stato interno in composable/store senza rompere la UI in una singola migrazione.
 
-Il rapporto decide **come** ricomporre l'interfaccia. La dimensione ottica decide
-**quanto** grandi devono essere font e controlli. Una TV 16:9 e un telefono 16:9
-non condividono quindi la stessa scala.
+## Calendario ICS
 
-## Regola per i componenti
+Il motore prova prima l'URL ICS direttamente dal browser. Se il provider blocca CORS, usa automaticamente:
 
-Un componente possiede il proprio markup e non deve duplicare breakpoint in file
-sparsi. Le variazioni geometriche condivise restano in `assets/css/layout.css`.
-Le regole visuali di base restano in `assets/css/istante.css`.
+`https://api.istante.ruslan-dzyuba.it/calendar.php`
 
-Non creare più file `polish-x.y.z.css`.
+La configurazione e in `config/runtime.js` e puo essere cambiata senza ricostruire l'app.
 
-## Servizi applicativi
+## CSS
 
-I file in `assets/js/` sono trattati come servizi non visuali. La v4 li carica
-solo **dopo** che Vue ha montato tutto il DOM, così i moduli esistenti possono
-agganciarsi agli ID senza race condition.
+- `assets/css/istante.css`: baseline visuale consolidata dalla 3.13.11.
+- `assets/css/responsive.css`: **unico proprietario della geometria responsive**.
+- `assets/css/documents.css`: pagina documentazione.
 
-La migrazione futura può spostare progressivamente stato e azioni in composable
-Vue senza cambiare nuovamente il markup. Il contratto è: un servizio non deve
-creare intere schermate quando esiste già un componente responsabile di quella
-schermata.
+Non creare piu file `polish-x.y.z.css`.
 
-## Configurazione runtime
+## Dipendenze UI
 
-`config/runtime.js` viene caricato prima dell'app Vue. Consente di cambiare
-l'endpoint calendario senza ricostruire la release:
-
-```js
-window.ISTANTE_CONFIG = {
-  calendarApiUrl: 'https://api.example.it/calendar.php'
-};
-```
-
-Questo permette di distribuire il frontend su GitHub Pages e tenere soltanto
-l'API ICS su un hosting PHP.
-
-## Dipendenze
-
-Vue 3.5.13 è incluso localmente in `vendor/vue.global.prod.js`. Nessun framework
-UI o CDN è richiesto per avviare l'applicazione.
+La UI e costruita con componenti Vue 3 locali. Non dipende da una CDN per la libreria grafica: questo evita che un content-control esterno renda inutilizzabile l'interfaccia e mantiene il bootstrap disponibile offline. I componenti applicativi restano in `src/vue/components/`; i motori storici della 3.13.11 vengono caricati come service layer dopo il mount e possono essere migrati progressivamente senza cambiare il contratto DOM.
