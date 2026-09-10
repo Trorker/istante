@@ -1,6 +1,6 @@
 # Istante
 
-**Versione corrente: 3.13.9**  
+**Versione corrente: 3.13.10**  
 **Un momento, per te.**  
 Un progetto di **Ruslan Dzyuba**.
 

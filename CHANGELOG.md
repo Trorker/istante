@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.13.10 — 10 settembre 2026
+
+- Timer avviato: dentro il cerchio resta soltanto il countdown numerico `00:00`, senza etichetta testuale.
+- Timer tablet: eliminata la vecchia altezza fissa della zona centrale; il contenuto ora occupa realmente tutta la modale e i controlli audio restano subito sopra al footer.
+- Timer tablet: quadrante portato fino a 500 px sui tablet portrait standard (470 px sui più stretti) e 520 px sui tablet/ibridi larghi; sui tablet più bassi usa 450 px senza introdurre scroll.
+- Aggiornamenti: riallineata alla release corrente la versione interna del modulo di verifica aggiornamenti.
+
 ## 3.13.9 — 10 settembre 2026
 
 - Timer tablet: rilevamento corretto anche per dispositivi touch/ibridi che si presentano come `pointer: fine`; il layout ampio ora copre anche viewport 1280/1366/1368 fino a 1500 px.
