@@ -1,0 +1,2152 @@
+/* Runtime configuration can be changed without rebuilding the Vue application. */
+window.ISTANTE_CONFIG = Object.assign({
+  calendarApiUrl: 'api/calendar.php'
+}, window.ISTANTE_CONFIG || {});
+/* Istante v4 · responsive viewport model. Shape controls composition, physical viewport size controls optical scale. */
+(function(){
+  'use strict';
+  const { reactive, readonly } = Vue;
+  const root = document.documentElement;
+  const state = reactive({
+    width: 0, height: 0, shortSide: 0, ratio: 1, sizeIndex: 1,
+    device: 'computer', orientation: 'landscape', shape: 'balanced', layout: 'computer',
+    fontScale: 1, uiScale: 1, userTextScale: 1, userUiScale: 1
+  });
+  const clamp=(min,value,max)=>Math.max(min,Math.min(max,value));
+  function family(w,h,ratio,touch){
+    const shortSide=Math.min(w,h), longSide=Math.max(w,h);
+    const sizeIndex=Math.sqrt(w*h)/Math.sqrt(1440*900);
+    if((touch&&shortSide<=600)||(shortSide<=520&&longSide<=1180)) return 'phone';
+    if(touch&&shortSide<=1100&&longSide<=1700) return 'tablet';
+    if(sizeIndex>=1.38&&(w>=2300||h>=1350||(ratio>=2.05&&w>=2200))) return 'display';
+    return 'computer';
+  }
+  function opticalScale(device,w,h,ratio,orientation){
+    const shortSide=Math.min(w,h), sizeIndex=Math.sqrt(w*h)/Math.sqrt(1440*900);
+    let font=1,ui=1;
+    if(device==='phone'){
+      font=clamp(.90,.955+(sizeIndex-.50)*.22,1.055);
+      ui=clamp(.91,.965+(sizeIndex-.50)*.16,1.025);
+      if(shortSide<375){font*=.975;ui*=.98;}
+      if(orientation==='landscape'&&ratio>1.85){font*=.94;ui*=.95;}
+    }else if(device==='tablet'){
+      font=clamp(.98,1.015+(sizeIndex-.72)*.16,1.115);
+      ui=clamp(.98,1.010+(sizeIndex-.72)*.12,1.085);
+      if(orientation==='landscape'&&ratio>1.55){font*=.985;ui*=.99;}
+    }else if(device==='display'){
+      font=clamp(1.12,1.13+(sizeIndex-1.18)*.21,1.38);
+      ui=clamp(1.08,1.09+(sizeIndex-1.18)*.15,1.25);
+    }else{
+      font=clamp(.97,1.00+(sizeIndex-.83)*.12,1.11);
+      ui=clamp(.97,1.00+(sizeIndex-.83)*.09,1.08);
+    }
+    return {font,ui};
+  }
+  function apply(){
+    const vp=window.visualViewport;
+    const w=Math.max(1,Math.round((vp&&vp.width)||innerWidth||1));
+    const h=Math.max(1,Math.round((vp&&vp.height)||innerHeight||1));
+    const ratio=w/h, shortSide=Math.min(w,h), sizeIndex=Math.sqrt(w*h)/Math.sqrt(1440*900);
+    const touch=root.dataset.touchCapable==='true';
+    const orientation=ratio>1.12?'landscape':ratio<.89?'portrait':'square';
+    const shape=ratio>=2.2?'ultrawide':ratio>1.55?'wide':ratio<.72?'tall':'balanced';
+    const device=family(w,h,ratio,touch);
+    const layout=device+((device==='phone'||device==='tablet')?'-'+orientation:'');
+    const scale=opticalScale(device,w,h,ratio,orientation);
+    Object.assign(state,{width:w,height:h,shortSide,ratio,sizeIndex,device,orientation,shape,layout,fontScale:scale.font,uiScale:scale.ui});
+    root.style.setProperty('--viewport-index',ratio.toFixed(4));
+    root.style.setProperty('--viewport-size-index',sizeIndex.toFixed(4));
+    root.style.setProperty('--viewport-w',String(w)); root.style.setProperty('--viewport-h',String(h));
+    root.style.setProperty('--viewport-w-px',w+'px'); root.style.setProperty('--viewport-h-px',h+'px'); root.style.setProperty('--viewport-short-px',shortSide+'px');
+    root.style.setProperty('--device-font-scale',scale.font.toFixed(4)); root.style.setProperty('--device-ui-scale',scale.ui.toFixed(4));
+    root.style.setProperty('--text-scale',(state.userTextScale*scale.font).toFixed(4));
+    root.style.setProperty('--ui-scale',(state.userUiScale*scale.ui).toFixed(4));
+    root.dataset.viewportShape=shape; root.dataset.viewportLayout=layout; root.dataset.device=device; root.dataset.orientation=orientation;
+    if(document.body){ document.body.dataset.viewportShape=shape; document.body.dataset.viewportLayout=layout; document.body.dataset.device=device; document.body.dataset.orientation=orientation; }
+    return state;
+  }
+  function setUserScale(text,ui){
+    const t=Number(text),u=Number(ui);
+    state.userTextScale=Number.isFinite(t)?t:1; state.userUiScale=Number.isFinite(u)?u:1;
+    root.dataset.userTextScale=state.userTextScale.toFixed(3); root.dataset.userUiScale=state.userUiScale.toFixed(3);
+    return apply();
+  }
+  window.IstanteVueRuntime = window.IstanteVueRuntime || {};
+  window.IstanteVueRuntime.viewport = readonly(state);
+  window.IstanteViewport={update:apply,setUserScale,get:()=>state};
+  apply();
+  addEventListener('resize',apply,{passive:true});
+  window.visualViewport?.addEventListener('resize',apply,{passive:true});
+})();
+/* Istante v4 · Vue component: CalendarView */
+(function(){
+  'use strict';
+  const registry = window.IstanteVueComponents = window.IstanteVueComponents || {};
+  registry.CalendarView = {
+    name: 'CalendarView',
+    template: `<section aria-label="Il tuo calendario" class="virtual-calendar" hidden="" id="calendar-view" inert=""><div class="calendar-shell"><header class="calendar-heading calendar-heading-combined"><div class="brand-lockup calendar-brand-lockup"><a aria-label="Torna al tuo istante" class="wordmark brand-home-link" data-calendar-back="" href="./"><img alt="" aria-hidden="true" class="brand-logo-image" height="32" src="assets/icons/icon.svg" width="32"/><span class="brand-home-copy"><span class="brand-home-name">istante<span class="brand-point">.</span></span><span class="brand-home-tagline">Un momento, per te.</span></span></a></div><div class="calendar-title-copy"><p class="section-label">Il tempo che scegli</p><button aria-controls="cal-date-picker" aria-label="Scegli una data" class="calendar-period-button" id="cal-period-button" type="button"><span aria-level="1" class="calendar-period-title" id="cal-title" role="heading">Il tuo calendario.</span><span aria-hidden="true" class="icon calendar-period-icon" data-icon="calendar"></span></button><input aria-label="Vai a una data" class="calendar-date-picker" id="cal-date-picker" tabindex="-1" type="date"/><p class="calendar-subtitle" id="cal-subtitle">Un po' di ordine. Senza fretta.</p></div><nav aria-label="Navigazione e visualizzazione calendario" class="calendar-toolbar"><div class="calendar-navigation"><button aria-label="Periodo precedente" class="icon-button" id="cal-prev" type="button"><span class="icon cal-prev-icon" data-icon="left"></span></button><button aria-label="Vai a oggi" class="secondary-button" id="cal-today" type="button"><span class="calendar-today-label">Oggi</span></button><button aria-label="Periodo successivo" class="icon-button" id="cal-next" type="button"><span class="icon cal-next-icon" data-icon="right"></span></button></div><div aria-label="Visualizzazione" class="calendar-views" role="group"><button aria-label="Vista anno" data-cal-view="year" type="button"><span class="calendar-view-label">Anno</span></button><button aria-label="Vista mese" aria-pressed="true" data-cal-view="month" type="button"><span class="calendar-view-label">Mese</span></button><button aria-label="Vista settimana" data-cal-view="week" type="button"><span class="calendar-view-label">Settimana</span></button><button aria-label="Vista giorno" data-cal-view="day" type="button"><span class="calendar-view-label">Giorno</span></button><button aria-label="Vista agenda" data-cal-view="agenda" type="button"><span class="calendar-view-label">Agenda</span></button></div></nav><div class="calendar-heading-actions"><button class="secondary-button calendar-add-shortcut" hidden="" id="cal-empty-add" type="button"><span class="icon" data-icon="plus"></span>Aggiungi</button><button aria-controls="calendar-sidebar" aria-expanded="false" aria-label="Apri Le tue giornate" class="secondary-button calendar-sidebar-toggle" id="cal-sidebar-toggle" type="button"><span class="icon" data-icon="calendar"></span></button><button aria-label="Torna al tuo istante" class="icon-button calendar-back-button" data-calendar-back="" data-istante-tooltip="Torna al tuo istante" type="button"><span class="icon" data-icon="left"></span></button></div></header><main><div hidden="" id="cal-empty"></div>
+<div class="calendar-layout"><aside class="calendar-sidebar" id="calendar-sidebar"><div class="calendar-sidebar-head"><h2>Le tue giornate</h2><div class="calendar-sidebar-head-actions"><button aria-label="Aggiorna calendari condivisi" class="icon-button" data-istante-tooltip="Aggiorna calendari condivisi" id="cal-refresh" type="button"><span class="icon" data-icon="refresh"></span></button><button aria-label="Chiudi Le tue giornate" class="icon-button" data-istante-tooltip="Chiudi" id="cal-sidebar-close" type="button"><span class="icon" data-icon="close"></span></button></div></div><div id="cal-source-list"></div><p class="calendar-local-note">Calendari in sola lettura.<br/>File e ultime copie restano su questo dispositivo.</p><p class="calendar-local-note" id="cal-zone"></p><p class="calendar-sync-status" id="cal-sync-status" role="status"></p><div class="calendar-sidebar-actions"><button aria-label="Gestisci i tuoi calendari" class="primary-button" id="cal-manage" type="button"><span class="icon" data-icon="settings"></span><span>Gestisci calendari</span></button></div></aside><section aria-label="Eventi del periodo" class="calendar-main"><div aria-busy="false" id="cal-content"></div></section></div><details class="calendar-warnings" hidden="" id="cal-warnings"><summary>Alcuni eventi richiedono attenzione</summary><ul id="cal-warning-list"></ul></details></main><footer class="calendar-footer"><span>Ogni giorno, un nuovo istante.</span><a href="leggi.html?doc=progetto">Il progetto</a></footer></div></section>`
+  };
+})();
+
+/* Istante v4 · Vue component: BackupDialog */
+(function(){
+  'use strict';
+  const registry = window.IstanteVueComponents = window.IstanteVueComponents || {};
+  registry.BackupDialog = {
+    name: 'BackupDialog',
+    template: `<dialog aria-labelledby="backup-title" class="panel backup-panel" id="backup-dialog"><div class="panel-head"><div><p class="section-label">Il tuo spazio, ritrovato</p><h2 id="backup-title">Ripristina il tuo istante.</h2></div><button aria-label="Chiudi ripristino" class="icon-button close-button" data-close="" type="button"><span class="icon" data-icon="close"></span></button></div><div class="panel-content"><p class="field-note" id="backup-file-name"></p><dl class="backup-summary" id="backup-summary"></dl><p class="backup-warning">Il ripristino sostituisce le preferenze, il traguardo, le stazioni e i preferiti di questo browser. La pagina si ricarica e l'audio si ferma. I timer in corso non vengono trasferiti.</p><p class="field-note" id="backup-extra-note"></p><p class="form-error" hidden="" id="backup-error" role="alert"></p><label class="toggle-row"><span>Confermo la sostituzione<small>Puoi prima esportare i dati attuali dalle impostazioni.</small></span><input id="backup-confirm" role="switch" type="checkbox"/></label></div><div class="panel-footer"><button class="text-button" data-close="" type="button">Annulla</button><button class="primary-button" disabled="" id="backup-restore" type="button">Ripristina e riapri</button></div></dialog>`
+  };
+})();
+
+/* Istante v4 · Vue component: CalendarEventDialog */
+(function(){
+  'use strict';
+  const registry = window.IstanteVueComponents = window.IstanteVueComponents || {};
+  registry.CalendarEventDialog = {
+    name: 'CalendarEventDialog',
+    template: `<dialog aria-labelledby="cal-event-title" class="panel calendar-event-panel" id="cal-event-dialog"><div class="panel-head"><div><p class="section-label" id="cal-event-source"></p><h2 id="cal-event-title"></h2></div><button aria-label="Chiudi evento" class="icon-button close-button" data-cal-close="" type="button"><span class="icon" data-icon="close"></span></button></div><div class="panel-content"><p id="cal-event-date"></p><p id="cal-event-place"></p><div id="cal-event-description"></div><a class="secondary-button" hidden="" id="cal-event-link" rel="noopener noreferrer" target="_blank">Apri il link dell'evento<span class="icon" data-icon="link"></span></a></div></dialog>`
+  };
+})();
+
+/* Istante v4 · Vue component: CalendarSourcesDialog */
+(function(){
+  'use strict';
+  const registry = window.IstanteVueComponents = window.IstanteVueComponents || {};
+  registry.CalendarSourcesDialog = {
+    name: 'CalendarSourcesDialog',
+    template: `<dialog aria-labelledby="cal-sources-title" class="panel calendar-source-panel" id="cal-sources-dialog"><div class="panel-head"><div><p class="section-label">I giorni da portare con te</p><h2 id="cal-sources-title">I tuoi calendari.</h2></div><button aria-label="Chiudi" class="icon-button close-button" data-cal-close="" type="button"><span class="icon" data-icon="close"></span></button></div><div class="panel-content"><div class="calendar-import"><label class="secondary-button file-button"><span class="icon" data-icon="upload"></span>Importa file ICS<input accept=".ics,text/calendar" hidden="" id="cal-file" type="file"/></label><p class="field-note"><span id="cal-source-count">0</span> calendari salvati · puoi tenerne fino a 8 insieme.</p></div><form id="cal-url-form"><label class="stacked-label">Nome<input id="cal-source-name" maxlength="80" placeholder="Famiglia, lavoro, il mio tempo..." type="text"/></label><label class="stacked-label">Link ICS condiviso<input autocomplete="off" id="cal-url" placeholder="https://.../calendario.ics" spellcheck="false" type="url"/></label><p class="field-note">Link ICS HTTPS/webcal: Google Calendar, Outlook, iCloud e altri provider compatibili.</p><button class="primary-button" id="cal-connect" type="submit">Collega calendario</button></form><p class="calendar-privacy">I link privati possono contenere una chiave di accesso: vengono memorizzati in questo browser e, solo durante la sincronizzazione, inoltrati alla tua installazione di Istante tramite l’API ICS. Il server non li salva. Non condividerli. Sincronizzazione in sola lettura, ogni 30 minuti mentre la pagina è aperta.</p><div id="cal-source-manager"></div><p class="calendar-message" id="cal-message" role="status"></p></div><div class="panel-footer"><button class="text-button" data-cal-close="" type="button">Fatto</button></div></dialog>`
+  };
+})();
+
+/* Istante v4 · Vue component: CollectionCreateDialog */
+(function(){
+  'use strict';
+  const registry = window.IstanteVueComponents = window.IstanteVueComponents || {};
+  registry.CollectionCreateDialog = {
+    name: 'CollectionCreateDialog',
+    template: `<dialog aria-labelledby="collection-create-title" class="panel collection-create-panel" id="collection-create-dialog"><div class="panel-head"><div><p class="section-label">Una raccolta tutta tua</p><h2 id="collection-create-title">Crea raccolta.</h2></div><button aria-label="Chiudi" class="icon-button close-button" data-close="" type="button"><span class="icon" data-icon="close"></span></button></div><form id="collection-create-form"><div class="panel-content collection-create-content"><label class="stacked-label">Titolo<input autocomplete="off" maxlength="80" name="title" placeholder="La mia raccolta" required="" type="text"/></label><label class="stacked-label">Categoria<input autocomplete="off" maxlength="40" name="category" placeholder="Personale" type="text"/></label><label class="stacked-label">Descrizione<textarea maxlength="400" name="description" placeholder="Una nota per ricordarti cosa vuoi raccogliere qui." rows="4"></textarea></label><p class="field-note">La raccolta nasce vuota. Dopo averla creata potrai aggiungere le frasi una alla volta.</p><p class="form-error" hidden="" id="collection-create-error" role="alert"></p></div><div class="panel-footer"><button class="text-button" data-close="" type="button">Annulla</button><button class="primary-button" type="submit"><span class="icon" data-icon="plus"></span>Crea raccolta</button></div></form></dialog>`
+  };
+})();
+
+/* Istante v4 · Vue component: CollectionEditDialog */
+(function(){
+  'use strict';
+  const registry = window.IstanteVueComponents = window.IstanteVueComponents || {};
+  registry.CollectionEditDialog = {
+    name: 'CollectionEditDialog',
+    template: `<dialog aria-labelledby="collection-edit-title" class="panel collection-edit-panel" id="collection-edit-dialog"><div class="panel-head"><div><p class="section-label">La tua raccolta</p><h2 id="collection-edit-title">Modifica raccolta.</h2><p class="collection-edit-meta" id="collection-edit-meta"></p></div><button aria-label="Chiudi" class="icon-button close-button" data-close="" type="button"><span class="icon" data-icon="close"></span></button></div><div class="panel-content collection-edit-content"><form class="collection-edit-meta-form" id="collection-edit-meta-form"><label class="stacked-label">Titolo<input maxlength="80" name="title" required="" type="text"/></label><div class="form-row"><label class="stacked-label">Categoria<input maxlength="40" name="category" type="text"/></label><label class="stacked-label">Descrizione<input maxlength="400" name="description" type="text"/></label></div><button class="text-button" type="submit">Salva dettagli</button></form><div class="collection-edit-add"><label class="stacked-label"><span>Aggiungi una frase</span><textarea id="collection-edit-phrase" maxlength="500" placeholder="Un pensiero alla volta…" rows="3"></textarea></label><button class="primary-button" id="collection-edit-add" type="button"><span class="icon" data-icon="plus"></span>Aggiungi frase</button></div><div class="collection-edit-list-head"><strong id="collection-edit-count">0 frasi</strong><span>Solo su questo dispositivo</span></div><ol class="collection-edit-list" id="collection-edit-list"></ol><p class="empty-state" id="collection-edit-empty">La raccolta è vuota. Aggiungi la prima frase.</p></div><div class="panel-footer"><button class="primary-button" data-close="" type="button">Fatto</button></div></dialog>`
+  };
+})();
+
+/* Istante v4 · Vue component: GoalDialog */
+(function(){
+  'use strict';
+  const registry = window.IstanteVueComponents = window.IstanteVueComponents || {};
+  registry.GoalDialog = {
+    name: 'GoalDialog',
+    template: `<dialog aria-labelledby="goal-dialog-title" class="panel goal-detail-panel" id="goal-dialog">
+<div class="panel-head"><div><p class="section-label" id="goal-dialog-label">Il prossimo capitolo</p><h2 id="goal-dialog-title">Il tuo traguardo.</h2></div><button aria-label="Chiudi prossimo capitolo" class="icon-button close-button" data-close="" type="button"><span class="icon" data-icon="close"></span></button></div>
+<div class="panel-content goal-detail-content">
+<div class="goal-detail-progress-head"><span id="goal-dialog-progress-label">Il tuo percorso</span><strong id="goal-dialog-progress-value">0%</strong></div>
+<div aria-label="Avanzamento del prossimo capitolo" aria-valuemax="100" aria-valuemin="0" aria-valuenow="0" class="goal-detail-track" id="goal-dialog-progress" role="progressbar"><span id="goal-dialog-progress-fill"></span></div>
+<div class="goal-detail-countdown"><div><strong id="goal-dialog-days">00</strong><span>giorni</span></div><div><strong id="goal-dialog-hours">00</strong><span>ore</span></div><div><strong id="goal-dialog-minutes">00</strong><span>minuti</span></div></div>
+<p class="goal-detail-date" id="goal-dialog-date"></p>
+</div>
+<div class="panel-footer"><button class="text-button" data-close="" type="button">Chiudi</button><button class="primary-button" id="goal-dialog-edit" type="button"><span class="icon" data-icon="settings"></span>Modifica traguardo</button></div>
+</dialog>`
+  };
+})();
+
+/* Istante v4 · Vue component: LibraryDialog */
+(function(){
+  'use strict';
+  const registry = window.IstanteVueComponents = window.IstanteVueComponents || {};
+  registry.LibraryDialog = {
+    name: 'LibraryDialog',
+    template: `<dialog aria-labelledby="library-title" class="panel library-panel" id="library-dialog">
+<div class="panel-head">
+<div>
+<p class="section-label">
+      Parole da tenere con te
+     </p>
+<h2 id="library-title">La tua biblioteca.</h2>
+<p class="library-subtitle" id="library-subtitle">
+      1000 piccoli promemoria.
+     </p>
+</div>
+<button aria-label="Chiudi raccolta" class="icon-button close-button" data-close="" type="button">
+<span class="icon" data-icon="close">
+</span>
+</button>
+</div>
+<div class="library-tools"><button hidden="" id="library-phrases-tab" type="button">Frasi</button><div class="phrase-library-tools" id="phrase-library-tools"><div class="library-current"><span class="icon" data-icon="collection"></span><span class="library-current-copy"><small>Raccolta attiva</small><strong id="collection-active-name">Pensieri di Istante</strong></span></div>
+<div class="library-search-row"><label class="search-field">
+<span class="icon" data-icon="search">
+</span>
+<input aria-label="Cerca nelle frasi" autocomplete="off" id="phrase-search" placeholder="Cerca una parola, un pensiero..." type="search"/>
+</label><div class="library-search-actions"><button aria-controls="collection-library-inline" aria-expanded="false" aria-pressed="false" class="secondary-button library-collections-button" id="collection-library-toggle" type="button"><span class="icon" data-icon="collection"></span><span>Vedi raccolte</span></button></div></div>
+<div class="library-tabs">
+<div aria-label="Filtro raccolta" role="group">
+<button aria-pressed="true" class="tab-button active" id="filter-all" type="button">
+       Tutte
+       <span id="all-count">
+        1000
+       </span>
+</button>
+<button aria-pressed="false" class="tab-button" id="filter-favorites" type="button">
+<span class="icon" data-icon="heart">
+</span>
+       Preferite
+       <span id="favorites-count">
+        0
+       </span>
+</button>
+</div>
+</div>
+</div></div><section class="collection-library-inline" hidden="" id="collection-library-inline"><div class="collection-library-inline-head library-collections-intro"><div><p class="section-label">Le raccolte</p><h3>Tutte le tue parole, in un posto solo.</h3></div></div><div class="collection-library-toolbar"><label class="search-field"><span class="icon" data-icon="search"></span><input aria-label="Cerca nelle raccolte" autocomplete="off" id="collection-search" placeholder="Cerca titolo, categoria o descrizione" type="search"/></label><div aria-label="Filtra raccolte per stato" class="collection-status-filters" role="group"><button aria-pressed="true" data-collection-status="all" type="button">Tutte</button><button aria-pressed="false" data-collection-status="active" type="button">In uso</button><button aria-pressed="false" data-collection-status="installed" type="button">Scaricate</button><button aria-pressed="false" data-collection-status="available" type="button">Da scaricare</button></div></div><div class="panel-content"><p class="field-note" id="collection-library-note">Ogni card mostra subito se una raccolta è in uso, già sul dispositivo o ancora da scaricare.</p><div class="collection-library-grid" id="collection-shelf"></div><p hidden="" id="collection-library-empty">Nessuna raccolta con questo stato.</p></div><div class="panel-footer collection-library-footer"><div class="collection-library-file-actions"><label class="text-button file-button collection-import-link">Importa JSON o TXT<input accept=".json,.txt,application/json,text/plain" hidden="" id="collection-import-file" type="file"/></label><button class="text-button collection-create-button" id="collection-create-open" type="button"><span class="icon" data-icon="plus"></span>Crea raccolta</button></div><button class="primary-button collection-return-button" id="collection-library-done" type="button"><span class="icon" data-icon="arrow"></span>Torna alle frasi</button></div></section>
+<div class="library-list-wrap">
+<div class="phrase-list" id="phrase-list">
+</div>
+<p class="empty-state" hidden="" id="library-empty">
+     Nessuna frase trovata.
+    </p>
+<button class="secondary-button more-button" id="load-more" type="button">
+     Mostra altre frasi
+     <span class="icon" data-icon="chevron">
+</span>
+</button>
+</div>
+<div class="library-footer">
+<label class="text-button file-button">
+<span class="icon" data-icon="upload">
+</span>
+     Importa JSON o TXT
+     <input accept="application/json,text/plain,.json,.txt" id="import-phrases" type="file"/>
+</label>
+<button class="text-button" id="export-phrases" type="button">
+<span class="icon" data-icon="download">
+</span>
+     Esporta
+    </button>
+<button class="text-button restore-button" hidden="" id="restore-phrases" type="button">
+     Raccolta originale
+    </button>
+<span class="local-note">
+     Solo sul tuo dispositivo
+    </span>
+</div>
+</dialog>`
+  };
+})();
+
+/* Istante v4 · Vue component: ReceivedDialog */
+(function(){
+  'use strict';
+  const registry = window.IstanteVueComponents = window.IstanteVueComponents || {};
+  registry.ReceivedDialog = {
+    name: 'ReceivedDialog',
+    template: `<dialog aria-labelledby="received-title" class="panel received-panel" id="received-dialog"><div class="panel-head"><div><p class="section-label">Un pensiero arrivato fino a te</p><h2 id="received-title">Questo istante è per te.</h2></div><button aria-label="Chiudi il pensiero" class="icon-button close-button" data-close="" type="button"><span class="icon" data-icon="close"></span></button></div><div class="panel-content"><blockquote id="received-phrase"></blockquote><p class="field-note">Una frase condivisa da un'altra persona. Non modifica la tua raccolta.</p></div><div class="panel-footer"><button class="secondary-button" id="received-save" type="button"><span class="icon" data-icon="heart"></span>Conserva nella biblioteca</button><button class="text-button" data-close="" type="button">Entra in Istante</button></div></dialog>`
+  };
+})();
+
+/* Istante v4 · Vue component: SettingsDialog */
+(function(){
+  'use strict';
+  const registry = window.IstanteVueComponents = window.IstanteVueComponents || {};
+  registry.SettingsDialog = {
+    name: 'SettingsDialog',
+    template: `<dialog aria-labelledby="settings-title" class="panel" id="settings-dialog">
+<div class="panel-head">
+<div>
+<p class="section-label">
+      A modo tuo
+     </p>
+<h2 id="settings-title">
+      Il tuo istante.
+     </h2>
+</div>
+<button aria-label="Chiudi impostazioni" class="icon-button close-button" data-close="" type="button">
+<span class="icon" data-icon="close">
+</span>
+</button>
+</div>
+<form id="settings-form" novalidate="">
+<div class="panel-content">
+<details class="settings-section" data-section="appearance" id="section-appearance" name="istante-settings">
+<summary>
+<span class="icon section-icon" data-icon="contrast">
+</span>
+<span class="section-heading">
+<strong>
+         Aspetto e schermo
+        </strong>
+<small data-summary="appearance">Tema, sfondo, grana e prestazioni</small>
+</span>
+<span class="icon section-chevron" data-icon="chevron">
+</span>
+</summary>
+<div class="settings-section-body">
+<fieldset>
+<legend>
+         L'atmosfera
+        </legend>
+<div aria-label="Tema" class="segmented">
+<label>
+<input name="theme" type="radio" value="dark"/>
+<span class="icon" data-icon="moon">
+</span>
+<span class="theme-option-name">
+           Notte
+          </span>
+</label>
+<label>
+<input name="theme" type="radio" value="light"/>
+<span class="icon" data-icon="sun">
+</span>
+<span class="theme-option-name">
+           Carta
+          </span>
+</label>
+<label>
+<input name="theme" type="radio" value="auto"/>
+<span class="icon" data-icon="contrast">
+</span>
+<span class="theme-option-name">
+           Auto
+          </span>
+</label>
+<label hidden="" id="solar-theme-choice">
+<input name="theme" type="radio" value="solar"/>
+<span class="icon" data-icon="sunrise">
+</span>
+<span class="theme-option-name">
+           Segui il sole
+          </span>
+</label>
+</div>
+<p class="field-note" style="margin-top:12px">
+         Auto segue il dispositivo. Con una località puoi anche usare
+         <strong>Segui il sole</strong>.
+        </p>
+<label class="stacked-label">
+         Sfondo
+         <select name="background">
+<option value="ambient">
+           Sfumatura delicata
+          </option>
+<option value="plain">
+           Tinta unita
+          </option>
+<option value="photo">
+           Una mia fotografia
+          </option>
+<option value="picsum">
+           Fotografie automatiche · Picsum
+          </option>
+</select>
+</label>
+<div class="photo-fields" hidden="" id="photo-fields">
+<label class="file-control">
+<span class="icon" data-icon="image">
+</span>
+<span id="photo-label">
+           Scegli una fotografia
+          </span>
+<input accept="image/jpeg,image/png,image/webp" id="photo-input" type="file"/>
+</label>
+<p class="field-note">
+          La foto resta su questo dispositivo.
+         </p>
+</div>
+<div hidden="" id="picsum-fields">
+<label class="stacked-label">
+          Una nuova fotografia ogni
+          <select data-custom-max="1440" data-custom-min="1" data-custom-unit="minuti" name="picsumMinutes">
+<option value="5">
+            5 minuti
+           </option>
+<option value="15">
+            15 minuti
+           </option>
+<option value="30">
+            30 minuti
+           </option>
+<option value="60">
+            1 ora
+           </option>
+<option value="180">
+            3 ore
+           </option>
+<option value="720">
+            12 ore
+           </option>
+<option value="1440">
+            Un giorno
+           </option>
+</select>
+</label>
+<p class="field-note">
+          Foto da Picsum. Senza rete resta l’ultima disponibile.
+         </p>
+</div>
+<div hidden="" id="photo-options">
+<label class="stacked-label">
+          Oscuramento della fotografia
+          <input max="85" min="35" name="photoDim" step="5" type="range"/>
+</label>
+<label class="toggle-row">
+<span>
+           Movimento lento della fotografia
+          </span>
+<input name="photoMotion" role="switch" type="checkbox"/>
+</label>
+</div>
+<fieldset class="binary-setting text-size-setting">
+<legend>Dimensione dei testi</legend>
+<div aria-label="Dimensione dei testi" class="binary-tabs text-size-tabs" role="radiogroup"><label><input name="fontSize" type="radio" value="small"/><span>Piccolo</span></label><label><input checked="" name="fontSize" type="radio" value="medium"/><span>Normale</span></label><label><input name="fontSize" type="radio" value="large"/><span>Grande</span></label></div>
+<p class="field-note" id="font-size-help">Tre misure semplici, come nelle versioni precedenti: piccolo, normale e grande.</p>
+</fieldset>
+<fieldset class="binary-setting font-style-setting"><legend>Stile del carattere</legend><div aria-label="Stile del carattere" class="binary-tabs" role="radiogroup"><label><input checked="" name="fontStyle" type="radio" value="current"/><span>Classic</span></label><label><input name="fontStyle" type="radio" value="excalifont"/><span>Excalifont</span></label></div><p class="field-note">Classic mantiene il carattere originale di Istante. Excalifont rende più editoriali frasi, titoli e momenti principali.</p></fieldset>
+<label class="toggle-row custom-cursor-setting"><span>Cursore personalizzato<small>Puntino e anello discreti. Disattivato di default e disponibile solo con mouse o trackpad.</small></span><input name="customCursor" role="switch" type="checkbox"/></label>
+<fieldset class="binary-setting clock-style-setting"><legend>Stile dell’orologio</legend><div aria-label="Stile dell’orologio" class="binary-tabs" role="radiogroup"><label><input checked="" name="clockStyle" type="radio" value="digital"/><span>Digitale</span></label><label><input name="clockStyle" type="radio" value="analog"/><span>Analogico</span></label></div></fieldset>
+<fieldset class="binary-setting time-format-setting"><legend>Formato dell'orario</legend><div aria-label="Formato dell’orario" class="binary-tabs" role="radiogroup"><label><input checked="" name="timeFormat" type="radio" value="24"/><span>24 ore <small>18:30</small></span></label><label><input name="timeFormat" type="radio" value="12"/><span>12 ore <small>06:30 PM</small></span></label></div></fieldset>
+<label class="toggle-row">
+<span>
+          Mostra l'orologio
+          <small>
+           Disattivalo per lasciare spazio alla frase.
+          </small>
+</span>
+<input name="showClock" role="switch" type="checkbox"/>
+</label>
+<label class="toggle-row">
+<span>
+          Mostra i secondi
+         </span>
+<input name="showSeconds" role="switch" type="checkbox"/>
+</label>
+<label class="toggle-row">
+<span>
+          Transizioni dell’interfaccia
+          <small>
+           Per frase, foto e passaggi morbidi. Gli effetti di sfondo si regolano nella loro sezione.
+          </small>
+</span>
+<input name="motion" role="switch" type="checkbox"/>
+</label>
+</fieldset>
+<label class="stacked-label" id="performance-setting">Qualità delle animazioni<select name="performance"><option value="auto">Automatica</option><option value="light">Leggera · tablet meno recenti</option><option value="full">Completa</option></select><small>Regola cielo, particelle e transizioni. Automatica riduce il carico sui dispositivi meno potenti.</small></label><label class="toggle-row"><span>Grana analogica<small>Una trama leggera, come carta. Statica e senza animazione.</small></span><input name="grain" role="switch" type="checkbox"/></label><label class="stacked-label" id="grain-fields">Intensità della grana<input max="35" min="5" name="grainOpacity" step="1" type="range"/></label></div>
+</details>
+<details class="settings-section" data-section="phrases" id="section-phrases" name="istante-settings">
+<summary>
+<span class="icon section-icon" data-icon="collection">
+</span>
+<span class="section-heading">
+<strong>
+         Frasi e scrittura
+        </strong>
+<small data-summary="phrases">
+         Rotazione, ritmo e macchina da scrivere
+        </small>
+</span>
+<span class="icon section-chevron" data-icon="chevron">
+</span>
+</summary>
+<div class="settings-section-body">
+<fieldset>
+<legend>
+         Il ritmo delle frasi
+        </legend>
+<p class="field-note">
+         Casuali, senza ripetizioni ravvicinate.
+        </p>
+<div class="mode-grid">
+<label class="choice-card">
+<input name="mode" type="radio" value="twice"/>
+<span class="icon" data-icon="sunrise">
+</span>
+<strong>
+           Mattina &amp; sera
+          </strong>
+<small>
+           Due pensieri al giorno
+          </small>
+</label>
+<label class="choice-card">
+<input name="mode" type="radio" value="daily"/>
+<span class="icon" data-icon="sun">
+</span>
+<strong>
+           Una al giorno
+          </strong>
+<small>
+           Un pensiero, senza fretta
+          </small>
+</label>
+<label class="choice-card">
+<input name="mode" type="radio" value="interval"/>
+<span class="icon" data-icon="clock">
+</span>
+<strong>
+           A intervalli
+          </strong>
+<small>
+           Un nuovo pensiero ogni tanto
+          </small>
+</label>
+<label class="choice-card">
+<input name="mode" type="radio" value="opening"/>
+<span class="icon" data-icon="shuffle">
+</span>
+<strong>
+           A ogni apertura
+          </strong>
+<small>
+           Ogni volta una sorpresa
+          </small>
+</label>
+</div>
+<div class="form-row" id="schedule-times">
+<label>
+          Inizio mattina
+          <input name="morning" required="" type="time"/>
+</label>
+<label id="evening-field">
+          Inizio sera
+          <input name="evening" required="" type="time"/>
+</label>
+</div>
+<div hidden="" id="interval-field">
+<label class="stacked-label">
+          Cambia frase ogni
+          <select name="interval">
+<option value="5">
+            5 minuti
+           </option>
+<option value="15">
+            15 minuti
+           </option>
+<option value="30">
+            30 minuti
+           </option>
+<option value="60">
+            60 minuti
+           </option>
+</select>
+</label>
+</div>
+<p class="field-note schedule-note" id="schedule-note">
+         Il pensiero resta stabile nella sua fascia oraria.
+        </p>
+</fieldset>
+<fieldset>
+<legend>
+         La scrittura
+        </legend>
+<label class="toggle-row">
+<span>
+          Macchina da scrivere
+          <small>
+           Carattere per carattere. La frase resta sempre la stessa.
+          </small>
+</span>
+<input name="typing" role="switch" type="checkbox"/>
+</label>
+<div id="typing-fields">
+<div class="form-row">
+<label>
+           Pausa tra le ripetizioni
+           <select data-custom-max="3600" data-custom-min="10" data-custom-unit="secondi" name="typingRepeat">
+<option value="0">
+             Solo al cambio frase
+            </option>
+<option value="20">
+             20 secondi
+            </option>
+<option value="30">
+             30 secondi
+            </option>
+<option value="60">
+             1 minuto
+            </option>
+<option value="120">
+             2 minuti
+            </option>
+<option value="300">
+             5 minuti
+            </option>
+</select>
+</label>
+<label>
+           Velocità
+           <select data-custom-max="150" data-custom-min="15" data-custom-unit="millisecondi" name="typingSpeed">
+<option value="20">
+             Veloce
+            </option>
+<option value="35">
+             Scorrevole
+            </option>
+<option value="50">
+             Naturale
+            </option>
+<option value="65">
+             Lenta
+            </option>
+</select>
+</label>
+</div>
+<div class="form-row">
+<label>
+           Ritmo
+           <select name="typingRhythm">
+<option value="natural">
+             Umano · pause variabili
+            </option>
+<option value="steady">
+             Regolare
+            </option>
+</select>
+</label>
+<label>
+           Piccoli errori
+           <select name="typingMistakes">
+<option value="off">
+             Mai
+            </option>
+<option value="rare">
+             Ogni tanto
+            </option>
+<option value="often">
+             Più frequenti
+            </option>
+</select>
+</label>
+</div>
+<label class="toggle-row">
+<span>
+           Cancella prima di riscrivere
+           <small>
+            Backspace rapido, poi ricomincia con calma.
+           </small>
+</span>
+<input name="typingErase" role="switch" type="checkbox"/>
+</label>
+<p class="field-note">
+          Errori e correzioni sono solo visivi. La frase salvata non cambia.
+         </p>
+</div>
+</fieldset>
+</div>
+</details>
+<details class="settings-section" data-section="sky" id="section-sky" name="istante-settings">
+<summary>
+<span class="icon section-icon" data-icon="location">
+</span>
+<span class="section-heading">
+<strong>
+         Località e cielo
+        </strong>
+<small data-summary="sky">
+         Posizione, alba, tramonto e meteo
+        </small>
+</span>
+<span class="icon section-chevron" data-icon="chevron">
+</span>
+</summary>
+<div class="settings-section-body">
+<fieldset>
+<legend>
+         Il ritmo del cielo
+        </legend>
+<p class="field-note">
+         Meteo, alba e tramonto in una sola riga.
+        </p>
+<div class="location-current">
+<span class="icon" data-icon="sunrise">
+</span>
+<div>
+<strong id="place-name">
+           Nessuna località
+          </strong>
+<small id="place-status">
+           Scegli la posizione per attivare alba, tramonto e meteo.
+          </small>
+</div>
+<button class="text-button" hidden="" id="remove-place" type="button">
+          Rimuovi
+         </button>
+</div>
+<div class="location-search">
+<input aria-label="Cerca una citta" autocomplete="off" id="city-search" placeholder="Cerca città..." type="search"/>
+<button class="secondary-button" id="city-find" type="button">
+          Cerca
+         </button>
+</div>
+<div aria-live="polite" class="city-results" id="city-results">
+</div>
+<button class="text-button" id="locate-me" type="button">
+<span class="icon" data-icon="location">
+</span>
+         Usa la mia posizione
+        </button>
+<details class="coordinates">
+<summary>
+          Oppure inserisci le coordinate
+         </summary>
+<div class="form-row">
+<label>
+           Latitudine
+           <input id="place-lat" inputmode="decimal" max="90" min="-90" placeholder="45.46" step="any" type="number"/>
+</label>
+<label>
+           Longitudine
+           <input id="place-lon" inputmode="decimal" max="180" min="-180" placeholder="9.19" step="any" type="number"/>
+</label>
+</div>
+<button class="text-button" id="use-coordinates" type="button">
+          Usa queste coordinate
+         </button>
+</details>
+<p class="field-note">
+         La posizione è facoltativa e resta salvata solo qui.
+        </p>
+<label class="toggle-row">
+<span>
+          Mostra alba e tramonto
+         </span>
+<input name="solarTimes" role="switch" type="checkbox"/>
+</label>
+<label class="toggle-row">
+<span>
+          Mostra il meteo
+          <small>
+           Una piccola icona e la temperatura, senza previsioni ingombranti.
+          </small>
+</span>
+<input name="weather" role="switch" type="checkbox"/>
+</label>
+<label class="toggle-row">
+<span>
+          Passaggio tra sole e luna
+          <small>
+           Una sfumatura di luce al cambio del tema, senza aggiungere un secondo sole o una seconda luna.
+          </small>
+</span>
+<input name="transitionFX" role="switch" type="checkbox"/>
+</label>
+<button class="text-button" id="preview-transition" type="button">
+         Anteprima del passaggio
+        </button>
+<label class="toggle-row">
+<span>
+          Respiro dello sfondo
+          <small>
+           Una variazione di luce molto lenta. Opzionale.
+          </small>
+</span>
+<input name="breathe" role="switch" type="checkbox"/>
+</label>
+<p class="field-note source-note">
+<a href="https://open-meteo.com/" rel="noopener noreferrer" target="_blank">
+          Open-Meteo
+         </a>
+         ·
+         <a href="https://www.geonames.org/" rel="noopener noreferrer" target="_blank">
+          GeoNames
+         </a>
+         . Il sole continua a funzionare anche offline.
+        </p>
+<label class="toggle-row"><span>Il cielo, sempre con te<small>Sole di giorno, luna con la sua fase e stelle di notte. Funziona anche senza rete; senza località il ritmo è indicativo.</small></span><input name="celestialSky" role="switch" type="checkbox"/></label></fieldset>
+</div>
+</details>
+<details class="settings-section" data-section="effects" id="section-effects" name="istante-settings">
+<summary>
+<span class="icon section-icon" data-icon="effects">
+</span>
+<span class="section-heading">
+<strong>
+         Effetti ambientali
+        </strong>
+<small data-summary="effects">
+         Aloni, particelle, aurora e tempo
+        </small>
+</span>
+<span class="icon section-chevron" data-icon="chevron">
+</span>
+</summary>
+<div class="settings-section-body"><p class="field-note">Riduce gli effetti per dispositivi meno potenti.</p>
+<fieldset>
+<legend>
+         Un po' di movimento
+        </legend>
+<p class="field-note">
+         Effetti discreti, lontani dal testo.
+        </p>
+<label class="toggle-row">
+<span>
+          Attiva gli effetti di sfondo
+          <small>
+           Tutto resta facoltativo, anche senza Internet.
+          </small>
+</span>
+<input name="effectsEnabled" role="switch" type="checkbox"/>
+</label>
+<div hidden="" id="effects-fields">
+<label class="stacked-label">
+          Animazione
+          <select name="effect">
+<option value="halos">
+            Aloni di luce
+           </option>
+<option value="particles">
+            Particelle sospese
+           </option>
+<option value="aurora">
+            Aurora morbida
+           </option>
+<option value="none">
+            Nessuna · solo effetto meteo
+           </option>
+</select>
+</label>
+<label class="toggle-row">
+<span>
+           Colori in sintonia con il sole
+           <small>
+            Caldi all'alba e al tramonto, più freddi di notte. Senza posizione seguono il tema.
+           </small>
+</span>
+<input name="effectSunSync" role="switch" type="checkbox"/>
+</label>
+<div class="form-row">
+<label>
+           Intensità
+           <input max="70" min="10" name="effectIntensity" step="5" type="range"/>
+</label>
+<label>
+           Movimento
+           <input max="100" min="20" name="effectSpeed" step="10" type="range"/>
+</label>
+</div>
+<label class="stacked-label">
+          Effetto meteo
+          <select name="weatherFX">
+<option value="off">
+            Nessuno
+           </option>
+<option value="auto">
+            Segui il meteo attuale
+           </option>
+<option value="sun">
+            Luce del sole
+           </option>
+<option value="clouds">
+            Nuvole leggere
+           </option>
+<option value="rain">
+            Pioggia sottile
+           </option>
+<option value="snow">
+            Fiocchi di neve
+           </option>
+<option value="storm">
+            Temporale soffuso
+           </option>
+<option value="fog">
+            Nebbia lenta
+           </option>
+</select>
+</label>
+<p class="field-note">
+          Il meteo automatico usa dati recenti; gli effetti manuali sono decorativi.
+         </p>
+<div aria-label="Anteprima degli effetti" class="effects-preview" id="effects-preview">
+<div aria-hidden="true" class="ambient-fx" id="preview-fx">
+<div class="fx-halos">
+<i>
+</i>
+<i>
+</i>
+<i>
+</i>
+</div>
+<div class="fx-aurora">
+</div>
+<div class="fx-weather-light">
+</div>
+<div class="fx-clouds">
+</div>
+<canvas class="fx-canvas">
+</canvas>
+</div>
+<div class="effects-preview-caption">
+<span class="section-label">
+            Anteprima in tempo reale
+           </span>
+<span class="preview-word">
+            Un po' di meraviglia.
+           </span>
+</div>
+</div>
+<p class="field-note" id="effects-status" role="status">
+</p>
+</div>
+<p class="field-note" id="effects-accessibility">
+         Con movimento ridotto, gli effetti restano più statici.
+        </p>
+</fieldset>
+</div>
+</details>
+<details class="settings-section" data-section="radio" id="section-radio" name="istante-settings">
+<summary>
+<span class="icon section-icon" data-icon="headphones">
+</span>
+<span class="section-heading">
+<strong>
+         Radio e audio
+        </strong>
+<small data-summary="radio">
+         22 stazioni, una colonna sonora
+        </small>
+</span>
+<span class="icon section-chevron" data-icon="chevron">
+</span>
+</summary>
+<div class="settings-section-body">
+<fieldset>
+<legend>
+         La tua colonna sonora
+        </legend>
+<label class="toggle-row">
+<span>Abilita la radio <small>Le tue stazioni nel mini player.</small>
+</span>
+<input name="radioEnabled" role="switch" type="checkbox"/>
+</label>
+<div id="radio-fields">
+<label class="stacked-label">
+          Stazione iniziale
+          <select data-search="true" name="radioStation">
+<option value="lofigirl">
+            01  Lofi Girl (Community Relay)
+           </option>
+<option value="laut-lofi">
+            02  Laut.FM | Lofi 24/7
+           </option>
+<option value="zeno-study">
+            03  Zeno FM | Study Lofi
+           </option>
+<option value="zeno-chill">
+            04  Zeno FM | Chill Beats
+           </option>
+<option value="zeno-hiphop">
+            05  Zeno FM | Lofi Hip Hop
+           </option>
+<option value="zeno-box">
+            06  Zeno FM | Box Lofi
+           </option>
+<option value="zeno-bootleg">
+            07  Zeno FM | The Bootleg Boy
+           </option>
+<option value="fastcast-lofi">
+            08  Fastcast4u | Chill Lofi
+           </option>
+<option value="chillhop">
+            09  FluxFM | Chillhop
+           </option>
+<option value="chillsynth">
+            10  Nightride FM | Chillsynth
+           </option>
+<option value="secretagent">
+            11  SomaFM | Secret Agent
+           </option>
+<option value="deepspaceone">
+            12  SomaFM | Deep Space One (Deep Ambient)
+           </option>
+<option value="groovesalad">
+            13  SomaFM | Groove Salad
+           </option>
+<option value="dronezone">
+            14  SomaFM | Drone Zone
+           </option>
+<option value="defcon">
+            15  SomaFM | DEF CON Radio
+           </option>
+<option value="spacestation">
+            16  SomaFM | Space Station
+           </option>
+<option value="vaporwaves">
+            17  SomaFM | Vaporwaves
+           </option>
+<option value="synphaera">
+            18  SomaFM | Synphaera
+           </option>
+<option value="intense">
+            19  Intense Radio | FLAC / OGG
+           </option>
+<option value="pinkfloyd">
+            20  Exclusively Pink Floyd
+           </option>
+<option value="pinkfloyd-hits">
+            21  Exclusively Pink Floyd | Hits
+           </option>
+<option value="paradise-mellow">
+            22  Radio Paradise | Mellow Mix (FLAC Lossless)
+           </option>
+</select>
+</label>
+<button class="text-button manage-stations-button" data-open="stations" type="button">
+<span class="icon" data-icon="collection">
+</span>
+          Gestisci le stazioni
+         </button>
+<label class="stacked-label">
+          Volume
+          <input max="100" min="0" name="radioVolume" step="1" type="range"/>
+</label>
+<label class="toggle-row"><span>Gesture volume nell’angolo destro<small>Swipe verso l’alto per alzare e verso il basso per abbassare, a passi di 10. Il doppio tap alterna Play/Pausa sulla dashboard.</small></span><input name="audioVolumeGesture" role="switch" type="checkbox"/></label>
+<p class="field-note">
+          Radio attiva con Play, timer o programmazione.
+         </p>
+<div class="settings-subgroup">
+<label class="toggle-row">
+<span>
+            Programma la radio
+            <small>
+             La tua colonna sonora, negli orari che scegli.
+            </small>
+</span>
+<input name="radioScheduleEnabled" role="switch" type="checkbox"/>
+</label>
+<div hidden="" id="radio-schedule-fields">
+<div aria-label="Fasce radio" id="schedule-list">
+</div>
+<button class="secondary-button" id="schedule-add" type="button">
+<span class="icon" data-icon="plus">
+</span>
+            Aggiungi fascia
+           </button>
+<p class="field-note">
+            Fino a 20 fasce, anche oltre mezzanotte.
+           </p>
+<button class="secondary-button" id="schedule-authorize" type="button">
+<span class="icon" data-icon="volume">
+</span>
+            Abilita audio per questa sessione
+           </button>
+<p class="field-note" id="schedule-settings-status" role="status">
+            Salva le fasce e autorizza l'audio.
+           </p>
+</div>
+</div>
+</div>
+<div class="settings-subgroup ambient-settings"><label class="toggle-row"><span>Suoni ambientali offline<small>Un'alternativa alla radio, senza streaming.</small></span><input name="ambientEnabled" role="switch" type="checkbox"/></label><div id="ambient-settings-fields"><label class="stacked-label">Suono iniziale<select name="ambientType"><option value="pink">Rumore rosa</option><option value="brown">Rumore marrone</option><option value="rain">Pioggia</option><option value="wind">Vento</option></select></label><label class="stacked-label">Volume ambiente<input max="100" min="0" name="ambientVolume" step="1" type="range"/></label><p class="field-note">Radio e ambiente non suonano insieme.</p></div></div></fieldset>
+</div>
+</details>
+<details class="settings-section" data-section="timer" id="section-timer">
+<summary>
+<span class="icon section-icon" data-icon="clock">
+</span>
+<span class="section-heading">
+<strong>
+         Un tempo per te
+        </strong>
+<small data-summary="timer">
+         Timer e suono finale
+        </small>
+</span>
+<span class="icon section-chevron" data-icon="chevron">
+</span>
+</summary>
+<div class="settings-section-body">
+<fieldset>
+<legend>
+         Una pausa, senza fretta
+        </legend>
+<label class="toggle-row">
+<span>
+          Attiva il timer
+          <small>
+           Disattivandolo annulli anche un timer in corso.
+          </small>
+</span>
+<input name="timerEnabled" role="switch" type="checkbox"/>
+</label>
+<div id="timer-settings-fields">
+<label class="stacked-label">Durata iniziale, in minuti<input inputmode="numeric" max="1440" min="1" name="timerMinutes" step="1" type="number"/></label>
+<label class="stacked-label">Durante la pausa<select name="timerDuring"><option value="silent">Nessun avvio automatico</option><option value="radio">Ascolta la radio</option><option value="ambient">Ascolta il suono rilassante</option></select></label>
+<label class="stacked-label">Alla fine del timer<select name="timerAction"><option value="sound">Un suono delicato</option><option value="radio">Avvia / continua la radio</option><option value="silent">Solo avviso visivo</option></select></label>
+<div id="timer-sound-settings"><label class="stacked-label">Suono finale<select name="timerSound"><option value="chime">Piccoli rintocchi</option><option value="bell">Campana morbida</option><option value="pulse">Segnale delicato</option></select></label>
+<label class="stacked-label">Volume del suono <output id="timer-volume-label">65%</output><input max="100" min="0" name="timerVolume" type="range" value="65"/></label>
+<button class="text-button" id="timer-sound-preview" type="button"><span class="icon" data-icon="volume"></span>Prova il suono</button></div>
+<p class="field-note" id="timer-settings-note">Le modifiche valgono dai prossimi timer.</p>
+<button class="secondary-button" id="configure-timer" type="button"><span class="icon" data-icon="clock"></span>Salva e apri il timer</button>
+</div>
+</fieldset>
+</div>
+</details><details class="settings-section" data-section="chime" id="section-chime" name="istante-settings"><summary><span class="icon section-icon" data-icon="volume"></span><span class="section-heading"><strong>Rintocco consapevole</strong><small>Una nota, allo scoccare dell'ora</small></span><span class="icon section-chevron" data-icon="chevron"></span></summary><div class="settings-section-body"><label class="toggle-row"><span>Un richiamo al presente<small>Un solo suono ogni ora. Non recupera le ore perse quando riapri la pagina.</small></span><input name="chimeEnabled" role="switch" type="checkbox"/></label><div id="chime-fields"><label class="stacked-label">Timbro<select name="chimeType"><option value="bowl">Campana morbida</option><option value="fork">Diapason</option></select></label><label class="stacked-label">Volume<input max="100" min="0" name="chimeVolume" type="range"/></label><button class="secondary-button" id="chime-test" type="button"><span class="icon" data-icon="volume"></span>Ascolta il rintocco</button><label class="toggle-row"><span>Fascia di silenzio</span><input name="chimeQuiet" role="switch" type="checkbox"/></label><div class="two-fields" id="chime-quiet-fields"><label class="stacked-label">Da<input name="chimeQuietStart" type="time"/></label><label class="stacked-label">A<input name="chimeQuietEnd" type="time"/></label></div><p class="field-note">Segue l’orologio del dispositivo. Con la pagina sospesa il rintocco non è garantito.</p></div></div></details>
+<details class="settings-section" data-section="goal" id="section-goal" name="istante-settings">
+<summary>
+<span class="icon section-icon" data-icon="calendar">
+</span>
+<span class="section-heading">
+<strong>
+         Il tuo traguardo
+        </strong>
+<small data-summary="goal">
+         Una data da aspettare
+        </small>
+</span>
+<span class="icon section-chevron" data-icon="chevron">
+</span>
+</summary>
+<div class="settings-section-body">
+<fieldset>
+<legend>
+         Il prossimo traguardo
+        </legend>
+<label class="stacked-label">
+         Conto alla rovescia
+         <select name="goalMode">
+<option value="year">
+           Il nuovo anno
+          </option>
+<option value="custom">
+           Una data importante
+          </option>
+<option value="off">
+           Nascondi
+          </option>
+</select>
+</label>
+<div hidden="" id="goal-fields">
+<label class="stacked-label">
+          Nome del traguardo
+          <input maxlength="90" name="goalTitle" placeholder="Il mio prossimo viaggio" type="text"/>
+</label>
+<label class="stacked-label">
+          Inizio del percorso
+          <input name="goalStart" type="datetime-local"/>
+</label>
+<label class="stacked-label">
+          Data del traguardo
+          <input name="goalEnd" type="datetime-local"/>
+</label>
+<div aria-label="Impostazione rapida del traguardo" class="goal-quick">
+<p class="field-note">Oppure scegli una distanza da oggi.</p>
+<div class="goal-quick-row">
+<label class="goal-quick-value"><span>Tra</span><input id="goal-offset-value" inputmode="numeric" max="120" min="1" step="1" type="number" value="1"/></label>
+<label class="goal-quick-unit"><span>Periodo</span><select id="goal-offset-unit"><option value="months">mesi</option><option value="years">anni</option></select></label>
+<button class="secondary-button" id="goal-offset-apply" type="button"><span class="icon" data-icon="arrow"></span>Imposta</button>
+</div>
+</div>
+</div>
+<p class="field-note">
+         Mostra quanto manca al tuo traguardo.
+        </p>
+</fieldset>
+</div>
+</details>
+<details class="settings-section" data-section="calendar" id="section-calendar" name="istante-settings"><summary><span class="icon section-icon" data-icon="calendar"></span><span class="section-heading"><strong>Spazio per i tuoi giorni</strong><small data-summary="calendar">Calendari, prossimi impegni e ritorno</small></span><span class="icon section-chevron" data-icon="chevron"></span></summary><div class="settings-section-body"><label class="toggle-row"><span>Abilita il calendario<small>Una vista calendario nello stesso Istante.</small></span><input name="calendarEnabled" role="switch" type="checkbox"/></label><div id="calendar-settings-fields"><label class="toggle-row"><span>Il prossimo impegno sulla dashboard<small>Mostra il prossimo appuntamento nella dashboard.</small></span><input name="calendarUpcoming" role="switch" type="checkbox"/></label><label class="toggle-row"><span>Festività italiane<small>Aggiunge le festività italiane, anche offline.</small></span><input name="calendarHolidays" role="switch" type="checkbox"/></label><label class="toggle-row calendar-excalifont-setting" id="calendar-excalifont-setting"><span>Excalifont nel calendario<small>Usa il tratto scritto a mano solo nel calendario, lasciando Classic nel resto di Istante.</small></span><input name="calendarExcalifont" role="switch" type="checkbox"/></label><label class="stacked-label calendar-default-view-setting">Vista iniziale<select name="calendarViewMode"><option value="last">Riprendi l’ultima vista</option><option value="year">Anno</option><option value="month">Mese</option><option value="week">Settimana</option><option value="day">Giorno</option><option value="agenda">Agenda</option></select></label><label class="stacked-label calendar-return-setting">Ritorna allo screensaver dopo<select data-custom-max="3600" data-custom-min="10" data-custom-unit="secondi" name="calendarReturn"><option value="0">Mai automaticamente</option><option value="30">30 secondi di inattività</option><option value="60">1 minuto di inattività</option><option value="120">2 minuti di inattività</option><option value="300">5 minuti di inattività</option><option value="600">10 minuti di inattività</option></select></label><p class="field-note">Sul calendario lo swipe cambia mese o settimana. Il ritorno alla dashboard con gesto avviene solo dalla fascia bassa dello schermo.</p><label class="toggle-row"><span>Swipe anche con il mouse<small>Trascina orizzontalmente in uno spazio libero della pagina.</small></span><input name="mouseSwipe" role="switch" type="checkbox"/></label><p class="field-note">Fino a 8 calendari ICS, attivi insieme.</p></div></div></details><details class="settings-section" data-section="screen" id="section-screen" name="istante-settings">
+<summary>
+<span class="icon section-icon" data-icon="expand">
+</span>
+<span class="section-heading">
+<strong>
+         Modalità screensaver
+        </strong>
+<small data-summary="screen">
+         Comandi e schermo acceso
+        </small>
+</span>
+<span class="icon section-chevron" data-icon="chevron">
+</span>
+</summary>
+<div class="settings-section-body">
+<fieldset>
+<legend>
+         Modalità screensaver
+        </legend>
+<label class="toggle-row">
+<span>
+          Nascondi i comandi
+          <small>
+           Dopo 10 secondi di inattività. Muovi il mouse o tocca per ritrovarli.
+          </small>
+</span>
+<input name="hideControls" role="switch" type="checkbox"/>
+</label>
+<label class="toggle-row">
+<span>
+          Compatta i dati durante l’inattività
+          <small>
+           Riduce meteo, prossimo capitolo e calendario nella barra sintetica. Disattivala per lasciare sempre la barra completa.
+          </small>
+</span>
+<input name="compactIdleBar" role="switch" type="checkbox"/>
+</label>
+<label class="toggle-row">
+<span>
+          Mantieni lo schermo acceso
+          <small>
+           Quando supportato dal browser. Si disattiva uscendo dalla pagina.
+          </small>
+</span>
+<input name="wakeLock" role="switch" type="checkbox"/>
+</label>
+<p class="field-note" id="wake-support">
+</p>
+<div class="settings-subgroup touch-feedback-settings"><label class="toggle-row"><span>Suono dei tocchi<small>Un feedback breve quando usi pulsanti e controlli. Disattivato di default.</small></span><input name="touchSoundEnabled" role="switch" type="checkbox"/></label><div id="touch-sound-fields"><label class="stacked-label">Timbro<select name="touchSoundType"><option value="soft">Morbido</option><option value="paper">Carta</option><option value="glass">Vetro</option><option value="wood">Legno</option></select></label><label class="stacked-label touch-volume-field">Volume del tocco<input max="100" min="0" name="touchSoundVolume" step="1" type="range"/></label><button class="text-button" id="touch-sound-preview" type="button"><span class="icon" data-icon="volume"></span>Prova il tocco</button></div></div>
+</fieldset>
+</div>
+</details>
+<details class="settings-section" data-section="backup" id="section-backup"><summary><span class="icon section-icon" data-icon="download"></span><span class="section-heading"><strong>Porta con te il tuo istante</strong><small>Backup e ripristino JSON</small></span><span class="icon section-chevron" data-icon="chevron"></span></summary><div class="settings-section-body"><p class="field-note">Esporta o ripristina il tuo Istante in un file JSON.</p><label class="toggle-row"><span>Includi la località<small>Facoltativo: contiene le coordinate salvate.</small></span><input id="backup-place" role="switch" type="checkbox"/></label><label class="toggle-row"><span>Includi i calendari<small>Facoltativo: possono contenere eventi privati e link di accesso.</small></span><input id="backup-calendars" role="switch" type="checkbox"/></label><div class="backup-actions"><button class="secondary-button" id="backup-export" type="button"><span class="icon" data-icon="download"></span>Esporta JSON</button><button class="secondary-button" id="backup-import" type="button"><span class="icon" data-icon="upload"></span>Ripristina JSON</button></div><input accept=".json,application/json" hidden="" id="backup-file" type="file"/><p class="local-note">Il file non viene caricato su un server. Non include fotografie, cache meteo, file audio o timer in corso. Prima dell'esportazione salva eventuali modifiche aperte.</p></div></details><details class="settings-section" data-section="about" id="section-about" name="istante-settings">
+<summary>
+<span class="icon section-icon" data-icon="info">
+</span>
+<span class="section-heading">
+<strong>
+         Informazioni su Istante
+        </strong>
+<small data-summary="about">
+         Versione 4.0.0
+        </small>
+</span>
+<span class="icon section-chevron" data-icon="chevron">
+</span>
+</summary>
+<div class="settings-section-body">
+<div class="about-intro">
+<div class="about-wordmark-lockup"><img alt="" aria-hidden="true" class="about-wordmark-logo" src="assets/icons/icon.svg"/><span class="about-wordmark">
+         istante.
+        </span></div>
+<p>
+         Prenditi un momento per te.
+        </p>
+</div>
+<p class="about-copy">
+        Una dashboard e uno screensaver che ti fanno compagnia dalla mattina alla sera: musica leggera, pensieri da ritrovare e il tempo che ti separa dal tuo prossimo obiettivo. Sullo schermo che preferisci, un piccolo spazio per respirare.
+       </p><p class="official-link"><a href="https://istante.ruslan-dzyuba.it/" rel="noopener" target="_blank">istante.ruslan-dzyuba.it</a></p>
+<p class="about-author">
+        Un progetto di
+        <strong>
+         Ruslan Dzyuba
+        </strong>
+        .
+       </p>
+<nav aria-label="Profili dell'autore" class="about-links">
+<a aria-label="GitHub di Ruslan Dzyuba" class="social-icon-link" data-istante-tooltip="GitHub" href="https://github.com/Trorker" rel="noopener noreferrer" target="_blank">
+<svg aria-hidden="true" class="brand-icon" focusable="false" viewbox="0 0 16 16">
+<use href="assets/icons/social/github.svg#brand">
+</use>
+</svg>
+</a>
+<a aria-label="Instagram di Ruslan Dzyuba" class="social-icon-link" data-istante-tooltip="Instagram" href="https://www.instagram.com/trorker/" rel="noopener noreferrer" target="_blank">
+<svg aria-hidden="true" class="brand-icon" focusable="false" viewbox="0 0 16 16">
+<use href="assets/icons/social/instagram.svg#brand">
+</use>
+</svg>
+</a>
+<a aria-label="LinkedIn di Ruslan Dzyuba" class="social-icon-link" data-istante-tooltip="LinkedIn" href="https://www.linkedin.com/in/ruslan-dzyuba/" rel="noopener noreferrer" target="_blank">
+<svg aria-hidden="true" class="brand-icon" focusable="false" viewbox="0 0 16 16">
+<use href="assets/icons/social/linkedin.svg#brand">
+</use>
+</svg>
+</a>
+</nav>
+<div class="update-panel">
+<div class="update-heading">
+<span class="icon" data-icon="download">
+</span>
+<strong>
+          Versione
+          <span id="app-version">
+           4.0.0
+          </span>
+</strong>
+<span class="small-chip" hidden="" id="update-status-chip">
+          Novità
+         </span>
+</div>
+<p class="field-note" id="offline-status" role="status">
+         Preparazione della copia offline...
+        </p>
+<p class="field-note" id="update-status" role="status">
+         Verifica degli aggiornamenti...
+        </p>
+<div class="update-actions">
+<button class="secondary-button" id="check-update" type="button">
+          Verifica aggiornamenti
+         </button>
+<button class="primary-button" hidden="" id="apply-update" type="button">
+          Aggiorna
+         </button>
+</div>
+<p class="field-note" id="update-note">
+         L’aggiornamento ricarica la pagina senza perdere le preferenze.
+        </p>
+</div>
+<div class="about-docs">
+<a class="about-doc-link" href="leggi.html?doc=progetto"><span class="icon" data-icon="collection">
+</span><span>Leggi il progetto</span></a>
+<a class="about-doc-link" href="leggi.html?doc=novita"><span class="icon" data-icon="effects">
+</span><span>Tutte le novità</span></a>
+<a class="about-doc-link" href="leggi.html?doc=release"><span class="icon" data-icon="download">
+</span><span>Questa release</span></a>
+<a class="about-doc-link" href="leggi.html?doc=licenza"><span class="icon" data-icon="shield">
+</span><span>Licenza</span></a>
+<a class="about-doc-link" href="leggi.html?doc=terze-parti"><span class="icon" data-icon="info">
+</span><span>Terze parti</span></a>
+<a class="about-doc-link" href="leggi.html?doc=visione"><span class="icon" data-icon="effects"></span><span>Visione e design</span></a>
+</div>
+<p class="local-note" id="persistent-storage-status" role="status">Verifico la protezione dei dati locali...</p><button class="text-button" id="storage-request" type="button">Richiedi memoria persistente</button><button class="text-button" id="welcome-reopen" type="button">Rivedi benvenuto e guida</button><p class="local-note">Sorgente disponibile per uso non commerciale. Istante di Ruslan Dzyuba.</p></div>
+</details>
+<p class="privacy-note">
+<span class="icon" data-icon="shield">
+</span>
+<span>
+       Preferenze, foto e raccolta restano in questo browser. Foto, meteo e radio usano servizi esterni solo quando richiesti. Nessun tracciamento aggiunto da Istante.
+      </span>
+</p>
+<small class="build-note">
+      Istante 4.0.0
+     </small>
+<div class="keyboard-note">
+<kbd>
+       F
+      </kbd>
+      Schermo intero
+      <kbd>
+       N
+      </kbd>
+      Altra frase
+      <kbd>
+       L
+      </kbd>
+      Raccolta
+      <kbd>
+       S
+      </kbd>
+      Impostazioni
+      <kbd>
+       T
+      </kbd>
+      Timer
+     </div>
+</div>
+<div class="panel-footer">
+<p class="form-error" hidden="" id="settings-error" role="alert">
+</p>
+<button class="text-button" data-close="" type="button">
+      Annulla
+     </button>
+<button class="primary-button" type="submit">
+      Salva impostazioni
+      <span class="icon" data-icon="arrow">
+</span>
+</button>
+</div>
+</form>
+</dialog>`
+  };
+})();
+
+/* Istante v4 · Vue component: ShareDialog */
+(function(){
+  'use strict';
+  const registry = window.IstanteVueComponents = window.IstanteVueComponents || {};
+  registry.ShareDialog = {
+    name: 'ShareDialog',
+    template: `<dialog aria-labelledby="share-title" class="panel share-panel" id="share-dialog">
+<div class="panel-head">
+<div>
+<p class="section-label">
+      Un pensiero da portare con te
+     </p>
+<h2 id="share-title">
+      Condividi un istante.
+     </h2>
+</div>
+<button aria-label="Chiudi condivisione" class="icon-button close-button" data-close="" type="button">
+<span class="icon" data-icon="close">
+</span>
+</button>
+</div>
+<div class="panel-content share-content">
+<p class="field-note">Scegli il formato e cosa portare nella cartolina. Le fotografie restano fuori.</p>
+<div class="share-format-row"><div aria-label="Formato della cartolina" class="share-formats" role="group">
+<button aria-pressed="true" class="share-format active" data-share-format="square" type="button">Quadrato<small>1:1</small></button>
+<button aria-pressed="false" class="share-format" data-share-format="story" type="button">Storia<small>9:16</small></button>
+<button aria-pressed="false" class="share-format" data-share-format="landscape" type="button">Orizzontale<small>16:9</small></button>
+</div></div>
+<details class="share-config" id="share-options-details"><summary><span><strong>Configura cartolina</strong><small>Orologio, QR, data, cielo e altri dettagli</small></span><span class="icon share-config-chevron" data-icon="chevron"></span></summary><div class="share-options">
+<label class="toggle-row share-clock-toggle"><span>Includi l'orologio<small>L'ora di questo momento.</small></span><input checked="" id="share-clock" role="switch" type="checkbox"/></label>
+<label class="toggle-row"><span>Includi il QR<small>Apre la frase condivisa in Istante.</small></span><input checked="" id="share-qr" role="switch" type="checkbox"/></label>
+<label class="toggle-row"><span>Includi la data<small>La data di oggi.</small></span><input checked="" id="share-date" role="switch" type="checkbox"/></label>
+<label class="toggle-row"><span>Includi il cielo<small>Luce, meteo, sole o luna e fase lunare.</small></span><input checked="" id="share-sky" role="switch" type="checkbox"/></label>
+<label class="toggle-row"><span>Includi il mio obiettivo<small>Nome e conto alla rovescia.</small></span><input id="share-goal" role="switch" type="checkbox"/></label>
+<label class="toggle-row"><span>Includi la colonna sonora<small>Quello che stai ascoltando.</small></span><input id="share-radio" role="switch" type="checkbox"/></label>
+</div></details>
+<div aria-busy="true" class="share-preview-wrap">
+<div aria-hidden="true" class="share-generation-placeholder" id="share-preloader"><div class="share-placeholder-card"><i></i><i></i><i></i><span></span></div><small>Creo la tua cartolina…</small></div>
+<img alt="Anteprima della cartolina di Istante" hidden="" id="share-preview"/>
+<p id="share-status" role="status">
+      Preparo il tuo istante...
+     </p>
+</div>
+<div class="share-secondary">
+<button class="text-button" id="share-link" type="button">
+<span class="icon" data-icon="link">
+</span>
+      Condividi link
+     </button>
+<button class="text-button" id="share-copy" type="button">
+<span class="icon" data-icon="copy">
+</span>
+      Copia link
+     </button>
+</div>
+</div>
+<div class="panel-footer share-footer">
+<button class="secondary-button" disabled="" id="share-download" type="button">
+<span class="icon" data-icon="download">
+</span>
+     Salva immagine
+    </button>
+<button class="primary-button" disabled="" id="share-send" type="button">
+<span class="icon" data-icon="share">
+</span>
+     Condividi
+    </button>
+</div>
+</dialog>`
+  };
+})();
+
+/* Istante v4 · Vue component: StationsDialog */
+(function(){
+  'use strict';
+  const registry = window.IstanteVueComponents = window.IstanteVueComponents || {};
+  registry.StationsDialog = {
+    name: 'StationsDialog',
+    template: `<dialog aria-labelledby="stations-title" class="panel station-manager-panel" id="stations-dialog">
+<div class="panel-head">
+<div>
+<p class="section-label">
+      La tua colonna sonora
+     </p>
+<h2 id="stations-title">
+      Le tue stazioni.
+     </h2>
+</div>
+<button aria-label="Chiudi gestione stazioni" class="icon-button close-button" data-close="" type="button">
+<span class="icon" data-icon="close">
+</span>
+</button>
+</div>
+<div class="panel-content">
+<p class="field-note">
+     Aggiungi, elimina e salva le tue stazioni preferite.
+    </p>
+<details class="station-add-details" id="station-add-details">
+<summary>
+<span class="icon" data-icon="plus">
+</span>
+      Aggiungi una stazione
+     </summary>
+<form id="station-add-form" novalidate="">
+<label class="stacked-label">
+       Nome
+       <input autocomplete="off" maxlength="90" name="stationName" placeholder="La mia radio" required="" type="text"/>
+</label>
+<label class="stacked-label">
+       Indirizzo del flusso audio HTTPS
+       <input autocomplete="off" name="stationUrl" placeholder="https://.../stream" required="" spellcheck="false" type="url"/>
+</label>
+<label class="stacked-label">
+       Sito della stazione · facoltativo
+       <input autocomplete="off" name="stationPage" placeholder="https://..." spellcheck="false" type="url"/>
+</label>
+<p class="field-note">
+       Serve un flusso audio diretto compatibile con il browser.
+      </p>
+<p class="form-error" hidden="" id="station-add-error" role="alert">
+</p>
+<button class="primary-button" type="submit">
+       Aggiungi al catalogo
+      </button>
+</form>
+</details>
+<div class="station-list-tools">
+<label class="search-field station-search-field">
+<span class="icon" data-icon="search">
+</span>
+<input aria-label="Cerca stazioni" autocomplete="off" class="select-search" id="station-manager-search" placeholder="Cerca una stazione..." type="search"/>
+</label>
+<button aria-label="Mostra solo le stazioni preferite" aria-pressed="false" class="icon-button favorite-search-button" data-istante-tooltip="Mostra soltanto le stazioni preferite" id="station-filter" type="button"><span class="icon" data-icon="heart"></span></button>
+</div>
+<p class="local-note" id="station-manager-count">
+</p>
+<div id="station-manager-list">
+</div>
+<p class="field-note" hidden="" id="station-manager-empty">
+     Nessuna stazione in questa vista.
+    </p>
+<div class="station-management-actions">
+<button class="text-button" hidden="" id="station-undo" type="button">
+      Annulla eliminazione
+     </button>
+<button class="text-button" hidden="" id="station-restore" type="button">
+      Ripristina stazioni del catalogo
+     </button>
+</div>
+</div>
+<div class="panel-footer">
+<p class="local-note">
+     I preferiti della radio sono separati da quelli delle frasi.
+    </p>
+<button class="primary-button" data-close="" type="button">
+     Fatto
+    </button>
+</div>
+</dialog>`
+  };
+})();
+
+/* Istante v4 · Vue component: TimerDialog */
+(function(){
+  'use strict';
+  const registry = window.IstanteVueComponents = window.IstanteVueComponents || {};
+  registry.TimerDialog = {
+    name: 'TimerDialog',
+    template: `<dialog aria-labelledby="timer-title" class="panel timer-panel" id="timer-dialog">
+<div class="panel-head">
+<div>
+<p class="section-label">
+      Prenditi un momento
+     </p>
+<h2 id="timer-title">
+      Il tuo tempo.
+     </h2><p class="timer-modal-now"><span>Adesso</span><strong id="timer-modal-clock">--:--</strong></p>
+</div>
+<button aria-label="Chiudi timer" class="icon-button close-button" data-close="" type="button">
+<span class="icon" data-icon="close">
+</span>
+</button>
+</div>
+<div class="timer-content">
+<div class="timer-time-stage"><div class="timer-duration" id="timer-duration">
+<div class="timer-range-picker timer-dial-picker">
+<span class="section-label">Quanto tempo vuoi tenerti?</span>
+<div class="timer-dial-shell"><button aria-label="Riduci di un minuto" class="timer-step-button timer-step-side timer-step-side-left" id="timer-duration-decrease" type="button"><span class="icon" data-icon="minus"></span></button><div aria-label="Scegli la durata ruotando come un orologio" aria-valuemax="60" aria-valuemin="1" aria-valuenow="25" class="timer-duration-dial" id="timer-duration-dial" role="slider" tabindex="0"><div class="timer-dial-face"><span class="timer-dial-mark" data-minute="5">5</span><span class="timer-dial-mark" data-minute="10">10</span><span class="timer-dial-mark" data-minute="15">15</span><span class="timer-dial-mark" data-minute="20">20</span><span class="timer-dial-mark" data-minute="25">25</span><span class="timer-dial-mark" data-minute="30">30</span><span class="timer-dial-mark" data-minute="35">35</span><span class="timer-dial-mark" data-minute="40">40</span><span class="timer-dial-mark" data-minute="45">45</span><span class="timer-dial-mark" data-minute="50">50</span><span class="timer-dial-mark" data-minute="55">55</span><span class="timer-dial-mark" data-minute="60">60</span><i aria-hidden="true" class="timer-dial-pointer" id="timer-dial-pointer"></i><output id="timer-duration-display">25 minuti</output></div></div><button aria-label="Aumenta di un minuto" class="timer-step-button timer-step-side timer-step-side-right" id="timer-duration-increase" type="button"><span class="icon" data-icon="plus"></span></button></div>
+<input aria-hidden="true" id="timer-duration-range" max="120" min="1" step="1" tabindex="-1" type="range" value="25"/>
+</div>
+<div aria-hidden="true" class="visually-hidden timer-duration-internals">
+<input id="timer-hours" inputmode="numeric" max="24" min="0" step="1" tabindex="-1" type="number" value="0"/>
+<input id="timer-minutes" inputmode="numeric" max="59" min="0" step="1" tabindex="-1" type="number" value="25"/>
+<input id="timer-seconds" inputmode="numeric" max="59" min="0" step="1" tabindex="-1" type="number" value="0"/>
+</div>
+</div><div class="timer-running" hidden="" id="timer-running">
+<span class="section-label" id="timer-state-label">Il tuo momento, in corso</span>
+<div aria-label="Tempo rimanente e avanzamento" aria-valuemax="100" aria-valuemin="0" aria-valuenow="0" class="timer-orbit" id="timer-orbit" role="progressbar"><strong id="timer-readout">25:00</strong></div>
+</div></div>
+<div class="timer-session-options" id="timer-session-options"><div class="timer-sound-choice" id="timer-radio-choice"><span class="visually-hidden timer-choice-label">Durante il timer</span><div aria-label="Audio durante questa pausa" class="timer-sound-segments" role="group"><button aria-pressed="true" data-istante-tooltip="Avvia soltanto il timer, senza accendere altre sorgenti." data-timer-during="silent" type="button"><span class="icon" data-icon="silence"></span>Silenzio</button><button aria-pressed="false" data-timer-during="radio" type="button"><span class="icon" data-icon="headphones"></span>Radio</button><button aria-pressed="false" data-timer-during="ambient" type="button"><span class="icon" data-icon="wind"></span>Suono relax</button></div><p aria-live="polite" class="visually-hidden timer-source-description" id="timer-source-description">Solo il tempo, senza avviare un audio.</p></div>
+<div class="visually-hidden timer-preference-summary"><p class="timer-finish-description" id="timer-finish-description"></p></div></div>
+<div aria-live="polite" class="visually-hidden timer-notice"><p class="field-note" hidden="" id="timer-audio-hint"></p><p class="form-error" hidden="" id="timer-error" role="alert">
+</p><p class="timer-result" hidden="" id="timer-result" role="status">
+</p><button class="text-button" hidden="" id="timer-retry-audio" type="button">
+<span class="icon" data-icon="play">
+</span>
+     Riproduci avviso
+    </button></div></div>
+<div class="panel-footer timer-actions">
+<button class="text-button" hidden="" id="timer-reset" type="button">
+     Annulla timer
+    </button>
+<button class="primary-button" id="timer-start" type="button">
+<span class="icon" data-icon="play">
+</span>
+<span>
+      Inizia il tuo momento
+     </span>
+</button>
+</div>
+</dialog>`
+  };
+})();
+
+/* Istante v4 · Vue component: TourDialog */
+(function(){
+  'use strict';
+  const registry = window.IstanteVueComponents = window.IstanteVueComponents || {};
+  registry.TourDialog = {
+    name: 'TourDialog',
+    template: `<dialog aria-describedby="tour-copy" aria-labelledby="tour-title" class="tour-layer" id="tour-dialog"><svg aria-hidden="true" class="tour-sketch" id="tour-sketch"><defs><mask id="tour-mask"><rect fill="white" height="100%" id="tour-mask-bg" width="100%"></rect><rect fill="black" id="tour-cutout" rx="18"></rect></mask></defs><rect class="tour-shade" height="100%" mask="url(#tour-mask)" width="100%"></rect><path class="tour-outline" id="tour-outline"></path><path class="tour-arrow shadow" id="tour-arrow-shadow"></path><path class="tour-arrow" id="tour-arrow"></path><path class="tour-arrow" id="tour-arrow-tip"></path></svg><section class="tour-card" id="tour-card"><div class="tour-topline"><span class="section-label" id="tour-step"></span><button aria-label="Chiudi la guida" class="icon-button close-button" data-close="" type="button"><span class="icon" data-icon="close"></span></button></div><p class="tour-note" id="tour-note"></p><h2 id="tour-title"></h2><p aria-live="polite" id="tour-copy"></p><div class="tour-choices" hidden="" id="tour-choices"></div><div class="tour-navigation"><button class="text-button" id="tour-back" type="button">Indietro</button><button class="primary-button" id="tour-next" type="button">Avanti<span class="icon" data-icon="chevron"></span></button></div></section></dialog>`
+  };
+})();
+
+/* Istante v4 · Vue component: WeatherDialog */
+(function(){
+  'use strict';
+  const registry = window.IstanteVueComponents = window.IstanteVueComponents || {};
+  registry.WeatherDialog = {
+    name: 'WeatherDialog',
+    template: `<dialog aria-labelledby="weather-dialog-title" class="panel weather-detail-panel" id="weather-dialog">
+<div class="panel-head"><div><p class="section-label">Il cielo, adesso</p><h2 id="weather-dialog-title">Meteo e luce.</h2></div><button aria-label="Chiudi meteo" class="icon-button close-button" data-close="" type="button"><span class="icon" data-icon="close"></span></button></div>
+<div class="panel-content weather-detail-content">
+<div class="weather-detail-hero"><span aria-hidden="true" class="weather-detail-icon" id="weather-modal-icon"></span><div><strong id="weather-modal-temp">—</strong><span id="weather-modal-condition">Meteo non disponibile</span><small id="weather-modal-place">Nessuna località</small></div></div>
+<p class="weather-detail-status" id="weather-modal-status">I dati restano leggeri e vengono letti solo quando servono.</p>
+<div class="weather-detail-grid">
+<div class="weather-detail-metric"><span class="icon" data-icon="sunrise"></span><span><small>Alba</small><strong id="weather-modal-sunrise">—</strong></span></div>
+<div class="weather-detail-metric"><span class="icon" data-icon="sunset"></span><span><small>Tramonto</small><strong id="weather-modal-sunset">—</strong></span></div>
+<div class="weather-detail-metric"><span class="icon" data-icon="moon"></span><span><small>Luna</small><strong id="weather-modal-moon">—</strong></span></div>
+</div>
+<p class="weather-detail-empty" hidden="" id="weather-modal-empty"></p>
+</div>
+<div class="panel-footer"><button class="text-button" data-close="" type="button">Chiudi</button><button class="primary-button" id="weather-configure" type="button"><span class="icon" data-icon="settings"></span>Configura meteo</button></div>
+</dialog>`
+  };
+})();
+
+/* Istante v4 · Vue component: WelcomeDialog */
+(function(){
+  'use strict';
+  const registry = window.IstanteVueComponents = window.IstanteVueComponents || {};
+  registry.WelcomeDialog = {
+    name: 'WelcomeDialog',
+    template: `<dialog aria-labelledby="welcome-title" class="panel welcome-panel" id="welcome-dialog">
+<div class="panel-head"><span class="section-label">Benvenuto nel tuo istante</span><button aria-label="Esplora senza guida" class="icon-button close-button" data-close="" type="button"><span class="icon" data-icon="close"></span></button></div>
+<div class="panel-content welcome-content"><div aria-hidden="true" class="welcome-emblem"><img alt="" height="58" src="assets/icons/icon.svg" width="58"/><span class="welcome-orbit"></span></div><p class="welcome-eyebrow">Il tuo schermo può fare meno. E darti di più.</p><h2 id="welcome-title">Prenditi<br/> il tuo istante.</h2><p class="welcome-lead">Istante trasforma uno schermo acceso in un punto di calma: il tempo resta visibile, una frase ti accompagna, il cielo segue la giornata e il tuo prossimo traguardo rimane vicino senza diventare un'altra lista di cose da fare.</p><div class="welcome-promises"><p><span class="icon" data-icon="heart"></span><span><strong>Ti riporta al presente.</strong> Un pensiero, un timer e piccoli rituali aiutano a creare pause vere tra una cosa e l'altra.</span></p><p><span class="icon" data-icon="clock"></span><span><strong>Dà forma al tempo.</strong> Orologio, calendario, prossimo impegno e traguardi tengono vicino ciò che conta, senza trasformare lo schermo in una lista di notifiche.</span></p><p><span class="icon" data-icon="headphones"></span><span><strong>Crea la tua atmosfera.</strong> Musica lo-fi, suoni offline, luce, meteo e sfondi possono rendere una scrivania, un tablet o uno schermo dedicato un posto più piacevole.</span></p></div><p class="welcome-footnote">Puoi usarlo come dashboard, screensaver o piccolo angolo di decompressione. Le preferenze restano sul tuo dispositivo.</p></div><div class="panel-footer"><button class="text-button" data-close="" type="button">Esploro da solo</button><button class="primary-button" id="welcome-tour" type="button">Scopriamolo insieme<span class="icon" data-icon="arrow"></span></button></div></dialog>`
+  };
+})();
+
+/* Istante v4 · Vue component: DocumentApp */
+(function(){
+ 'use strict';
+ const registry=window.IstanteVueComponents=window.IstanteVueComponents||{};
+ registry.DocumentApp={name:'DocumentApp',template:`<div class="document-shell">
+<header class="document-header"><a aria-label="Istante, torna alla schermata" class="document-brand" href="./">istante.</a><a class="document-back" href="./"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="m12 4 1.41 1.41L7.83 11H20v2H7.83l5.58 5.59L12 20l-8-8z"></path></svg>Torna al tuo istante</a></header>
+<nav aria-label="Pagine informative" class="document-nav"><a data-doc="progetto" href="leggi.html?doc=progetto">Il progetto</a><a data-doc="novita" href="leggi.html?doc=novita">Tutte le novità</a><a data-doc="release" href="leggi.html?doc=release">Release 4.0.0</a><a data-doc="licenza" href="leggi.html?doc=licenza">Licenza</a><a data-doc="terze-parti" href="leggi.html?doc=terze-parti">Terze parti</a><a data-doc="visione" href="leggi.html?doc=visione">Visione e design</a></nav>
+<main><p class="document-eyebrow" id="document-label">Un po' di Istante</p><article aria-busy="true" class="document-article" id="document-content"><p>Un istante, preparo la lettura...</p></article></main>
+<footer class="document-footer"><span>Istante 4.0.0 · Un momento, per te.</span><a hidden="" href="README.md" id="document-source" rel="noopener" target="_blank">Apri il Markdown originale</a></footer>
+<noscript><p>Per caricare i file Markdown abilita JavaScript, oppure apri <a href="README.md">README</a>, <a href="CHANGELOG.md">changelog</a>, <a href="docs/LICENZA.md">licenza</a> e <a href="docs/TERZE-PARTI.md">terze parti</a>.</p></noscript>
+</div>`};
+})();
+
+/* Istante v4 · Vue component: AppBackdrop */
+(function(){
+  'use strict';
+  const registry = window.IstanteVueComponents = window.IstanteVueComponents || {};
+  registry.AppBackdrop = {
+    name: 'AppBackdrop',
+    template: `<div aria-hidden="true" class="backdrop">
+<div class="wallpaper" id="wallpaper">
+</div>
+<div class="wallpaper wallpaper-next" id="wallpaper-next">
+</div>
+<div class="ambient">
+</div>
+<div class="breathing-light">
+</div>
+<div class="celestial-transition" id="celestial-transition">
+<span class="transition-horizon">
+</span>
+</div>
+<div class="photo-shade">
+</div>
+<div class="ambient-fx" hidden="" id="ambient-fx">
+<div class="fx-halos">
+<i>
+</i>
+<i>
+</i>
+<i>
+</i>
+</div>
+<div class="fx-aurora">
+</div>
+<div class="fx-weather-light">
+</div>
+<div class="fx-clouds">
+</div>
+<canvas class="fx-canvas" id="fx-canvas">
+</canvas>
+</div>
+<div aria-hidden="true" class="celestial-sky" id="celestial-sky"><canvas id="sky-stars"></canvas><div class="sky-halo"></div><svg aria-hidden="true" id="sky-body" viewbox="0 0 160 160"><defs><radialgradient cx="38%" cy="32%" id="sky-sun-gradient" r="68%"><stop offset="0" stop-color="#fff9dc"></stop><stop offset=".56" stop-color="#f4d381"></stop><stop offset="1" stop-color="#dfa95f"></stop></radialgradient><radialgradient cx="36%" cy="30%" id="sky-moon-gradient" r="72%"><stop id="sky-moon-stop-a" offset="0" stop-color="#f3f0df"></stop><stop id="sky-moon-stop-b" offset=".62" stop-color="#c8c7bd"></stop><stop id="sky-moon-stop-c" offset="1" stop-color="#8f9497"></stop></radialgradient><filter height="180%" id="sky-orb-svg-glow" width="180%" x="-40%" y="-40%"><fegaussianblur result="blur" stddeviation="5"></fegaussianblur><femerge><femergenode in="blur"></femergenode><femergenode in="SourceGraphic"></femergenode></femerge></filter><clippath id="sky-moon-light-clip"><path id="sky-moon-light-path"></path></clippath></defs><g id="sky-sun-art"><g class="sky-sun-rays" stroke="#f2cf87" stroke-linecap="round" stroke-width="2.2"><line x1="80" x2="80" y1="13" y2="2"></line><line x1="80" x2="80" y1="147" y2="158"></line><line x1="13" x2="2" y1="80" y2="80"></line><line x1="147" x2="158" y1="80" y2="80"></line><line x1="33" x2="25" y1="33" y2="25"></line><line x1="127" x2="135" y1="127" y2="135"></line><line x1="127" x2="135" y1="33" y2="25"></line><line x1="33" x2="25" y1="127" y2="135"></line></g><circle cx="80" cy="80" fill="url(#sky-sun-gradient)" filter="url(#sky-orb-svg-glow)" r="49"></circle></g><g id="sky-moon-art"><circle class="sky-moon-halo" cx="80" cy="80" r="58"></circle><circle class="sky-moon-dark" cx="80" cy="80" r="49"></circle><g class="sky-moon-shadow-detail"><ellipse cx="62" cy="66" rx="8" ry="6"></ellipse><ellipse cx="99" cy="75" rx="5" ry="7"></ellipse><ellipse cx="76" cy="101" rx="6" ry="4"></ellipse><path d="M48 87 C57 81 62 84 67 92 C61 98 53 99 47 94 Z"></path><path d="M88 49 C94 45 103 48 108 54 C102 60 95 60 89 56 Z"></path></g><g clip-path="url(#sky-moon-light-clip)" id="sky-moon-light"><circle cx="80" cy="80" fill="url(#sky-moon-gradient)" filter="url(#sky-orb-svg-glow)" r="49"></circle><circle class="sky-moon-crater crater-a" cx="64" cy="68" r="7"></circle><circle class="sky-moon-crater crater-b" cx="91" cy="80" r="5"></circle><circle class="sky-moon-crater crater-c" cx="76" cy="101" r="4"></circle><circle class="sky-moon-crater crater-d" cx="101" cy="99" r="3"></circle></g><circle class="sky-moon-edge" cx="80" cy="80" fill="none" r="49"></circle></g></svg><canvas aria-hidden="true" height="160" hidden="" id="sky-body-snapshot" width="160"></canvas></div></div>`
+  };
+})();
+
+/* Istante v4 · Vue component: AppShell */
+(function(){
+  'use strict';
+  const registry = window.IstanteVueComponents = window.IstanteVueComponents || {};
+  registry.AppShell = {
+    name: 'AppShell',
+    template: `<div class="app-shell" id="app-shell" inert>
+  <app-topbar></app-topbar>
+  <div class="stage-viewport">
+    <home-main-stage></home-main-stage>
+    <home-info-dock></home-info-dock>
+    <bottom-toolbar></bottom-toolbar>
+  </div>
+</div>`
+  };
+})();
+
+/* Istante v4 · Vue component: AppTopbar */
+(function(){
+  'use strict';
+  const registry = window.IstanteVueComponents = window.IstanteVueComponents || {};
+  registry.AppTopbar = {
+    name: 'AppTopbar',
+    template: `<header class="topbar chrome">
+<div class="brand-lockup">
+<a aria-label="Istante, pagina iniziale" class="wordmark brand-home-link" href="index.html">
+<img alt="" aria-hidden="true" class="brand-logo-image" height="32" src="assets/icons/icon.svg" width="32"/>
+<span class="brand-home-copy"><span class="brand-home-name">istante<span class="brand-point">.</span></span><span class="brand-home-tagline">Un momento, per te.</span></span>
+</a>
+</div>
+<section aria-label="Radio lo-fi" class="radio-mini" id="radio-mini">
+<button aria-label="Ascolta la radio" aria-pressed="false" class="radio-play" id="radio-play" type="button">
+<span class="icon" data-icon="play">
+</span>
+</button>
+<button aria-controls="radio-panel" aria-expanded="false" class="radio-disclosure" id="radio-disclosure" type="button">
+<span class="radio-kicker"><span id="audio-source-label">Lo-fi radio</span><span aria-hidden="true" class="radio-eq">
+<i>
+</i>
+<i>
+</i>
+<i>
+</i>
+</span>
+</span>
+<span id="radio-status">
+       ChillHop · FluxFM
+      </span>
+</button>
+<button aria-controls="radio-panel" aria-expanded="false" aria-label="Apri controlli radio" class="icon-button radio-expand" id="radio-expand" type="button">
+<span class="icon" data-icon="chevron">
+</span>
+</button>
+<div aria-label="Controlli radio" class="radio-panel" hidden="" id="radio-panel" role="region">
+<div class="radio-panel-head">
+<span class="icon" data-icon="headphones">
+</span>
+<div>
+<h2>La tua colonna sonora.</h2>
+</div>
+<button aria-label="Chiudi controlli radio" class="icon-button" id="radio-close" type="button">
+<span class="icon" data-icon="close">
+</span>
+</button>
+</div><div aria-label="Sorgente audio" class="audio-source-switch" role="group"><button aria-pressed="true" id="audio-source-radio" type="button"><span class="icon" data-icon="headphones"></span>Radio</button><button aria-pressed="false" id="audio-source-ambient" type="button"><span class="icon" data-icon="wind"></span>Ambiente</button></div><div id="radio-controls">
+<label class="stacked-label">
+       Stazione
+       <select data-search="true" id="radio-station">
+<option value="lofigirl">
+         01  Lofi Girl (Community Relay)
+        </option>
+<option value="laut-lofi">
+         02  Laut.FM | Lofi 24/7
+        </option>
+<option value="zeno-study">
+         03  Zeno FM | Study Lofi
+        </option>
+<option value="zeno-chill">
+         04  Zeno FM | Chill Beats
+        </option>
+<option value="zeno-hiphop">
+         05  Zeno FM | Lofi Hip Hop
+        </option>
+<option value="zeno-box">
+         06  Zeno FM | Box Lofi
+        </option>
+<option value="zeno-bootleg">
+         07  Zeno FM | The Bootleg Boy
+        </option>
+<option value="fastcast-lofi">
+         08  Fastcast4u | Chill Lofi
+        </option>
+<option value="chillhop">
+         09  FluxFM | Chillhop
+        </option>
+<option value="chillsynth">
+         10  Nightride FM | Chillsynth
+        </option>
+<option value="secretagent">
+         11  SomaFM | Secret Agent
+        </option>
+<option value="deepspaceone">
+         12  SomaFM | Deep Space One (Deep Ambient)
+        </option>
+<option value="groovesalad">
+         13  SomaFM | Groove Salad
+        </option>
+<option value="dronezone">
+         14  SomaFM | Drone Zone
+        </option>
+<option value="defcon">
+         15  SomaFM | DEF CON Radio
+        </option>
+<option value="spacestation">
+         16  SomaFM | Space Station
+        </option>
+<option value="vaporwaves">
+         17  SomaFM | Vaporwaves
+        </option>
+<option value="synphaera">
+         18  SomaFM | Synphaera
+        </option>
+<option value="intense">
+         19  Intense Radio | FLAC / OGG
+        </option>
+<option value="pinkfloyd">
+         20  Exclusively Pink Floyd
+        </option>
+<option value="pinkfloyd-hits">
+         21  Exclusively Pink Floyd | Hits
+        </option>
+<option value="paradise-mellow">
+         22  Radio Paradise | Mellow Mix (FLAC Lossless)
+        </option>
+</select>
+</label>
+<div class="radio-actions">
+<button class="text-button" id="radio-random" type="button">
+<span class="icon" data-icon="shuffle">
+</span>
+        Sorprendimi
+       </button>
+<button aria-label="Aggiungi stazione ai preferiti" aria-pressed="false" class="icon-button" id="radio-favorite" type="button">
+<span class="icon" data-icon="heart">
+</span>
+</button>
+<button aria-label="Gestisci stazioni" class="icon-button" data-open="stations" type="button">
+<span class="icon" data-icon="collection">
+</span>
+</button>
+</div>
+<div class="radio-volume">
+<button aria-label="Disattiva audio" aria-pressed="false" class="icon-button" id="radio-mute" type="button">
+<span class="icon" data-icon="volume">
+</span>
+</button>
+<input aria-label="Volume radio" id="radio-volume" max="100" min="0" step="1" type="range"/>
+<output id="radio-volume-value">
+        45%
+       </output>
+</div>
+<p class="field-note" hidden="" id="radio-detail" role="status"></p>
+<div class="radio-source">
+<a href="https://www.fluxfm.de/channels/e3d6cb48-55bb-41c5-ab72-9def83aa3ca8" id="radio-source" rel="noopener noreferrer" target="_blank">
+        Sito della stazione
+        <span class="icon" data-icon="open">
+</span>
+</a>
+<span id="radio-provider">
+        Live · FluxFM
+       </span>
+</div>
+<div class="radio-program-info" hidden="" id="radio-program-info">
+<span class="icon" data-icon="clock">
+</span>
+<span id="radio-program-status">
+</span>
+<button class="text-button" id="radio-program-enable" type="button">
+        Abilita
+       </button>
+</div>
+</div><div hidden="" id="ambient-controls">
+<div aria-label="Suono ambientale" class="ambient-options" role="group">
+<button aria-pressed="false" data-ambient-type="pink" type="button"><span class="icon" data-icon="effects"></span><strong>Rosa</strong><small>Morbido, uniforme</small></button>
+<button aria-pressed="true" data-ambient-type="brown" type="button"><span class="icon" data-icon="moon"></span><strong>Marrone</strong><small>Profondo, avvolgente</small></button>
+<button aria-pressed="false" data-ambient-type="rain" type="button"><span class="icon" data-icon="rain"></span><strong>Pioggia</strong><small>Un fruscio leggero</small></button>
+<button aria-pressed="false" data-ambient-type="wind" type="button"><span class="icon" data-icon="wind"></span><strong>Vento</strong><small>Un soffio lento</small></button>
+</div>
+<div class="radio-volume"><button aria-label="Disattiva suono ambientale" aria-pressed="false" class="icon-button" id="ambient-mute" type="button"><span class="icon" data-icon="volume"></span></button><input aria-label="Volume ambiente" id="ambient-volume" max="100" min="0" type="range" value="35"/><output id="ambient-volume-value">35%</output></div>
+<p class="field-note" id="ambient-status" role="status">Generato sul dispositivo. Nessun file audio, nessuna connessione.</p>
+</div></div>
+</section>
+</header>`
+  };
+})();
+
+/* Istante v4 · Vue component: BottomToolbar */
+(function(){
+  'use strict';
+  const registry = window.IstanteVueComponents = window.IstanteVueComponents || {};
+  registry.BottomToolbar = {
+    name: 'BottomToolbar',
+    template: `<footer class="bottom-bar chrome">
+<nav aria-label="Comandi screensaver" class="toolbar">
+<div class="toolbar-cluster">
+<div aria-label="Frasi" class="toolbar-group toolbar-group-left" role="group">
+<button aria-label="Apri la biblioteca delle frasi" class="icon-button collection-link" data-istante-tooltip="La tua biblioteca" data-open="library" type="button"><span class="icon" data-icon="collection"></span></button>
+<button aria-label="Un altro pensiero" class="icon-button" data-istante-tooltip="Un altro pensiero (N)" id="next-phrase" type="button"><span class="icon" data-icon="shuffle"></span></button>
+<button aria-label="Aggiungi ai preferiti" aria-pressed="false" class="icon-button" data-istante-tooltip="Aggiungi ai preferiti" id="favorite-current" type="button"><span class="icon" data-icon="heart"></span></button>
+</div>
+<div aria-label="Tempo" class="toolbar-group toolbar-group-center" role="group">
+<button aria-label="Apri timer" class="icon-button" data-istante-tooltip="Un tempo per te (T)" id="timer-open" type="button"><span class="icon" data-icon="clock"></span></button>
+<button aria-label="Apri il calendario" class="icon-button" data-istante-tooltip="Il tuo calendario" id="calendar-open" type="button"><span class="icon" data-icon="calendar"></span></button>
+</div>
+<div aria-label="Schermo e impostazioni" class="toolbar-group toolbar-group-right" role="group">
+<button aria-label="Condividi il tuo istante" class="icon-button" data-istante-tooltip="Condividi il tuo istante" id="share-open" type="button"><span class="icon" data-icon="share"></span></button>
+<button aria-label="Schermo intero" class="icon-button" data-istante-tooltip="Schermo intero (F)" id="fullscreen" type="button"><span class="icon" data-icon="expand"></span></button>
+<button aria-label="Impostazioni" class="icon-button" data-istante-tooltip="Impostazioni (S)" data-open="settings" id="settings-open" type="button"><span class="icon" data-icon="settings"></span><span class="update-badge" hidden="" id="update-badge">Nuova versione</span></button>
+</div>
+</div>
+</nav>
+</footer>`
+  };
+})();
+
+/* Istante v4 · Vue component: HomeInfoDock */
+(function(){
+  'use strict';
+  const registry = window.IstanteVueComponents = window.IstanteVueComponents || {};
+  registry.HomeInfoDock = {
+    name: 'HomeInfoDock',
+    template: `<section aria-label="Informazioni del tuo istante" class="dashboard-lower chrome">
+<div class="timer-slot">
+<section aria-label="Timer in corso" class="timer-chip" hidden="" id="timer-chip">
+<button class="timer-chip-main" id="timer-chip-open" type="button">
+<span class="icon" data-icon="clock"></span>
+<span id="timer-chip-label">Un tempo per te</span>
+<strong id="timer-chip-time">25:00</strong>
+</button>
+<button aria-label="Metti in pausa il timer" class="icon-button" id="timer-chip-toggle" type="button"><span class="icon" data-icon="pause"></span></button>
+<button aria-label="Elimina timer" class="icon-button timer-chip-delete" data-istante-tooltip="Elimina timer" id="timer-chip-delete" type="button"><span class="icon" data-icon="trash"></span></button>
+<button aria-label="Chiudi avviso del timer" class="icon-button" hidden="" id="timer-chip-dismiss" type="button"><span class="icon" data-icon="close"></span></button>
+</section>
+</div>
+<div class="active-info-strip" id="active-info-strip">
+<section aria-haspopup="dialog" aria-label="Apri dettagli meteo e luce del giorno" class="environment-line" hidden="" id="environment-line" role="button" tabindex="0">
+<div class="weather-line" hidden="" id="weather-line">
+<span class="icon" id="weather-icon"></span>
+<span id="weather-text"></span>
+<span id="weather-condition"></span>
+<span id="weather-place"></span>
+<small id="weather-age"></small>
+</div>
+<div aria-label="Alba e tramonto della localita" class="solar-line" hidden="" id="solar-line">
+<div class="solar-time"><span class="icon" data-icon="sunrise"></span><span class="solar-label">Alba</span><time id="sunrise-time">--:--</time></div>
+<div aria-hidden="true" class="solar-path"><svg viewbox="0 0 180 40"><path class="solar-base" d="M8 33H172"></path><path class="solar-arc" d="M8 33 Q90 -17 172 33"></path><g id="solar-marker"><circle class="solar-halo" r="8"></circle><circle r="2.8"></circle></g></svg></div>
+<div class="solar-time"><span class="icon" data-icon="sunset"></span><span class="solar-label">Tramonto</span><time id="sunset-time">--:--</time></div>
+<span class="solar-note" id="solar-note"></span>
+</div>
+<p class="moon-caption" hidden="" id="moon-caption"><canvas aria-hidden="true" class="moon-phase-mini" height="64" id="moon-phase-mini" width="64"></canvas><span class="moon-phase-name"></span><span class="moon-phase-percent"></span></p>
+</section>
+<section aria-haspopup="dialog" aria-label="Apri il prossimo capitolo" class="goal-strip" id="goal-strip" role="button" tabindex="0">
+<div class="goal-heading">
+<span class="section-label" id="goal-label">Il prossimo capitolo</span>
+<h2 id="goal-title">Il tuo traguardo</h2>
+</div>
+<div class="countdown" id="countdown">
+<div><strong id="goal-days">00</strong><span id="goal-unit1">giorni</span></div>
+<span class="count-separator">/</span>
+<div><strong id="goal-hours">00</strong><span id="goal-unit2">ore</span></div>
+<span class="count-separator">/</span>
+<div><strong id="goal-minutes">00</strong><span id="goal-unit3">minuti</span></div>
+</div>
+<div class="goal-progress">
+<div class="progress-labels"><span id="progress-label">Il percorso di quest'anno</span><span id="progress-value">0%</span></div>
+<div aria-label="Avanzamento del traguardo" aria-valuemax="100" aria-valuemin="0" aria-valuenow="0" class="progress-track" id="goal-progress" role="progressbar"><div id="progress-fill"></div></div>
+<p class="goal-date" id="goal-date"></p>
+</div>
+</section>
+<button aria-label="Apri il prossimo impegno" class="upcoming-event" hidden="" id="upcoming-event" type="button">
+<span class="icon" data-icon="calendar"></span>
+<span class="upcoming-copy"><small id="upcoming-label">Il prossimo impegno</small><span id="upcoming-title"></span></span>
+<time id="upcoming-time"></time>
+<span class="icon upcoming-arrow" data-icon="arrow"></span>
+</button>
+</div>
+<section aria-label="Riepilogo dello screensaver" class="idle-summary-strip" id="idle-summary-strip">
+<div aria-haspopup="dialog" aria-label="Apri dettagli meteo e luce del giorno" class="idle-weather-summary" role="button" tabindex="0">
+<div class="idle-weather-primary"><span class="icon" id="idle-weather-icon"></span><strong id="idle-weather-text">--°</strong><span id="idle-weather-condition">Meteo</span></div>
+<div class="idle-solar-summary" id="idle-solar-summary"><span class="idle-solar-time"><span class="icon" data-icon="sunrise"></span><time id="idle-sunrise-time">--:--</time></span><span aria-hidden="true" class="idle-solar-dot">·</span><span class="idle-solar-time"><span class="icon" data-icon="sunset"></span><time id="idle-sunset-time">--:--</time></span></div>
+</div>
+<div aria-haspopup="dialog" aria-label="Apri il prossimo capitolo" class="idle-goal-summary" id="idle-goal-summary" role="button" tabindex="0">
+<div class="idle-goal-heading"><span id="idle-goal-label">Il prossimo capitolo</span><strong id="idle-goal-progress-value">0%</strong></div>
+<div class="idle-goal-title" id="idle-goal-title">Il tuo traguardo</div>
+<div aria-label="Avanzamento sintetico del traguardo" aria-valuemax="100" aria-valuemin="0" aria-valuenow="0" class="idle-progress-track" id="idle-goal-progress" role="progressbar"><span id="idle-goal-progress-fill"></span></div>
+<div class="idle-goal-countdown" id="idle-goal-countdown"><span><strong id="idle-goal-days">00</strong> giorni</span><span><strong id="idle-goal-hours">00</strong> ore</span><span><strong id="idle-goal-minutes">00</strong> min</span></div>
+</div>
+<button aria-label="Apri il prossimo evento" class="idle-upcoming-event" id="idle-upcoming-event" type="button">
+<span class="icon" data-icon="calendar"></span>
+<span class="idle-upcoming-copy"><small id="idle-upcoming-label">Prossimo evento</small><span id="idle-upcoming-title">Nessun impegno in vista</span></span>
+<time id="idle-upcoming-time"></time>
+</button>
+</section>
+</section>`
+  };
+})();
+
+/* Istante v4 · Vue component: HomeMainStage */
+(function(){
+  'use strict';
+  const registry = window.IstanteVueComponents = window.IstanteVueComponents || {};
+  registry.HomeMainStage = {
+    name: 'HomeMainStage',
+    template: `<div class="stage-main-slot"><main class="main-stage" id="main">
+<section aria-label="Orologio e data" class="clock-block">
+<p class="moment-greeting" id="moment-greeting">
+      Un momento, per te.
+     </p>
+<p class="date-label" id="date-label">
+</p>
+<div class="clock-frame"><div class="clock-line" id="clock-line">
+<time aria-label="Ora locale" class="clock" id="clock">
+       00
+       <span class="clock-colon">
+        :
+       </span>
+       00
+      </time>
+<span class="clock-seconds" hidden="" id="clock-seconds">
+       00
+      </span>
+<span class="clock-period" hidden="" id="clock-period">
+</span>
+</div><div aria-label="Orologio analogico" class="analog-clock" hidden="" id="analog-clock" role="img"><svg aria-hidden="true" viewbox="0 0 200 200"><circle class="dial-rim" cx="100" cy="100" r="92"></circle><g id="analog-marks"></g><g class="analog-hour"><line x1="100" x2="100" y1="105" y2="54"></line></g><g class="analog-minute"><line x1="100" x2="100" y1="112" y2="31"></line></g><g class="analog-second"><line x1="100" x2="100" y1="116" y2="26"></line></g><circle class="dial-pin" cx="100" cy="100" r="3"></circle></svg><span class="analog-period"></span></div></div>
+</section>
+<section aria-label="Frase motivazionale" class="thought-block">
+<div class="thought-eyebrow">
+<span class="tiny-line">
+</span>
+<h1 id="thought-label">
+       Il pensiero della sera
+      </h1>
+<span class="tiny-line">
+</span>
+</div>
+<figure class="quote-wrap" id="quote-wrap">
+<p class="quote-intro" hidden="" id="quote-intro">
+</p>
+<blockquote id="quote-text">
+       Un momento, per te.
+      </blockquote>
+</figure>
+<div class="phrase-meta">
+<span aria-hidden="true" class="status-dot">
+</span>
+<span id="phrase-meta">
+       Caricamento della raccolta
+      </span>
+<span class="manual-label" hidden="" id="manual-label">
+       Scelta da te
+      </span>
+</div>
+</section>
+</main></div>`
+  };
+})();
+
+/* Istante v4 · Vue component: ToastHost */
+(function(){
+  'use strict';
+  const registry = window.IstanteVueComponents = window.IstanteVueComponents || {};
+  registry.ToastHost = {
+    name: 'ToastHost',
+    template: `<div class="toast-host" id="toast-host" popover="manual"><div aria-atomic="true" aria-live="polite" class="toast" hidden="" id="toast" role="status"></div></div>`
+  };
+})();
+
+/* Istante v4 · Vue component: ViewDots */
+(function(){
+  'use strict';
+  const registry = window.IstanteVueComponents = window.IstanteVueComponents || {};
+  registry.ViewDots = {
+    name: 'ViewDots',
+    template: `<nav aria-label="Viste di Istante" class="view-dots" id="view-dots"><button aria-current="page" aria-label="Il mio istante" data-istante-tooltip="Il mio istante" data-view="dashboard" type="button"><span></span></button><button aria-label="Calendario" data-istante-tooltip="Calendario" data-view="calendar" type="button"><span></span></button></nav>`
+  };
+})();
+
+/* Istante v4 · Vue component: AppRoot */
+(function(){
+  'use strict';
+  const registry = window.IstanteVueComponents = window.IstanteVueComponents || {};
+  registry.AppRoot = {
+    name: 'AppRoot',
+    template: `<app-backdrop></app-backdrop>
+<div aria-hidden="true" class="paper-grain"></div>
+<app-shell></app-shell>
+<calendar-view></calendar-view>
+<settings-dialog></settings-dialog>
+<timer-dialog></timer-dialog>
+<weather-dialog></weather-dialog>
+<goal-dialog></goal-dialog>
+<library-dialog></library-dialog>
+<collection-create-dialog></collection-create-dialog>
+<collection-edit-dialog></collection-edit-dialog>
+<toast-host></toast-host>
+<stations-dialog></stations-dialog>
+<share-dialog></share-dialog>
+<welcome-dialog></welcome-dialog>
+<tour-dialog></tour-dialog>
+<backup-dialog></backup-dialog>
+<received-dialog></received-dialog>
+<calendar-sources-dialog></calendar-sources-dialog>
+<calendar-event-dialog></calendar-event-dialog>
+<view-dots></view-dots>`
+  };
+})();
+/* Istante v4 · service loader for the non-visual application engines used by Vue components. */
+(function(){
+  'use strict';
+  const VERSION='4.0.0';
+  const scripts = [
+    'data/phrases.js','data/stations.js','assets/js/core.js','assets/js/collections.js','assets/js/companion.js',
+    'assets/js/qr.js','assets/js/share-link.js','assets/js/phrase-history.js','assets/js/weather-scene.js','assets/js/solar.js',
+    'assets/js/icons.js','assets/js/typing.js','assets/js/effects.js','assets/js/radio.js','assets/js/motion.js','assets/js/controls.js',
+    'assets/js/experience.js','assets/js/time-core.js','assets/js/moments.js','assets/js/station-library.js','assets/js/station-manager.js',
+    'assets/js/schedules.js','assets/js/updates.js','assets/js/share-card.js','assets/js/share.js','assets/js/scene.js','assets/js/ambient.js',
+    'assets/js/calendar-core.js','assets/js/backup.js','assets/js/onboarding.js','data/collection-catalog.js','assets/js/calendar-holidays.js',
+    'assets/js/calendar.js','assets/js/pages.js','assets/js/scene-snapshot.js','assets/js/touch-feedback.js','assets/js/main.js',
+    'assets/js/tooltips.js','assets/js/cursor.js','assets/js/gestures.js'
+  ];
+  function loadScript(src){
+    return new Promise((resolve,reject)=>{
+      const node=document.createElement('script');
+      node.src=src+(src.includes('?')?'&':'?')+'v='+VERSION;
+      node.async=false;
+      node.dataset.istanteService='engine';
+      node.onload=()=>resolve(src);
+      node.onerror=()=>reject(new Error('Impossibile caricare '+src));
+      document.head.append(node);
+    });
+  }
+  async function boot(){
+    for(const src of scripts) await loadScript(src);
+    document.dispatchEvent(new CustomEvent('istante:services-ready'));
+  }
+  window.IstanteVueRuntime = window.IstanteVueRuntime || {};
+  window.IstanteVueRuntime.loadServices = boot;
+})();
+/* Istante v4 · Vue application bootstrap */
+(function(){
+  'use strict';
+  const components=window.IstanteVueComponents||{};
+  if(!window.Vue) throw new Error('Vue runtime non disponibile.');
+  if(!components.AppRoot) throw new Error('Componenti Istante non disponibili.');
+  const app=Vue.createApp({
+    name:'IstanteApplication',
+    components:{AppRoot:components.AppRoot},
+    template:'<app-root></app-root>'
+  });
+  Object.entries(components).forEach(([name,component])=>app.component(name,component));
+  app.config.errorHandler=(error,instance,info)=>{
+    console.error('[Istante Vue]',info,error);
+    const note=document.getElementById('boot-note'); if(note) note.textContent='Avvio non riuscito. Ricarica la pagina.';
+    const retry=document.getElementById('boot-retry'); if(retry) retry.hidden=false;
+  };
+  window.IstanteVueApp=app;
+  app.mount('#app');
+  document.dispatchEvent(new CustomEvent('istante:vue-mounted'));
+  Promise.resolve(window.IstanteVueRuntime?.loadServices?.()).catch(error=>{
+    console.error('[Istante services]',error);
+    const note=document.getElementById('boot-note'); if(note) note.textContent='Alcuni servizi non sono stati caricati. Ricarica la pagina.';
+    const retry=document.getElementById('boot-retry'); if(retry) retry.hidden=false;
+  });
+})();

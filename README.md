@@ -1,6 +1,6 @@
 # Istante
 
-**Versione corrente: 3.16.0**  
+**Versione corrente: 4.0.0**  
 **Un momento, per te.**  
 Un progetto di **Ruslan Dzyuba**.
 
@@ -18,10 +18,10 @@ stesso linguaggio visivo essenziale di Istante.
 
 ## Il cuore di Istante
 
-La linea grafica attuale resta costruita sui principi della **3.8.0**: superfici più pulite, tipografia più equilibrata, controlli
-coerenti, gerarchie più semplici e meno elementi che competono fra loro.
-Le funzioni introdotte in seguito sono state mantenute dove utili, ma riportate
-nello stesso sistema visivo.
+La linea grafica usa superfici pulite, tipografia equilibrata, controlli coerenti,
+gerarchie semplici e pochi elementi in competizione. La v4 separa finalmente
+**interfaccia Vue**, **motore responsive**, **servizi applicativi** e **dati**,
+così un cambiamento di layout non richiede più correzioni sparse nel progetto.
 
 La dashboard principale resta senza scroll. Puoi scegliere orologio digitale
 o analogico, formato 24/12 ore, tema Notte, Carta, tema del dispositivo oppure
@@ -103,27 +103,36 @@ Su desktop con mouse o trackpad puoi attivare un **cursore personalizzato discre
 
 ## Struttura del progetto
 
-- `index.html`: dashboard, viste e pannelli principali.
-- `assets/`: JavaScript, icone, immagini e i fogli CSS consolidati di produzione.
-- `assets/css/layout.css`: unico motore di composizione responsive per Telefono, Tablet, Computer e Display.
-- `api/calendar.php`: relay ICS HTTPS sola lettura per Google, Outlook, iCloud e provider compatibili.
-- `data/`: frasi, catalogo raccolte e stazioni predefinite.
-- `README.md`: descrizione del progetto e release corrente.
-- `CHANGELOG.md`: storico delle modifiche.
-- `docs/release/v3.16.0.md`: note dettagliate di questa release.
-- `docs/LICENZA.md`: licenza non commerciale con attribuzione obbligatoria.
-- `docs/TERZE-PARTI.md`: dipendenze, servizi e attribuzioni.
-- `docs/VISIONE-E-DESIGN.md`: valori, regole grafiche e criteri responsive da mantenere nelle release future.
-- `docs/RESPONSIVE-ARCHITECTURE.md`: classificazione Telefono / Tablet / Computer / Display, indici viewport e regole per la composizione responsive.
+La v4 usa **Vue 3.5.13 locale**, senza CDN e senza build obbligatoria. Il browser
+carica il runtime vendorizzato e i componenti già assemblati; i sorgenti dei
+componenti restano leggibili in `src/vue/`.
+
+- `index.html`: shell minima, boot screen e mount point Vue.
+- `src/vue/components/`: componenti Vue della Dashboard, Calendario, toolbar e modali.
+- `src/vue/core/viewport.js`: classificazione reattiva Phone / Tablet / Computer / Display e scale ottiche.
+- `src/vue/core/service-loader.js`: avvio ordinato dei motori non visuali.
+- `assets/vue/istante-vue.js`: bundle browser dei componenti e del bootstrap Vue.
+- `vendor/vue.global.prod.js`: Vue 3.5.13 locale, licenza MIT.
+- `assets/js/`: servizi applicativi (calendario ICS, radio, timer, meteo, scene, backup, gesture).
+- `assets/css/istante.css`: fondazione visuale.
+- `assets/css/layout.css`: composizione responsive per le quattro famiglie di dispositivo.
+- `config/runtime.js`: configurazione modificabile senza ricompilare, compreso l'endpoint ICS.
+- `api/calendar.php`: relay ICS HTTPS sola lettura.
+- `data/`: frasi, raccolte e stazioni.
+- `docs/ARCHITETTURA-VUE.md`: mappa dei componenti e regole di sviluppo della v4.
+- `docs/RESPONSIVE-ARCHITECTURE.md`: classificazione dei viewport e criteri di scala.
+- `docs/release/v4.0.0.md`: note della migrazione.
 
 ## Pubblicazione
 
-Pubblica **tutto il contenuto della cartella** sullo stesso percorso HTTPS,
-compresi `sw.js`, `version.json`, `assets`, `data`, `docs` e `api`. Per la
-sincronizzazione dei calendari remoti l'hosting deve eseguire PHP 8.1+ con
-l'estensione **cURL** abilitata; i calendari importati da file continuano a
-funzionare anche senza PHP. Non mescolare file di release diverse: il controllo
-aggiornamenti e la cache verificano una copia coerente prima di attivarla.
+La v4 supporta entrambe le modalità:
+
+1. **Tutto sullo stesso hosting**: lascia `calendarApiUrl: 'api/calendar.php'` in `config/runtime.js`.
+2. **Frontend statico su GitHub Pages + API PHP sul tuo hosting**: imposta in `config/runtime.js` un URL HTTPS assoluto, ad esempio `https://api.example.it/calendar.php`, e abilita CORS nell'API solo per il dominio pubblico di Istante.
+
+Il frontend non richiede Node.js, npm o un server applicativo. Per i calendari
+remoti l'endpoint PHP richiede PHP 8.1+ e cURL. Service worker, Vue, icone, dati e
+componenti sono locali e possono funzionare dalla cache una volta installati.
 
 ## Autore e licenza
 

@@ -1,28 +1,44 @@
-/* Istante 3.16.0 - verified offline shell; updates wait for consent. */
+/* Istante 4.0.0 - verified offline shell; Vue UI and local services. */
 'use strict';
-const VERSION="3.16.0";
+const VERSION="4.0.0";
 const PREFIX='istante-'+encodeURIComponent(self.registration.scope)+'-';
-const CACHE=PREFIX+VERSION+'-c09703d8b970';
+const CACHE=PREFIX+VERSION+'-7b7b4ee1ad55';
 const FILES=[
   {
     "url": "./CHANGELOG.md",
-    "integrity": "sha256-TScQ8tlLIR2Y3e6bTWetFjmKrONiD0ZeIJnvx04L5r4="
+    "integrity": "sha256-/9nXeuFZTEVIKqgkhSwcxfeqwsBgHywozxbp9VWm5iI="
   },
   {
     "url": "./README.md",
-    "integrity": "sha256-pQc4rTHyaTxtT6YztfYGf5qbiRNmlVoxpFErJTGakoc="
+    "integrity": "sha256-ctGqmaBahW3oY82NWKvrzYoUQGyhA7UplDC8bFUT4CM="
   },
   {
-    "url": "./assets/css/documents.css?v=3.16.0",
-    "integrity": "sha256-M8F4KQgDmJjo7+usCMkhN9qrQyLqi1m+XO3qJCeUcDk="
+    "url": "./index.html",
+    "integrity": "sha256-K9cxdMyHko92Eryoknl1jLcpPA7D2knALdfismaETCk="
   },
   {
-    "url": "./assets/css/istante.css?v=3.16.0",
-    "integrity": "sha256-gPDpE67Gi+NIjKqNfoalnv5nRWy9QS8GDV4SqkWNEOU="
+    "url": "./leggi.html",
+    "integrity": "sha256-cEJEs3lSzyBMw+ORupAAjZ1uqVmyxoAh6ybPFpzE9JQ="
   },
   {
-    "url": "./assets/css/layout.css?v=3.16.0",
-    "integrity": "sha256-MziiRCyGFaG2TZwTWF+a1WNsnY0Cj3Gv89zaUtp8QEA="
+    "url": "./manifest.webmanifest",
+    "integrity": "sha256-SFmOPeQmF8N9xfhBpEeTjnvWjbLaR/oUWmY4xvL16eA="
+  },
+  {
+    "url": "./version.json",
+    "integrity": "sha256-/XGSt+lklKaxC2OH3iAMqj0gnqbH4K0p3Vf32SAmLio="
+  },
+  {
+    "url": "./assets/css/documents.css?v=4.0.0",
+    "integrity": "sha256-WX+hbkTV7/Q4u1GxpkzcrFL2egBw/EXqMwl8tes7XH4="
+  },
+  {
+    "url": "./assets/css/istante.css?v=4.0.0",
+    "integrity": "sha256-rTnM7SAlvjHsb4m1SQPegvonNy8DKqnKCW2SjqKI6Sk="
+  },
+  {
+    "url": "./assets/css/layout.css?v=4.0.0",
+    "integrity": "sha256-0meKHROrrubPo4c4PaRSuZcEnDelSlmmrbxCBtKU0kI="
   },
   {
     "url": "./assets/icons/icon-192.png",
@@ -69,163 +85,171 @@ const FILES=[
     "integrity": "sha256-zbXBjZ8ni9l2agI1s96jybKmx/bNP3hKmLASPqssDXo="
   },
   {
-    "url": "./assets/js/ambient.js?v=3.16.0",
+    "url": "./assets/js/ambient.js?v=4.0.0",
     "integrity": "sha256-MoVyZ/A95UEOzOgFlryVJErZHDlIuogFxskSWegRDUk="
   },
   {
-    "url": "./assets/js/backup.js?v=3.16.0",
+    "url": "./assets/js/backup.js?v=4.0.0",
     "integrity": "sha256-pIAKr62OOORXA+ttJyvIICmO/mr0kuSAJPdZVU8eIOA="
   },
   {
-    "url": "./assets/js/calendar-core.js?v=3.16.0",
+    "url": "./assets/js/calendar-core.js?v=4.0.0",
     "integrity": "sha256-0PSRzkTpt6QT+HTkNXbcI9iDZxq6FkNiz9MX1TPWmrQ="
   },
   {
-    "url": "./assets/js/calendar-holidays.js?v=3.16.0",
+    "url": "./assets/js/calendar-holidays.js?v=4.0.0",
     "integrity": "sha256-XhBKagz5DeWSsE6Fj0fOxtEcuMPz9fKBLtz26cwfpq8="
   },
   {
-    "url": "./assets/js/calendar-worker.js?v=3.16.0",
+    "url": "./assets/js/calendar-worker.js?v=4.0.0",
     "integrity": "sha256-cvJDcSD/P35Sk/XnCysXtwE+xQSnN2NeLBKaA9FebN4="
   },
   {
-    "url": "./assets/js/calendar.js?v=3.16.0",
-    "integrity": "sha256-mX5Cni2LPNRYm3YZJqecwMXdbIRGFYqST+pTrshFEVM="
+    "url": "./assets/js/calendar.js?v=4.0.0",
+    "integrity": "sha256-ry2Ua18+PgQR/0mAygW1h0XIIVsfbN9AVET6EadxrZI="
   },
   {
-    "url": "./assets/js/collections.js?v=3.16.0",
+    "url": "./assets/js/collections.js?v=4.0.0",
     "integrity": "sha256-+prgOQNTNBw3Xv90CtKHTYnMbO635TlZtI66d7yC5F4="
   },
   {
-    "url": "./assets/js/companion.js?v=3.16.0",
+    "url": "./assets/js/companion.js?v=4.0.0",
     "integrity": "sha256-o0fN7fB6IZQ3WZmdtwvC8/Bu/c2nwnyR4Cf90rwg+9w="
   },
   {
-    "url": "./assets/js/controls.js?v=3.16.0",
+    "url": "./assets/js/controls.js?v=4.0.0",
     "integrity": "sha256-USxmu1VZahCDyFtXafMoAHtGg+ja9YreGZrB7vAN4Jk="
   },
   {
-    "url": "./assets/js/core.js?v=3.16.0",
+    "url": "./assets/js/core.js?v=4.0.0",
     "integrity": "sha256-50k7aaCuH0neIcNYW1kEWdD3Wg2r6It6ObGItZg25L8="
   },
   {
-    "url": "./assets/js/cursor.js?v=3.16.0",
+    "url": "./assets/js/cursor.js?v=4.0.0",
     "integrity": "sha256-luiXnAzzrv9fGI8Ev8OmZn8DJQvD/nqFTP1WxQHIcR4="
   },
   {
-    "url": "./assets/js/documents.js?v=3.16.0",
-    "integrity": "sha256-09XK2YIG+P08+dwCptpGZVb14sksNxvLQUbfWyLUd9Q="
+    "url": "./assets/js/documents.js?v=4.0.0",
+    "integrity": "sha256-gmf6ubDR6yARIJcjcWm6yunFiW45IU854PSSdMnyE1s="
   },
   {
-    "url": "./assets/js/effects.js?v=3.16.0",
+    "url": "./assets/js/effects.js?v=4.0.0",
     "integrity": "sha256-z29nXTO0OBr/i5SxQT2kWjNTvis58dHKutG+Q4zdFV4="
   },
   {
-    "url": "./assets/js/experience.js?v=3.16.0",
+    "url": "./assets/js/experience.js?v=4.0.0",
     "integrity": "sha256-2/kWeFFJRM2kfyCl5EFeineu/O/Kbho7ZNv7j3QNnGY="
   },
   {
-    "url": "./assets/js/gestures.js?v=3.16.0",
+    "url": "./assets/js/gestures.js?v=4.0.0",
     "integrity": "sha256-NFsnVUqih8LAIeS3C5KIM+vETblxpMhc4K2+aliNUfE="
   },
   {
-    "url": "./assets/js/icons.js?v=3.16.0",
+    "url": "./assets/js/icons.js?v=4.0.0",
     "integrity": "sha256-/xO4oVp4tmWoATZUtlWA5YJPlkufZvhaS83V5M/YrTw="
   },
   {
-    "url": "./assets/js/main.js?v=3.16.0",
-    "integrity": "sha256-DgApmJZBuQSYY813A+hX4stZPm5+TueRYhEtMb/j5kw="
+    "url": "./assets/js/main.js?v=4.0.0",
+    "integrity": "sha256-NOLbq+uTSHRoyLLOR3+Ek8FjkS5Nhqp/gRs5xl23ZSs="
   },
   {
-    "url": "./assets/js/moments.js?v=3.16.0",
+    "url": "./assets/js/moments.js?v=4.0.0",
     "integrity": "sha256-tcdT1Xw09HkF2M+b2oAjXz1oHmjOCOuV16Mr8tyhTck="
   },
   {
-    "url": "./assets/js/motion.js?v=3.16.0",
+    "url": "./assets/js/motion.js?v=4.0.0",
     "integrity": "sha256-vxN2FTFxleh9zVtMIBMF58C/yfzO/a6DxZ/4ZE1sRRg="
   },
   {
-    "url": "./assets/js/onboarding.js?v=3.16.0",
+    "url": "./assets/js/onboarding.js?v=4.0.0",
     "integrity": "sha256-jGHMyZToPxof68I+eyQb97ooB7BHm8X/6xj5EdC1Z2k="
   },
   {
-    "url": "./assets/js/pages.js?v=3.16.0",
+    "url": "./assets/js/pages.js?v=4.0.0",
     "integrity": "sha256-wjHLxCi4QUAc8LH0ztFEcY888UX1pZV4G3E7ryyGz1k="
   },
   {
-    "url": "./assets/js/phrase-history.js?v=3.16.0",
+    "url": "./assets/js/phrase-history.js?v=4.0.0",
     "integrity": "sha256-HFas8jvUehChmHiYLJH5ju+pTqcH99BT617iEOO5qlI="
   },
   {
-    "url": "./assets/js/qr.js?v=3.16.0",
+    "url": "./assets/js/qr.js?v=4.0.0",
     "integrity": "sha256-h9+XUGoIJCIzHWgWSpGkBhUkaj6Gd6ujG0KfrWnQCWs="
   },
   {
-    "url": "./assets/js/radio.js?v=3.16.0",
+    "url": "./assets/js/radio.js?v=4.0.0",
     "integrity": "sha256-QCzw/cottXRupICRB7OUzM7/10fkpDuFH+/A3kLw5LA="
   },
   {
-    "url": "./assets/js/scene-snapshot.js?v=3.16.0",
+    "url": "./assets/js/scene-snapshot.js?v=4.0.0",
     "integrity": "sha256-fV3w7Ax2gtzo+48oVkypDQB18Mnj7vMxICU0Hk95uwQ="
   },
   {
-    "url": "./assets/js/scene.js?v=3.16.0",
+    "url": "./assets/js/scene.js?v=4.0.0",
     "integrity": "sha256-b4IwnqHmToBmTMRWNHJejAQkmDcXyMZ+7e4CLXBC6gA="
   },
   {
-    "url": "./assets/js/schedules.js?v=3.16.0",
+    "url": "./assets/js/schedules.js?v=4.0.0",
     "integrity": "sha256-H/yt4iLNLqoPJELoramNqaV7nH+WMXu560eLsQeaxJc="
   },
   {
-    "url": "./assets/js/share-card.js?v=3.16.0",
+    "url": "./assets/js/share-card.js?v=4.0.0",
     "integrity": "sha256-DdtcnH3IWJH5m6wOeKJGxEyYk+HQ3u9pJYhqya29LWY="
   },
   {
-    "url": "./assets/js/share-link.js?v=3.16.0",
+    "url": "./assets/js/share-link.js?v=4.0.0",
     "integrity": "sha256-2TanCsnoLWuqepFmQZ5Bpiv0Cae5pn2NdUzCQXORRwc="
   },
   {
-    "url": "./assets/js/share.js?v=3.16.0",
+    "url": "./assets/js/share.js?v=4.0.0",
     "integrity": "sha256-mEW6cl3vGeFguoAJVTKRY/I6GIFDh96SLUZqtDv78J4="
   },
   {
-    "url": "./assets/js/solar.js?v=3.16.0",
+    "url": "./assets/js/solar.js?v=4.0.0",
     "integrity": "sha256-VGRSsAaknWPX8TWTiaqN4AxevZMN6XyTxfvvPZbWY4s="
   },
   {
-    "url": "./assets/js/station-library.js?v=3.16.0",
+    "url": "./assets/js/station-library.js?v=4.0.0",
     "integrity": "sha256-7C7gpaiW6XoNcnoV7GikZXlzXrCHZt8rADzpZtmWVJk="
   },
   {
-    "url": "./assets/js/station-manager.js?v=3.16.0",
+    "url": "./assets/js/station-manager.js?v=4.0.0",
     "integrity": "sha256-IMrs64NTZXoc9eBURYdQfZtdjnQ/FfVuGi8dvpCMhMc="
   },
   {
-    "url": "./assets/js/time-core.js?v=3.16.0",
+    "url": "./assets/js/time-core.js?v=4.0.0",
     "integrity": "sha256-yWnAPi+1CXiopVFiAo2BqPpB6zbX4qCpf1gm8FFXMXA="
   },
   {
-    "url": "./assets/js/tooltips.js?v=3.16.0",
-    "integrity": "sha256-KdFAnk2eMbGjQvfcNXYsGxyvdT/Bzow8HQ2wigUw5xA="
+    "url": "./assets/js/tooltips.js?v=4.0.0",
+    "integrity": "sha256-l9/Jv39WcAeEIbpwzFV+jBeLgziFSNJ7u+4nspOoxvg="
   },
   {
-    "url": "./assets/js/touch-feedback.js?v=3.16.0",
+    "url": "./assets/js/touch-feedback.js?v=4.0.0",
     "integrity": "sha256-KMdQlPn+ES9/Kfah/N/tU6hl1sqcTlQvEdMD8UZnDFM="
   },
   {
-    "url": "./assets/js/typing.js?v=3.16.0",
+    "url": "./assets/js/typing.js?v=4.0.0",
     "integrity": "sha256-UCBA6cDGYJaCIJsv5Zji0ZneeareFqMUovNDYxRCM94="
   },
   {
-    "url": "./assets/js/updates.js?v=3.16.0",
-    "integrity": "sha256-3pi4KVNzwdRupcGvHMfhce6ypdrbvwVGxNRF84w5H4M="
+    "url": "./assets/js/updates.js?v=4.0.0",
+    "integrity": "sha256-nK1Xac0iTh/Mip6BBEmSkbwuAHAnzrcsDMiseI6+RLs="
   },
   {
-    "url": "./assets/js/weather-scene.js?v=3.16.0",
+    "url": "./assets/js/weather-scene.js?v=4.0.0",
     "integrity": "sha256-1d94NsdzeehITi9XR9HJ3UKJ+SIsGxvJtRbMZ8Dd8vA="
   },
   {
-    "url": "./data/collection-catalog.js?v=3.16.0",
+    "url": "./assets/vue/istante-docs-vue.js?v=4.0.0",
+    "integrity": "sha256-Sp9WMp8dxjFtpskNGDHlK+YmIUHIhbkBHO8QKBeEXeg="
+  },
+  {
+    "url": "./assets/vue/istante-vue.js?v=4.0.0",
+    "integrity": "sha256-3SFMoxXCp/WyWCFfMgKs2qerd6HpBmcOwY4MwQBQDAg="
+  },
+  {
+    "url": "./data/collection-catalog.js?v=4.0.0",
     "integrity": "sha256-UcIR0Oz/3Vg766QJdY+Uzfx4QzqghtGhseMXceIB2ts="
   },
   {
@@ -241,12 +265,16 @@ const FILES=[
     "integrity": "sha256-lcOQFEdF35LWHEz2YMTjbM0vZYXO8sSMH+DRna+ZtFU="
   },
   {
-    "url": "./data/phrases.js?v=3.16.0",
+    "url": "./data/phrases.js?v=4.0.0",
     "integrity": "sha256-S1hjBGN9N/XT3kSrXVE5xXanUIJ2HqtUKVQnFqTmlEw="
   },
   {
-    "url": "./data/stations.js?v=3.16.0",
+    "url": "./data/stations.js?v=4.0.0",
     "integrity": "sha256-ogF3QoCghtIz8erATYiLCc8fcJ7v5RDFUrFuU4EU4CA="
+  },
+  {
+    "url": "./docs/ARCHITETTURA-VUE.md",
+    "integrity": "sha256-x98OTlVTOQMmkBG5c4NMlwlkC6JjyGHzejyqX/QOKXk="
   },
   {
     "url": "./docs/FONTI-CITAZIONI.md",
@@ -258,15 +286,15 @@ const FILES=[
   },
   {
     "url": "./docs/RESPONSIVE-ARCHITECTURE.md",
-    "integrity": "sha256-VXY/Im4wL5u4lyJ7LflHhcvrDjpc3C6275jewQ2oXdA="
+    "integrity": "sha256-h0fBw50cydn5IcEf8rIZr12rLO9+KTOTD33JKEFmxjY="
   },
   {
     "url": "./docs/TERZE-PARTI.md",
-    "integrity": "sha256-UVa+VSE/eFIFViahuoQ6p9WDGJteTw6WPirT8n+4hTM="
+    "integrity": "sha256-+OBn5GPIufhq/s0sj85F42rIRAhjabcNq5p0VMLM/8c="
   },
   {
     "url": "./docs/VISIONE-E-DESIGN.md",
-    "integrity": "sha256-duz/D0hNPqrWeI+oh0W/ue5Gu3Yc/cRdDRQW+plrSLo="
+    "integrity": "sha256-bGXYvQsZEkkQA1+Qj8Ig7+xFGdilkC14DhFvRswT5PQ="
   },
   {
     "url": "./docs/licenses/BOOTSTRAP-ICONS-LICENSE.txt",
@@ -295,6 +323,10 @@ const FILES=[
   {
     "url": "./docs/licenses/UNICODE-LICENSE.txt",
     "integrity": "sha256-4njwelQt/KqqeRiW/ajV5szqs+YO9CVnYFCCdzaaPtE="
+  },
+  {
+    "url": "./docs/licenses/VUE-LICENSE.txt",
+    "integrity": "sha256-y6UNJ5rxeOLKXL0+HuzZnkNPZXMD+NE2ggKQKW9Nql4="
   },
   {
     "url": "./docs/release/v3.10.0.md",
@@ -449,75 +481,21 @@ const FILES=[
     "integrity": "sha256-590YEow56KkzSQvgk3mZtOCvXgpbOTqvziTQ4KzuiO4="
   },
   {
-    "url": "./index.html",
-    "integrity": "sha256-oxf1Z5EJtvh0h/yIKpo1GvFCKdB0HUTPdd7FrcjA+hQ="
+    "url": "./docs/release/v4.0.0.md",
+    "integrity": "sha256-B5eMk/jco5DSDmPvnkLps7/Ia3o5/94iJzNoLQTbPF0="
   },
   {
-    "url": "./leggi.html",
-    "integrity": "sha256-vU7DjTyemya0Ohp4EDoQRk6GPeM+1HeRQmiWnHWQF04="
+    "url": "./vendor/vue.global.prod.js?v=3.5.13",
+    "integrity": "sha256-xFm6fMjbZcmCWJ+l1kx/9HiHfo5bD9dWgyB87GpOieg="
   },
   {
-    "url": "./manifest.webmanifest",
-    "integrity": "sha256-SFmOPeQmF8N9xfhBpEeTjnvWjbLaR/oUWmY4xvL16eA="
-  },
-  {
-    "url": "./version.json",
-    "integrity": "sha256-6tXu9gkTnc9TGSEGPXxfRvg3N0dOxGhuxZv/bej4wWY="
+    "url": "./config/runtime.js?v=4.0.0",
+    "integrity": "sha256-KLE+6seMDkTfYB9yx9gjEBDPe5b/FSzbTheNmhPQqaQ="
   }
 ];
 const ABS=FILES.map(f=>({...f,url:new URL(f.url,self.registration.scope).href}));
 const URLS=new Set(ABS.map(f=>f.url));
-
-self.addEventListener('install',event=>event.waitUntil((async()=>{
-  try{
-    const cache=await caches.open(CACHE);
-    await cache.addAll(ABS.map(f=>new Request(f.url,{cache:'reload',integrity:f.integrity})));
-  }catch(error){
-    await caches.delete(CACHE);
-    throw error;
-  }
-})()));
-
-self.addEventListener('activate',event=>event.waitUntil((async()=>{
-  const previous=(await caches.keys()).filter(k=>k.startsWith(PREFIX)&&k!==CACHE);
-  await Promise.all(previous.map(k=>caches.delete(k)));
-  await self.clients.claim();
-})()));
-
-self.addEventListener('message',event=>{
-  if(event.data?.type==='SKIP_WAITING')event.waitUntil(self.skipWaiting());
-  if(event.data?.type==='GET_VERSION')event.waitUntil((async()=>{
-    const cache=await caches.open(CACHE);
-    const complete=(await Promise.all(ABS.map(f=>cache.match(f.url)))).every(Boolean);
-    event.ports[0]?.postMessage({version:VERSION,complete,files:ABS.length});
-  })());
-});
-
-self.addEventListener('fetch',event=>{
-  const request=event.request;
-  if(request.method!=='GET')return; // POST api/calendar.php is always network-only.
-  const url=new URL(request.url),root=new URL(self.registration.scope);
-  if(url.origin!==root.origin)return;
-  if(url.pathname.startsWith(new URL('api/',root).pathname))return;
-
-  const entry=request.mode==='navigate'&&(url.pathname===root.pathname||url.pathname===root.pathname+'index.html');
-  const reader=request.mode==='navigate'&&url.pathname===root.pathname+'leggi.html';
-  if(!entry&&!reader&&!URLS.has(url.href))return;
-
-  event.respondWith((async()=>{
-    const cache=await caches.open(CACHE);
-    const key=entry?new URL('index.html',root).href:reader?new URL('leggi.html',root).href:request.url;
-    const hit=await cache.match(key);
-    if(hit)return hit;
-    const spec=ABS.find(f=>f.url===key);
-    try{
-      const options={cache:'reload'};
-      if(spec?.integrity)options.integrity=spec.integrity;
-      const response=await fetch(new Request(key,options));
-      if(response.ok)await cache.put(key,response.clone());
-      return response;
-    }catch(_){
-      return new Response('Risorsa non disponibile offline. Riapri Istante con una connessione.',{status:503,headers:{'Content-Type':'text/plain; charset=utf-8'}});
-    }
-  })());
-});
+self.addEventListener('install',event=>event.waitUntil((async()=>{try{const cache=await caches.open(CACHE);await cache.addAll(ABS.map(f=>new Request(f.url,{cache:'reload',integrity:f.integrity})));}catch(error){await caches.delete(CACHE);throw error;}})()));
+self.addEventListener('activate',event=>event.waitUntil((async()=>{const previous=(await caches.keys()).filter(k=>k.startsWith(PREFIX)&&k!==CACHE);await Promise.all(previous.map(k=>caches.delete(k)));await self.clients.claim();})()));
+self.addEventListener('message',event=>{if(event.data?.type==='SKIP_WAITING')event.waitUntil(self.skipWaiting());if(event.data?.type==='GET_VERSION')event.waitUntil((async()=>{const cache=await caches.open(CACHE);const complete=(await Promise.all(ABS.map(f=>cache.match(f.url)))).every(Boolean);event.ports[0]?.postMessage({version:VERSION,complete,files:ABS.length});})());});
+self.addEventListener('fetch',event=>{const request=event.request;if(request.method!=='GET')return;const url=new URL(request.url),root=new URL(self.registration.scope);if(url.origin!==root.origin)return;if(url.pathname.startsWith(new URL('api/',root).pathname))return;const entry=request.mode==='navigate'&&(url.pathname===root.pathname||url.pathname===root.pathname+'index.html');const reader=request.mode==='navigate'&&url.pathname===root.pathname+'leggi.html';if(!entry&&!reader&&!URLS.has(url.href))return;event.respondWith((async()=>{const cache=await caches.open(CACHE);const key=entry?new URL('index.html',root).href:reader?new URL('leggi.html',root).href:request.url;const hit=await cache.match(key);if(hit)return hit;const spec=ABS.find(f=>f.url===key);try{const options={cache:'reload'};if(spec?.integrity)options.integrity=spec.integrity;const response=await fetch(new Request(key,options));if(response.ok)await cache.put(key,response.clone());return response;}catch(_){return new Response('Risorsa non disponibile offline. Riapri Istante con una connessione.',{status:503,headers:{'Content-Type':'text/plain; charset=utf-8'}});}})());});

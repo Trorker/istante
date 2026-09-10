@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 /*
- * Istante 3.16.0 - read-only ICS relay.
+ * Istante 4.0.0 - read-only ICS relay.
  *
  * Why this exists:
  * browsers cannot read many Google / Outlook / iCloud / custom ICS feeds
@@ -21,6 +21,53 @@ header('X-Content-Type-Options: nosniff');
 header('Referrer-Policy: no-referrer');
 header('X-Robots-Tag: noindex, nofollow, noarchive');
 header('Cache-Control: private, no-store, max-age=0');
+
+/**
+ * CORS: the Vue frontend may live on GitHub Pages while this relay lives on a
+ * separate PHP host. Add extra origins with the ISTANTE_ALLOWED_ORIGINS env var
+ * (comma-separated, exact https origins, no trailing slash).
+ */
+function normalizeOrigin(string $origin): string
+{
+    return rtrim(trim($origin), '/');
+}
+
+function allowedOrigins(): array
+{
+    $allowed = ['https://istante.ruslan-dzyuba.it'];
+    $extra = getenv('ISTANTE_ALLOWED_ORIGINS');
+    if (is_string($extra) && trim($extra) !== '') {
+        foreach (explode(',', $extra) as $origin) {
+            $origin = normalizeOrigin($origin);
+            if ($origin !== '' && str_starts_with($origin, 'https://')) {
+                $allowed[] = $origin;
+            }
+        }
+    }
+
+    $host = trim((string)($_SERVER['HTTP_HOST'] ?? ''));
+    if ($host !== '') {
+        // The API itself is expected to be served via HTTPS in production.
+        $allowed[] = 'https://' . $host;
+    }
+    return array_values(array_unique($allowed));
+}
+
+function applyCors(): void
+{
+    $origin = normalizeOrigin((string)($_SERVER['HTTP_ORIGIN'] ?? ''));
+    if ($origin === '') {
+        return;
+    }
+    if (!in_array($origin, allowedOrigins(), true)) {
+        fail(403, 'Origine non autorizzata.');
+    }
+    header('Access-Control-Allow-Origin: ' . $origin);
+    header('Vary: Origin');
+    header('Access-Control-Allow-Methods: POST, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type');
+    header('Access-Control-Max-Age: 600');
+}
 
 function fail(int $status, string $message): never
 {
@@ -202,7 +249,7 @@ function fetchOne(string $url): array
         CURLOPT_FOLLOWLOCATION => false,
         CURLOPT_CONNECTTIMEOUT => ISTANTE_CONNECT_TIMEOUT,
         CURLOPT_TIMEOUT => ISTANTE_TOTAL_TIMEOUT,
-        CURLOPT_USERAGENT => 'Istante/3.16.0 ICS relay',
+        CURLOPT_USERAGENT => 'Istante/4.0.0 ICS relay',
         CURLOPT_HTTPHEADER => [
             'Accept: text/calendar, text/plain;q=0.9, */*;q=0.1',
             'Cache-Control: no-cache',
@@ -252,13 +299,16 @@ function fetchOne(string $url): array
     return ['status' => $status, 'body' => $body, 'location' => $location];
 }
 
-if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
-    header('Allow: POST');
-    fail(405, 'Usa una richiesta POST dalla pagina Istante.');
-}
+applyCors();
 
-if (strtolower((string)($_SERVER['HTTP_SEC_FETCH_SITE'] ?? '')) === 'cross-site') {
-    fail(403, 'Richiesta cross-site non consentita.');
+$method = strtoupper((string)($_SERVER['REQUEST_METHOD'] ?? ''));
+if ($method === 'OPTIONS') {
+    http_response_code(204);
+    exit;
+}
+if ($method !== 'POST') {
+    header('Allow: POST, OPTIONS');
+    fail(405, 'Usa una richiesta POST dalla pagina Istante.');
 }
 
 $contentType = strtolower(trim(explode(';', (string)($_SERVER['CONTENT_TYPE'] ?? ''))[0]));

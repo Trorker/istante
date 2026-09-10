@@ -1,5 +1,17 @@
 # Changelog
 
+## 4.0.0 — 10 settembre 2026
+
+- **Interfaccia riscritta in Vue 3:** Dashboard, calendario, toolbar, schermate informative e modali sono ora componenti Vue montati da un `index.html` ridotto al solo shell di avvio.
+- **26 componenti UI:** la nuova struttura separa layout, calendario, dialoghi, documentazione e shell applicativa; il contratto DOM mantiene tutti i 411 ID necessari ai servizi esistenti, evitando regressioni nelle funzioni già stabili.
+- **Vue locale, nessuna CDN:** inclusa Vue 3.5.13 nel pacchetto di produzione; l'app resta pubblicabile come sito statico e non richiede `npm` o una fase di build sull'hosting.
+- **Responsive reattivo:** `src/vue/core/viewport.js` classifica Telefono, Tablet, Computer e Display/TV e aggiorna indici, orientamento, proporzioni e scale tipografiche/UI usate da `assets/css/layout.css`.
+- **Layout corretti preservati:** timer non fullscreen su laptop/PC; navbar calendario phone portrait su tre righe; vista Anno elastica senza tagli; pulsante Calendari senza freccia; fascia informativa e toolbar telefono con geometria deterministica.
+- **Service layer separato dalla UI:** motori calendario/ICS, timer, radio, meteo, raccolte e persistenza restano moduli JavaScript indipendenti, caricati in ordine dopo il mount Vue per conservare il comportamento verificato.
+- **Deploy statico + API separata:** `config/runtime.js` consente di impostare l'endpoint ICS senza ricostruire l'app, utile per GitHub Pages con `calendar.php` sul proprio hosting.
+- **CORS API sicuro:** `api/calendar.php` supporta una allowlist di origin HTTPS esatti tramite `ISTANTE_ALLOWED_ORIGINS`, preflight `OPTIONS` e nessun wildcard, mantenendo le protezioni SSRF già presenti.
+- **Documentazione Vue:** aggiunti `docs/ARCHITETTURA-VUE.md`, licenza Vue e release note dedicate; anche `leggi.html` viene montata tramite un componente Vue.
+
 ## 3.16.0 — 10 settembre 2026
 
 - **Architettura responsive riscritta:** eliminato il vecchio `responsive.css`; la geometria di Dashboard, Calendario e modali vive ora nel solo `assets/css/layout.css`, separata dalla base visuale di `istante.css`.

@@ -2,6 +2,15 @@
 
 Istante usa risorse locali per la propria interfaccia. Solo le funzioni online attivate dall'utente contattano servizi esterni. La licenza del progetto non attribuisce diritti sulle fotografie, sui marchi o sui brani delle radio.
 
+
+## Vue 3
+
+L'interfaccia della v4 usa **Vue 3.5.13**, incluso localmente nel pacchetto come
+`vendor/vue.global.prod.js`. Non viene caricato da CDN. Vue è distribuito sotto
+licenza MIT.
+
+[Vue](https://vuejs.org/) · [Licenza Vue](licenses/VUE-LICENSE.txt)
+
 ## Material Icons
 
 Le icone dei comandi sono un sottoinsieme SVG locale di Material Icons, con adattamenti. Licenza Apache 2.0. Sono conservati il testo della licenza e il notice originali.

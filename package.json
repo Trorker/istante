@@ -1,0 +1,7 @@
+{
+  "name": "istante",
+  "version": "4.0.0",
+  "private": true,
+  "description": "Istante - dashboard/screensaver Vue 3, un momento per te.",
+  "license": "SEE LICENSE IN docs/LICENZA.md"
+}

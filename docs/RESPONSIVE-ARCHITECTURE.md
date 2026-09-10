@@ -1,8 +1,8 @@
 # Architettura responsive di Istante
 
-**Riferimento:** v3.16.0
+**Riferimento:** v4.0.0
 
-La 3.16 separa in modo netto **aspetto** e **composizione**. `assets/css/istante.css` contiene il linguaggio visuale condiviso; `assets/css/layout.css` e l'unico livello autorizzato a decidere geometria, densita e ricomposizione in base al dispositivo. Non esistono piu file `polish-*` o una catena di override responsive di release in release.
+La v4 separa in modo netto **aspetto** e **composizione**. `assets/css/istante.css` contiene il linguaggio visuale condiviso; `assets/css/layout.css` e l'unico livello autorizzato a decidere geometria, densita e ricomposizione in base al dispositivo. Non esistono piu file `polish-*` o una catena di override responsive di release in release.
 
 ## Le quattro famiglie
 
@@ -15,7 +15,7 @@ La famiglia viene calcolata sul `visualViewport` quando disponibile. Questo perm
 
 ## Due indici, due responsabilita
 
-Il bootstrap espone:
+Il controller reattivo Vue `src/vue/core/viewport.js` espone:
 
 - `--viewport-index = width / height`: descrive la **forma** del viewport e contribuisce a scegliere portrait, landscape, tall, wide o ultrawide;
 - `--viewport-size-index = sqrt(width * height) / sqrt(1440 * 900)`: descrive la **dimensione ottica** del viewport e alimenta la scala automatica di font e UI.

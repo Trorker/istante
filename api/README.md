@@ -26,5 +26,9 @@ al massimo 4 redirect. Prima di ogni richiesta risolve il dominio, rifiuta IP
 privati/locali/riservati e fissa cURL all'indirizzo pubblico validato. Questo
 riduce il rischio di usare l'endpoint come SSRF verso la rete interna.
 
-Non aggiungere `Access-Control-Allow-Origin: *`: l'endpoint è pensato per essere
-chiamato dalla stessa installazione di Istante.
+L'endpoint **non usa `Access-Control-Allow-Origin: *`**. Per impostazione predefinita
+autorizza `https://istante.ruslan-dzyuba.it` e il proprio origin HTTPS. Se il frontend
+viene pubblicato su un altro dominio (per esempio GitHub Pages senza dominio
+personalizzato), aggiungi gli origin HTTPS esatti nella variabile d'ambiente
+`ISTANTE_ALLOWED_ORIGINS`, separati da virgola. Le richieste CORS non autorizzate
+sono rifiutate con 403 e le preflight `OPTIONS` vengono gestite esplicitamente.

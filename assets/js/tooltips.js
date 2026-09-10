@@ -12,7 +12,7 @@
  function reveal(el){if(!el?.isConnected||pending!==el)return;pending=null;const text=tooltipText(el);if(!text)return;active=el;const t=ensure();clearTimeout(hideTimer);t.textContent=text;t.hidden=false;t.classList.remove('is-visible');cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{if(active!==el)return;place(el);t.classList.add('is-visible');el.setAttribute('aria-describedby',t.id);});}
  function schedule(el,delay){const text=tooltipText(el);if(!text)return;absorb(el);cancelPending();if(active&&active!==el)hide(active,true);pending=el;showTimer=setTimeout(()=>reveal(el),delay);}
  function hide(el=active,immediate=false){cancelPending();if(!tip){active=null;return;}if(active&&el&&el!==active)return;active?.removeAttribute('aria-describedby');active=null;tip.classList.remove('is-visible');clearTimeout(hideTimer);hideTimer=setTimeout(()=>{if(tip&&!active&&!pending)tip.hidden=true;},immediate?0:120);}
- document.addEventListener('DOMContentLoaded',()=>prepare());
+ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>prepare(),{once:true}); else prepare();
  const observer=new MutationObserver(records=>{for(const r of records){if(r.type==='attributes'){absorb(r.target);continue;}for(const n of r.addedNodes)if(n.nodeType===1)prepare(n);}});
  observer.observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['title']});
  document.addEventListener('pointerover',e=>{const el=e.target.closest?.('[data-istante-tooltip],[title],.icon-button[aria-label],.collection-link[aria-label]');if(!el)return;absorb(el);if(!supportsHover.matches)return;if(el!==active&&el!==pending)schedule(el,HOVER_DELAY);},true);
