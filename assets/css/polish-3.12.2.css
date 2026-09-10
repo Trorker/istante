@@ -1,0 +1,414 @@
+/* Istante v3.12.2 — unified information strip, readable calendar, text-size selector. */
+
+/* --------------------------------------------------------------------------
+   Focus: the keyboard focus around the Istante logo includes the tagline too.
+   -------------------------------------------------------------------------- */
+.brand-lockup:focus-within,
+#calendar-view .calendar-brand-lockup:focus-within{
+  outline:2px solid var(--accent);
+  outline-offset:5px;
+  border-radius:8px
+}
+.brand-lockup .wordmark:focus-visible,
+#calendar-view .calendar-brand-lockup .wordmark:focus-visible{outline:none!important}
+
+/* --------------------------------------------------------------------------
+   Lower dashboard: one continuous strip, not three floating cards.
+   Desktop width intentionally sits a little above 80% for a calmer balance.
+   -------------------------------------------------------------------------- */
+.dashboard-lower{
+  width:min(84vw,1480px)!important;
+  max-width:calc(100vw - 64px)!important;
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  grid-template-areas:
+    'timer timer timer'
+    'weather goal calendar'!important;
+  grid-template-rows:auto auto!important;
+  column-gap:0!important;
+  row-gap:9px!important;
+  align-items:stretch!important;
+  margin:0 auto 9px!important;
+  padding:0!important;
+  min-width:0!important;
+  border:0!important
+}
+.dashboard-lower .corner-stack{display:contents!important}
+.dashboard-lower .timer-slot{
+  grid-area:timer!important;
+  width:100%!important;
+  min-height:0!important;
+  height:auto!important;
+  margin:0!important;
+  padding:0!important;
+  display:flex!important;
+  justify-content:center!important;
+  align-items:center!important
+}
+.dashboard-lower .timer-slot:has(.timer-chip[hidden]){display:none!important}
+.dashboard-lower .timer-chip{
+  width:max-content!important;
+  max-width:min(92vw,430px)!important;
+  margin:0 auto!important;
+  padding:4px 6px 4px 12px!important;
+  border:1px solid var(--line)!important;
+  border-radius:999px!important;
+  background:color-mix(in srgb,var(--surface) 70%,transparent)!important;
+  box-shadow:none!important
+}
+.dashboard-lower .timer-chip-main{min-height:36px!important;gap:9px!important;font-size:calc(11px * var(--ui-scale,1))!important}
+.dashboard-lower .timer-chip-main strong{font-size:calc(17px * var(--ui-scale,1))!important}
+.dashboard-lower .timer-chip .icon-button{width:34px!important;height:34px!important}
+
+/* The three information zones share one top/bottom rule and two internal rules. */
+.dashboard-lower>.goal-strip,
+.dashboard-lower #environment-line,
+.dashboard-lower #upcoming-event{
+  min-width:0!important;
+  min-height:132px!important;
+  margin:0!important;
+  border-radius:0!important;
+  border-top:1px solid var(--line)!important;
+  border-bottom:1px solid var(--line)!important;
+  background:transparent!important;
+  box-shadow:none!important
+}
+.dashboard-lower #environment-line{
+  grid-area:weather!important;
+  width:100%!important;
+  max-width:none!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  grid-template-areas:'eyebrow eyebrow' 'weather weather' 'solar moon'!important;
+  align-content:center!important;
+  align-items:center!important;
+  justify-content:stretch!important;
+  gap:8px 12px!important;
+  padding:17px 28px!important;
+  text-align:left!important;
+  color:var(--muted)!important
+}
+.dashboard-lower #environment-line::before{
+  content:'Meteo';
+  grid-area:eyebrow;
+  display:block;
+  margin:0!important;
+  color:var(--faint)!important;
+  font-size:calc(9px * var(--ui-scale,1))!important;
+  font-weight:500!important;
+  letter-spacing:.13em!important;
+  line-height:1.15!important;
+  text-transform:uppercase!important
+}
+.dashboard-lower #environment-line[hidden]{display:none!important}
+.dashboard-lower .weather-line{
+  grid-area:weather!important;
+  display:grid!important;
+  grid-template-columns:27px auto minmax(0,1fr)!important;
+  grid-template-areas:'icon temp condition' 'icon temp place'!important;
+  align-items:center!important;
+  justify-content:stretch!important;
+  column-gap:9px!important;
+  row-gap:2px!important;
+  width:100%!important;
+  padding:0!important;
+  border:0!important;
+  text-align:left!important
+}
+.dashboard-lower .weather-line>.icon{width:24px!important;height:24px!important;justify-self:start!important}
+.dashboard-lower #weather-text{
+  font:400 calc(22px * var(--ui-scale,1))/1 var(--serif)!important;
+  letter-spacing:-.03em!important
+}
+.dashboard-lower #weather-condition{
+  font-size:calc(12.5px * var(--ui-scale,1))!important;
+  line-height:1.25!important;
+  text-align:left!important
+}
+.dashboard-lower #weather-place{
+  font-size:calc(10px * var(--ui-scale,1))!important;
+  line-height:1.2!important;
+  text-align:left!important
+}
+.dashboard-lower .solar-line{
+  grid-area:solar!important;
+  grid-template-columns:auto minmax(56px,76px) auto!important;
+  gap:7px!important;
+  width:100%!important
+}
+.dashboard-lower .solar-label{font-size:calc(8.5px * var(--ui-scale,1))!important}
+.dashboard-lower .solar-time time{font-size:calc(10.5px * var(--ui-scale,1))!important}
+.dashboard-lower .moon-caption{grid-area:moon!important;font-size:calc(9.5px * var(--ui-scale,1))!important}
+
+.dashboard-lower>.goal-strip{
+  grid-area:goal!important;
+  grid-column:auto!important;
+  grid-row:auto!important;
+  width:100%!important;
+  max-width:none!important;
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  grid-template-rows:auto auto auto!important;
+  gap:9px!important;
+  align-content:center!important;
+  align-items:center!important;
+  justify-items:center!important;
+  padding:15px 28px!important;
+  border-left:1px solid var(--line)!important;
+  border-right:1px solid var(--line)!important;
+  text-align:center!important
+}
+.dashboard-lower .goal-heading{
+  width:100%!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  grid-template-areas:'label configure' 'title title'!important;
+  align-items:center!important;
+  gap:3px 8px!important
+}
+.dashboard-lower .goal-heading .section-label{
+  grid-area:label!important;
+  margin:0!important;
+  font-size:calc(9px * var(--ui-scale,1))!important;
+  text-align:left!important
+}
+.dashboard-lower .goal-heading h2{
+  grid-area:title!important;
+  max-width:100%!important;
+  margin:0!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  font-size:calc(18px * var(--ui-scale,1))!important;
+  line-height:1.18!important;
+  text-align:center!important
+}
+.dashboard-lower .goal-configure{
+  grid-area:configure!important;
+  justify-self:end!important;
+  margin:0!important;
+  min-height:28px!important;
+  padding:3px 7px!important;
+  font-size:calc(9px * var(--ui-scale,1))!important
+}
+.dashboard-lower .countdown{gap:clamp(11px,1.3vw,20px)!important;justify-content:center!important}
+.dashboard-lower .countdown>div{min-width:36px!important;gap:3px!important}
+.dashboard-lower .countdown strong{font-size:calc(29px * var(--ui-scale,1))!important}
+.dashboard-lower .countdown>div>span{font-size:calc(9px * var(--ui-scale,1))!important}
+.dashboard-lower .count-separator{font-size:18px!important;margin-top:-10px!important}
+.dashboard-lower .goal-progress{width:100%!important;max-width:none!important;justify-self:stretch!important}
+.dashboard-lower .progress-labels{font-size:calc(9.5px * var(--ui-scale,1))!important}
+.dashboard-lower .goal-date{margin-top:6px!important;font-size:calc(9px * var(--ui-scale,1))!important;text-align:center!important}
+.dashboard-lower>.goal-strip.is-empty .countdown,
+.dashboard-lower>.goal-strip.is-empty .goal-progress{display:none!important}
+
+.dashboard-lower #upcoming-event{
+  grid-area:calendar!important;
+  grid-column:auto!important;
+  grid-row:auto!important;
+  width:100%!important;
+  max-width:none!important;
+  display:grid!important;
+  grid-template-columns:22px minmax(0,1fr)!important;
+  grid-template-areas:'icon copy' 'icon time'!important;
+  align-content:center!important;
+  align-items:center!important;
+  gap:4px 10px!important;
+  padding:17px 28px!important;
+  text-align:left!important;
+  color:var(--ink)!important;
+  border-left:0!important
+}
+.dashboard-lower #upcoming-event[hidden]{display:none!important}
+.dashboard-lower #upcoming-event>.icon{
+  grid-area:icon!important;
+  width:21px!important;height:21px!important;flex-basis:21px!important;
+  color:var(--accent)!important
+}
+.dashboard-lower .upcoming-copy{grid-area:copy!important;gap:4px!important;min-width:0!important}
+.dashboard-lower .upcoming-copy small{
+  display:block!important;
+  font-size:calc(9px * var(--ui-scale,1))!important;
+  letter-spacing:.11em!important;
+  line-height:1.15!important;
+  text-transform:uppercase!important;
+  color:var(--faint)!important
+}
+.dashboard-lower #upcoming-title{
+  max-width:100%!important;
+  font:400 calc(16px * var(--ui-scale,1))/1.22 var(--serif)!important;
+  letter-spacing:-.018em!important
+}
+.dashboard-lower #upcoming-time{
+  grid-area:time!important;
+  justify-self:start!important;
+  font-size:calc(10.5px * var(--ui-scale,1))!important;
+  color:var(--muted)!important
+}
+
+/* During screensaver idle only the command chrome fades; the information strip stays. */
+.is-idle:not(.has-panel) .dashboard-lower.chrome{
+  opacity:1!important;
+  transform:none!important;
+  filter:none!important
+}
+
+/* --------------------------------------------------------------------------
+   Text-size control: three clear choices, presented as a slicer/segmented row.
+   -------------------------------------------------------------------------- */
+.text-size-setting{margin-top:18px!important;padding:0!important;border:0!important}
+.text-size-setting legend{
+  position:static!important;
+  width:auto!important;height:auto!important;
+  clip-path:none!important;
+  overflow:visible!important;
+  margin:0 0 8px!important;
+  color:var(--muted)!important;
+  font-size:11px!important;
+  font-weight:400!important;
+  text-transform:none!important;
+  letter-spacing:0!important
+}
+.text-size-segmented{margin:0!important}
+.text-size-segmented>label{min-height:42px!important;font-size:12px!important;font-weight:500!important}
+
+/* --------------------------------------------------------------------------
+   Calendar: never solve a tight viewport by reducing useful text to 6–9 px.
+   The setting above scales these values globally.
+   -------------------------------------------------------------------------- */
+#calendar-view .calendar-title-copy h1{font-size:calc(30px * var(--ui-scale,1))!important;line-height:1.08!important}
+#calendar-view .calendar-subtitle{font-size:calc(12px * var(--ui-scale,1))!important;line-height:1.4!important}
+#calendar-view .calendar-navigation .secondary-button{font-size:calc(12.5px * var(--ui-scale,1))!important}
+#calendar-view .calendar-views button{font-size:calc(12.5px * var(--ui-scale,1))!important;line-height:1.15!important;padding-inline:11px!important}
+#calendar-view .calendar-heading-actions .primary-button,
+#calendar-view .calendar-heading-actions .secondary-button{font-size:calc(12px * var(--ui-scale,1))!important}
+#calendar-view .calendar-weekdays span{font-size:calc(13.5px * var(--ui-scale,1))!important;letter-spacing:.045em!important}
+#calendar-view .calendar-day-number{
+  width:30px!important;height:30px!important;
+  font-size:calc(17px * var(--ui-scale,1))!important;
+  font-weight:500!important
+}
+#calendar-view .calendar-event{
+  min-height:24px!important;
+  margin:2px 0!important;
+  padding:5px 7px!important;
+  font-size:calc(13.5px * var(--ui-scale,1))!important;
+  line-height:1.25!important
+}
+#calendar-view .calendar-event .event-time{font-size:calc(11px * var(--ui-scale,1))!important}
+#calendar-view .calendar-more{font-size:calc(11px * var(--ui-scale,1))!important;line-height:1.2!important;padding:3px 2px!important}
+#calendar-view .calendar-week-day>button{font-size:calc(12px * var(--ui-scale,1))!important}
+#calendar-view .calendar-week-day>button strong{font-size:calc(30px * var(--ui-scale,1))!important}
+#calendar-view .calendar-week-day .calendar-event{font-size:calc(12.5px * var(--ui-scale,1))!important}
+#calendar-view .calendar-agenda-day h2{font-size:calc(23px * var(--ui-scale,1))!important}
+#calendar-view .calendar-agenda-row time{font-size:calc(12px * var(--ui-scale,1))!important}
+#calendar-view .calendar-agenda-row strong{font-size:calc(14px * var(--ui-scale,1))!important;line-height:1.45!important}
+#calendar-view .calendar-agenda-row small{font-size:calc(11px * var(--ui-scale,1))!important}
+#calendar-view #cal-content>.calendar-year{align-content:start!important;overflow:visible!important}
+#calendar-view #cal-content>.calendar-year .calendar-mini{padding:8px!important}
+#calendar-view #cal-content>.calendar-year .calendar-mini h2 button{font-size:calc(18px * var(--ui-scale,1))!important;margin-bottom:5px!important}
+#calendar-view #cal-content>.calendar-year .calendar-mini-weekdays span{font-size:calc(10.5px * var(--ui-scale,1))!important;padding-bottom:3px!important}
+#calendar-view #cal-content>.calendar-year .calendar-mini-grid{gap:2px!important}
+#calendar-view #cal-content>.calendar-year .calendar-mini-grid button{
+  width:22px!important;height:22px!important;min-width:22px!important;min-height:22px!important;
+  line-height:22px!important;
+  font-size:calc(11.5px * var(--ui-scale,1))!important
+}
+
+@media(max-width:1180px){
+  .dashboard-lower{width:min(92vw,1120px)!important;max-width:calc(100vw - 42px)!important}
+  .dashboard-lower #environment-line,.dashboard-lower>.goal-strip,.dashboard-lower #upcoming-event{padding-left:20px!important;padding-right:20px!important}
+  #calendar-view .calendar-weekdays span{font-size:calc(12.5px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-day-number{font-size:calc(16px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-event{font-size:calc(12.5px * var(--ui-scale,1))!important}
+  #calendar-view #cal-content>.calendar-year .calendar-mini-grid button{font-size:calc(10.8px * var(--ui-scale,1))!important}
+}
+
+@media(max-width:740px){
+  .dashboard-lower{
+    width:100%!important;
+    max-width:none!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    row-gap:6px!important;
+    margin-bottom:3px!important
+  }
+  .dashboard-lower>.goal-strip,.dashboard-lower #environment-line,.dashboard-lower #upcoming-event{
+    min-height:102px!important;
+    padding:11px 9px!important
+  }
+  .dashboard-lower #environment-line{gap:4px!important;grid-template-columns:1fr!important;grid-template-areas:'eyebrow' 'weather'!important}
+  .dashboard-lower #environment-line::before{font-size:7.5px!important}
+  .dashboard-lower .weather-line{grid-template-columns:18px auto minmax(0,1fr)!important;column-gap:5px!important}
+  .dashboard-lower .weather-line>.icon{width:17px!important;height:17px!important}
+  .dashboard-lower #weather-text{font-size:17px!important}
+  .dashboard-lower #weather-condition{font-size:9px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+  .dashboard-lower #weather-place,.dashboard-lower .solar-line,.dashboard-lower .moon-caption{display:none!important}
+  .dashboard-lower>.goal-strip{gap:5px!important}
+  .dashboard-lower .goal-heading{grid-template-columns:minmax(0,1fr) auto!important;gap:2px 4px!important}
+  .dashboard-lower .goal-heading .section-label{font-size:7.5px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+  .dashboard-lower .goal-heading h2{font-size:12px!important}
+  .dashboard-lower .goal-configure{width:24px!important;height:24px!important;min-height:24px!important;padding:0!important;border-radius:50%!important}
+  .dashboard-lower .goal-configure span:not(.icon){display:none!important}
+  .dashboard-lower .goal-configure .icon{width:12px!important;height:12px!important}
+  .dashboard-lower .countdown{gap:5px!important}
+  .dashboard-lower .countdown>div{min-width:22px!important;gap:1px!important}
+  .dashboard-lower .countdown strong{font-size:18px!important}
+  .dashboard-lower .countdown>div>span{font-size:6.8px!important}
+  .dashboard-lower .count-separator{font-size:11px!important;margin-top:-7px!important}
+  .dashboard-lower .progress-labels{font-size:7px!important}.dashboard-lower .goal-date{display:none!important}
+  .dashboard-lower #upcoming-event{grid-template-columns:16px minmax(0,1fr)!important;gap:2px 6px!important}
+  .dashboard-lower #upcoming-event>.icon{width:15px!important;height:15px!important;flex-basis:15px!important}
+  .dashboard-lower .upcoming-copy small{font-size:7.2px!important}
+  .dashboard-lower #upcoming-title{font-size:11px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+  .dashboard-lower #upcoming-time{font-size:8px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;max-width:100%!important}
+  .dashboard-lower .timer-chip{margin-bottom:1px!important}
+
+  #calendar-view .calendar-title-copy h1{font-size:calc(23px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-navigation .secondary-button{font-size:calc(11px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-views button{font-size:calc(10.5px * var(--ui-scale,1))!important;padding-inline:8px!important}
+  #calendar-view .calendar-weekdays span{font-size:calc(10.5px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-day-number{width:26px!important;height:26px!important;font-size:calc(14px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-event{font-size:calc(11.5px * var(--ui-scale,1))!important;padding:4px 5px!important}
+  #calendar-view .calendar-event .event-time{font-size:calc(9.5px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-more{font-size:calc(9.5px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-agenda-day h2{font-size:calc(19px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-agenda-row time{font-size:calc(10.5px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-agenda-row strong{font-size:calc(12.5px * var(--ui-scale,1))!important}
+  #calendar-view #cal-content>.calendar-year{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+  #calendar-view #cal-content>.calendar-year .calendar-mini h2 button{font-size:calc(15px * var(--ui-scale,1))!important}
+  #calendar-view #cal-content>.calendar-year .calendar-mini-weekdays span{font-size:calc(8.5px * var(--ui-scale,1))!important}
+  #calendar-view #cal-content>.calendar-year .calendar-mini-grid button{
+    width:20px!important;height:20px!important;min-width:20px!important;min-height:20px!important;line-height:20px!important;
+    font-size:calc(10px * var(--ui-scale,1))!important
+  }
+}
+
+@media(max-height:560px) and (orientation:landscape){
+  .dashboard-lower{width:min(88vw,1320px)!important;max-width:calc(100vw - 40px)!important;row-gap:4px!important;margin-bottom:0!important}
+  .dashboard-lower>.goal-strip,.dashboard-lower #environment-line,.dashboard-lower #upcoming-event{min-height:78px!important;padding-top:8px!important;padding-bottom:8px!important}
+  .dashboard-lower #environment-line{grid-template-areas:'eyebrow eyebrow' 'weather weather'!important}
+  .dashboard-lower .solar-line,.dashboard-lower .moon-caption{display:none!important}
+  .dashboard-lower .goal-heading h2{font-size:13px!important}
+  .dashboard-lower .countdown strong{font-size:18px!important}
+  .dashboard-lower .goal-progress{display:none!important}
+  .dashboard-lower #upcoming-title{font-size:11px!important}
+
+  #calendar-view .calendar-heading-combined .wordmark{font-size:17px!important}
+  #calendar-view .calendar-brand-tagline{font-size:7.5px!important}
+  #calendar-view .calendar-title-copy h1{font-size:calc(19px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-navigation .secondary-button{font-size:calc(10px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-views button{font-size:calc(9.5px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-weekdays span{font-size:calc(9.5px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-day-number{width:23px!important;height:23px!important;font-size:calc(12px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-event{min-height:20px!important;font-size:calc(10.5px * var(--ui-scale,1))!important;line-height:1.15!important;padding:3px 4px!important}
+  #calendar-view .calendar-event .event-time{font-size:calc(9px * var(--ui-scale,1))!important}
+  #calendar-view .calendar-more{font-size:calc(9px * var(--ui-scale,1))!important}
+  #calendar-view #cal-content>.calendar-year{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:7px!important}
+  #calendar-view #cal-content>.calendar-year .calendar-mini{padding:5px!important}
+  #calendar-view #cal-content>.calendar-year .calendar-mini h2 button{font-size:calc(11.5px * var(--ui-scale,1))!important}
+  #calendar-view #cal-content>.calendar-year .calendar-mini-weekdays span{font-size:calc(7.5px * var(--ui-scale,1))!important}
+  #calendar-view #cal-content>.calendar-year .calendar-mini-grid button{
+    width:17px!important;height:17px!important;min-width:17px!important;min-height:17px!important;line-height:17px!important;
+    font-size:calc(8.5px * var(--ui-scale,1))!important
+  }
+}

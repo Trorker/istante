@@ -1,0 +1,238 @@
+/* Istante v3.12.6 — final production refinement layer.
+   Loaded after calendar.css on purpose: it owns the final interaction and layout contract. */
+
+/* --------------------------------------------------------------------------
+   Bottom toolbar: three semantic groups, one centred cluster
+   -------------------------------------------------------------------------- */
+.bottom-bar .toolbar{
+  width:100%!important;max-width:none!important;display:flex!important;justify-content:center!important;align-items:center!important;
+  padding-inline:max(10px,env(safe-area-inset-left)) max(10px,env(safe-area-inset-right))!important;
+}
+.toolbar-cluster{
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:9px!important;
+  width:max-content!important;max-width:100%!important;margin-inline:auto!important;
+}
+.toolbar-group{display:flex!important;align-items:center!important;justify-content:center!important;gap:2px!important;justify-self:auto!important}
+.toolbar-group-left,.toolbar-group-center,.toolbar-group-right{justify-self:auto!important}
+.toolbar-group-center{padding-inline:9px!important;border-inline:1px solid color-mix(in srgb,var(--line) 62%,transparent)!important}
+.toolbar-group-right{padding-left:1px!important}
+@media(max-width:520px){
+  .toolbar-cluster{gap:3px!important}.toolbar-group-center{padding-inline:4px!important}.toolbar-group .icon-button{width:36px!important;height:38px!important;min-width:36px!important}
+}
+@media(max-width:360px){.toolbar-group .icon-button{width:33px!important;min-width:33px!important}.toolbar-cluster{gap:1px!important}}
+
+/* --------------------------------------------------------------------------
+   Share dialog: compact but never crop the generated postcard preview
+   -------------------------------------------------------------------------- */
+.share-format-label{display:none!important}
+.share-format-row{grid-template-columns:1fr!important}
+.share-preview-wrap{
+  min-height:0!important;max-height:none!important;height:auto!important;padding:10px!important;overflow:auto!important;
+  align-items:center!important;justify-content:flex-start!important;background:color-mix(in srgb,var(--surface) 88%,transparent)!important;
+}
+.share-preview-wrap #share-preview{
+  display:block!important;width:auto!important;height:auto!important;max-width:100%!important;max-height:min(28dvh,280px)!important;
+  object-fit:contain!important;object-position:center!important;margin:auto!important;border-radius:10px!important;
+}
+@media(max-width:740px){.share-preview-wrap #share-preview{max-height:24dvh!important}.share-preview-wrap{padding:8px!important}}
+
+/* --------------------------------------------------------------------------
+   Library: one clear way in, one card catalogue, explicit states
+   -------------------------------------------------------------------------- */
+.library-navigation{display:flex!important;align-items:center!important;gap:12px!important;justify-content:space-between!important}
+.library-navigation .library-view-label{font-size:max(10.5px,calc(10.5px * var(--ui-scale,1)))!important;color:var(--muted)!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+.library-collections-button{flex:0 0 auto!important}
+#library-dialog[data-library-view='collections']>.library-tools{display:none!important}
+.collection-library-inline-head{justify-content:flex-start!important}
+.collection-library-toolbar{display:grid!important;grid-template-columns:auto minmax(240px,1fr)!important;gap:14px!important;align-items:center!important}
+.collection-status-filters{display:flex!important;align-items:center!important;gap:5px!important;flex-wrap:wrap!important}
+.collection-status-filters button{
+  min-height:34px!important;padding:7px 11px!important;border:1px solid var(--line)!important;border-radius:999px!important;
+  background:transparent!important;color:var(--muted)!important;font-size:10.5px!important;
+}
+.collection-status-filters button[aria-pressed='true']{background:var(--accent-soft)!important;color:var(--ink)!important;border-color:color-mix(in srgb,var(--accent) 45%,var(--line))!important}
+#collection-library-inline .collection-library-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important;padding-top:7px!important}
+#collection-library-inline .collection-card{
+  position:relative!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:8px!important;
+  padding:16px!important;border:1px solid var(--line)!important;border-radius:14px!important;background:color-mix(in srgb,var(--surface) 76%,transparent)!important;
+  min-height:190px!important;transition:transform .18s cubic-bezier(.2,.8,.2,1),border-color .18s ease,background .18s ease!important;
+}
+#collection-library-inline .collection-card:hover{transform:translateY(-1px)!important;background:color-mix(in srgb,var(--accent-soft) 30%,var(--surface))!important}
+#collection-library-inline .collection-card.is-selected{border-color:color-mix(in srgb,var(--accent) 64%,var(--line))!important;background:color-mix(in srgb,var(--accent-soft) 42%,var(--surface))!important}
+.collection-card-top{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;min-width:0!important}
+#collection-library-inline .collection-card .collection-card-meta{font-size:max(10px,calc(10px * var(--ui-scale,1)))!important;color:var(--faint)!important;text-transform:uppercase!important;letter-spacing:.07em!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+.collection-status-badge{display:inline-flex!important;align-items:center!important;gap:5px!important;flex:0 0 auto!important;padding:5px 8px!important;border-radius:999px!important;font-size:10px!important;color:var(--muted)!important;background:color-mix(in srgb,var(--surface-2) 76%,transparent)!important;border:1px solid var(--line)!important}
+.collection-status-badge .icon{width:12px!important;height:12px!important}.collection-status-badge.status-active{color:var(--accent)!important;border-color:color-mix(in srgb,var(--accent) 40%,var(--line))!important}.collection-status-badge.status-available{border-style:dashed!important}
+#collection-library-inline .collection-card>strong{font:400 max(19px,calc(19px * var(--ui-scale,1)))/1.2 var(--serif)!important;color:var(--ink)!important}
+#collection-library-inline .collection-card>p{font-size:max(11.5px,calc(11.5px * var(--ui-scale,1)))!important;line-height:1.55!important;color:var(--muted)!important;flex:1 1 auto!important;margin:0!important}
+#collection-library-inline .collection-card-actions{display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:6px!important;flex-wrap:wrap!important;margin-top:auto!important}
+.collection-active-note{font-size:10.5px!important;color:var(--accent)!important;padding:0 5px!important}
+@media(max-width:760px){
+  .collection-library-toolbar{grid-template-columns:1fr!important}.collection-status-filters{overflow-x:auto!important;flex-wrap:nowrap!important;padding-bottom:2px!important;scrollbar-width:none!important}
+  #collection-library-inline .collection-library-grid{grid-template-columns:1fr!important}.library-navigation{align-items:flex-start!important;flex-direction:column!important;gap:7px!important}.library-navigation .library-view-label{white-space:normal!important}
+}
+
+/* --------------------------------------------------------------------------
+   Timer: range-first setup + animated running state
+   -------------------------------------------------------------------------- */
+.timer-panel{width:min(590px,calc(100vw - 24px))!important}
+.timer-content{padding-top:16px!important}
+.timer-time-stage{height:auto!important;min-height:242px!important;display:grid!important;place-items:center!important}
+#timer-duration[hidden],#timer-running[hidden]{display:none!important;visibility:visible!important;pointer-events:auto!important}
+.timer-duration{width:100%!important;display:flex!important;flex-direction:column!important;gap:14px!important;align-items:stretch!important}
+.timer-range-picker{display:grid!important;gap:11px!important;padding:8px 4px 2px!important}
+.timer-range-picker>.section-label{margin:0!important;text-align:center!important;font-size:10.5px!important}
+#timer-duration-display{display:block!important;text-align:center!important;font:400 clamp(34px,6vw,48px)/1 var(--serif)!important;letter-spacing:-.035em!important;color:var(--ink)!important}
+#timer-duration-range{width:100%!important;accent-color:var(--accent)!important;height:28px!important;cursor:pointer!important}
+.timer-range-scale{display:grid!important;grid-template-columns:repeat(5,1fr)!important;font-size:9px!important;color:var(--faint)!important;margin-top:-7px!important}.timer-range-scale span{text-align:center!important}.timer-range-scale span:first-child{text-align:left!important}.timer-range-scale span:last-child{text-align:right!important}
+.timer-precise{border-top:1px solid var(--line)!important;border-bottom:1px solid var(--line)!important;padding:0 2px!important}.timer-precise>summary{list-style:none!important;cursor:pointer!important;min-height:42px!important;display:flex!important;align-items:center!important;justify-content:center!important;color:var(--muted)!important;font-size:10.5px!important}.timer-precise>summary::-webkit-details-marker{display:none!important}.timer-precise>summary:after{content:'+'!important;margin-left:8px!important;color:var(--accent)!important}.timer-precise[open]>summary:after{content:'−'!important}
+.timer-precise-grid{display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:10px!important;padding:4px 0 14px!important}.timer-precise-grid label{display:grid!important;gap:5px!important;text-align:center!important;font-size:9.5px!important;color:var(--muted)!important}.timer-precise-grid input{width:100%!important;min-width:0!important;height:52px!important;font-size:25px!important;text-align:center!important}
+#timer-running{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:12px!important;padding:8px 0!important}
+.timer-orbit{--timer-progress:0%;position:relative!important;width:176px!important;height:176px!important;border-radius:50%!important;display:grid!important;place-items:center!important;background:conic-gradient(var(--accent) var(--timer-progress),color-mix(in srgb,var(--line) 72%,transparent) 0)!important;box-shadow:0 14px 46px color-mix(in srgb,var(--bg) 70%,transparent)!important}
+.timer-orbit:before{content:''!important;position:absolute!important;inset:7px!important;border-radius:50%!important;background:var(--surface)!important;border:1px solid color-mix(in srgb,var(--line) 75%,transparent)!important}
+.timer-orbit:after{content:''!important;position:absolute!important;left:50%!important;top:-3px!important;width:8px!important;height:8px!important;margin-left:-4px!important;border-radius:50%!important;background:var(--accent)!important;transform-origin:4px 91px!important;opacity:0!important}
+.timer-orbit[data-state='running']:after{opacity:1!important;animation:timer-orbit-dot 7s linear infinite!important}.timer-orbit[data-state='running']{animation:timer-breathe 2.8s ease-in-out infinite!important}.timer-orbit[data-state='paused']{filter:saturate(.55)!important}
+#timer-readout{position:relative!important;z-index:1!important;font:400 46px/1 var(--serif)!important;letter-spacing:-.035em!important;font-variant-numeric:tabular-nums!important}
+.timer-track{height:5px!important;min-height:5px!important;max-width:280px!important;border-radius:999px!important;overflow:hidden!important;background:color-mix(in srgb,var(--line) 75%,transparent)!important}.timer-track i{display:block!important;height:100%!important;background:var(--accent)!important;border-radius:inherit!important;transition:width .35s linear!important}
+@keyframes timer-orbit-dot{to{transform:rotate(360deg)}}@keyframes timer-breathe{50%{transform:scale(1.018)}}
+@media(prefers-reduced-motion:reduce){.timer-orbit{animation:none!important}.timer-orbit:after{animation:none!important}}
+@media(max-width:520px){.timer-time-stage{min-height:220px!important}.timer-orbit{width:158px!important;height:158px!important}.timer-orbit:after{transform-origin:4px 82px!important}.timer-precise-grid input{height:48px!important;font-size:22px!important}}
+#timer-dialog[data-state='running'] .timer-time-stage,#timer-dialog[data-state='paused'] .timer-time-stage,#timer-dialog[data-state='done'] .timer-time-stage{min-height:300px!important}
+#timer-dialog[data-state='running'] .timer-content,#timer-dialog[data-state='paused'] .timer-content,#timer-dialog[data-state='done'] .timer-content{padding-top:6px!important}
+#timer-dialog[data-state='running'] .timer-notice,#timer-dialog[data-state='paused'] .timer-notice{min-height:18px!important}
+
+
+/* --------------------------------------------------------------------------
+   Toast: visually separate from every translucent surface
+   -------------------------------------------------------------------------- */
+#toast{
+  border:1px solid color-mix(in srgb,var(--accent) 34%,var(--line))!important;
+  background:color-mix(in srgb,var(--surface-2) 94%,var(--bg))!important;
+  box-shadow:0 18px 52px rgba(0,0,0,.34),0 2px 8px rgba(0,0,0,.2)!important;
+  padding:13px 20px!important;border-radius:14px!important;font-weight:500!important;
+}
+html[data-theme='light'] #toast{box-shadow:0 16px 42px rgba(41,48,43,.2),0 2px 8px rgba(41,48,43,.12)!important;background:color-mix(in srgb,var(--surface-2) 96%,white)!important}
+
+/* --------------------------------------------------------------------------
+   Text size: four-step range. UI grows gently; main phrase remains expressive.
+   -------------------------------------------------------------------------- */
+.text-size-setting{display:grid!important;gap:12px!important}.text-size-setting>legend{font-size:11px!important;color:var(--muted)!important;margin-bottom:2px!important}
+.text-size-range-wrap{display:grid!important;gap:6px!important}.text-size-range-wrap input[type='range']{width:100%!important;accent-color:var(--accent)!important;cursor:pointer!important}.text-size-range-labels{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:6px!important;font-size:9.5px!important;color:var(--faint)!important}.text-size-range-labels span{text-align:center!important}.text-size-range-labels span:first-child{text-align:left!important}.text-size-range-labels span:last-child{text-align:right!important}
+/* Useful ribbon elements keep physical minimums even at the largest text step. */
+.dashboard-lower .active-info-strip .progress-track{height:6px!important;min-height:6px!important;display:block!important;overflow:hidden!important}
+.idle-summary-strip .idle-progress-track{height:4px!important;min-height:4px!important;display:block!important;overflow:hidden!important}
+
+/* --------------------------------------------------------------------------
+   Goal absent: remove the component, not only its text, and redistribute space.
+   -------------------------------------------------------------------------- */
+#goal-strip[hidden],#idle-goal-summary[hidden]{display:none!important}
+.active-info-strip:has(>#goal-strip[hidden]):has(>#environment-line:not([hidden])):has(>#upcoming-event:not([hidden])){grid-template-columns:50% 50%!important}
+.active-info-strip:has(>#goal-strip[hidden]):has(>#environment-line:not([hidden]))>#environment-line{grid-column:1!important;border-right:1px solid color-mix(in srgb,var(--line) 58%,transparent)!important}
+.active-info-strip:has(>#goal-strip[hidden]):has(>#upcoming-event:not([hidden]))>#upcoming-event{grid-column:2!important}
+.active-info-strip:has(>#goal-strip[hidden]):has(>#environment-line:not([hidden])):has(>#upcoming-event[hidden]),
+.active-info-strip:has(>#goal-strip[hidden]):has(>#environment-line[hidden]):has(>#upcoming-event:not([hidden])){grid-template-columns:100%!important}
+.active-info-strip:has(>#goal-strip[hidden]):has(>#environment-line:not([hidden])):has(>#upcoming-event[hidden])>#environment-line,
+.active-info-strip:has(>#goal-strip[hidden]):has(>#environment-line[hidden]):has(>#upcoming-event:not([hidden]))>#upcoming-event{grid-column:1!important;border:0!important}
+.active-info-strip:not(:has(>:not([hidden]))){display:none!important}
+.idle-summary-strip:has(>#idle-goal-summary[hidden]):has(>.idle-weather-summary:not([hidden])):has(>.idle-upcoming-event:not([hidden])){grid-template-columns:50% 50%!important}
+.idle-summary-strip:has(>#idle-goal-summary[hidden]):has(>.idle-weather-summary:not([hidden]))>.idle-weather-summary{grid-column:1!important;border-right:1px solid color-mix(in srgb,var(--line) 58%,transparent)!important}
+.idle-summary-strip:has(>#idle-goal-summary[hidden]):has(>.idle-upcoming-event:not([hidden]))>.idle-upcoming-event{grid-column:2!important}
+.idle-summary-strip:has(>#idle-goal-summary[hidden]):has(>.idle-weather-summary:not([hidden])):has(>.idle-upcoming-event[hidden]),
+.idle-summary-strip:has(>#idle-goal-summary[hidden]):has(>.idle-weather-summary[hidden]):has(>.idle-upcoming-event:not([hidden])){grid-template-columns:100%!important}
+.idle-summary-strip:has(>#idle-goal-summary[hidden]):has(>.idle-weather-summary:not([hidden])):has(>.idle-upcoming-event[hidden])>.idle-weather-summary,
+.idle-summary-strip:has(>#idle-goal-summary[hidden]):has(>.idle-weather-summary[hidden]):has(>.idle-upcoming-event:not([hidden]))>.idle-upcoming-event{grid-column:1!important;border:0!important}
+.idle-summary-strip:not(:has(>:not([hidden]))){display:none!important}
+
+/* --------------------------------------------------------------------------
+   Goal detail modal
+   -------------------------------------------------------------------------- */
+.goal-detail-panel{width:min(520px,calc(100vw - 24px))!important}.goal-detail-content{display:grid!important;gap:18px!important}.goal-detail-progress-head{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;font-size:11px!important;color:var(--muted)!important}.goal-detail-progress-head strong{font:400 22px/1 var(--serif)!important;color:var(--ink)!important}.goal-detail-track{height:8px!important;border-radius:999px!important;background:var(--line)!important;overflow:hidden!important}.goal-detail-track>span{display:block!important;height:100%!important;background:var(--accent)!important;border-radius:inherit!important;transition:width .4s ease!important}.goal-detail-countdown{display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:8px!important}.goal-detail-countdown>div{display:grid!important;place-items:center!important;gap:4px!important;padding:15px 8px!important;border-block:1px solid var(--line)!important}.goal-detail-countdown strong{font:400 30px/1 var(--serif)!important}.goal-detail-countdown span{font-size:9.5px!important;color:var(--muted)!important}.goal-detail-date{text-align:center!important;color:var(--muted)!important;font-size:10.5px!important}
+
+/* --------------------------------------------------------------------------
+   Calendar: unified brand, drawer sidebar, legible event markers and overflow
+   -------------------------------------------------------------------------- */
+#calendar-view .calendar-brand-button{
+  display:grid!important;grid-template-columns:22px auto!important;grid-template-rows:auto auto!important;column-gap:9px!important;row-gap:0!important;
+  align-items:center!important;justify-items:start!important;padding:4px 5px!important;border-radius:10px!important;text-align:left!important;
+}
+#calendar-view .calendar-brand-button .brand-symbol{grid-column:1!important;grid-row:1 / span 2!important;align-self:center!important;position:static!important;transform:none!important;width:22px!important;height:22px!important;margin:0!important}
+#calendar-view .calendar-brand-copy{grid-column:2!important;grid-row:1 / span 2!important;display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;gap:1px!important;line-height:1!important}
+#calendar-view .calendar-brand-name{font:400 20px/1 var(--serif)!important;color:var(--ink)!important}
+#calendar-view .calendar-brand-tagline{padding:0!important;margin:0!important;font-size:max(9.5px,calc(9.5px * var(--ui-scale,1)))!important;line-height:1.15!important;color:var(--muted)!important}
+#calendar-view .calendar-brand-button:hover,#calendar-view .calendar-brand-button:focus-visible{background:var(--accent-soft)!important}
+
+#calendar-view .calendar-layout{position:relative!important;display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:0!important;overflow:hidden!important}
+#calendar-view .calendar-main{grid-column:1!important;min-width:0!important;width:100%!important;overflow:auto!important}
+#calendar-view .calendar-sidebar{
+  display:block!important;position:absolute!important;z-index:12!important;top:9px!important;bottom:0!important;left:0!important;width:min(292px,calc(100vw - 36px))!important;
+  padding:16px!important;border:1px solid var(--line)!important;border-radius:14px!important;background:color-mix(in srgb,var(--surface) 96%,var(--bg))!important;
+  box-shadow:0 22px 60px rgba(0,0,0,.26)!important;transform:translateX(calc(-100% - 24px))!important;opacity:0!important;pointer-events:none!important;
+  transition:transform .28s cubic-bezier(.2,.8,.2,1),opacity .2s ease!important;overflow:auto!important;
+}
+#calendar-view.sidebar-open .calendar-sidebar{transform:translateX(0)!important;opacity:1!important;pointer-events:auto!important}
+#calendar-view .calendar-sidebar-toggle{display:inline-flex!important}
+@media(prefers-reduced-motion:reduce){#calendar-view .calendar-sidebar{transition:none!important}}
+
+/* Month: always reserve a visible line for “+ N altri eventi”. */
+#calendar-view .calendar-cell{display:flex!important;flex-direction:column!important;min-width:0!important}
+#calendar-view .calendar-day-number{flex:0 0 auto!important}
+#calendar-view .calendar-cell>.calendar-event{flex:0 0 auto!important}
+#calendar-view .calendar-more{display:block!important;flex:0 0 auto!important;margin-top:auto!important;min-height:20px!important;padding:4px 3px 2px!important;font-size:max(10px,calc(10.5px * var(--ui-scale,1)))!important;font-weight:600!important;color:var(--accent)!important;text-align:left!important;overflow:visible!important;white-space:nowrap!important}
+
+/* Year: the event dot is a deliberate marker, not a speck next to the number. */
+#calendar-view .calendar-mini-grid button{overflow:visible!important}
+#calendar-view .calendar-mini-grid button.has-events:after{width:5.5px!important;height:5.5px!important;bottom:-2px!important;background:var(--accent)!important;box-shadow:0 0 0 1.5px color-mix(in srgb,var(--surface) 86%,transparent)!important}
+#calendar-view .calendar-mini-grid button.is-today.has-events:after{background:var(--bg)!important;box-shadow:0 0 0 1.5px var(--accent)!important}
+
+/* Week gets the full canvas now that the source list is a drawer. */
+@media(min-width:900px){
+  #calendar-view #cal-content>.calendar-week{grid-template-columns:repeat(7,minmax(0,1fr))!important;gap:6px!important;width:100%!important}
+  #calendar-view .calendar-week-day{min-width:0!important;padding:10px 7px!important}
+}
+#calendar-view .calendar-week-day>button{font-size:max(12px,calc(12.5px * var(--ui-scale,1)))!important}
+#calendar-view .calendar-week-day>button strong{font-size:max(26px,calc(28px * var(--ui-scale,1)))!important}
+#calendar-view .calendar-week-day .calendar-event{font-size:max(11.5px,calc(12px * var(--ui-scale,1)))!important;line-height:1.28!important}
+#calendar-view .calendar-week-day .calendar-event .event-time{font-size:max(10px,calc(10px * var(--ui-scale,1)))!important}
+
+/* Year fills free area but remains calm on ultrawide. */
+@media(min-width:1181px) and (min-height:620px){
+  #calendar-view #cal-content>.calendar-year{width:100%!important;height:100%!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;grid-template-rows:repeat(3,minmax(0,1fr))!important;align-content:stretch!important}
+}
+@media(min-width:2200px){#calendar-view #cal-content>.calendar-year{max-width:1680px!important;margin-inline:auto!important}}
+
+/* --------------------------------------------------------------------------
+   Light mode weather effects need enough contrast against the paper theme
+   -------------------------------------------------------------------------- */
+html[data-theme='light'] .ambient-fx[data-weather='sun'] .fx-weather-light{filter:saturate(1.18) contrast(1.08)!important;opacity:max(.55,var(--fx-intensity))!important}
+html[data-theme='light'] .ambient-fx:is([data-weather='clouds'],[data-weather='storm'],[data-weather='fog']) .fx-clouds{filter:contrast(1.18) saturate(1.08)!important;opacity:max(.48,var(--fx-intensity))!important}
+html[data-theme='light'] .ambient-fx[data-weather='clear-night'] .fx-weather-light{opacity:max(.48,var(--fx-intensity))!important}
+html[data-theme='light'] .ambient-fx .fx-canvas{filter:contrast(1.16) saturate(1.1)!important}
+
+/* --------------------------------------------------------------------------
+   Touch-sound volume field is a full row under timbre
+   -------------------------------------------------------------------------- */
+.touch-volume-field{display:grid!important;grid-template-columns:1fr!important;gap:7px!important;margin-top:10px!important}.touch-volume-field input[type='range']{width:100%!important}
+
+/* A few final production interaction guards. */
+button,[role='button'],summary{touch-action:manipulation}
+.panel,.calendar-sidebar{transform-style:flat}
+
+/* --------------------------------------------------------------------------
+   Text-scale resilience: larger reading modes reserve real room for progress.
+   The ribbon grows only a few pixels instead of clipping its second row.
+   -------------------------------------------------------------------------- */
+.dashboard-lower .active-info-strip>.goal-strip{grid-template-rows:minmax(0,1fr) auto!important}
+.dashboard-lower .active-info-strip .goal-progress{display:block!important;min-height:18px!important;overflow:visible!important}
+.dashboard-lower .active-info-strip .progress-track{display:block!important;flex:0 0 auto!important}
+body[data-text-size='large'] .active-info-strip{grid-template-rows:76px!important;min-height:76px!important;max-height:76px!important}
+body[data-text-size='large'] .dashboard-lower .active-info-strip>#environment-line,
+body[data-text-size='large'] .dashboard-lower .active-info-strip>.goal-strip,
+body[data-text-size='large'] .dashboard-lower .active-info-strip>#upcoming-event{height:76px!important;min-height:76px!important;max-height:76px!important}
+body[data-text-size='xlarge'] .active-info-strip{grid-template-rows:80px!important;min-height:80px!important;max-height:80px!important}
+body[data-text-size='xlarge'] .dashboard-lower .active-info-strip>#environment-line,
+body[data-text-size='xlarge'] .dashboard-lower .active-info-strip>.goal-strip,
+body[data-text-size='xlarge'] .dashboard-lower .active-info-strip>#upcoming-event{height:80px!important;min-height:80px!important;max-height:80px!important}
+body[data-text-size='large'] .is-idle:not(.has-panel) .idle-summary-strip{grid-template-rows:52px!important;min-height:52px!important;max-height:52px!important}
+body[data-text-size='large'] .is-idle:not(.has-panel) :is(.idle-weather-summary,.idle-goal-summary,.idle-upcoming-event){height:52px!important;min-height:52px!important;max-height:52px!important}
+body[data-text-size='xlarge'] .is-idle:not(.has-panel) .idle-summary-strip{grid-template-rows:56px!important;min-height:56px!important;max-height:56px!important}
+body[data-text-size='xlarge'] .is-idle:not(.has-panel) :is(.idle-weather-summary,.idle-goal-summary,.idle-upcoming-event){height:56px!important;min-height:56px!important;max-height:56px!important}

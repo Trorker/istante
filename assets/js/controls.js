@@ -30,14 +30,14 @@
   document.body.append(d);return d;
  }
  function openSelect(input){
-  const d=makePopup(input,'select-popup'),list=el('div','custom-options');list.setAttribute('role','listbox');list.setAttribute('aria-label',fieldLabel(input));const opts=[];let search;const isStation=input.dataset.stations==='true';let favoriteOnly=false,applyFilter=()=>{};
+  const d=makePopup(input,'select-popup'),list=el('div','custom-options');list.setAttribute('role','listbox');list.setAttribute('aria-label',fieldLabel(input));const opts=[];let search;const isStation=input.dataset.stations==='true';if(isStation)d.classList.add('station-select-popup');let favoriteOnly=false,applyFilter=()=>{};
   let searchBar;
   if(isStation||input.dataset.search==='true'||input.options.length>12){
-   searchBar=el('div',isStation?'station-search-tools':'select-search-tools');const bar=el('label','select-search-bar'),glyph=el('span','icon');glyph.innerHTML=icon('search');bar.append(glyph);search=el('input','select-search');search.type='search';search.placeholder=isStation?'Cerca una stazione...':'Cerca...';search.setAttribute('aria-label','Cerca nel catalogo');search.autocomplete='off';bar.append(search);searchBar.append(bar);d.append(searchBar);
+   searchBar=el('div',isStation?'station-search-tools':'select-search-tools');const bar=el('label','search-field select-search-field'),glyph=el('span','icon');glyph.innerHTML=icon('search');bar.append(glyph);search=el('input','select-search');search.type='search';search.placeholder=isStation?'Cerca una stazione...':'Cerca...';search.setAttribute('aria-label','Cerca nel catalogo');search.autocomplete='off';bar.append(search);searchBar.append(bar);d.append(searchBar);
   }
-  if(isStation){const fav=button('','icon-button favorite-search-button',()=>{favoriteOnly=!favoriteOnly;fav.setAttribute('aria-pressed',String(favoriteOnly));fav.setAttribute('aria-label',favoriteOnly?'Mostra tutte le stazioni':'Mostra solo le preferite');applyFilter();});fav.innerHTML='<span class="icon">'+icon('heart')+'</span>';fav.setAttribute('aria-pressed','false');fav.setAttribute('aria-label','Mostra solo le preferite');fav.title='Solo preferite';searchBar.append(fav);}
+  if(isStation){const fav=button('','icon-button favorite-search-button',()=>{favoriteOnly=!favoriteOnly;fav.setAttribute('aria-pressed',String(favoriteOnly));fav.setAttribute('aria-label',favoriteOnly?'Mostra tutte le stazioni':'Mostra solo le preferite');applyFilter();});fav.innerHTML='<span class="icon">'+icon('heart')+'</span>';fav.setAttribute('aria-pressed','false');fav.setAttribute('aria-label','Mostra solo le preferite');fav.dataset.istanteTooltip='Solo preferite';searchBar.append(fav);}
   for(const o of input.options){
-   const b=button('','custom-option',()=>{setValue(input,o.value);close();}),m=o.textContent.match(/^(\d{2})\s+(.+)$/);
+   const b=button('','custom-option',()=>{setValue(input,o.value);close();}),m=isStation?o.textContent.match(/^(\d{2})\s+(.+)$/):null;
    if(m){b.append(el('span','station-no',m[1]),el('span','station-title',m[2]));}else b.append(el('span','option-title',o.textContent));
    b.dataset.search=o.textContent.toLocaleLowerCase('it');b.dataset.favorite=o.dataset.favorite||'false';if(b.dataset.favorite==='true'){const star=el('span','icon option-favorite');star.innerHTML=icon('heart');b.append(star);}b.setAttribute('role','option');b.setAttribute('aria-selected',String(o.selected));b.disabled=o.disabled;list.append(b);opts.push(b);
   }
