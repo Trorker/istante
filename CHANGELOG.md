@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.13.9 — 10 settembre 2026
+
+- Timer tablet: rilevamento corretto anche per dispositivi touch/ibridi che si presentano come `pointer: fine`; il layout ampio ora copre anche viewport 1280/1366/1368 fino a 1500 px.
+- Timer tablet: quadrante portato fino a 430 px sui display alti e 390 px sui tablet piu bassi, usando davvero lo spazio disponibile della modale senza scroll.
+- Timer avviato: aggiunto un countdown esplicito al centro del cerchio con etichetta **Tempo rimanente**.
+
 ## 3.13.8 — 10 settembre 2026
 
 - Timer tablet: recuperato lo spazio liberato da **Durate rapide** per ingrandire il quadrante invece di comprimere il contenuto.
