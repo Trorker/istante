@@ -1,6 +1,6 @@
 # Istante — Visione, valori e sistema di design
 
-**Versione di riferimento:** 3.15.0  
+**Versione di riferimento:** 3.16.0  
 **Sito ufficiale:** https://istante.ruslan-dzyuba.it/
 
 ## 1. Che cos'è Istante
@@ -140,7 +140,7 @@ Dalla 3.14.0 il bootstrap espone l'indice **`viewport-index = visualViewport.wid
 - Telefono verticale: priorità a ora e frase; la fascia bassa si ricompone in colonna nell'ordine **Meteo → Traguardo → Agenda**, eliminando prima metadati e spazi superflui.
 - Telefono orizzontale / display bassi: la fascia resta su una riga ma diventa realmente sottile; i suoi testi e i comandi devono rimanere subordinati a ora e frase.
 
-Le correzioni di composizione vivono nel solo `assets/css/responsive.css`. Non si aggiungono nuovi file `polish-*` per correggere singole risoluzioni. Non è accettabile uno scroll orizzontale della dashboard.
+Le correzioni di composizione vivono nel solo `assets/css/layout.css`. Non si aggiungono nuovi file `polish-*` per correggere singole risoluzioni. Non è accettabile uno scroll orizzontale della dashboard.
 
 ## 10. Criterio per nuove funzioni
 

@@ -20,27 +20,35 @@
     function clamp(min,value,max){return Math.max(min,Math.min(max,value));}
     function family(w,h,ratio,touch){
       var shortSide=Math.min(w,h),longSide=Math.max(w,h);
+      var sizeIndex=Math.sqrt(w*h)/Math.sqrt(1440*900);
       if((touch&&shortSide<=600)||(shortSide<=520&&longSide<=1180))return 'phone';
       if(touch&&shortSide<=1100&&longSide<=1700)return 'tablet';
-      if(w>=1900&&h>=900)return 'display';
+      /* A normal Full-HD laptop remains a computer. Display is reserved for
+         genuinely large CSS viewports / ultrawide workspaces. */
+      if(sizeIndex>=1.38&&(w>=2300||h>=1350||(ratio>=2.05&&w>=2200)))return 'display';
       return 'computer';
     }
     function scales(device,w,h,ratio,orientation){
-      var shortSide=Math.min(w,h),geom=Math.sqrt(w*h),font=1,ui=1;
+      var shortSide=Math.min(w,h);
+      var sizeIndex=Math.sqrt(w*h)/Math.sqrt(1440*900);
+      var font=1,ui=1;
+      /* Shape chooses the composition; sizeIndex chooses its optical scale.
+         This prevents equal-aspect devices (phone/TV) from sharing font sizes. */
       if(device==='phone'){
-        font=clamp(.92,.94+(shortSide-360)/700,1.04);
-        ui=clamp(.92,.95+(shortSide-360)/900,1.00);
+        font=clamp(.90,.955+(sizeIndex-.50)*.22,1.055);
+        ui=clamp(.91,.965+(sizeIndex-.50)*.16,1.025);
+        if(shortSide<375){font*=.975;ui*=.98;}
         if(orientation==='landscape'&&ratio>1.85){font*=.94;ui*=.95;}
       }else if(device==='tablet'){
-        font=clamp(.98,.98+(shortSide-700)/1150,1.10);
-        ui=clamp(.98,.99+(shortSide-700)/1500,1.07);
-        if(orientation==='landscape'&&ratio>1.55){font*=.98;ui*=.985;}
+        font=clamp(.98,1.015+(sizeIndex-.72)*.16,1.115);
+        ui=clamp(.98,1.010+(sizeIndex-.72)*.12,1.085);
+        if(orientation==='landscape'&&ratio>1.55){font*=.985;ui*=.99;}
       }else if(device==='display'){
-        font=clamp(1.12,1.12+(geom-1440)/4300,1.36);
-        ui=clamp(1.08,1.08+(geom-1440)/6000,1.24);
+        font=clamp(1.12,1.13+(sizeIndex-1.18)*.21,1.38);
+        ui=clamp(1.08,1.09+(sizeIndex-1.18)*.15,1.25);
       }else{
-        font=clamp(.98,1+(geom-1100)/5200,1.10);
-        ui=clamp(.98,1+(geom-1100)/7000,1.07);
+        font=clamp(.97,1.00+(sizeIndex-.83)*.12,1.11);
+        ui=clamp(.97,1.00+(sizeIndex-.83)*.09,1.08);
       }
       return {font:font,ui:ui};
     }
@@ -79,50 +87,50 @@
 <link href="assets/icons/icon.svg" rel="icon" type="image/svg+xml"/>
 <link href="assets/icons/icon-192.png" rel="apple-touch-icon"/>
 <link href="manifest.webmanifest" rel="manifest"/>
-<link href="assets/css/istante.css?v=3.15.0" rel="stylesheet"/>
-<link href="assets/css/responsive.css?v=3.15.0" rel="stylesheet"/>
-<script defer="" src="data/phrases.js?v=3.15.0">
+<link href="assets/css/istante.css?v=3.16.0" rel="stylesheet"/>
+<link href="assets/css/layout.css?v=3.16.0" rel="stylesheet"/>
+<script defer="" src="data/phrases.js?v=3.16.0">
 </script>
-<script defer="" src="data/stations.js?v=3.15.0">
+<script defer="" src="data/stations.js?v=3.16.0">
 </script>
-<script defer="" src="assets/js/core.js?v=3.15.0">
+<script defer="" src="assets/js/core.js?v=3.16.0">
 </script>
-<script defer="" src="assets/js/collections.js?v=3.15.0"></script><script defer="" src="assets/js/companion.js?v=3.15.0"></script><script defer="" src="assets/js/qr.js?v=3.15.0"></script><script defer="" src="assets/js/share-link.js?v=3.15.0"></script><script defer="" src="assets/js/phrase-history.js?v=3.15.0"></script>
-<script defer="" src="assets/js/weather-scene.js?v=3.15.0"></script>
-<script defer="" src="assets/js/solar.js?v=3.15.0">
+<script defer="" src="assets/js/collections.js?v=3.16.0"></script><script defer="" src="assets/js/companion.js?v=3.16.0"></script><script defer="" src="assets/js/qr.js?v=3.16.0"></script><script defer="" src="assets/js/share-link.js?v=3.16.0"></script><script defer="" src="assets/js/phrase-history.js?v=3.16.0"></script>
+<script defer="" src="assets/js/weather-scene.js?v=3.16.0"></script>
+<script defer="" src="assets/js/solar.js?v=3.16.0">
 </script>
-<script defer="" src="assets/js/icons.js?v=3.15.0">
+<script defer="" src="assets/js/icons.js?v=3.16.0">
 </script>
-<script defer="" src="assets/js/typing.js?v=3.15.0">
+<script defer="" src="assets/js/typing.js?v=3.16.0">
 </script>
-<script defer="" src="assets/js/effects.js?v=3.15.0">
+<script defer="" src="assets/js/effects.js?v=3.16.0">
 </script>
-<script defer="" src="assets/js/radio.js?v=3.15.0">
+<script defer="" src="assets/js/radio.js?v=3.16.0">
 </script>
-<script defer="" src="./assets/js/motion.js?v=3.15.0">
+<script defer="" src="./assets/js/motion.js?v=3.16.0">
 </script>
-<script defer="" src="assets/js/controls.js?v=3.15.0">
+<script defer="" src="assets/js/controls.js?v=3.16.0">
 </script>
-<script defer="" src="assets/js/experience.js?v=3.15.0">
+<script defer="" src="assets/js/experience.js?v=3.16.0">
 </script>
-<script defer="" src="./assets/js/time-core.js?v=3.15.0">
+<script defer="" src="./assets/js/time-core.js?v=3.16.0">
 </script>
-<script defer="" src="./assets/js/moments.js?v=3.15.0">
+<script defer="" src="./assets/js/moments.js?v=3.16.0">
 </script>
-<script defer="" src="assets/js/station-library.js?v=3.15.0">
+<script defer="" src="assets/js/station-library.js?v=3.16.0">
 </script>
-<script defer="" src="assets/js/station-manager.js?v=3.15.0">
+<script defer="" src="assets/js/station-manager.js?v=3.16.0">
 </script>
-<script defer="" src="assets/js/schedules.js?v=3.15.0">
+<script defer="" src="assets/js/schedules.js?v=3.16.0">
 </script>
-<script defer="" src="assets/js/updates.js?v=3.15.0">
+<script defer="" src="assets/js/updates.js?v=3.16.0">
 </script>
-<script defer="" src="assets/js/share-card.js?v=3.15.0">
+<script defer="" src="assets/js/share-card.js?v=3.16.0">
 </script>
-<script defer="" src="assets/js/share.js?v=3.15.0">
+<script defer="" src="assets/js/share.js?v=3.16.0">
 </script>
-<script defer="" src="assets/js/scene.js?v=3.15.0"></script><script defer="" src="assets/js/ambient.js?v=3.15.0"></script><script defer="" src="assets/js/calendar-core.js?v=3.15.0"></script><script defer="" src="assets/js/backup.js?v=3.15.0"></script><script defer="" src="assets/js/onboarding.js?v=3.15.0"></script><script defer="" src="data/collection-catalog.js?v=3.15.0"></script><script defer="" src="assets/js/calendar-holidays.js?v=3.15.0"></script><script defer="" src="assets/js/calendar.js?v=3.15.0"></script><script defer="" src="assets/js/pages.js?v=3.15.0"></script><script defer="" src="assets/js/scene-snapshot.js?v=3.15.0"></script><script defer="" src="assets/js/touch-feedback.js?v=3.15.0"></script><script defer="" src="assets/js/main.js?v=3.15.0">
-</script><script defer="" src="assets/js/tooltips.js?v=3.15.0"></script><script defer="" src="assets/js/cursor.js?v=3.15.0"></script><script defer="" src="assets/js/gestures.js?v=3.15.0"></script>
+<script defer="" src="assets/js/scene.js?v=3.16.0"></script><script defer="" src="assets/js/ambient.js?v=3.16.0"></script><script defer="" src="assets/js/calendar-core.js?v=3.16.0"></script><script defer="" src="assets/js/backup.js?v=3.16.0"></script><script defer="" src="assets/js/onboarding.js?v=3.16.0"></script><script defer="" src="data/collection-catalog.js?v=3.16.0"></script><script defer="" src="assets/js/calendar-holidays.js?v=3.16.0"></script><script defer="" src="assets/js/calendar.js?v=3.16.0"></script><script defer="" src="assets/js/pages.js?v=3.16.0"></script><script defer="" src="assets/js/scene-snapshot.js?v=3.16.0"></script><script defer="" src="assets/js/touch-feedback.js?v=3.16.0"></script><script defer="" src="assets/js/main.js?v=3.16.0">
+</script><script defer="" src="assets/js/tooltips.js?v=3.16.0"></script><script defer="" src="assets/js/cursor.js?v=3.16.0"></script><script defer="" src="assets/js/gestures.js?v=3.16.0"></script>
 <meta content="website" property="og:type"/>
 <meta content="Istante" property="og:site_name"/>
 <meta content="Istante - Prenditi un momento per te." property="og:title"/>
@@ -1469,7 +1477,7 @@
          Informazioni su Istante
         </strong>
 <small data-summary="about">
-         Versione 3.15.0 · costruita sulla visione della 3.8
+         Versione 3.16.0
         </small>
 </span>
 <span class="icon section-chevron" data-icon="chevron">
@@ -1521,7 +1529,7 @@
 <strong>
           Versione
           <span id="app-version">
-           3.15.0
+           3.16.0
           </span>
 </strong>
 <span class="small-chip" hidden="" id="update-status-chip">
@@ -1569,7 +1577,7 @@
       </span>
 </p>
 <small class="build-note">
-      Istante 3.15.0
+      Istante 3.16.0
      </small>
 <div class="keyboard-note">
 <kbd>

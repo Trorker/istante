@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 /*
- * Istante 3.15.0 - read-only ICS relay.
+ * Istante 3.16.0 - read-only ICS relay.
  *
  * Why this exists:
  * browsers cannot read many Google / Outlook / iCloud / custom ICS feeds
@@ -202,7 +202,7 @@ function fetchOne(string $url): array
         CURLOPT_FOLLOWLOCATION => false,
         CURLOPT_CONNECTTIMEOUT => ISTANTE_CONNECT_TIMEOUT,
         CURLOPT_TIMEOUT => ISTANTE_TOTAL_TIMEOUT,
-        CURLOPT_USERAGENT => 'Istante/3.15.0 ICS relay',
+        CURLOPT_USERAGENT => 'Istante/3.16.0 ICS relay',
         CURLOPT_HTTPHEADER => [
             'Accept: text/calendar, text/plain;q=0.9, */*;q=0.1',
             'Cache-Control: no-cache',

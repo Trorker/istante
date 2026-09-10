@@ -1,5 +1,17 @@
 # Changelog
 
+## 3.16.0 — 10 settembre 2026
+
+- **Architettura responsive riscritta:** eliminato il vecchio `responsive.css`; la geometria di Dashboard, Calendario e modali vive ora nel solo `assets/css/layout.css`, separata dalla base visuale di `istante.css`.
+- **Quattro famiglie di dispositivo:** Telefono, Tablet, Computer e Display/TV; rapporto `vw/vh` per la composizione e `viewport-size-index` per la scala ottica di font e controlli.
+- **Timer su laptop/PC:** la modale torna ad essere una finestra centrata con dimensioni massime definite e non occupa più tutto il viewport.
+- **Calendario telefono portrait:** prima riga con logo a sinistra e `Oggi` + Calendari a destra; periodo centrato nella seconda riga con navigazione laterale; viste Anno/Mese/Settimana/Giorno/Agenda nella terza riga.
+- **Calendario telefono:** rimosso il comando freccia accanto al pulsante Calendari; il drawer si apre sempre dal solo pulsante con icona calendario.
+- **Vista Anno:** griglia dei mesi resa elastica e con margini di sicurezza per evitare il taglio dell'ultima colonna/giorni sui viewport stretti.
+- **Dashboard telefono portrait:** Meteo/Luce, Prossimo capitolo e prossimo impegno sono tre righe reali; rimossi i conflitti con vecchie regole `:has()` che potevano rimetterli affiancati.
+- **Toolbar inferiore telefono:** struttura deterministica in tre gruppi (3/2/3), touch target uniformi e nessun riposizionamento dovuto a pulsanti nascosti.
+- **Testo UI:** rimossa dalla schermata Informazioni la vecchia dicitura che richiamava la 3.8.
+
 ## 3.15.0 — 10 settembre 2026
 
 - **Nuova architettura responsive:** quattro famiglie reali — Telefono, Tablet, Computer e Display grande/TV — con orientamento e aspect ratio come segnali secondari.

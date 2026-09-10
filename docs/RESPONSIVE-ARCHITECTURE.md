@@ -1,70 +1,89 @@
 # Architettura responsive di Istante
 
-**Riferimento:** v3.15.0
+**Riferimento:** v3.16.0
 
-Istante non usa piu una sequenza di correzioni CSS legate a singole larghezze. La composizione parte da quattro famiglie di dispositivo e usa larghezza, altezza e forma del viewport come segnali secondari.
+La 3.16 separa in modo netto **aspetto** e **composizione**. `assets/css/istante.css` contiene il linguaggio visuale condiviso; `assets/css/layout.css` e l'unico livello autorizzato a decidere geometria, densita e ricomposizione in base al dispositivo. Non esistono piu file `polish-*` o una catena di override responsive di release in release.
 
 ## Le quattro famiglie
 
-1. **Telefono (`phone`)**: interfaccia touch compatta. Ha composizioni distinte portrait e landscape, con priorita alla leggibilita e alle aree di tocco.
-2. **Tablet (`tablet`)**: mantiene piu informazioni contemporaneamente ma evita di comportarsi come un desktop semplicemente ristretto.
-3. **Computer (`computer`)**: laptop e desktop normali. La scena resta ampia, centrata e con controlli completi.
-4. **Display (`display`)**: monitor molto grandi, ultrawide e TV. Testi, corpi celesti, spazi e larghezza utile crescono senza dilatare indefinitamente i contenuti.
+1. **Telefono (`phone`)** — esperienza touch compatta, con composizioni indipendenti portrait e landscape.
+2. **Tablet (`tablet`)** — piu spazio simultaneo, senza trattarlo come un desktop ristretto.
+3. **Computer (`computer`)** — laptop e desktop normali; modali a finestra, contenuti centrati e controlli completi.
+4. **Display (`display`)** — viewport realmente grandi, ultrawide e TV; scala maggiore ma con limiti di larghezza per non disperdere i contenuti. Un normale viewport Full-HD resta nella famiglia Computer per non ingrandire inutilmente l'interfaccia su laptop.
 
-La famiglia viene calcolata sul `visualViewport` quando disponibile, quindi Safari mobile puo cambiare correttamente composizione anche quando barre del browser o rotazione modificano l'area realmente visibile.
+La famiglia viene calcolata sul `visualViewport` quando disponibile. Questo permette a Safari/iOS di reagire alla rotazione e alle variazioni dell'area realmente visibile dovute alle barre del browser.
 
 ## Due indici, due responsabilita
 
-Istante espone due indici CSS:
+Il bootstrap espone:
 
-- `--viewport-index = larghezza / altezza`: descrive la **forma** dello schermo. Serve a scegliere portrait, landscape, tall, wide e ultrawide.
-- `--viewport-size-index = sqrt(larghezza * altezza) / sqrt(1440 * 900)`: descrive la **scala fisica del layout in CSS pixel**. Serve alla scala tipografica e alla densita dell'interfaccia.
+- `--viewport-index = width / height`: descrive la **forma** del viewport e contribuisce a scegliere portrait, landscape, tall, wide o ultrawide;
+- `--viewport-size-index = sqrt(width * height) / sqrt(1440 * 900)`: descrive la **dimensione ottica** del viewport e alimenta la scala automatica di font e UI.
 
-Usare solo `vw / vh` per la dimensione dei font sarebbe scorretto: un telefono 16:9 e un televisore 16:9 hanno lo stesso rapporto, ma non devono avere la stessa tipografia. Per questo la forma decide la composizione, mentre la dimensione effettiva contribuisce alla scala.
+Il secondo indice evita l'errore di legare la tipografia soltanto al rapporto dello schermo: un telefono 16:9 e una TV 16:9 hanno una forma simile, ma non devono avere gli stessi corpi tipografici. La scala scelta dall'utente viene poi moltiplicata per quella automatica del dispositivo.
 
 ## Variabili runtime
 
-Il bootstrap imposta su `<html>`:
+Su `<html>` vengono mantenuti:
 
-- `data-device="phone|tablet|computer|display"`
-- `data-orientation="portrait|landscape|square"`
-- `data-viewport-shape="tall|balanced|wide|ultrawide"`
-- `--viewport-index`
-- `--viewport-size-index`
-- `--viewport-w-px`, `--viewport-h-px`, `--viewport-short-px`
-- `--device-font-scale`, `--device-ui-scale`
-
-`--text-scale` e `--ui-scale` sono il prodotto tra la scala automatica del dispositivo e la dimensione scelta dall'utente. La preferenza dell'utente resta quindi rispettata, ma viene adattata al contesto reale dello schermo.
+- `data-device="phone|tablet|computer|display"`;
+- `data-orientation="portrait|landscape|square"`;
+- `data-viewport-shape="tall|balanced|wide|ultrawide"`;
+- `data-viewport-layout`;
+- `--viewport-index`;
+- `--viewport-size-index`;
+- `--viewport-w-px`, `--viewport-h-px`, `--viewport-short-px`;
+- `--device-font-scale`, `--device-ui-scale`;
+- `--text-scale`, `--ui-scale`.
 
 ## Dashboard
 
 ### Telefono portrait
 
-La fascia informativa inferiore e una vera colonna. Meteo/luce, Prossimo capitolo e prossimo impegno occupano tre righe indipendenti; nessuna regola desktop basata su `:has()` puo rimetterli affiancati. La toolbar resta sotto come quarto livello stabile.
+La scena principale occupa lo spazio flessibile. Sotto di essa, la fascia informativa usa una vera colonna: **Meteo/Luce**, **Prossimo capitolo**, **Prossimo impegno**. Ogni blocco ha altezza propria e non puo essere riportato in una griglia orizzontale da regole storiche. La toolbar resta un livello separato e stabile.
 
 ### Telefono landscape
 
-La fascia usa una sola riga molto bassa. I dettagli secondari spariscono prima di ridurre eccessivamente testo e icone. Ora e pensiero sfruttano la larghezza con una composizione a due colonne.
+La priorita e preservare spazio verticale per ora e pensiero. La fascia informativa usa una riga molto compatta e nasconde prima i dettagli secondari, senza ridurre i touch target essenziali.
 
 ### Tablet
 
-Il tablet ha una composizione propria: non eredita automaticamente ne la colonna del telefono ne la larghezza del desktop. In portrait la fascia informativa puo usare una seconda riga; in landscape sfrutta maggiormente la larghezza.
+Il tablet ha composizioni proprie portrait/landscape. Non eredita automaticamente la colonna del telefono e non viene trattato come un computer soltanto piu stretto.
 
-### Computer e display
+### Computer e Display
 
-I computer mantengono l'impostazione editoriale della dashboard. I display grandi aumentano scala e respiro ma applicano limiti di larghezza per evitare che frase e informazioni diventino troppo disperse.
+La Dashboard mantiene il ritmo editoriale. I display grandi aumentano scala e respiro in funzione del `viewport-size-index`, con limiti massimi di larghezza.
+
+## Timer
+
+Su **Computer** la modale Timer e una finestra centrata con larghezza e altezza massime. Non usa dimensioni fullscreen. Tablet e Display hanno limiti propri; il telefono puo invece usare piu superficie quando serve alla leggibilita e al touch.
 
 ## Calendario
 
-Il calendario mobile ha una testata indipendente dal desktop.
+### Telefono portrait
 
-- **Telefono portrait:** identita e azioni; periodo e navigazione; cinque viste. I comandi di navigazione e le azioni sono raggruppati in rail coerenti e non si sovrappongono.
-- **Telefono landscape:** due righe compatte. La vista Anno usa tre colonne e scorre verticalmente invece di comprimere dodici mesi in celle illeggibili.
-- **Tablet:** toolbar completa e vista Anno a tre o quattro colonne in base all'orientamento.
-- **Computer/display:** mantengono etichette complete e piu spazio per eventi e contenuti.
+La testata segue tre livelli fissi:
 
-Le viste Anno, Mese, Settimana, Giorno e Agenda restano funzionalmente identiche; cambia soltanto la composizione.
+1. **logo** a sinistra, **Oggi** e **Calendari** a destra;
+2. **periodo centrato**, con precedente/successivo ai lati;
+3. segmented control con **Anno / Mese / Settimana / Giorno / Agenda**.
+
+Il pulsante Calendari contiene solo l'icona calendario. Il vecchio pulsante freccia separato e nascosto su telefono. La vista Anno usa due colonne elastiche e griglie interne a sette colonne senza larghezze rigide che possano tagliare l'ultima colonna.
+
+### Telefono landscape
+
+Resta la composizione compatta a due righe. Il pulsante Calendari mantiene solo l'icona calendario e la vista Anno usa tre colonne elastiche.
+
+### Tablet / Computer / Display
+
+Mantengono etichette complete e maggiore densita informativa, con numero di colonne e spaziature coerenti alla famiglia.
 
 ## Regola per le release future
 
-Non creare nuovi `polish-x.y.z.css`. Le regole visuali di base restano in `assets/css/istante.css`; tutte le decisioni dipendenti da dispositivo, orientamento o rapporto del viewport devono vivere in `assets/css/responsive.css`. Prima di aggiungere un breakpoint va verificato se il problema e di famiglia (`data-device`), di orientamento o di forma (`data-viewport-shape`).
+Non creare nuovi `polish-x.y.z.css` e non reintrodurre `responsive.css`.
+
+- **Aspetto condiviso:** `assets/css/istante.css`.
+- **Geometria e responsive:** `assets/css/layout.css`.
+- **Documentazione:** `assets/css/documents.css`.
+
+Prima di aggiungere una regola responsive va deciso se il problema appartiene alla famiglia (`data-device`), all'orientamento, alla forma del viewport oppure alla scala ottica. Una correzione per una singola risoluzione e l'ultima scelta, non la prima.
