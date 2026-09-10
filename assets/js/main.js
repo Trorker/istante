@@ -1,4 +1,4 @@
-/* Istante v3.13.4 - application and local preferences. */
+/* Istante v3.13.5 - application and local preferences. */
 (function () {
 'use strict';
 const C = window.IstanteCore;
@@ -490,35 +490,12 @@ $('#photo-input').addEventListener('change',async event=>{
  catch(error){toast(error.message);}
 });
 
-document.addEventListener('istante:onboarding-weather',event=>{
- const d=event.detail||{};const openSky=()=>{openDialog('settings');requestAnimationFrame(()=>{expandSection($('#section-sky summary'));const f=$('#settings-form');f.elements.weather.checked=true;updateSettingsFields();if(d.mode==='city'&&d.city){$('#city-search').value=d.city;$('#city-find').click();}else if(d.mode==='coords'&&d.lat!==''&&d.lon!==''){$('#place-lat').value=d.lat;$('#place-lon').value=d.lon;}else if(d.mode==='locate'){$('#locate-me').click();}});};const tour=$('#tour-dialog');if(tour?.open){tour.addEventListener('close',openSky,{once:true});closeDialog(tour);}else openSky();
-});
-document.addEventListener('istante:onboarding-weather-locate',event=>{const done=event.detail?.done;settings=C.cleanSettings({...settings,weather:true,solarTimes:true});store.write('settings',settings);void X.capturePosition().then(()=>{applyAppearance(new Date());done?.(true,'Meteo attivato con la posizione del dispositivo.');}).catch(error=>{settings=C.cleanSettings({...settings,weather:false});store.write('settings',settings);applyAppearance(new Date());done?.(false,error?.code===1?'Permesso posizione non concesso. Puoi continuare e attivarlo più tardi.':error?.message||'Posizione non disponibile.');});});
-document.addEventListener('istante:onboarding-open-calendar',()=>{settings=C.cleanSettings({...settings,calendarEnabled:true});store.write('settings',settings);pages.apply();setTimeout(()=>pages.show('calendar',true),40);});
-document.addEventListener('istante:onboarding-calendar-url',event=>{
- const url=event.detail?.url;if(!url)return;const next={...settings,calendarEnabled:true};settings=C.cleanSettings(next);store.write('settings',settings);pages.apply();calendar.apply();void calendar.connectURL(url,'Calendario').then(()=>toast('Calendario collegato.')).catch(err=>{toast(err?.message||'Link ICS non leggibile. Puoi aggiungerlo più tardi.');});
-});
-document.addEventListener('istante:onboarding-setting',event=>{
- const d=event.detail||{},allowed={clockStyle:['digital','analog'],theme:['auto','dark','light'],mode:['twice','daily'],timerMinutes:[5,15,25,45,60],calendarEnabled:[true,false],weather:[true,false]};
- if(d.key==='goalPreset'&&d.patch&&typeof d.patch==='object'){
-  settings=C.cleanSettings({...settings,...d.patch});store.write('settings',settings);
-  applyAppearance(new Date());lastClock='';tick(true);moments.apply();pages.apply();return;
- }
- if(!Object.prototype.hasOwnProperty.call(allowed,d.key)||!allowed[d.key].includes(d.value))return;
- settings=C.cleanSettings({...settings,[d.key]:d.value});store.write('settings',settings);
- if(d.key==='mode')syncSchedule(new Date(),true);
- applyAppearance(new Date());lastClock='';tick(true);moments.apply();pages.apply();
-});
+document.addEventListener('istante:onboarding-location-locate',event=>{const done=event.detail?.done;void X.capturePosition().then(place=>{applyAppearance(new Date());done?.(true,'Posizione salvata su questo dispositivo.');}).catch(error=>{done?.(false,error?.code===1?'Permesso posizione non concesso. Puoi configurarla più tardi dalle Impostazioni.':error?.message||'Posizione non disponibile.');});});
 function openGoalSettings(){
  const show=()=>{openDialog('settings');requestAnimationFrame(()=>{const goal=$('#section-goal summary');expandSection(goal);const title=$('#settings-form')?.elements?.goalTitle;if(title&&mayFocusText())title.focus({preventScroll:true});});};
  const tour=$('#tour-dialog');
  if(tour?.open){tour.addEventListener('close',()=>requestAnimationFrame(show),{once:true});closeDialog(tour);}else show();
 }
-document.addEventListener('istante:onboarding-goal-custom',()=>{
- settings=C.cleanSettings({...settings,goalMode:'custom'});store.write('settings',settings);
- const show=()=>{openDialog('settings');requestAnimationFrame(()=>{const f=$('#settings-form').elements;f.goalMode.value='custom';window.IstanteControls.refresh();updateSettingsFields();expandSection($('#section-goal summary'));if(mayFocusText())f.goalTitle?.focus({preventScroll:true});});};
- const tour=$('#tour-dialog');if(tour?.open){tour.addEventListener('close',()=>requestAnimationFrame(show),{once:true});closeDialog(tour);}else show();
-});
 document.addEventListener('keydown',event=>{
  activity();const target=event.target;
  if(event.ctrlKey||event.metaKey||event.altKey||event.repeat||target.closest('input,textarea,select,[contenteditable=true]')||isPanelOpen())return;

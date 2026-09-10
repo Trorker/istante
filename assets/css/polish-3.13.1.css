@@ -75,7 +75,7 @@ html[data-calendar-font='excalifont'] #calendar-view :is(.calendar-period-title,
 @media(max-height:720px),(max-width:900px) and (orientation:landscape){.tour-card{max-height:calc(100dvh - 18px)!important;padding:14px 16px!important}.tour-card h2{font-size:21px!important;margin-block:5px 7px!important}.tour-card #tour-copy{font-size:10px!important;line-height:1.35!important}.tour-choice{font-size:10px!important;min-height:30px!important}.tour-inline-setup .field-note{font-size:9px!important}.tour-weather-actions{grid-template-columns:1fr 1fr!important}.tour-card .section-label{margin-bottom:3px!important}}
 
 @media(max-width:740px){#calendar-view .calendar-brand-image,#timer-page .brand-logo-image{width:29px!important;height:29px!important;flex-basis:29px!important}#calendar-view .calendar-brand-name,#timer-page .brand-home-name{font-size:20px!important}#calendar-view .calendar-brand-tagline,#timer-page .brand-home-tagline{font-size:9.5px!important}.timer-time-stage{min-height:315px!important;flex-basis:315px!important;height:315px!important}.timer-duration-dial,#timer-dialog .timer-orbit{width:min(286px,76vw)!important;height:min(286px,76vw)!important}.timer-dial-mark{transform:rotate(calc(var(--i,0)*30deg)) translateY(-119px) rotate(calc(var(--i,0)*-30deg))!important}}
-#tour-dialog[data-step='2'] .tour-card{width:min(340px,calc(100vw - 24px))!important}#tour-dialog[data-step='2'] #tour-copy{max-width:30ch!important}#tour-dialog[data-step='3'] .tour-card,#tour-dialog[data-step='8'] .tour-card,#tour-dialog[data-step='9'] .tour-card{width:min(350px,calc(100vw - 24px))!important}
+#tour-dialog[data-step='2'] .tour-card{width:min(340px,calc(100vw - 24px))!important}#tour-dialog[data-step='3'] .tour-card,#tour-dialog[data-step='8'] .tour-card,#tour-dialog[data-step='9'] .tour-card{width:min(350px,calc(100vw - 24px))!important}
 .moon-phase-mini{border-radius:50%!important;filter:drop-shadow(0 2px 4px rgba(0,0,0,.20)) drop-shadow(0 0 5px color-mix(in srgb,var(--accent) 16%,transparent))!important}html[data-theme='light'] .moon-phase-mini{filter:drop-shadow(0 1px 3px rgba(42,46,55,.28))!important}
 /* SVG celestial body: recognizable moon without canvas streaks. */
 #sky-body{overflow:visible!important}
@@ -101,7 +101,7 @@ html[data-theme='dark'] #sky-body .sky-moon-crater{fill:rgba(36,39,43,.24)}
 
 /* Step 2 needs breathing room; special action steps remain compact. */
 #tour-dialog[data-step='2'] .tour-card{width:min(380px,calc(100vw - 24px))!important}
-#tour-dialog[data-step='2'] #tour-copy{max-width:34ch!important}
+
 
 /* Timer hand rotates around the real centre, like a clock. */
 .timer-dial-hand{top:auto!important;bottom:50%!important;transform-origin:50% 100%!important}

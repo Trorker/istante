@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.13.5 — 10 settembre 2026
+
+- Wizard: resta una presentazione del prodotto; l’unica configurazione consentita durante la guida è la posizione. Sequenza aggiornata fino a Calendario, viste e gestione calendari, con step gesture mostrato solo sui dispositivi touch.
+- Timer: animazione sincronizzata al tempo reale con alone che respira, dot che compie un giro ogni 60 secondi e anello che si riempie in base al tempo trascorso; rimossa l’evidenziazione azzurra della tacca selezionata.
+- Dashboard: rimossi gli effetti hover da Meteo e Il prossimo capitolo.
+- Audio touch: eliminato il doppio toggle causato dal dblclick sintetico dei browser touch; doppio tap Play/Pausa e volume a passi di 10 restano limitati alla zona destra della Dashboard.
+- Calendario: icona Le tue giornate sostituita con Calendario, tasto Oggi senza icona e aggiunta X esplicita al drawer.
+- Gesture Calendario: swipe breve in Mese/Settimana cambia soltanto periodo; uno swipe lungo da sinistra verso destra torna alla Dashboard.
+- CSS wizard: rimossi i vecchi limiti max-width specifici del testo dello step 2.
+
 ## 3.13.4 — 10 settembre 2026
 
 - Timer modale: rimossi Durata precisa, dettagli e nota del passo; controlli −/+ spostati davvero fuori dal quadrante, con icone Material centrate e senza effetto hover.

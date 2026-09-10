@@ -1,6 +1,6 @@
 # Istante
 
-**Versione corrente: 3.13.4**  
+**Versione corrente: 3.13.5**  
 **Un momento, per te.**  
 Un progetto di **Ruslan Dzyuba**.
 
@@ -55,18 +55,16 @@ riempire lo schermo con un numero enorme di giorni.
 ## Musica, relax e timer
 
 Il mini player supporta radio lo-fi e stazioni personali, preferiti,
-programmazioni multiple e scelta casuale. Dalla gestione delle stazioni puoi anche **spostare una radio più in alto o più in basso** nell’ordine del catalogo. Su touch puoi inoltre attivare una gesture volume opzionale, disattivata di default: uno swipe verticale nel bordo destro modifica il volume della sorgente attiva e mostra un toast con slider; un doppio tap nella stessa zona alterna Play/Pausa. In alternativa puoi usare il
-generatore audio offline: rumore rosa, marrone, pioggia o vento sintetizzati
-con Web Audio, senza file audio da scaricare.
+programmazioni multiple e scelta casuale. Dalla gestione delle stazioni puoi anche **spostare una radio più in alto o più in basso** nell’ordine del catalogo. Sui dispositivi touch le gesture audio sono attive di default nella sola zona destra della Dashboard: un doppio tap alterna Play/Pausa e uno swipe verticale modifica il volume di **10 punti esatti**. Le gesture possono essere disattivate dalle Impostazioni e non vengono mai applicate nel Calendario. In alternativa puoi usare il generatore audio offline: rumore rosa, marrone, pioggia o vento sintetizzati con Web Audio, senza file audio da scaricare.
 
-Il timer rimane volutamente semplice: la durata principale si sceglie su un **quadrante circolare tipo orologio** da 1 a 60 minuti e può essere rifinita di un minuto alla volta con i pulsanti **− / +**; ore/minuti/secondi precisi restano sotto “Durata precisa”. Per questa prima release pubblica il Timer usa una sola esperienza: una **modale** ottimizzata per mouse e touch. Quando parte, il tempo residuo entra in un indicatore circolare animato con avanzamento; silenzio, radio o suono rilassante restano configurabili senza appesantire la schermata principale.
+Il timer rimane volutamente semplice: la durata principale si sceglie su un **quadrante circolare tipo orologio** da 1 a 60 minuti e può essere rifinita di un minuto alla volta con i pulsanti **− / +** esterni al cerchio. Per questa prima release pubblica il Timer usa una sola esperienza: una **modale** ottimizzata per mouse e touch. Durante il conto alla rovescia l’anello si riempie seguendo il tempo trascorso, un dot compie un giro ogni minuto seguendo i secondi e un alone morbido respira attorno al cerchio. Silenzio, radio o suono rilassante restano configurabili senza appesantire la schermata principale.
 
 ## Calendario, se ti serve
 
 Il calendario è **opzionale** e vive nella stessa istanza della dashboard: su
 dispositivi touch puoi passare alla vista calendario con uno swipe, oppure usare
 i controlli dedicati. Sono disponibili viste mese, settimana, anno, giorno e
-agenda; puoi scegliere una vista iniziale fissa oppure **riprendere l’ultima vista usata**. Il Mese usa solo le 4/5/6 settimane realmente necessarie. I gesti nel contenuto cambiano periodo, mentre il ritorno alla Dashboard con gesto parte solo dalla fascia bassa del display. Sono supportati fino a 8 calendari ICS e festività italiane facoltative. La vista Anno sfrutta lo spazio disponibile sui desktop normali senza dilatarsi sui monitor ultrawide. Nella vista Settimana l'elenco dei calendari è un **drawer richiamabile**: quando è chiuso, i sette giorni usano tutta la larghezza disponibile. Gli eventi usano superfici molto leggere con colore della sorgente, ora, titolo e calendario di origine, così restano distinguibili senza trasformare la Settimana in un mosaico di card.
+agenda; puoi scegliere una vista iniziale fissa oppure **riprendere l’ultima vista usata**. Il Mese usa solo le 4/5/6 settimane realmente necessarie. Nelle viste Mese e Settimana uno swipe breve cambia soltanto periodo; uno swipe lungo da sinistra verso destra torna alla Dashboard, senza confondersi con la navigazione del calendario. Sono supportati fino a 8 calendari ICS e festività italiane facoltative. La vista Anno sfrutta lo spazio disponibile sui desktop normali senza dilatarsi sui monitor ultrawide. Nella vista Settimana l'elenco dei calendari è un **drawer richiamabile**: quando è chiuso, i sette giorni usano tutta la larghezza disponibile. Gli eventi usano superfici molto leggere con colore della sorgente, ora, titolo e calendario di origine, così restano distinguibili senza trasformare la Settimana in un mosaico di card.
 
 La vista torna alla dashboard dopo un periodo configurabile di inattività.
 Il prossimo impegno può comparire in modo discreto sulla hero. Nella vista mese, quando un giorno contiene più eventi di quanti possano essere mostrati con calma, compare **“altri eventi”**: apre direttamente quel giorno invece di comprimere il calendario. I feed ICS sono
@@ -92,11 +90,7 @@ continuare a essere calcolati localmente quando la rete non è disponibile.
 
 ## Primo avvio
 
-Il benvenuto spiega perché esiste Istante e propone una breve configurazione
-guidata. Su tablet e display bassi la scheda si compatta per non uscire dal viewport. La guida passa attraverso tutti i controlli principali — raccolta,
-nuova frase, preferiti, meteo, calendario, timer, condivisione, schermo intero,
-impostazioni e radio — anche quando Meteo o Calendario non sono ancora
-configurati. La guida è solo una presentazione: non modifica preferenze, non richiede la posizione e non salva configurazioni. Se il Meteo manca mostra un esempio temporaneo; per il Calendario apre anche la vista reale e il pannello Le tue giornate. Può essere saltata o riaperta più avanti.
+Il benvenuto spiega perché esiste Istante e propone una breve visita guidata. Su tablet e display bassi la scheda si compatta per non uscire dal viewport. La guida presenta orologio, pensiero, meteo e luce della giornata, prossimo capitolo, biblioteca, nuova frase, preferiti, timer, Calendario, condivisione, schermo intero, impostazioni e player. Sui dispositivi touch mostra anche la zona destra dedicata alle gesture audio. Poi passa realmente al Calendario in vista Anno, presenta le tab delle viste e il pulsante Calendari. La guida non modifica preferenze: **l’unica configurazione disponibile nel wizard è la posizione**, utile per meteo, alba, tramonto e cielo. Se manca, il meteo viene comunque simulato durante la presentazione. Può essere saltata o riaperta più avanti.
 
 Su desktop con mouse o trackpad puoi attivare un **cursore personalizzato discreto** dalle impostazioni. È disattivato di default: puntino e anello reagiscono agli elementi interattivi e restano sopra ai pannelli aperti, mentre nei campi di testo continua a comparire il cursore nativo.
 

@@ -29,10 +29,12 @@ function create({getSettings,calendar,onChange}){
  document.querySelectorAll('[data-calendar-back]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault?.();show('dashboard',true);}));
  document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.view,true)));
  const controlTarget=e=>!!e.target.closest('button,a,input,select,textarea,[contenteditable=true],#radio-panel,.calendar-views,.calendar-toolbar,.view-dots,.bottom-bar');
- const hardCalendarTarget=e=>!!e.target.closest('dialog[open],input,select,textarea,[contenteditable=true],.calendar-toolbar,.view-dots');
- // Dashboard -> Calendar: broad horizontal swipe. Calendar -> Dashboard: only from the lower return zone.
- document.addEventListener('touchstart',e=>{if(hasModal()||e.touches.length!==1){touch=null;return;}const t=e.touches[0];if(current==='calendar'){if(!lowZone(t.clientY)||hardCalendarTarget(e)){touch=null;return;}}else if(controlTarget(e)){touch=null;return;}touch={x:t.clientX,y:t.clientY,at:Date.now(),view:current};},{passive:true,capture:true});
- document.addEventListener('touchend',e=>{if(!touch)return;const start=touch;touch=null;if(!e.changedTouches.length||hasModal())return;const t=e.changedTouches[0],dx=t.clientX-start.x,dy=t.clientY-start.y,elapsed=Date.now()-start.at;if(elapsed>2200||Math.abs(dx)<32||Math.abs(dx)<Math.abs(dy)*.86)return;let next='';if(start.view==='dashboard'&&dx<0&&calendarAvailable())next='calendar';else if(start.view==='calendar'&&dx>0)next='dashboard';if(next){suppressClickUntil=Date.now()+450;show(next);}},{passive:true});
+ const hardCalendarTarget=e=>!!e.target.closest('dialog[open],button,a,input,select,textarea,[contenteditable=true],.calendar-toolbar,.calendar-sidebar,.view-dots');
+ const calendarReturnDistance=()=>{const w=window.visualViewport?.width||innerWidth;return Math.max(170,Math.min(300,w*.42));};
+ // Dashboard -> Calendar keeps the short page swipe. In Calendar, only a long right swipe returns home;
+ // shorter month/week swipes are intentionally left to calendar.js so they only change period.
+ document.addEventListener('touchstart',e=>{if(hasModal()||e.touches.length!==1){touch=null;return;}const t=e.touches[0];if(current==='calendar'){if(hardCalendarTarget(e)){touch=null;return;}}else if(controlTarget(e)){touch=null;return;}touch={x:t.clientX,y:t.clientY,at:Date.now(),view:current};},{passive:true,capture:true});
+ document.addEventListener('touchend',e=>{if(!touch)return;const start=touch;touch=null;if(!e.changedTouches.length||hasModal())return;const t=e.changedTouches[0],dx=t.clientX-start.x,dy=t.clientY-start.y,elapsed=Date.now()-start.at;if(elapsed>2200||Math.abs(dx)<32||Math.abs(dx)<Math.abs(dy)*.86)return;let next='';if(start.view==='dashboard'&&dx<0&&calendarAvailable())next='calendar';else if(start.view==='calendar'&&dx>=calendarReturnDistance())next='dashboard';if(next){suppressClickUntil=Date.now()+450;show(next);}},{passive:true});
  document.addEventListener('touchcancel',()=>touch=null,{passive:true});
  document.addEventListener('click',e=>{if(Date.now()<suppressClickUntil){e.preventDefault();e.stopImmediatePropagation();}},{capture:true});
  // Optional mouse drag mirrors touch but keeps the bottom-zone rule in Calendar.
