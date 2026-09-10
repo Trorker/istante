@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.13.7 — 10 settembre 2026
+
+- Timer: respiro reso nettamente più visibile con un alone radiale che non viene tagliato dal contenitore della modale; colori derivati dall’accento del tema con una sfumatura calda coerente con la palette di Istante.
+- Timer: eliminato completamente il gruppo **Durate rapide**; la durata si imposta direttamente dal quadrante.
+- Timer tablet: modale accorciata e ricomposta senza la riga dei preset, con layout landscape aggiornato per non lasciare spazi vuoti e ridurre la necessità di scroll.
+
 ## 3.13.6 — 10 settembre 2026
 
 - Timer: alone respirante reso più evidente; eliminata la progress bar separata sotto il cerchio, lasciando l’avanzamento soltanto sull’anello circolare.
