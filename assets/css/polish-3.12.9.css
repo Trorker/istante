@@ -2,7 +2,7 @@
 
 /* Typography scope: Excalifont can be editorial everywhere or Calendar-only. */
 html[data-font-style="excalifont"][data-font-scope="calendar"]{--serif:"Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,Georgia,serif}
-html[data-font-style="excalifont"][data-font-scope="all"] :is(.quote-wrap blockquote,.panel-head h2,.welcome-content h2,.tour-card h2,.goal-title,#goal-dialog-title,.library-phrase-text,.collection-card>strong,.timer-orbit strong,.timer-page-orbit strong){font-family:"Excalifont","Segoe Print","Bradley Hand",cursive!important}
+html[data-font-style="excalifont"][data-font-scope="all"] :is(.quote-wrap blockquote,.panel-head h2,.welcome-content h2,.tour-card h2,.goal-title,#goal-dialog-title,.library-phrase-text,.collection-card>strong,.timer-orbit strong){font-family:"Excalifont","Segoe Print","Bradley Hand",cursive!important}
 html[data-font-style="excalifont"] #calendar-view :is(.calendar-period-title,.calendar-mini h2 button,.calendar-day-date-number,.calendar-day-weekday,.calendar-day-month,.calendar-agenda-day h2,.week-event-title,.calendar-event){font-family:"Excalifont","Segoe Print","Bradley Hand",cursive!important}
 html[data-font-style="excalifont"] #calendar-view .calendar-brand-name{font-family:var(--serif)!important}
 
@@ -58,16 +58,16 @@ html[data-font-style="excalifont"] #calendar-view .calendar-brand-name{font-fami
 .virtual-timer{position:fixed;inset:0;z-index:12;background:var(--bg);color:var(--ink);overflow:hidden;transform:translateX(-100%);opacity:0;transition:transform .34s cubic-bezier(.22,.8,.24,1),opacity .28s ease;contain:layout paint;touch-action:pan-y}
 .view-timer .virtual-timer{transform:translateX(0);opacity:1}
 .view-timer #app-shell{transform:translateX(9%);opacity:0;pointer-events:none}
-.timer-page-shell{width:min(100%,1500px);height:var(--view-h,100dvh);margin:0 auto;padding:clamp(14px,2vw,30px) clamp(18px,3vw,50px) max(38px,calc(env(safe-area-inset-bottom) + 30px));display:grid;grid-template-rows:auto 1fr auto;overflow:hidden}
-.timer-page-header{display:flex;align-items:center;justify-content:space-between}.timer-page-back .icon{transform:rotate(180deg)}
-.timer-page-main{min-height:0;display:grid;place-items:center;align-content:center;gap:18px;text-align:center}.timer-page-heading{max-width:620px}.timer-page-heading h1{font:400 clamp(30px,4vw,58px)/1.02 var(--serif);letter-spacing:-.04em}.timer-page-heading p:last-child{margin-top:8px;color:var(--muted);font-size:12px}
-.timer-page-orbit{--timer-progress:0%;position:relative;width:min(45vh,390px);height:min(45vh,390px);min-width:230px;min-height:230px;border-radius:50%;display:grid;place-items:center;align-content:center;gap:8px;background:conic-gradient(var(--accent) var(--timer-progress),color-mix(in srgb,var(--line) 68%,transparent) 0);box-shadow:0 30px 90px color-mix(in srgb,var(--ink) 5%,transparent)}
-.timer-page-orbit:before{content:"";position:absolute;inset:9px;border-radius:50%;background:var(--bg);border:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
-.timer-page-orbit>*{position:relative;z-index:1}.timer-page-orbit strong{font:400 clamp(54px,8vw,112px)/1 var(--serif);letter-spacing:-.06em;font-variant-numeric:tabular-nums}.timer-page-orbit span{font-size:11px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
-.timer-page-track{width:min(480px,70vw);height:5px;border-radius:999px;background:color-mix(in srgb,var(--line) 78%,transparent);overflow:hidden}.timer-page-track i{display:block;height:100%;width:0;background:var(--accent);border-radius:inherit;transition:width .35s linear}
-.timer-page-controls{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap}.timer-page-footer{text-align:center;color:var(--faint);font-size:10px}
-.timer-page[data-state="running"] .timer-page-orbit{animation:timer-breathe 2.8s ease-in-out infinite}.timer-page[data-state="paused"] .timer-page-orbit{filter:saturate(.55)}
-@media (prefers-reduced-motion:reduce){.virtual-timer,.timer-page-orbit{transition:none!important;animation:none!important}}
+
+
+
+
+
+
+
+
+
+@media (prefers-reduced-motion:reduce){.virtual-timer{transition:none!important;animation:none!important}}
 
 /* Three-view switch: current page is visible but intentionally disabled. */
 .view-dots button:disabled{cursor:default!important}.view-dots button:disabled span{width:17px!important;background:var(--accent)!important;opacity:1!important}
@@ -126,7 +126,7 @@ html[data-font-style="excalifont"] #calendar-view .calendar-brand-name{font-fami
 @media (max-width:760px){
  .phrase-library-tools{grid-template-columns:minmax(120px,.7fr) minmax(0,1.3fr)!important;grid-template-areas:"current searchrow" "tabs tabs"!important;gap:8px!important}.library-search-row{grid-template-columns:minmax(0,1fr) auto!important}.library-collections-button span:last-child{display:none!important}.library-collections-button{width:38px!important;min-width:38px!important;padding:0!important;display:grid!important;place-items:center!important}
  .collection-library-toolbar{grid-template-columns:1fr!important;gap:9px!important;padding-inline:20px!important}.collection-status-filters{justify-self:start!important;max-width:100%!important;overflow-x:auto!important}
- .timer-page-heading{display:none}.timer-page-orbit{width:min(58vh,310px);height:min(58vh,310px)}
+ 
 }
 
 /* Final production refinements: keep orbit geometry stable across engines. */

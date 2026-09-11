@@ -27,8 +27,11 @@
   // The four pieces intentionally use different musical structures: a slow
   // breathing swell, sparse meditation bells, nocturnal chords and soft waves.
   const MELODY_PATTERNS={
-    aurora:{roots:[45,52,48,50],top:[64,67,69,67],tone:.62},
-    vetro:{bells:[76,83,79,86,81,88,83,90],drone:[36,43],tone:.66},
+    // Guided 4-4-6 breathing: 4 s inhale, 4 s hold, 6 s exhale.
+    // Two complete cycles fit the 28-second loop without an audible seam.
+    aurora:{root:45,fifth:52,air:57,cycle:14,tone:.64},
+    // Meditation intentionally stays in the low/mid register to avoid sharp tones.
+    vetro:{bells:[48,52,50,55,47],drone:[29,36],tone:.62},
     notturno:{chords:[[45,52,57],[43,50,55],[40,47,52],[38,45,50]],top:[64,62,59,57],tone:.72},
     orizzonte:{roots:[38,45,40,47],fifths:[57,64,59,66],tone:.58}
   };
@@ -100,33 +103,36 @@
       let l=0,r=0;
 
       if(kind==='aurora'){
-        // "Respiro lento": a ten-second rise/fall (~6 cycles per minute),
-        // used only as a musical pacing metaphor, not as health guidance.
-        const cycle=10;
-        const phase=(t%cycle)/cycle;
-        const breathe=.10+.90*Math.pow(Math.sin(Math.PI*phase),1.35);
-        const section=Math.floor(t/cycle)%pattern.roots.length;
-        const root=midi(pattern.roots[section]);
-        const top=midi(pattern.top[section]);
-        const drift=.5+.5*Math.sin(t*.17);
-        const base=(Math.sin(tau*root*t)*.34+Math.sin(tau*root*1.5*t)*.19+Math.sin(tau*top*t)*.10)*breathe;
-        const air=Math.sin(tau*(top*2)*t)*.018*drift*breathe;
-        l=(base+air)*pattern.tone;
-        r=((Math.sin(tau*root*1.0012*t)*.33+Math.sin(tau*root*1.499*t)*.20+Math.sin(tau*top*.999*t)*.105)*breathe+air*.8)*pattern.tone;
+        // "Respiro lento": audible guide for the 4-4-6 relaxation technique.
+        // Rise for 4 s (inhale), stay open for 4 s (hold), release for 6 s (exhale).
+        const cycle=pattern.cycle;
+        const phase=t%cycle;
+        let breathe;
+        if(phase<4)breathe=.07+.93*smooth01(phase/4);
+        else if(phase<8){
+          const hold=(phase-4)/4;
+          breathe=.985+.015*Math.sin(Math.PI*hold);
+        }else breathe=.07+.93*(1-smooth01((phase-8)/6));
+        const root=midi(pattern.root),fifth=midi(pattern.fifth),air=midi(pattern.air);
+        const body=(Math.sin(tau*root*t)*.37+Math.sin(tau*fifth*t)*.18)*breathe;
+        const halo=Math.sin(tau*air*t)*.042*Math.pow(breathe,1.55);
+        l=(body+halo*.70)*pattern.tone;
+        r=((Math.sin(tau*root*1.001*t)*.36+Math.sin(tau*fifth*.999*t)*.19)*breathe+halo)*pattern.tone;
       }else if(kind==='vetro'){
-        // "Meditazione": a low open drone with a distant bowl every four seconds.
-        const bellStep=4;
+        // "Meditazione": low drone and very soft bowl tones, intentionally
+        // avoiding the high partials used by the older version.
+        const bellStep=5;
         const bellIndex=Math.floor(t/bellStep);
         const phase=(t%bellStep)/bellStep;
         const root=midi(pattern.drone[Math.floor(t/10)%pattern.drone.length]);
-        const bedSwell=.28+.72*Math.pow(Math.sin(Math.PI*((t%10)/10)),.7);
-        const bed=(Math.sin(tau*root*t)*.20+Math.sin(tau*root*2.002*t)*.055)*bedSwell;
+        const bedSwell=.34+.66*Math.pow(Math.sin(Math.PI*((t%10)/10)),.72);
+        const bed=(Math.sin(tau*root*t)*.24+Math.sin(tau*root*1.5*t)*.045)*bedSwell;
         const note=midi(pattern.bells[bellIndex%pattern.bells.length]);
-        const env=softBell(phase,6.8);
-        const bowl=(Math.sin(tau*note*t)+.24*Math.sin(tau*note*2.006*t)+.08*Math.sin(tau*note*3.997*t))*env*.22;
+        const env=softBell(phase,5.7);
+        const bowl=(Math.sin(tau*note*t)+.13*Math.sin(tau*note*1.5*t)+.035*Math.sin(tau*note*2.01*t))*env*.17;
         const side=bellIndex%2===0;
-        l=(bed+bowl*(side?.72:1))*pattern.tone;
-        r=(bed*.97+bowl*(side?1:.72))*pattern.tone;
+        l=(bed+bowl*(side?.74:1))*pattern.tone;
+        r=(bed*.98+bowl*(side?1:.74))*pattern.tone;
       }else if(kind==='notturno'){
         // Keep the piece the user preferred: slow low-register chord breathing.
         const chordSeconds=5;
@@ -169,7 +175,10 @@
 
     // Fade the loop seam without changing the characteristic envelope.
     const seam=Math.min(Math.round(sampleRate*.24),Math.floor(count/5));
-    const normalizer=Math.min(1,.66/peak);
+    // The older buffers were intentionally conservative and became too quiet on
+    // phone speakers. Apply per-piece make-up gain while retaining ample headroom.
+    const makeUp={aurora:1.72,vetro:1.86,notturno:1.32,orizzonte:1.42}[kind]||1;
+    const normalizer=Math.min(makeUp,.74/peak);
     for(let i=0;i<count;i++){
       let fade=1;
       if(i<seam)fade=Math.sin((i/seam)*Math.PI/2);
@@ -207,7 +216,7 @@
     const level=(source=activeSource||currentSource(),settings=getSettings())=>{
       if(muted)return 0;
       const volume=source==='melody'?settings.melodyVolume:settings.ambientVolume;
-      return Math.pow(volume/100,1.6)*(source==='melody'?.82:.9);
+      return source==='melody'?Math.pow(volume/100,1.35)*1.08:Math.pow(volume/100,1.6)*.9;
     };
     const setPressed=(id,value)=>$(id)?.setAttribute('aria-pressed',String(value));
 
@@ -260,8 +269,11 @@
       }
 
       const unsupported='Web Audio non disponibile in questo browser. La radio resta utilizzabile.';
-      if($('ambient-status'))$('ambient-status').textContent=!supported?unsupported:(source==='ambient'&&message?message:'Generato sul dispositivo. Nessun file audio, nessuna connessione.');
-      if($('melody-status'))$('melody-status').textContent=!supported?unsupported:(source==='melody'&&message?message:'Generata sul dispositivo. Nessun file audio, nessuna connessione.');
+      for(const sourceId of ['ambient','melody']){
+        const status=$(sourceId+'-status');if(!status)continue;
+        const text=!supported?unsupported:(source===sourceId&&message?message:'');
+        status.textContent=text;status.hidden=!text;
+      }
 
       if(!offline)return;
       if(mini)mini.dataset.state=playing?'playing':loading?'loading':'paused';
@@ -364,10 +376,12 @@
         if(id!==ticket)return false;
 
         const sampleRate=context.sampleRate;
-        const length=Math.round(sampleRate*(source==='melody'?20:12));
+        const melodyType=getSettings().melodyType;
+        const seconds=source==='melody'?(melodyType==='aurora'?28:20):12;
+        const length=Math.round(sampleRate*seconds);
         const buffer=context.createBuffer(2,length,sampleRate);
         if(source==='melody'){
-          const channels=generateMelody(getSettings().melodyType,sampleRate,length);
+          const channels=generateMelody(melodyType,sampleRate,length);
           buffer.copyToChannel(channels[0],0);
           buffer.copyToChannel(channels[1],1);
         }else{
@@ -389,9 +403,9 @@
         lowPass.frequency.value=source==='melody'?5200:{pink:6500,brown:1600,rain:9000,wind:1200}[getSettings().ambientType];
         gain.gain.setValueAtTime(0,context.currentTime);
         gain.gain.linearRampToValueAtTime(level(source),context.currentTime+.6);
-        compressor.threshold.value=-12;
-        compressor.knee.value=18;
-        compressor.ratio.value=3;
+        compressor.threshold.value=-8;
+        compressor.knee.value=16;
+        compressor.ratio.value=2.2;
         compressor.attack.value=.02;
         compressor.release.value=.3;
         sourceNode.connect(highPass);

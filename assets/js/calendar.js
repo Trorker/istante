@@ -1,6 +1,6 @@
 (function(){'use strict';
 function create({getSettings,saveSetting,notify}){
-const $=id=>document.getElementById(id),C=window.IstanteCalendarCore,KEY='istante.original1.calendars.v1',COLORS=['#a8b999','#c8a783','#8eaab6','#b899b2','#c4b97f','#8db7aa','#b99d96','#9d9bb8'];
+const $=id=>document.getElementById(id),C=window.IstanteCalendarCore,KEY='istante.original1.calendars.v1',COLORS=['#a8b999','#c8a783','#8eaab6','#b899b2','#c4b97f','#8db7aa','#b99d96','#9d9bb8'],HOLIDAY_COLOR='#b45f63';
 let settings=getSettings();
 let sources=[],cursor=new Date(),view='month',events=[],warnings=[],worker=null,workerTimer=0,dayCache=new Map(),ticket=0,refreshing=false,refreshAt=0,from=0,to=0,lastFocus=null;
 const VIEW_KEY='istante.original1.calendar.view.v1',VALID_VIEWS=['year','month','week','day','agenda'];
@@ -25,8 +25,9 @@ function eventRange(e,{includeEndDate=false}={}){
  return includeEndDate?shortDate.format(e.start)+' \u00b7 '+start+' \u2192 '+shortDate.format(e.end)+' \u00b7 '+end:start+' \u2192 '+shortDate.format(e.end)+' \u00b7 '+end;
 }
 function sourceOf(e){return sources.find(x=>x.id===e.sourceId)||(e.sourceId==='cal-festivita-it'?{name:'Festivit\u00e0 italiane',color:4}:{name:'Calendario',color:0});}
+function colorOf(e,src=sourceOf(e)){return e.sourceId==='cal-festivita-it'?HOLIDAY_COLOR:COLORS[src.color]||COLORS[0];}
 function detail(e){const src=sourceOf(e);$('cal-event-title').textContent=e.title;$('cal-event-source').textContent=src.name+(e.recurring?' \u00b7 Ricorrente':'');$('cal-event-date').textContent=e.allDay?fullDate.format(e.start)+(dayKey(e.start)!==dayKey(e.end-1)?' \u2014 '+fullDate.format(e.end-1):'')+' \u00b7 Tutto il giorno':fullDate.format(e.start)+' \u00b7 '+time.format(e.start)+(e.end>e.start?' \u2014 '+(dayKey(e.start)!==dayKey(e.end)?fullDate.format(e.end)+' \u00b7 ':'')+time.format(e.end):'');$('cal-event-place').textContent=e.location;$('cal-event-place').hidden=!e.location;$('cal-event-description').textContent=e.description;$('cal-event-link').hidden=!e.url;if(e.url)$('cal-event-link').href=e.url;open('cal-event-dialog');}
-function eventButton(e,agenda=false,context='default'){const src=sourceOf(e),b=button(agenda?'calendar-agenda-row':context==='week'?'calendar-event calendar-week-event':'calendar-event','',()=>detail(e)),shownTime=agenda?eventRange(e,{includeEndDate:true}):context==='week'?eventRange(e):eventTime(e);b.style.setProperty('--event-color',COLORS[src.color]);b.setAttribute('aria-label',shownTime+' '+e.title+' \u00b7 '+src.name);b.dataset.istanteTooltip=shownTime+' \u00b7 '+e.title+' \u00b7 '+src.name;
+function eventButton(e,agenda=false,context='default'){const src=sourceOf(e),b=button(agenda?'calendar-agenda-row':context==='week'?'calendar-event calendar-week-event':'calendar-event','',()=>detail(e)),shownTime=agenda?eventRange(e,{includeEndDate:true}):context==='week'?eventRange(e):eventTime(e);b.style.setProperty('--event-color',colorOf(e,src));b.setAttribute('aria-label',shownTime+' '+e.title+' \u00b7 '+src.name);b.dataset.istanteTooltip=shownTime+' \u00b7 '+e.title+' \u00b7 '+src.name;
  if(agenda){b.append(node('time','calendar-agenda-time',shownTime));const info=node('span','event-info');info.append(node('strong','',e.title),node('small','',src.name+(e.location?' \u00b7 '+e.location:'')));b.append(info);}else if(context==='week'){const top=node('span','week-event-top'),dot=node('i','week-event-dot'),eventClock=node('span','event-time',shownTime);top.append(dot,eventClock);b.append(top,node('strong','week-event-title',e.title),node('small','week-event-source',src.name+(e.location?' \u00b7 '+e.location:'')));}else{b.append(node('span','event-time',shownTime),document.createTextNode(e.title));}return b;}
 function goDate(d,mode='day'){cursor=new Date(d);cursor.setHours(12,0,0,0);view=mode;rememberView();load();}
 function monthEventLimit(){const w=innerWidth||1024,h=innerHeight||768;if(w<=520||h<=520)return 1;return 2;}
@@ -38,7 +39,7 @@ function day(container){const d=new Date(from),wrap=node('section','calendar-day
 function render(){title();const root=$('cal-content');root.dataset.view=view;root.replaceChildren();const empty=!sources.length&&!getSettings().calendarHolidays;$('calendar-view').classList.toggle('calendar-is-empty',empty);$('cal-empty').hidden=true;$('cal-empty-add').hidden=!empty;if(view==='year')year(root);else if(view==='month')month(root);else if(view==='week')week(root);else if(view==='day')day(root);else agenda(root);$('cal-warnings').hidden=!warnings.length;$('cal-warning-list').replaceChildren();warnings.forEach(w=>$('cal-warning-list').append(node('li','',w)));renderSources();}
 function finish(id,result){if(id!==ticket)return;dayCache.clear();$('cal-content').setAttribute('aria-busy','false');document.querySelector('.calendar-main').classList.remove('is-loading');if(result.error){warnings=[result.error];events=[];}else{events=result.events;warnings=result.warnings;}render();}
 function load(){range();title();const id=++ticket;$('cal-content').setAttribute('aria-busy','true');document.querySelector('.calendar-main').classList.add('is-loading');clearTimeout(workerTimer);if(worker)worker.terminate();worker=null;
- if(typeof Worker==='function'&&location.protocol!=='file:'){try{worker=new Worker('assets/js/calendar-worker.js?v=3.13.20');const currentWorker=worker;workerTimer=setTimeout(()=>{currentWorker.terminate();finish(id,{error:'Il calendario richiede troppo tempo. Usa un file pi\u00f9 piccolo o restringi la vista.'});},6000);worker.onmessage=e=>{clearTimeout(workerTimer);currentWorker.terminate();finish(id,e.data);};worker.onerror=()=>{clearTimeout(workerTimer);currentWorker.terminate();worker=null;fallback();};worker.postMessage({id,sources:withHolidays(from,to),from,to});return;}catch(_){} }
+ if(typeof Worker==='function'&&location.protocol!=='file:'){try{worker=new Worker('assets/js/calendar-worker.js?v=3.13.22');const currentWorker=worker;workerTimer=setTimeout(()=>{currentWorker.terminate();finish(id,{error:'Il calendario richiede troppo tempo. Usa un file pi\u00f9 piccolo o restringi la vista.'});},6000);worker.onmessage=e=>{clearTimeout(workerTimer);currentWorker.terminate();finish(id,e.data);};worker.onerror=()=>{clearTimeout(workerTimer);currentWorker.terminate();worker=null;fallback();};worker.postMessage({id,sources:withHolidays(from,to),from,to});return;}catch(_){} }
  function fallback(){const input=withHolidays(from,to),rangeFrom=from,rangeTo=to;setTimeout(()=>{if(id!==ticket)return;try{finish(id,C.expand(input,rangeFrom,rangeTo));}catch(e){finish(id,{error:e.message});}},0);}fallback();
 }
 function renderSources(){
@@ -55,7 +56,7 @@ function renderSources(){
   if(typeof saveSetting==='function'&&!saveSetting('calendarHolidays',next)){holidayCheck.checked=!next;message('Preferenza non salvata.');return;}
   settings=getSettings();load();queueUpcoming();message(next?'Festività italiane attive.':'Festività italiane nascoste.');
  };
- holidayLabel.style.setProperty('--event-color',COLORS[4]);
+ holidayLabel.style.setProperty('--event-color',HOLIDAY_COLOR);
  holidayLabel.append(holidayCheck,node('i'),node('span','','Festività italiane'));
  list.append(holidayLabel);
 
@@ -146,7 +147,7 @@ function updateUpcoming(){
  const now=Date.now(),a=+new Date(new Date().setHours(0,0,0,0)),b=now+90*86400000,input=withHolidays(a,b);
  const finish=result=>{if(v!==upcomingVersion)return;const candidates=(result.events||[]).filter(e=>e.end>now||e.start>=now);nextEvent=candidates[0]||null;upcomingRefresh=Date.now();renderUpcoming();};
  if(typeof Worker==='function'&&location.protocol!=='file:'){
-  try{const w=new Worker('assets/js/calendar-worker.js?v=3.13.20');upcomingWorker=w;const timeout=setTimeout(()=>{w.terminate();finish({events:[]});},6000);w.onmessage=e=>{clearTimeout(timeout);w.terminate();finish(e.data);};w.onerror=()=>{clearTimeout(timeout);w.terminate();try{finish(C.expand(input,a,b));}catch(_){finish({events:[]});}};w.postMessage({id:v,sources:input,from:a,to:b});return;}catch(_){}
+  try{const w=new Worker('assets/js/calendar-worker.js?v=3.13.22');upcomingWorker=w;const timeout=setTimeout(()=>{w.terminate();finish({events:[]});},6000);w.onmessage=e=>{clearTimeout(timeout);w.terminate();finish(e.data);};w.onerror=()=>{clearTimeout(timeout);w.terminate();try{finish(C.expand(input,a,b));}catch(_){finish({events:[]});}};w.postMessage({id:v,sources:input,from:a,to:b});return;}catch(_){}
  }
  try{finish(C.expand(input,a,b));}catch(_){finish({events:[]});}
 }

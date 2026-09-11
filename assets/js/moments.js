@@ -39,12 +39,13 @@
    $('#timer-finish-description').dataset.istanteTooltip=s.timerAction==='radio'?radio.station().name:ending;
   }
   function hint(text){$('#timer-audio-hint').textContent=text;$('#timer-audio-hint').hidden=!text;}
-  function startDuring(){
+  function startDuring(forceAmbient=false){
    const s=timerSettings();if(duringSuppressed)return;
    if(s.timerDuring==='ambient'&&s.ambientEnabled){
-    const a=ambient.inspect();if(a.playing||a.loading)return;
+    const a=ambient.inspect();if(!forceAmbient&&(a.playing||a.loading)&&a.source==='ambient')return;
+    if(forceAmbient)ambient.stop(true);
     ambientOwned=true;duringOwned=false;scheduleOwned=false;
-    void ambient.start('timer').then(ok=>{if(!ok&&state.state==='running')hint('Il suono non e stato autorizzato. Il timer continua.');});return;
+    void ambient.start('timer','ambient').then(ok=>{if(!ok&&state.state==='running')hint('Il suono non e stato autorizzato. Il timer continua.');});return;
    }
    if(s.timerDuring!=='radio'||!s.radioEnabled||!radio.station().id)return;
    if(radio.getState().wantsPlay)return;
@@ -90,7 +91,11 @@
   function selectTimerDuring(kind){
    if(!timerDuringAvailable(kind)||state.state==='done')return;
    if(state.state==='idle'){draftOptions=T.timerOptions({...draftOptions,timerDuring:kind});render();return;}
-   if(kind===timerSettings().timerDuring&&!duringSuppressed)return;
+   if(kind===timerSettings().timerDuring&&!duringSuppressed){
+    if(state.state==='running'&&kind==='ambient')startDuring(true);
+    else if(state.state==='running'&&kind==='radio'&&!radio.getState().wantsPlay){void radio.unlock();startDuring();}
+    return;
+   }
    // A choice made from the timer is explicit: it replaces the source owned by
    // this timer, persists with the running session and takes effect immediately.
    stopDuring();
@@ -109,7 +114,7 @@
    if(state.state==='running'){
     void unlockSound();
     if(kind==='radio')void radio.unlock();
-    startDuring();
+    startDuring(kind==='ambient');
    }
    render();
   }
@@ -125,7 +130,7 @@
   }
   document.querySelectorAll('[data-timer-during]').forEach(b=>b.addEventListener('click',()=>selectTimerDuring(b.dataset.timerDuring)));
   function render(){
-   const s=getSettings(),ms=T.remaining(state),active=state.state!=='idle';$('#timer-open').hidden=!s.timerEnabled;$('#timer-chip').hidden=!s.timerEnabled||!active;$('#timer-chip').dataset.state=state.state;
+   const s=getSettings(),ms=T.remaining(state),active=state.state!=='idle';document.querySelector('.dashboard-lower')?.classList.toggle('timer-enabled',s.timerEnabled);$('#timer-open').hidden=!s.timerEnabled;$('#timer-chip').hidden=!s.timerEnabled||!active;$('#timer-chip').dataset.state=state.state;
    $('#timer-duration').hidden=active;const timerPresets=$('#timer-presets');if(timerPresets)timerPresets.hidden=active;document.querySelectorAll('[data-duration]').forEach(b=>b.disabled=active);$('#timer-running').hidden=!active;$('#timer-session-options').hidden=false;$('#timer-reset').hidden=!active;$('#timer-dialog').dataset.state=state.state;$('#timer-reset').textContent=state.state==='done'?'Chiudi':'Annulla';
    $('#timer-state-label').textContent=state.state==='paused'?'Il tempo pu\u00f2 aspettare.':state.state==='done'?'Un momento per te.':'Il tuo momento, in corso';
    const text=T.display(ms);$('#timer-readout').textContent=text;$('#timer-chip-time').textContent=state.state==='done'?'Tempo finito':text;$('#timer-chip-label').textContent=state.state==='paused'?'In pausa':state.state==='done'?'Prenditi un respiro':'Un tempo per te';

@@ -51,10 +51,11 @@ button[aria-pressed=true].icon-button{color:var(--accent);background:var(--accen
 .manage-stations-button,.station-add-details>summary{display:flex;align-items:center;gap:10px}
 .manage-stations-button .icon,.station-add-details .icon{width:19px;height:19px}
 .station-manager-panel{width:600px}
+.station-manager-intro{margin:6px 0 0;max-width:34rem}
 .station-add-details{padding:14px 0;margin-bottom:10px;border-block:1px solid var(--line)}
 .station-add-details>summary{cursor:pointer;min-height:35px;color:var(--accent);font-size:14px;list-style:none}
 .station-add-details>summary::-webkit-details-marker{display:none}
-.station-add-details form{padding:10px 0}
+.station-add-details form{padding:10px 0}.station-add-details form>.primary-button{margin-top:20px}
 .station-list-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:18px 0 10px}
 .station-list-tools .select-search-bar{flex:1 1 200px;margin:0}
 .station-list-tools .text-button{display:flex;align-items:center;gap:6px;font-size:12px}

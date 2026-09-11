@@ -48,14 +48,16 @@
   c.textAlign='left';let left=x-width/2;for(const ch of letters){c.fillText(ch,left,y);left+=c.measureText(ch).width+spacing;}
  }
  function moon(c,x,y,r,phase,P){
-  // Orthographic disk: the visible terminator follows the illumination angle.
-  // The illuminated hemisphere changes side between waxing and waning.
+  // Orthographic phase plus a subtle deterministic lunar surface. The texture
+  // stays visible in earthshine, so a new moon never looks like a flat circle.
   const p=Number.isFinite(phase)?((phase%1)+1)%1:.5;
   const illumination=-Math.cos(TAU*p),side=p<=.5?1:-1;
   c.save();disk(c,x,y,r);c.clip();
-  c.fillStyle=P.background;c.fillRect(x-r,y-r,r*2,r*2);
-  const earth=c.createRadialGradient(x-r*.22,y-r*.28,0,x,y,r*1.3);
-  earth.addColorStop(0,P.moon+'28');earth.addColorStop(1,P.moon+'0c');c.fillStyle=earth;c.fillRect(x-r,y-r,r*2,r*2);
+
+  const shadow=c.createRadialGradient(x-r*.28,y-r*.32,r*.05,x,y,r*1.15);
+  shadow.addColorStop(0,P.moon+'32');shadow.addColorStop(.62,P.moon+'20');shadow.addColorStop(1,P.moon+'10');
+  c.fillStyle=shadow;c.fillRect(x-r,y-r,r*2,r*2);
+
   c.beginPath();
   const steps=128;
   for(let i=0;i<=steps;i++){
@@ -63,33 +65,74 @@
    if(i===0)c.moveTo(x+xx,y+yy);else c.lineTo(x+xx,y+yy);
   }
   for(let i=steps;i>=0;i--){const yy=-r+i*2*r/steps,xx=-side*illumination*Math.sqrt(Math.max(0,r*r-yy*yy));c.lineTo(x+xx,y+yy);}
-  c.closePath();const fill=c.createRadialGradient(x+side*r*.3,y-r*.3,0,x,y,r*1.5);
-  fill.addColorStop(0,P.moon);fill.addColorStop(1,P.moon+'b3');c.fillStyle=fill;c.fill();c.restore();
-  c.save();c.globalAlpha=.18;c.strokeStyle=P.moon;c.lineWidth=.8;disk(c,x,y,r);c.stroke();c.restore();
+  c.closePath();
+  const light=c.createRadialGradient(x+side*r*.28,y-r*.34,r*.04,x,y,r*1.45);
+  light.addColorStop(0,P.moon);light.addColorStop(.62,P.moon+'e8');light.addColorStop(1,P.moon+'a8');c.fillStyle=light;c.fill();
+
+  // Broad maria break the perfect disk before the smaller crater marks.
+  const maria=[[-.30,-.08,.29,.18,.18],[.18,-.31,.20,.13,-.35],[.27,.20,.24,.16,.32],[-.12,.35,.18,.11,-.18]];
+  c.save();c.fillStyle=P.background;c.globalAlpha=.12;
+  for(const [ox,oy,rx,ry,rot] of maria){c.beginPath();c.ellipse(x+ox*r,y+oy*r,rx*r,ry*r,rot,0,TAU);c.fill();}
+  c.restore();
+
+  const craters=[[-.42,-.34,.10],[.05,-.43,.075],[.38,-.12,.12],[-.18,.04,.065],[.12,.18,.095],[-.38,.31,.075],[.34,.39,.055]];
+  for(const [ox,oy,rr] of craters){
+   const cx=x+ox*r,cy=y+oy*r,rad=rr*r;
+   c.save();c.globalAlpha=.13;c.fillStyle=P.background;disk(c,cx,cy,rad);c.fill();
+   c.globalAlpha=.18;c.strokeStyle=P.moon;c.lineWidth=Math.max(.45,r*.018);disk(c,cx-rad*.12,cy-rad*.10,rad*.92);c.stroke();c.restore();
+  }
+
+  // Fine grain is seeded so exported cards are stable across redraws.
+  const rand=seeded(7349);c.save();c.fillStyle=P.moon;
+  for(let i=0;i<44;i++){
+   const a=rand()*TAU,d=Math.sqrt(rand())*r*.88,rr=.25+rand()*.55;
+   c.globalAlpha=.035+rand()*.055;disk(c,x+Math.cos(a)*d,y+Math.sin(a)*d,rr);c.fill();
+  }
+  c.restore();c.restore();
+
+  c.save();c.globalAlpha=.30;c.strokeStyle=P.moon;c.lineWidth=Math.max(.65,r*.025);disk(c,x,y,r);c.stroke();c.restore();
  }
- function sky(c,info,P,W,H,land,story){
-  if(info.capture&&window.IstanteSceneSnapshot.draw(c,info,W,H))return;
-  const x=W*.815,y=land?145:story?246:206,r=land?22:35;
-  const A=info.atmosphere||{kind:'neutral',orb:1,stars:1,clouds:0},kind=A.kind;
-  c.save();c.globalAlpha=A.orb;
-  haze(c,x,y,land?180:285,P.halo,W,H);haze(c,x-r,y-r,r*3,P.glow,W,H);
+ function celestialOrb(c,info,P,W,H,land,story,A){
+  if(info.celestialEnabled===false||A.orb<=0)return;
+  const x=W*.815,y=land?150:story?250:210,r=land?38:story?48:44;
+  c.save();
+  haze(c,x,y,land?220:330,P.halo,W,H);haze(c,x-r*.45,y-r*.45,r*4.1,P.glow,W,H);
   if(info.isDay){
-   for(const [radius,alpha]of [[r*1.43,.20],[r*2.10,.08]]){c.globalAlpha=alpha*A.orb;c.strokeStyle=P.sun;c.lineWidth=1;disk(c,x,y,radius);c.stroke();}
-   c.globalAlpha=.85*A.orb;const g=c.createRadialGradient(x-r*.3,y-r*.35,0,x,y,r*1.4);
-   g.addColorStop(0,P.sun);g.addColorStop(1,P.sun+'b3');c.fillStyle=g;disk(c,x,y,r);c.fill();
+   c.save();c.translate(x,y);c.strokeStyle=P.sun;c.lineCap='round';
+   for(let i=0;i<12;i++){
+    const a=i*TAU/12,inner=r*1.48,outer=r*(i%3===0?1.88:1.72);
+    c.globalAlpha=(i%3===0?.36:.22)*A.orb;c.lineWidth=Math.max(1,r*.035);
+    c.beginPath();c.moveTo(Math.cos(a)*inner,Math.sin(a)*inner);c.lineTo(Math.cos(a)*outer,Math.sin(a)*outer);c.stroke();
+   }
+   for(const [radius,alpha]of [[r*1.30,.26],[r*2.18,.09]]){c.globalAlpha=alpha*A.orb;c.lineWidth=Math.max(.8,r*.024);disk(c,0,0,radius);c.stroke();}
+   c.globalAlpha=.93*A.orb;
+   const g=c.createRadialGradient(-r*.30,-r*.34,r*.04,0,0,r*1.25);
+   g.addColorStop(0,'#fff4c9');g.addColorStop(.28,P.sun);g.addColorStop(1,P.sun+'a8');c.fillStyle=g;disk(c,0,0,r);c.fill();
+   c.globalAlpha=.15*A.orb;c.fillStyle=P.background;c.beginPath();c.ellipse(-r*.20,r*.18,r*.35,r*.12,-.45,0,TAU);c.fill();
+   c.restore();
   }else{
    c.globalAlpha=A.orb;moon(c,x,y,r,info.phase,P);
-   const rand=seeded(417);
+  }
+  c.globalAlpha=.23;c.strokeStyle=P.line;c.lineWidth=1;
+  c.beginPath();c.ellipse(W*.82,y+10,W*.48,H*.32,-.3,.05,Math.PI*.80);c.stroke();c.restore();
+ }
+ function sky(c,info,P,W,H,land,story){
+  const A=info.atmosphere||{kind:'neutral',orb:1,stars:1,clouds:0};
+  const captured=!!(info.capture&&window.IstanteSceneSnapshot.draw(c,info,W,H,{skipOrb:true}));
+  if(captured){celestialOrb(c,info,P,W,H,land,story,A);return;}
+  const x=W*.815,y=land?150:story?250:210,r=land?38:story?48:44;
+  if(!info.isDay){
+   const rand=seeded(417);c.save();
    for(let i=0;i<70;i++){
     const xx=50+rand()*(W-100),yy=110+rand()*Math.min(H*.75,1100);
-    if((xx>200&&xx<W-180&&yy>175)||Math.hypot(xx-x,yy-y)<r*1.6)continue;
+    if((xx>200&&xx<W-180&&yy>175)||Math.hypot(xx-x,yy-y)<r*1.8)continue;
     c.globalAlpha=(.14+rand()*.30)*A.stars;c.fillStyle=P.moon;disk(c,xx,yy,.6+rand()*.9);c.fill();
    }
+   c.restore();
   }
-  c.globalAlpha=.25;c.strokeStyle=P.line;c.lineWidth=1;
-  c.beginPath();c.ellipse(W*.82,y+10,W*.48,H*.32,-.3,.05,Math.PI*.80);c.stroke();c.restore();
   ambient(c,info,P,W,H);
   weather(c,A,P,W,H,land,story);
+  celestialOrb(c,info,P,W,H,land,story,A);
  }
  function seeded(seed){return()=>{seed=(Math.imul(1664525,seed)+1013904223)>>>0;return seed/4294967296;};}
  function ambient(c,info,P,W,H){

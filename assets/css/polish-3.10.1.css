@@ -58,10 +58,8 @@
  .moment-greeting{font-size:9px;margin-bottom:2px}.date-label{margin-bottom:3px!important}
  .quote-wrap blockquote{font-size:clamp(20px,5.2vh,27px)!important}.phrase-meta{margin-top:4px!important}
  
- .timer-slot:has(.timer-chip:not([hidden])){height:28px!important;flex-basis:28px!important;padding:1px 0 2px!important}
- .timer-chip{min-height:26px;max-width:min(420px,76vw)}.timer-chip .icon-button{width:28px;height:28px}.timer-chip-main{min-height:28px;padding-block:2px}
  
- .goal-configure{display:none}.goal-date{display:none!important}.progress-labels{font-size:8px}.progress-track{margin-top:3px!important}
+ .timer-chip{min-height:26px;max-width:min(420px,76vw)}.timer-chip .icon-button{width:28px;height:28px}.timer-chip-main{min-height:28px;padding-block:2px}.goal-date{display:none!important}.progress-labels{font-size:8px}.progress-track{margin-top:3px!important}
  #calendar-view .calendar-shell{height:var(--view-h,100dvh)!important;max-width:none!important;padding:7px 10px 22px!important}
  
  

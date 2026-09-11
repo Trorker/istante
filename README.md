@@ -1,6 +1,6 @@
 # Istante
 
-**Versione corrente: 3.13.20**  
+**Versione corrente: 3.13.22**  
 **Un momento, per te.**  
 Un progetto di **Ruslan Dzyuba**.
 
@@ -54,7 +54,7 @@ riempire lo schermo con un numero enorme di giorni.
 
 ## Musica, relax e timer
 
-Il mini player ha tre sorgenti: **Radio**, **Ambiente** e **Melodie**. La Radio supporta stazioni lo-fi e personali, preferiti, programmazioni multiple e scelta casuale; dalla gestione delle stazioni puoi anche **spostare una radio più in alto o più in basso** nell’ordine del catalogo. Ambiente genera rumore rosa, marrone, pioggia o vento. Melodie aggiunge quattro paesaggi sonori procedurali — **Respiro lento, Meditazione, Notturno e Onde lente** — generati sul dispositivo con Web Audio, senza file audio da scaricare. Respiro lento usa un'ampiezza ciclica molto lenta come riferimento musicale; Meditazione privilegia drone e rintocchi distanziati; Notturno conserva gli accordi profondi e quasi immobili; Onde lente usa swell alternati senza un battito marcato. Sui dispositivi touch le gesture audio sono attive di default nella sola zona destra della Dashboard: un doppio tap alterna Play/Pausa e uno swipe verticale modifica il volume di **10 punti esatti**. Le gesture possono essere disattivate dalle Impostazioni e non vengono mai applicate nel Calendario.
+Il mini player ha tre sorgenti: **Radio**, **Ambiente** e **Melodie**. La Radio supporta stazioni lo-fi e personali, preferiti, programmazioni multiple e scelta casuale; dalla gestione delle stazioni puoi anche **spostare una radio più in alto o più in basso** nell’ordine del catalogo. Ambiente genera rumore rosa, marrone, pioggia o vento. Melodie aggiunge quattro paesaggi sonori procedurali — **Respiro lento, Meditazione, Notturno e Onde lente** — generati sul dispositivo con Web Audio, senza file audio da scaricare. Le Melodie possono essere abilitate o disabilitate separatamente dalle Impostazioni. Respiro lento segue un ciclo guidato **4-4-6** (4 secondi di inspirazione, 4 di pausa piena, 6 di espirazione) come riferimento ritmico facoltativo; il livello delle melodie ha più margine sui diffusori piccoli e Meditazione resta volutamente nei registri bassi e morbidi; Notturno conserva gli accordi profondi e quasi immobili; Onde lente usa swell alternati senza un battito marcato. Sui dispositivi touch le gesture audio sono attive di default nella sola zona destra della Dashboard: un doppio tap alterna Play/Pausa e uno swipe verticale modifica il volume di **10 punti esatti**. Le gesture possono essere disattivate dalle Impostazioni e non vengono mai applicate nel Calendario.
 
 Il timer rimane volutamente semplice: la durata principale si sceglie su un **quadrante circolare tipo orologio** da 1 a 60 minuti e può essere rifinita di un minuto alla volta con i pulsanti **− / +** esterni al cerchio. Per questa prima release pubblica il Timer usa una sola esperienza: una **modale** ottimizzata per mouse e touch. Durante il conto alla rovescia l’anello si riempie seguendo il tempo trascorso, un dot compie un giro ogni minuto seguendo i secondi e un alone più evidente respira attorno al cerchio. Non c’è una seconda progress bar: tutto l’avanzamento vive nel quadrante. Silenzio, radio o suono rilassante restano configurabili senza appesantire la schermata principale.
 
@@ -100,7 +100,7 @@ Su desktop con mouse o trackpad puoi attivare un **cursore personalizzato discre
 - `data/`: frasi, catalogo raccolte e stazioni predefinite.
 - `README.md`: descrizione del progetto e release corrente.
 - `CHANGELOG.md`: storico delle modifiche.
-- `docs/release/v3.13.20.md`: note dettagliate di questa release.
+- `docs/release/v3.13.22.md`: note dettagliate di questa release.
 - `docs/LICENZA.md`: licenza non commerciale con attribuzione obbligatoria.
 - `docs/TERZE-PARTI.md`: dipendenze, servizi e attribuzioni.
 - `docs/VISIONE-E-DESIGN.md`: valori, regole grafiche e criteri responsive da mantenere nelle release future.

@@ -36,7 +36,7 @@
  .bottom-bar .collection-link{grid-column:1;grid-row:1;justify-self:center;min-height:30px;font-size:11px}
  .bottom-bar .toolbar{grid-column:1;grid-row:2;justify-self:center;justify-content:center;gap:2px;min-width:0}
  .bottom-bar .toolbar .icon-button{width:40px;min-width:40px;height:42px}
- .bottom-bar .mode-link{display:none}
+ 
 }
 @media(max-width:360px){.bottom-bar .toolbar{gap:1px}.bottom-bar .toolbar .icon-button{width:36px;min-width:36px}.bottom-bar .toolbar-separator{margin:0 2px}}
 

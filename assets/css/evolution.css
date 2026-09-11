@@ -10,7 +10,7 @@
 #solar-line .solar-label{font-size:10px;opacity:.7}#solar-line .icon{width:15px;height:15px}
 #moon-caption{display:flex;align-items:center;gap:6px;margin:0;font:11px var(--sans);line-height:1.5;color:var(--muted)}
 .moon-phase-mini{width:24px;height:24px;flex:0 0 24px}.moon-phase-percent{opacity:.55}
-.timer-slot{height:auto;min-height:0;flex:0 0 auto;padding:7px 0 16px;margin-top:3px;isolation:isolate}.timer-slot:has(.timer-chip[hidden]){padding:0;margin:0;height:10px}
+
 .timer-chip{transform:none!important;border:1px solid var(--line);border-radius:30px;background:var(--surface);position:relative}
 .collection-picker{margin:0 0 16px;border:1px solid var(--line);border-radius:14px;overflow:hidden}
 .collection-picker>summary{display:flex;align-items:center;gap:10px;padding:13px 15px;cursor:pointer;font-size:13px;list-style:none}
@@ -26,7 +26,7 @@
 .performance-light #sky-body{will-change:auto}
 body.has-panel .celestial-sky *,body.has-panel .ambient *,body.has-panel .wallpaper{animation-play-state:paused!important}
 @media (max-width:740px){#solar-line{font-size:10px;gap:12px}#weather-line{font-size:11px}#moon-caption{font-size:10px}.moon-phase-percent{display:none}.moon-phase-mini{width:20px;height:20px;flex-basis:20px}#solar-line .solar-label{font-size:9px}}
-@media (max-height:540px) and (orientation:landscape){#moon-caption{font-size:8px}.moon-phase-mini{width:18px;height:18px;flex-basis:18px}#solar-line{font-size:9px}.timer-slot{height:auto!important;flex-basis:auto!important;padding:3px 0 9px;margin-top:0}.timer-slot:has(.timer-chip[hidden]){padding:0;height:3px!important}.timer-chip{max-height:28px}.timer-chip-main{font-size:10px}#weather-line{font-size:10px}}
+@media (max-height:540px) and (orientation:landscape){#moon-caption{font-size:8px}.moon-phase-mini{width:18px;height:18px;flex-basis:18px}#solar-line{font-size:9px}.timer-chip{max-height:28px}.timer-chip-main{font-size:10px}#weather-line{font-size:10px}}
 @media (prefers-reduced-motion:reduce){#sky-body,.sky-halo,.sky-twilight{transition:none!important;will-change:auto}}
 
 .sky-orbit-reset #sky-body,.sky-orbit-reset .sky-halo{transition:none!important}

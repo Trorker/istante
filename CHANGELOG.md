@@ -1,5 +1,30 @@
 # Changelog
 
+## 3.13.22 — 11 settembre 2026
+
+- **Volume Melodie:** aumentato il livello reale delle melodie, con make-up gain dedicato a Respiro lento e Meditazione e compressione più morbida per mantenere headroom.
+- **Respiro lento:** sostituito il vecchio swell 5+5 con una guida **4-4-6**: 4 s inspira, 4 s trattieni, 6 s espira; il loop dura 28 secondi per contenere due cicli completi.
+- **Meditazione:** mantenuta nei registri bassi/medi e resa più presente senza reintrodurre toni acuti.
+- **Timer:** la scelta Relax durante un timer in corso forza correttamente il riavvio della sorgente Ambiente se era sospesa o non stava riproducendo.
+- **Traguardo mobile:** etichetta e percentuale sotto la progress bar sono ora contenute in una griglia `minmax(0,1fr) auto`, con overflow impedito anche sui telefoni stretti.
+- **Impostazioni Traguardo:** icona cambiata in una bandiera, nettamente diversa dal Calendario.
+- **Gestione stazioni:** descrizione spostata direttamente sotto il titolo, rimossa la nota sui preferiti separati e aumentato lo spazio sopra “Aggiungi al catalogo”.
+- **Condivisione cielo:** il sole viene ridisegnato con raggi/aloni e la luna con fase e superficie lunare anche quando la scena live è stata catturata; l'opzione cielo sparisce quando la scena celeste non è attiva.
+- **Pulizia tecnica:** rimossi i selettori morti `goal-configure` e il path `trophy`; esteso il renderer snapshot con esclusione selettiva dell'orbita, senza duplicare il resto della scena.
+
+## 3.13.21 — 11 settembre 2026
+
+- **Melodie nelle Impostazioni:** interruttore dedicato per attivare/disattivare completamente le melodie; il tab del player e la riproduzione seguono la preferenza senza lasciare stati intermedi.
+- **Respiro lento:** ciclo sonoro regolare di 10 secondi, con 5 secondi di crescita e 5 di rilascio, pensato come riferimento ritmico facoltativo. **Meditazione** usa ora solo registri bassi/medi e parziali molto più morbidi.
+- **Player audio:** rimosse le descrizioni permanenti dalle card Ambiente e Melodie e ridotte spaziature/altezze per una modale più compatta.
+- **Timer:** scegliendo il suono rilassante durante un timer in corso viene attivata esplicitamente la sorgente Ambiente; la riproduzione non resta bloccata sullo stato precedente. Quando il Timer è abilitato, il suo slot resta riservato in Dashboard per evitare spostamenti del testo all'avvio, in pausa e alla fine.
+- **Traguardo:** “Il percorso di quest'anno” e percentuale sono stati spostati sotto la progress bar; percentuale mantenuta più evidente. L'icona della sezione nelle Impostazioni è ora un trofeo.
+- **Festività italiane:** colore dedicato portato a un rosso spento (`#b45f63`) per distinguerle meglio dagli altri calendari senza usare un rosso acceso.
+- **Privacy locale:** aggiunto lo scudo alle etichette “Solo sul tuo dispositivo”.
+- **Wizard:** oltre alla scheda, ora animano anche rettangolo evidenziatore e freccia, interpolando posizione e forma fra gli elementi; il movimento viene disattivato con `prefers-reduced-motion`.
+- **Condivisione:** resa più lunare la fase della luna nella cartolina con earthshine, maria, crateri e grana deterministica, mantenendo la corretta geometria di fase.
+- **Pulizia tecnica:** rimossi 227 selettori CSS morti legati a vecchia modalità compatta, vecchia pagina Timer, corner action e altri componenti non più presenti. `timer-slot` è ora definito solo in `responsive.css`, le card Ambiente/Melodie solo in `scene.css`; rimosse anche le vecchie regole Meteo di `app.css` e l'override del wizard che ne forzava il layout a flex.
+
 ## 3.13.20 — 11 settembre 2026
 
 - **Melodie offline:** mantenuto Notturno e riscritte le altre tre identità sonore per uso da sottofondo: Respiro lento con swell di circa 10 secondi, Meditazione con drone e rintocchi distanziati, Onde lente con movimenti alternati senza battito marcato.

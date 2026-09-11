@@ -64,9 +64,9 @@
   if(settings.grain&&grainImage.complete&&grainImage.naturalWidth){grain=document.createElement('canvas');grain.width=grain.height=160;grain.getContext('2d').drawImage(grainImage,0,0);}
   return{...info,capture:{width:w,height:h,background:root.getPropertyValue('--bg').trim()||(light?'#f1eee7':'#131615'),light,layers,grain,grainOpacity:opacity(document.querySelector('.paper-grain')),capturedAt:Date.now()},celestialEnabled:!!settings.celestialSky};
  }
- function draw(c,info,W,H){const s=info.capture;if(!s)return false;
+ function draw(c,info,W,H,options={}){const s=info.capture;if(!s)return false;
   c.save();c.beginPath();c.rect(0,0,W,H);c.clip();
-  for(const layer of s.layers){c.save();c.globalAlpha=layer.alpha;
+  for(const layer of s.layers){if(options.skipOrb&&layer.kind==='orb')continue;c.save();c.globalAlpha=layer.alpha;
    if(layer.kind==='css'){c.scale(W/s.width,H/s.height);c.transform(...layer.matrix);c.drawImage(layer.canvas,0,0,layer.width,layer.height);}
    else{const r=layer.rect;if(layer.kind==='orb'){const side=Math.min(r.w*W,r.h*H);c.drawImage(layer.canvas,(r.x+r.w/2)*W-side/2,(r.y+r.h/2)*H-side/2,side,side);}else c.drawImage(layer.canvas,r.x*W,r.y*H,r.w*W,r.h*H);}
    c.restore();

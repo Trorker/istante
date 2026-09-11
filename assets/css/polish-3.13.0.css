@@ -27,7 +27,7 @@
 .is-idle-pre:not(.has-panel) .chrome{opacity:.72;transform:translateY(1px) scale(.992);filter:saturate(.82)}
 .is-idle-pre:not(.has-panel) .bottom-bar.chrome{transform:translateY(2px) scale(.988)}
 .is-idle-pre:not(.has-panel) .toolbar{padding-inline:8px;border-radius:999px;background:color-mix(in srgb,var(--panel) 64%,transparent);box-shadow:0 10px 30px rgba(0,0,0,.08)}
-.is-idle-pre:not(.has-panel) .collection-link,.is-idle-pre:not(.has-panel) .mode-link{opacity:.8}
+.is-idle-pre:not(.has-panel) .collection-link{opacity:.8}
 @media(max-width:740px){
  .collection-compose-add-row{grid-template-columns:1fr}
  .collection-compose-add{width:100%}

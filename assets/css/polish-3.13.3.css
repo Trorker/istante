@@ -1,7 +1,7 @@
 /* Istante v3.13.3 — first-release touch/stability finishing layer. */
 
 /* Timer page is intentionally retired for this release. */
-#timer-page{display:none!important}.timer-display-setting{display:none!important}
+.timer-display-setting{display:none!important}
 
 /* One exact brand lockup. Calendar uses the same markup/classes as Dashboard. */
 #calendar-view .calendar-brand-lockup{display:flex!important;align-items:center!important;overflow:visible!important;min-width:max-content!important;padding:0!important;margin:0!important}

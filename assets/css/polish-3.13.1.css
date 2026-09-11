@@ -13,7 +13,7 @@
 @media (max-width:380px){.text-size-setting .binary-tabs span{font-size:10px!important}}
 
 /* Excalifont: global when selected, calendar-only via dedicated switch. */
-html[data-font-style="excalifont"] :is(.quote-wrap blockquote,.quote-intro,.panel-head h2,.welcome-content h2,.tour-card h2,.goal-heading h2,#goal-dialog-title,.collection-card>strong,.library-phrase-text,.timer-page-heading h1,.timer-page-orbit strong,.timer-orbit strong,.about-wordmark){font-family:"Excalifont","Segoe Print","Bradley Hand",cursive!important}
+html[data-font-style="excalifont"] :is(.quote-wrap blockquote,.quote-intro,.panel-head h2,.welcome-content h2,.tour-card h2,.goal-heading h2,#goal-dialog-title,.collection-card>strong,.library-phrase-text,.timer-orbit strong,.about-wordmark){font-family:"Excalifont","Segoe Print","Bradley Hand",cursive!important}
 html[data-calendar-font="excalifont"] #calendar-view :is(.calendar-period-title,.calendar-mini h2 button,.calendar-day-date-number,.calendar-day-weekday,.calendar-day-month,.calendar-agenda-day h2,.week-event-title,.calendar-event,.calendar-more){font-family:"Excalifont","Segoe Print","Bradley Hand",cursive!important}
 .calendar-excalifont-setting[hidden]{display:none!important}
 
@@ -32,11 +32,11 @@ html[data-calendar-font="excalifont"] #calendar-view :is(.calendar-period-title,
 
 /* Calendar brand is literally the dashboard lockup geometry. */
 #calendar-view .calendar-brand-lockup{padding:0!important;overflow:visible!important}
-#calendar-view .calendar-brand-button,.timer-page-brand{display:flex!important;align-items:center!important;gap:10px!important;padding:3px 5px 3px 3px!important;border-radius:11px!important;overflow:visible!important;transform:none!important;background:transparent!important;color:var(--ink)!important}
-#calendar-view .calendar-brand-button:hover,#calendar-view .calendar-brand-button:focus-visible,.timer-page-brand:hover,.timer-page-brand:focus-visible{background:color-mix(in srgb,var(--accent-soft) 72%,transparent)!important;transform:none!important}
-#calendar-view .calendar-brand-image,#timer-page .brand-logo-image{width:32px!important;height:32px!important;border-radius:9px!important;object-fit:contain!important;flex:0 0 32px!important}
-#calendar-view .calendar-brand-copy,#timer-page .brand-home-copy{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;gap:2px!important;min-height:32px!important}
-#calendar-view .calendar-brand-name,#timer-page .brand-home-name{font:500 23px/1 var(--serif)!important;letter-spacing:-.04em!important}.calendar-brand-tagline,#timer-page .brand-home-tagline{font:500 10px/1.15 var(--sans)!important;padding:0!important;color:var(--muted)!important}
+#calendar-view .calendar-brand-button{display:flex!important;align-items:center!important;gap:10px!important;padding:3px 5px 3px 3px!important;border-radius:11px!important;overflow:visible!important;transform:none!important;background:transparent!important;color:var(--ink)!important}
+#calendar-view .calendar-brand-button:hover,#calendar-view .calendar-brand-button:focus-visible{background:color-mix(in srgb,var(--accent-soft) 72%,transparent)!important;transform:none!important}
+#calendar-view .calendar-brand-image{width:32px!important;height:32px!important;border-radius:9px!important;object-fit:contain!important;flex:0 0 32px!important}
+#calendar-view .calendar-brand-copy{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;gap:2px!important;min-height:32px!important}
+#calendar-view .calendar-brand-name{font:500 23px/1 var(--serif)!important;letter-spacing:-.04em!important}.calendar-brand-tagline{font:500 10px/1.15 var(--sans)!important;padding:0!important;color:var(--muted)!important}
 
 /* Calendar view buttons use pictograms, never 12/31/7/1 text. */
 .calendar-view-glyph{position:relative!important;width:18px!important;height:18px!important;display:inline-block!important;flex:0 0 18px!important;color:currentColor!important}
@@ -60,7 +60,7 @@ html[data-calendar-font="excalifont"] #calendar-view :is(.calendar-period-title,
 #timer-dialog .timer-running{min-height:360px!important}#timer-dialog .timer-orbit{width:min(340px,74vw)!important;height:min(340px,74vw)!important;max-width:340px!important;max-height:340px!important;margin:auto!important}#timer-dialog #timer-readout{font-size:clamp(58px,12vw,86px)!important}.timer-panel .timer-presets{margin-top:8px!important}
 
 /* Timer page: same brand, current time, more intentional composition. */
-.timer-page-shell{position:relative!important;background:radial-gradient(circle at 50% 46%,color-mix(in srgb,var(--accent-soft) 22%,transparent),transparent 42%)!important}.timer-page-main{gap:16px!important}.timer-page-heading{display:grid!important;justify-items:center!important}.timer-page-now{margin:10px 0 3px!important;display:inline-flex!important;align-items:baseline!important;gap:9px!important;color:var(--muted)!important}.timer-page-now span{font-size:9px!important;letter-spacing:.14em!important;text-transform:uppercase!important}.timer-page-now strong{font:400 19px/1 var(--serif)!important;font-variant-numeric:tabular-nums!important;color:var(--ink)!important}.timer-page-orbit{box-shadow:0 34px 100px color-mix(in srgb,var(--ink) 7%,transparent),inset 0 0 0 1px color-mix(in srgb,var(--line) 70%,transparent)!important}.timer-page-footer{letter-spacing:.08em!important}
+
 
 /* Custom select: non-station numeric labels are normal options. */
 .select-popup:not(.station-select-popup) .custom-option .option-title{font:500 12px/1.35 var(--sans)!important;letter-spacing:0!important;color:inherit!important}.select-popup:not(.station-select-popup) .custom-option{font-variant-numeric:normal!important}
@@ -80,10 +80,10 @@ html[data-theme="dark"] #sky-body .sky-moon-crater{fill:rgba(36,39,43,.24)}
 #sky-body .sky-moon-edge{opacity:.28}
 #sky-body .sky-sun-rays{opacity:.5}
 /* Final geometry: Calendar and Timer use the exact dashboard brand proportions. */
-#calendar-view .calendar-brand-image,#timer-page .brand-logo-image{width:36px!important;height:36px!important;flex-basis:36px!important;border-radius:10px!important}
-#calendar-view .calendar-brand-copy,#timer-page .brand-home-copy{min-height:36px!important}
-#calendar-view .calendar-brand-name,#timer-page .brand-home-name{font-size:23px!important}
-#calendar-view .calendar-brand-tagline,#timer-page .brand-home-tagline{font-size:10px!important}
+#calendar-view .calendar-brand-image{width:36px!important;height:36px!important;flex-basis:36px!important;border-radius:10px!important}
+#calendar-view .calendar-brand-copy{min-height:36px!important}
+#calendar-view .calendar-brand-name{font-size:23px!important}
+#calendar-view .calendar-brand-tagline{font-size:10px!important}
 
 /* The timer circle is the main surface, not a small widget inside the modal. */
 @media (min-width:741px) and (min-height:760px){

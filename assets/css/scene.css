@@ -10,7 +10,7 @@ body{position:fixed!important;inset:0;touch-action:pan-y pinch-zoom}
 .analog-clock{width:clamp(132px,16vh,196px);height:clamp(132px,16vh,196px);grid-area:1/1;position:relative;color:var(--ink)}
 .analog-clock>svg{width:100%;height:100%;overflow:visible}.dial-rim{fill:none;stroke:var(--line);stroke-width:.9}.dial-major{stroke:var(--muted);stroke-width:1.8}.dial-minor{stroke:var(--line);stroke-width:1}
 .analog-hour,.analog-minute,.analog-second{transform-origin:100px 100px;stroke-linecap:round}.analog-hour{stroke:var(--ink);stroke-width:4}.analog-minute{stroke:var(--ink);stroke-width:2.5}.analog-second{stroke:var(--accent);stroke-width:1}.dial-pin{fill:var(--accent)}.analog-period{position:absolute;left:0;right:0;bottom:24%;font-size:9px;letter-spacing:.15em;color:var(--muted)}
-body[data-clock-style=analog] .quote-wrap{margin-top:24px}.timer-slot{flex:0 0 44px;height:44px;display:flex;align-items:center;justify-content:center;min-width:0}.timer-chip{margin:0!important;max-height:40px;box-shadow:none}.timer-chip-main{min-height:30px}.timer-chip .icon-button{height:30px;width:30px}
+body[data-clock-style=analog] .quote-wrap{margin-top:24px}.timer-chip{margin:0!important;max-height:40px;box-shadow:none}.timer-chip-main{min-height:30px}.timer-chip .icon-button{height:30px;width:30px}
 .moon-caption{display:flex;justify-content:center;gap:10px;margin-top:13px;font-size:11px;letter-spacing:.03em;color:var(--muted)}.moon-phase-percent{opacity:.6}
 .celestial-sky{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:3;--sky-x:50%;--sky-y:20%}
 #sky-stars{position:absolute;inset:0;width:100%;height:100%;opacity:.82;animation:star-breathe 17s ease-in-out infinite alternate}
@@ -41,8 +41,8 @@ dialog .panel-content,.timer-content,.settings-scroll,.library-list-wrap,.custom
 .share-formats{grid-template-columns:repeat(3,minmax(0,1fr))!important}.share-options{display:grid;grid-template-columns:1fr 1fr;gap:0 20px}.share-options .toggle-row{min-width:0;gap:10px;padding:13px 0}.share-options .toggle-row>span{font-size:12px;min-width:0}.share-options .toggle-row small{font-size:10px;line-height:1.5}.share-options .is-unavailable{opacity:.45}.share-options input{flex-shrink:0}
 .welcome-panel{width:510px}.welcome-content{text-align:center;padding:12px 34px 28px}.welcome-logo{display:block;margin:0 auto 22px;border-radius:17px}.welcome-content h2{font-family:var(--serif);font-size:34px;font-weight:400;margin:13px 0 15px;line-height:1.2}.welcome-content>p:not(.section-label){font-size:14px;line-height:1.7;color:var(--muted)}#welcome-features{margin:22px 0;text-align:left;display:grid;gap:12px}#welcome-features p{font-size:13px;line-height:1.6;padding-left:14px;border-left:1px solid var(--accent)}.welcome-content>.local-note{font-size:11px!important}.welcome-panel .panel-footer{justify-content:space-between}
 #persistent-storage-status{margin-top:22px;line-height:1.7}#storage-request,#welcome-reopen{display:inline-flex;margin:10px 12px 4px 0;font-size:12px}
-@media (max-width:740px){#app-shell{padding-left:20px;padding-right:20px}.moon-caption{font-size:10px;margin-top:10px}.timer-chip-main{font-size:10px}.timer-slot{flex-basis:38px;height:38px}.timer-content{padding:16px 20px}.share-options{gap:0 14px}.analog-clock{width:142px;height:142px}#sky-body{width:52px;height:52px}.celestial-sky[data-period=day] #sky-body{width:65px;height:65px}.welcome-content{padding:10px 24px 22px}.welcome-content h2{font-size:29px}.favorite-search-button{width:42px!important;min-width:42px!important;height:42px!important}}
-@media (max-height:540px) and (orientation:landscape){#app-shell{padding:10px 20px 7px}#main.main-stage{padding:8px 4px;gap:8px 22px}.timer-slot{height:34px;flex-basis:34px}.moon-caption{grid-column:1/-1;margin:0}.analog-clock{width:112px;height:112px}.bottom-bar{min-height:34px}.topbar{min-height:32px}.timer-chip{max-height:30px}.timer-chip-main{min-height:24px}.timer-chip .icon-button{height:25px;width:25px}}
+@media (max-width:740px){#app-shell{padding-left:20px;padding-right:20px}.moon-caption{font-size:10px;margin-top:10px}.timer-chip-main{font-size:10px}.timer-content{padding:16px 20px}.share-options{gap:0 14px}.analog-clock{width:142px;height:142px}#sky-body{width:52px;height:52px}.celestial-sky[data-period=day] #sky-body{width:65px;height:65px}.welcome-content{padding:10px 24px 22px}.welcome-content h2{font-size:29px}.favorite-search-button{width:42px!important;min-width:42px!important;height:42px!important}}
+@media (max-height:540px) and (orientation:landscape){#app-shell{padding:10px 20px 7px}#main.main-stage{padding:8px 4px;gap:8px 22px}.moon-caption{grid-column:1/-1;margin:0}.analog-clock{width:112px;height:112px}.bottom-bar{min-height:34px}.topbar{min-height:32px}.timer-chip{max-height:30px}.timer-chip-main{min-height:24px}.timer-chip .icon-button{height:25px;width:25px}}
 @media (prefers-reduced-motion:reduce){.celestial-sky *{animation:none!important;transition:none!important}}
 /* 3.6: lighter listening controls, one decision per pause. */
 .radio-panel{width:340px;padding:20px;gap:12px}
@@ -132,7 +132,7 @@ dialog .panel-content,.timer-content,.settings-scroll,.library-list-wrap,.custom
  
  
  
- .timer-slot{height:0;flex-basis:0}.timer-slot:has(.timer-chip:not([hidden])){height:30px;flex-basis:30px}
+ 
  .bottom-bar{min-height:42px;margin:0;gap:6px}.topbar{min-height:30px}.bottom-bar .toolbar{gap:0}.bottom-bar .toolbar .icon-button{width:40px;height:40px}
  .analog-clock{width:94px;height:94px}.solar-line{font-size:9px!important}.solar-arc{width:60px!important}
  body.no-clock #main.main-stage{display:flex;flex-direction:column}
@@ -153,14 +153,13 @@ dialog .panel-content,.timer-content,.settings-scroll,.library-list-wrap,.custom
 .audio-source-switch button{display:flex;align-items:center;justify-content:center;flex:1;gap:8px;background:none;color:var(--muted);font-size:12px;min-height:38px;border-radius:9px;padding:9px}
 .audio-source-switch button .icon{height:16px;width:16px}
 .audio-source-switch button[aria-pressed=true]{color:var(--ink);background:var(--accent-soft)}
-.ambient-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-.ambient-options button{position:relative;display:grid;grid-template-columns:20px 1fr;align-items:center;gap:6px 9px;text-align:left;padding:14px 12px;min-height:76px;border:1px solid var(--line);border-radius:12px;background:transparent}
-.ambient-options button strong{font-size:13px;font-weight:500}
-.ambient-options button .icon{height:19px;width:19px;color:var(--muted)}
-.ambient-options button small{grid-column:1/-1;font-size:10px;color:var(--muted)}
+.ambient-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.ambient-options button{position:relative;display:flex;align-items:center;gap:8px;text-align:left;padding:9px 10px;min-height:48px;border:1px solid var(--line);border-radius:10px;background:transparent}
+.ambient-options button strong{min-width:0;font-size:12px;font-weight:500;line-height:1.2}
+.ambient-options button .icon{height:17px;width:17px;flex:0 0 17px;color:var(--muted)}
 .ambient-options button[aria-pressed=true]{border-color:var(--accent);background:var(--accent-soft)}
 .ambient-options button[aria-pressed=true] .icon{color:var(--accent)}
-#ambient-status{font-size:11px;line-height:1.6;color:var(--muted);margin:8px 0 0}
+#ambient-status,#melody-status{font-size:10.5px;line-height:1.5;color:var(--muted);margin:7px 0 0}
 #ambient-volume-value{font:11px var(--sans);min-width:32px;text-align:right;color:var(--muted)}
 .ambient-settings{margin-top:24px;padding-top:18px;border-top:1px solid var(--line)}
 .ambient-settings .stacked-label{margin-top:16px}
@@ -179,4 +178,4 @@ dialog .panel-content,.timer-content,.settings-scroll,.library-list-wrap,.custom
 #backup-extra-note{font-size:11px;line-height:1.65;margin:16px 0}
 #backup-file-name{overflow-wrap:anywhere}
 .official-link{font-size:12px;color:var(--accent);margin:16px 0;overflow-wrap:anywhere}
-@media (max-width:380px){.ambient-options{gap:7px}.ambient-options button{padding:12px 9px}.ambient-options button small{font-size:9px}.radio-panel .radio-panel-head h2{font-size:20px}.audio-source-switch{margin-bottom:13px}.backup-panel .panel-head h2{font-size:26px}}
+@media (max-width:380px){.ambient-options{gap:6px}.ambient-options button{padding:8px 8px}.radio-panel .radio-panel-head h2{font-size:20px}.audio-source-switch{margin-bottom:13px}.backup-panel .panel-head h2{font-size:26px}}

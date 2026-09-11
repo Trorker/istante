@@ -26,16 +26,16 @@
 
 /* Excalifont: when global, it is actually global; micro/system labels stay Classic for contrast. */
 html[data-font-style="excalifont"]{--serif:"Excalifont","Segoe Print","Bradley Hand",cursive;--sans:"Excalifont","Segoe Print","Bradley Hand",cursive}
-html[data-font-style="excalifont"] :is(.section-label,.date-label,.progress-labels,.goal-date,.field-note,.local-note,.keyboard-note,.small-chip,.calendar-weekdays,.calendar-mini-weekdays,.timer-choice-label,.timer-page-quick-label,.station-no,kbd,.brand-home-tagline,.calendar-brand-tagline){font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI",Arial,sans-serif!important}
+html[data-font-style="excalifont"] :is(.section-label,.date-label,.progress-labels,.goal-date,.field-note,.local-note,.keyboard-note,.small-chip,.calendar-weekdays,.calendar-mini-weekdays,.timer-choice-label,.station-no,kbd,.brand-home-tagline,.calendar-brand-tagline){font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI",Arial,sans-serif!important}
 html[data-calendar-font="excalifont"] #calendar-view{--serif:"Excalifont","Segoe Print","Bradley Hand",cursive;--sans:"Excalifont","Segoe Print","Bradley Hand",cursive}
 html[data-calendar-font="excalifont"] #calendar-view :is(.calendar-weekdays,.calendar-mini-weekdays,.calendar-sync-status,.calendar-brand-tagline){font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI",Arial,sans-serif!important}
 
 /* One brand geometry everywhere: same image, copy and hit target as Dashboard. */
-.topbar .brand-home-link,#calendar-view .calendar-brand-button,.timer-page-brand{display:flex!important;align-items:center!important;gap:10px!important;padding:3px 5px 3px 3px!important;line-height:1!important;border-radius:11px!important;text-decoration:none!important;color:var(--ink)!important;background:transparent!important;transform:none!important;overflow:visible!important}
-.topbar .brand-home-link:hover,.topbar .brand-home-link:focus-visible,#calendar-view .calendar-brand-button:hover,#calendar-view .calendar-brand-button:focus-visible,.timer-page-brand:hover,.timer-page-brand:focus-visible{background:color-mix(in srgb,var(--accent-soft) 72%,transparent)!important;transform:none!important;box-shadow:none!important}
-.topbar .brand-logo-image,#calendar-view .calendar-brand-image,#timer-page .brand-logo-image{display:block!important;width:36px!important;height:36px!important;flex:0 0 36px!important;border-radius:10px!important;object-fit:contain!important;margin:0!important;transform:none!important}
-.topbar .brand-home-copy,#calendar-view .calendar-brand-copy,#timer-page .brand-home-copy{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;gap:2px!important;min-height:36px!important}
-.topbar .brand-home-name,#calendar-view .calendar-brand-name,#timer-page .brand-home-name{font:500 23px/1 var(--serif)!important;letter-spacing:-.04em!important;color:var(--ink)!important}.topbar .brand-home-tagline,#calendar-view .calendar-brand-tagline,#timer-page .brand-home-tagline{font:500 10px/1.15 -apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI",Arial,sans-serif!important;letter-spacing:.015em!important;color:var(--muted)!important;padding:0!important;white-space:nowrap!important}
+.topbar .brand-home-link,#calendar-view .calendar-brand-button{display:flex!important;align-items:center!important;gap:10px!important;padding:3px 5px 3px 3px!important;line-height:1!important;border-radius:11px!important;text-decoration:none!important;color:var(--ink)!important;background:transparent!important;transform:none!important;overflow:visible!important}
+.topbar .brand-home-link:hover,.topbar .brand-home-link:focus-visible,#calendar-view .calendar-brand-button:hover,#calendar-view .calendar-brand-button:focus-visible{background:color-mix(in srgb,var(--accent-soft) 72%,transparent)!important;transform:none!important;box-shadow:none!important}
+.topbar .brand-logo-image,#calendar-view .calendar-brand-image{display:block!important;width:36px!important;height:36px!important;flex:0 0 36px!important;border-radius:10px!important;object-fit:contain!important;margin:0!important;transform:none!important}
+.topbar .brand-home-copy,#calendar-view .calendar-brand-copy{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;gap:2px!important;min-height:36px!important}
+.topbar .brand-home-name,#calendar-view .calendar-brand-name{font:500 23px/1 var(--serif)!important;letter-spacing:-.04em!important;color:var(--ink)!important}.topbar .brand-home-tagline,#calendar-view .calendar-brand-tagline{font:500 10px/1.15 -apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI",Arial,sans-serif!important;letter-spacing:.015em!important;color:var(--muted)!important;padding:0!important;white-space:nowrap!important}
 
 /* Calendar: visual composition restored to the 3.12.9 language, current functionality retained. */
 #calendar-view .calendar-shell{width:min(100%,1720px)!important;height:var(--view-h,100dvh)!important;margin:0 auto!important;padding:clamp(14px,1.9vw,28px) clamp(16px,2.7vw,44px) max(30px,calc(env(safe-area-inset-bottom) + 24px))!important;display:grid!important;grid-template-rows:auto minmax(0,1fr)!important;overflow:hidden!important}
@@ -72,7 +72,7 @@ html[data-calendar-font="excalifont"] #calendar-view :is(.calendar-weekdays,.cal
 @media (max-height:690px){#timer-dialog{max-height:calc(100dvh - 14px)!important}.timer-time-stage{min-height:260px!important;flex-basis:260px!important;height:260px!important}.timer-duration-dial{width:230px!important;height:230px!important}.timer-dial-mark{transform:rotate(calc(var(--i,0)*30deg)) translateY(-94px) rotate(calc(var(--i,0)*-30deg))!important}.timer-step-side{width:34px!important;height:34px!important;min-width:34px!important}.timer-orbit{width:238px!important;height:238px!important;max-width:238px!important;max-height:238px!important}.timer-presets{margin:3px 0 7px!important}.timer-session-options{padding-top:5px!important}}
 
 /* Timer page: same logo, visible current time, and direct duration setup when idle. */
-.timer-page-shell{background:radial-gradient(circle at 50% 44%,color-mix(in srgb,var(--accent-soft) 27%,transparent),transparent 44%)!important}.timer-page-main{gap:14px!important}.timer-page-heading{display:grid!important;justify-items:center!important}.timer-page-now{display:inline-flex!important;align-items:baseline!important;gap:9px!important;margin:8px 0 2px!important}.timer-page-now span{font:9px/1 -apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI",Arial,sans-serif!important;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)!important}.timer-page-now strong{font:400 20px/1 var(--serif)!important;font-variant-numeric:tabular-nums!important}.timer-page-quick{display:grid!important;justify-items:center!important;gap:7px!important}.timer-page-quick[hidden]{display:none!important}.timer-page-quick-label{font-size:9px!important;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)!important}.timer-page-presets{display:flex!important;align-items:center!important;gap:6px!important;padding:4px!important;border:1px solid var(--line)!important;border-radius:999px!important;background:color-mix(in srgb,var(--surface-2) 45%,transparent)!important}.timer-page-presets button{width:38px!important;height:32px!important;border-radius:999px!important;background:transparent!important;color:var(--muted)!important;font-size:11px!important}.timer-page-presets button.active{background:var(--surface)!important;color:var(--ink)!important;box-shadow:0 2px 10px rgba(0,0,0,.08)!important}
+
 
 /* Volume feedback is immediate: no transform/slider animation. */
 
@@ -100,13 +100,13 @@ html[data-calendar-font="excalifont"] #calendar-view :is(.calendar-weekdays,.cal
 
 /* On comfortable desktop heights the timer content fits without a decorative scrollbar. */
 @media (min-height:760px) and (min-width:741px){#timer-dialog .timer-content{max-height:none!important;overflow-y:hidden!important}}
-.timer-page-presets button{width:auto!important;min-width:54px!important;padding-inline:10px!important}
-@media (max-width:520px){.timer-page-presets{max-width:calc(100vw - 40px)!important;overflow-x:auto!important;scrollbar-width:none!important}.timer-page-presets::-webkit-scrollbar{display:none!important}.timer-page-presets button{min-width:48px!important;padding-inline:8px!important}}
+
+@media (max-width:520px){}
 
 /* Timer page: keep the controls and footer in separate vertical bands on tablets/notebooks. */
-.timer-page-main{min-height:0!important;overflow:hidden!important;gap:10px!important;padding:4px 0 14px!important}
-.timer-page-orbit{width:min(38vh,340px)!important;height:min(38vh,340px)!important;min-width:220px!important;min-height:220px!important}
-.timer-page-heading h1{font-size:clamp(34px,3.4vw,52px)!important}.timer-page-heading p:last-child{margin-top:5px!important}.timer-page-now{margin:5px 0 1px!important}
-.timer-page-footer{position:relative!important;z-index:3!important;min-height:20px!important;padding-top:6px!important;background:linear-gradient(180deg,transparent,var(--bg) 45%)!important}
-@media (min-height:900px){.timer-page-orbit{width:min(42vh,380px)!important;height:min(42vh,380px)!important}.timer-page-main{gap:14px!important}}
-@media (max-height:720px){.timer-page-heading h1{font-size:34px!important}.timer-page-heading p:last-child{display:none!important}.timer-page-orbit{width:min(34vh,250px)!important;height:min(34vh,250px)!important}.timer-page-main{gap:7px!important;padding-bottom:8px!important}.timer-page-footer{font-size:9px!important}}
+
+
+
+
+@media (min-height:900px){}
+@media (max-height:720px){}

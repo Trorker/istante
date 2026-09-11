@@ -358,7 +358,7 @@ body[data-viewport-shape="wide"] .tour-card{--tour-density:.92}
 .station-manager-title{min-width:0!important;flex:1 1 auto!important}
 .station-reorder{flex:0 0 auto!important;margin-left:auto!important}
 #environment-line.tour-simulated-weather{opacity:1!important;visibility:visible!important}
-#environment-line.tour-simulated-weather #weather-line,#environment-line.tour-simulated-weather #solar-line{display:flex!important;opacity:1!important}
+#environment-line.tour-simulated-weather #weather-line,#environment-line.tour-simulated-weather #solar-line{opacity:1!important}
 #environment-line.tour-simulated-weather #weather-place,#environment-line.tour-simulated-weather #solar-note{opacity:.72!important}
 @media (max-height:650px) and (orientation:landscape){
   #timer-dialog .timer-content,#timer-dialog[data-state="running"] .timer-content,#timer-dialog[data-state="paused"] .timer-content,#timer-dialog[data-state="done"] .timer-content{min-height:360px!important;max-height:calc(100dvh - 132px)!important;overflow:auto!important}

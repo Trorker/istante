@@ -52,7 +52,7 @@ button:disabled,input:disabled,select:disabled,.is-dependent-disabled{opacity:.4
 .clock-hand{position:absolute;left:50%;bottom:50%;width:2px;height:var(--hand-length,40%);transform-origin:50% 100%;transform:translateX(-50%) rotate(var(--hand-angle,0deg));background:var(--accent);opacity:.6;pointer-events:none}
 .clock-hub{position:absolute;left:50%;top:50%;width:6px;height:6px;border-radius:50%;background:var(--accent);transform:translate(-50%,-50%);pointer-events:none}
 .clock-tick{position:absolute;inset:0;transform:rotate(var(--tick));pointer-events:none}
-.clock-tick:after{content:'';display:block;position:absolute;left:50%;top:5px;width:1px;height:3px;background:var(--line)}
+.clock-tick:after{content:"";display:block;position:absolute;left:50%;top:5px;width:1px;height:3px;background:var(--line)}
 .clock-tick.major:after{height:5px;background:var(--faint);opacity:.4}
 .manual-picker{margin-top:18px;padding-top:12px;border-top:1px solid var(--line)}
 .manual-picker summary{font-size:12px;min-height:32px;cursor:pointer;color:var(--muted)}
@@ -94,7 +94,7 @@ button:disabled,input:disabled,select:disabled,.is-dependent-disabled{opacity:.4
  .date-popup .calendar-day{height:41px}.date-popup .control-head{margin-bottom:8px}
  .timer-content{padding:20px}.timer-duration input{width:75px;height:66px;font-size:33px}.timer-actions{flex-wrap:wrap}
  .bottom-bar{grid-template-columns:1fr;gap:5px;justify-items:center}.bottom-bar .collection-link{justify-self:center;min-height:32px;font-size:11px}.bottom-bar .toolbar{justify-content:center;gap:1px}
- .bottom-bar .toolbar .icon-button{width:42px;height:42px}.bottom-bar .toolbar-separator{margin:0 2px}.bottom-bar .mode-link{display:none}
+ .bottom-bar .toolbar .icon-button{width:42px;height:42px}.bottom-bar .toolbar-separator{margin:0 2px}
  .timer-chip{margin-bottom:11px}.timer-chip-main{font-size:11px;gap:7px}.timer-chip-main strong{font-size:16px}
  .weekday-choices button{width:36px;height:36px}.weekday-choices{gap:3px}
 }

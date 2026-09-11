@@ -1,4 +1,4 @@
-/* Istante 3.13.20 — canonical responsive and lower-ribbon layout.
+/* Istante 3.13.22 — canonical responsive and lower-ribbon layout.
  * Historical styles keep their visual foundations; current dashboard/calendar
  * composition lives here so state changes cannot reactivate obsolete layouts.
  */
@@ -14,7 +14,7 @@
   z-index:7!important;
   display:grid!important;
   grid-template-columns:minmax(0,1fr)!important;
-  grid-template-rows:auto auto!important;
+  grid-template-rows:0 auto!important;
   gap:5px!important;
   width:min(80vw,1600px)!important;
   max-width:calc(100vw - 40px)!important;
@@ -31,14 +31,17 @@
   align-items:center!important;
   justify-content:center!important;
   width:100%!important;
-  height:auto!important;
+  height:0!important;
   min-height:0!important;
   margin:0!important;
   padding:0!important;
 }
-.dashboard-lower .timer-slot:has(.timer-chip[hidden]),
+.dashboard-lower.timer-enabled{grid-template-rows:40px auto!important}
+.dashboard-lower.timer-enabled .timer-slot{height:40px!important;min-height:40px!important}
 .dashboard-lower .timer-chip[hidden]{display:none!important}
 .dashboard-lower .timer-chip{max-height:38px!important;margin:0 auto!important;box-shadow:none!important}
+.local-device-note{display:inline-flex!important;align-items:center!important;gap:6px!important}
+.local-device-note>.icon{width:12px!important;height:12px!important;flex:0 0 12px!important;color:var(--accent)!important}
 
 .dashboard-lower .active-info-strip{
   grid-column:1!important;
@@ -150,12 +153,12 @@
 #environment-line[role=button]:focus-visible{outline:1px solid var(--accent)!important}
 @media (min-width:1600px){.dashboard-lower .active-info-strip .solar-label{display:inline!important}}
 
-/* Goal: progress summary first, then the next chapter and countdown, track last. */
+/* Goal: chapter/countdown first; progress bar then yearly summary underneath. */
 .dashboard-lower .active-info-strip>.goal-strip{
   display:grid!important;
   grid-template-columns:minmax(0,1fr) auto!important;
-  grid-template-rows:auto auto auto!important;
-  grid-template-areas:'summary summary' 'heading countdown' 'progress progress'!important;
+  grid-template-rows:auto auto!important;
+  grid-template-areas:'heading countdown' 'progress progress'!important;
   align-items:center!important;
   align-content:center!important;
   gap:4px 18px!important;
@@ -171,20 +174,16 @@
 @media (hover:hover){.dashboard-lower .active-info-strip>.goal-strip:hover{background:color-mix(in srgb,var(--accent-soft) 22%,transparent)!important}}
 .dashboard-lower .active-info-strip>.goal-strip:focus-visible{outline:1px solid var(--accent)!important;outline-offset:4px!important}
 .dashboard-lower .active-info-strip>.goal-strip:active{transform:scale(.997)!important}
-.dashboard-lower .active-info-strip .goal-progress-summary{grid-area:summary!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;min-width:0!important;font-size:calc(10px * var(--ui-scale,1))!important;line-height:1!important;color:var(--faint)!important}
-.dashboard-lower .active-info-strip .goal-heading{grid-area:heading!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;grid-template-areas:'label configure' 'title title'!important;align-items:center!important;gap:2px 7px!important;min-width:0!important}
+.dashboard-lower .active-info-strip .goal-progress-summary{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;gap:12px!important;width:100%!important;max-width:100%!important;min-width:0!important;overflow:hidden!important;box-sizing:border-box!important;font-size:calc(10px * var(--ui-scale,1))!important;line-height:1!important;color:var(--faint)!important}
+.dashboard-lower .active-info-strip .goal-heading{grid-area:heading!important;display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-areas:'label' 'title'!important;align-items:center!important;gap:2px!important;min-width:0!important}
 .dashboard-lower .active-info-strip .goal-heading .section-label{grid-area:label!important;margin:0!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font-size:calc(9.5px * var(--ui-scale,1))!important;line-height:1!important;letter-spacing:.12em!important;color:var(--faint)!important}
 .dashboard-lower .active-info-strip .goal-heading h2{grid-area:title!important;margin:0!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font:400 calc(15.5px * var(--ui-scale,1))/1.12 var(--serif)!important;letter-spacing:-.02em!important;color:var(--ink)!important;text-align:left!important}
-.dashboard-lower .active-info-strip .goal-configure{grid-area:configure!important;justify-self:end!important;display:grid!important;place-items:center!important;width:25px!important;height:25px!important;min-height:25px!important;padding:0!important;margin:0!important;border-radius:50%!important;opacity:.5!important}
-.dashboard-lower .active-info-strip .goal-configure:hover,.dashboard-lower .active-info-strip .goal-configure:focus-visible{opacity:1!important;background:var(--accent-soft)!important}
-.dashboard-lower .active-info-strip .goal-configure .icon{width:12px!important;height:12px!important}
-.dashboard-lower .active-info-strip .goal-configure span:not(.icon){display:none!important}
 .dashboard-lower .active-info-strip .countdown{grid-area:countdown!important;justify-self:end!important;display:flex!important;align-items:center!important;gap:10px!important;white-space:nowrap!important}
 .dashboard-lower .active-info-strip .countdown>div{display:flex!important;flex-direction:column!important;align-items:center!important;gap:1px!important;min-width:33px!important}
 .dashboard-lower .active-info-strip .countdown strong{font-size:calc(22px * var(--ui-scale,1))!important;font-weight:300!important;line-height:1!important;letter-spacing:-.04em!important;color:var(--ink)!important;font-variant-numeric:tabular-nums!important}
 .dashboard-lower .active-info-strip .countdown>div>span{font-size:calc(9px * var(--ui-scale,1))!important;line-height:1!important;color:var(--faint)!important}
 .dashboard-lower .active-info-strip .count-separator{font-size:12px!important;margin-top:-7px!important;color:var(--faint)!important;opacity:.42!important}
-.dashboard-lower .active-info-strip .goal-progress{grid-area:progress!important;display:block!important;align-self:end!important;width:100%!important;max-width:none!important;min-width:0!important;min-height:4px!important;overflow:visible!important}
+.dashboard-lower .active-info-strip .goal-progress{grid-area:progress!important;display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:auto auto!important;gap:4px!important;align-self:end!important;width:100%!important;max-width:none!important;min-width:0!important;min-height:4px!important;overflow:visible!important}
 .dashboard-lower .active-info-strip #progress-label{min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
 .dashboard-lower .active-info-strip #progress-value{flex:0 0 auto!important;color:var(--accent)!important;font-size:calc(12.5px * var(--ui-scale,1))!important;font-weight:700!important;letter-spacing:.01em!important}
 .dashboard-lower .active-info-strip .progress-track{display:block!important;flex:0 0 auto!important;height:4px!important;min-height:4px!important;margin-top:0!important;overflow:hidden!important;border-radius:999px!important;background:color-mix(in srgb,var(--line) 78%,transparent)!important}
@@ -324,7 +323,6 @@ body.is-idle-pre:not(.has-panel) .dashboard-lower .active-info-strip{
 
 /* Radio panel: three equal source tabs and matching offline controls. */
 .audio-source-switch button{min-width:0!important;padding-inline:7px!important}
-#ambient-status,#melody-status{font-size:11px;line-height:1.6;color:var(--muted);margin:8px 0 0}
 #ambient-volume-value,#melody-volume-value{font:11px var(--sans);min-width:32px;text-align:right;color:var(--muted)}
 @media (max-width:380px){
   .audio-source-switch{gap:3px!important;padding:3px!important}
@@ -621,31 +619,30 @@ body.is-idle-pre:not(.has-panel) .dashboard-lower .active-info-strip{
   .dashboard-lower .active-info-strip .solar-note,
   .dashboard-lower .active-info-strip .moon-caption{display:none!important}
 
-  /* Goal keeps the same hierarchy as wide screens, with the progress summary
-     above the chapter/countdown row and the track below. */
+  /* Goal keeps the wide-screen hierarchy: chapter/countdown first, then
+     progress track and its yearly summary underneath. */
   .dashboard-lower .active-info-strip>.goal-strip{
     order:2!important;
     width:100%!important;max-width:100%!important;min-width:0!important;
     min-height:76px!important;padding:7px 7px 8px!important;box-sizing:border-box!important;overflow:hidden!important;
     display:grid!important;
     grid-template-columns:minmax(0,1fr) minmax(0,46%)!important;
-    grid-template-rows:auto auto auto!important;
-    grid-template-areas:"summary summary" "heading countdown" "progress progress"!important;
+    grid-template-rows:auto auto!important;
+    grid-template-areas:"heading countdown" "progress progress"!important;
     align-items:center!important;justify-items:stretch!important;gap:5px 7px!important;text-align:left!important;
     border-bottom:1px solid color-mix(in srgb,var(--line) 42%,transparent)!important;
   }
-  .dashboard-lower .active-info-strip .goal-progress-summary{grid-area:summary!important;width:100%!important;max-width:100%!important;font-size:8.6px!important;gap:8px!important}
+  .dashboard-lower .active-info-strip .goal-progress-summary{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;width:100%!important;max-width:100%!important;min-width:0!important;overflow:hidden!important;box-sizing:border-box!important;font-size:9px!important;gap:8px!important}
   .dashboard-lower .active-info-strip .goal-heading{grid-area:heading!important;display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-areas:"label" "title"!important;justify-items:start!important;text-align:left!important;min-width:0!important}
   .dashboard-lower .active-info-strip .goal-heading .section-label{grid-area:label!important;margin:0!important;font-size:7.4px!important;text-align:left!important}
   .dashboard-lower .active-info-strip .goal-heading h2{grid-area:title!important;font-size:11.5px!important;line-height:1.15!important;text-align:left!important}
-  .dashboard-lower .active-info-strip .goal-configure{display:none!important}
   .dashboard-lower .active-info-strip .countdown{grid-area:countdown!important;justify-self:stretch!important;justify-content:space-between!important;width:100%!important;min-width:0!important;gap:3px!important}
   .dashboard-lower .active-info-strip .countdown strong{font-size:clamp(14px,4.2vw,16px)!important}
   .dashboard-lower .active-info-strip .countdown>div{flex:1 1 0!important;min-width:0!important}
   .dashboard-lower .active-info-strip .countdown>div>span{font-size:clamp(6.4px,1.9vw,7.2px)!important}
   .dashboard-lower .active-info-strip .count-separator{flex:0 0 auto!important;font-size:8px!important;margin-top:-5px!important}
-  .dashboard-lower .active-info-strip .goal-progress{grid-area:progress!important;width:100%!important;max-width:100%!important;min-width:0!important;justify-self:stretch!important}
-  .dashboard-lower .active-info-strip #progress-value{font-size:11.5px!important;font-weight:750!important;color:var(--accent)!important}
+  .dashboard-lower .active-info-strip .goal-progress{grid-area:progress!important;display:grid!important;grid-template-rows:auto auto!important;gap:4px!important;width:100%!important;max-width:100%!important;min-width:0!important;justify-self:stretch!important;overflow:hidden!important;box-sizing:border-box!important}
+  .dashboard-lower .active-info-strip #progress-value{justify-self:end!important;max-width:100%!important;min-width:0!important;white-space:nowrap!important;font-size:clamp(10.5px,3vw,12px)!important;font-weight:750!important;color:var(--accent)!important}
   .dashboard-lower .active-info-strip .goal-date{display:none!important}
 
   /* Event keeps the same three-row information block. Only its whole group is centred. */
