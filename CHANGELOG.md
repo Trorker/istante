@@ -8,6 +8,7 @@
 - **Compatibilità configurazione:** le release future possono dichiarare uno schema minimo. In caso di incompatibilità Istante avvisa chiaramente e offre comunque **Aggiorna comunque**, spiegando che alcune preferenze potrebbero tornare ai valori predefiniti.
 - **Backup calendario portabile:** il backup passa allo schema 2. I calendari collegati da URL vengono esportati come URL e configurazione, senza incorporare la copia ICS; al ripristino vengono risincronizzati dal collegamento originale. I vecchi backup schema 1 restano compatibili.
 - **Documentazione in nuova scheda:** Leggi il progetto, Tutte le novità, Questa release, Licenza, Terze parti e Visione e design aprono una nuova scheda/pagina senza sostituire la Dashboard.
+- **Font vendor inclusi:** corretta la build di produzione includendo realmente Libre Baskerville 2.005 (normale e corsivo variabili) ed Excalifont Regular 1.000 nei percorsi già previsti da `assets/css/fonts.css`; i tre asset vengono anche preparati nella cache offline come risorse accessorie.
 - **Pulizia manutenzione:** eliminato lo script Python di rigenerazione e rimossa la cartella `tools/` dalla distribuzione corrente.
 
 ## 3.13.27 — 12 settembre 2026
