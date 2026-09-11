@@ -1,4 +1,4 @@
-/* Istante v3.13.14 - application and local preferences. */
+/* Istante v3.13.15 - application and local preferences. */
 (function () {
 'use strict';
 const C = window.IstanteCore;
@@ -66,7 +66,34 @@ const touchFeedback=window.IstanteTouchFeedback.create({getSettings:()=>settings
 const calendar=window.IstanteCalendar.create({getSettings:()=>settings,notify:toast});
 const pages=window.IstantePages.create({getSettings:()=>settings,calendar,onChange:()=>{radio.close();X.pause();effectHub.sync();if(!document.body.classList.contains('view-calendar')&&!document.body.classList.contains('view-timer'))X.resume();}});
 const scene=window.IstanteScene.create({getSettings:()=>settings,getSun:()=>X.solar(new Date()),getWeather:now=>X.weather(now),store,openGuide:which=>openDialog(which)});
-const sharing=window.IstanteShare.create({getSnapshot:()=>({phrase:current?.text||'Un momento, per te.',time:timeFormatter.format(new Date()),theme:document.documentElement.dataset.theme||'dark',date:dateFormatter.format(new Date()),greeting:$('#moment-greeting').textContent,clockStyle:settings.clockStyle,hours:new Date().getHours(),minutes:new Date().getMinutes(),sky:window.IstanteSceneSnapshot.capture(scene.describe(),settings),goal:C.getGoal(new Date(),settings),station:settings.audioSource==='ambient'&&settings.ambientEnabled?ambient.label():settings.radioEnabled?radio.station().name:''}),open:()=>openDialog('share'),notify:toast});
+
+function shareWeatherSnapshot(now){
+ const place=X.place(),configured=!!(settings.weather&&place);
+ if(!configured)return{configured:false,available:false};
+ const current=X.weather(now);
+ const valid=current&&Number.isFinite(current.temperature_2m)&&Number.isFinite(current.weather_code);
+ if(!valid)return{configured:true,available:false,place:place.name||''};
+ const [condition]=window.IstanteSolar.weather(current.weather_code,current.is_day===1);
+ return{configured:true,available:true,temperature:Math.round(current.temperature_2m)+'°',condition,place:place.name||''};
+}
+function shareSnapshot(){
+ const now=new Date();
+ return{
+  phrase:current?.text||'Un momento, per te.',
+  time:timeFormatter.format(now),
+  theme:document.documentElement.dataset.theme||'dark',
+  date:dateFormatter.format(now),
+  greeting:$('#moment-greeting').textContent,
+  clockStyle:settings.clockStyle,
+  hours:now.getHours(),
+  minutes:now.getMinutes(),
+  sky:window.IstanteSceneSnapshot.capture(scene.describe(),settings),
+  weather:shareWeatherSnapshot(now),
+  goal:C.getGoal(now,settings),
+  station:settings.audioSource==='ambient'&&settings.ambientEnabled?ambient.label():settings.radioEnabled?radio.station().name:''
+ };
+}
+const sharing=window.IstanteShare.create({getSnapshot:shareSnapshot,open:()=>openDialog('share'),notify:toast});
 
 function toast(message) {
  const el=$('#toast'),host=$('#toast-host');

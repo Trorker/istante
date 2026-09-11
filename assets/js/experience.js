@@ -79,7 +79,7 @@ function create({getSettings,getPhoto,store,icon,effects,notify,onChange}){
  systemTheme.addEventListener?.('change',onChange);media.addEventListener?.('change',()=>{stopTyping(true);update(new Date());resume();});
  window.addEventListener('resize',()=>{requestAnimationFrame(fitWords);});window.addEventListener('online',()=>{lastAttempt=0;photoAttempt=0;void fetchWeather(true);void updatePhoto(true);});window.addEventListener('offline',()=>displayWeather(new Date()));
  document.addEventListener('visibilitychange',()=>{if(document.hidden){pause();return;}update(new Date());resume();});
- return{theme,solar,weather,update,photoAvailable,write,boot,reveal,pause,resume,beginSettings,commitSettings,capturePosition,transition,draftHasPlace:()=>S.validPlace(draft)};
+ return{theme,solar,weather,update,photoAvailable,write,boot,reveal,pause,resume,beginSettings,commitSettings,capturePosition,transition,place:()=>place?{...place}:null,draftHasPlace:()=>S.validPlace(draft)};
 }
 window.IstanteExperience={create};
 })();

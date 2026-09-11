@@ -36,10 +36,10 @@ function year(container){const grid=node('div','calendar-year');for(let m=0;m<12
 function week(container){const grid=node('div','calendar-week');for(let i=0;i<7;i++){const d=plus(new Date(from),i),box=node('section','calendar-week-day'+(dayKey(d)===dayKey(Date.now())?' is-today':'')),head=button('calendar-week-date',days[i],()=>goDate(d));head.append(node('strong','',d.getDate()));box.append(head);const list=dayEvents(d);list.forEach(e=>box.append(eventButton(e,false,'week')));if(!list.length)box.append(node('p','calendar-empty-day','Spazio libero.'));grid.append(box);}container.append(grid);}
 function agenda(container){const wrap=node('div','calendar-agenda');let count=0;for(let d=new Date(from);+d<to;d=plus(d,1)){const list=dayEvents(d);if(!list.length)continue;const group=node('section','calendar-agenda-day');group.append(node('h2','',fullDate.format(d)));for(const e of list){group.append(eventButton(e,true));if(++count>=600)break;}wrap.append(group);if(count>=600){wrap.append(node('p','field-note','Sono mostrati i primi 600 appuntamenti del periodo.'));break;}}if(!count)wrap.append(node('p','calendar-agenda-empty','Nessun impegno in questo periodo.'));container.append(wrap);}
 function day(container){const d=new Date(from),wrap=node('section','calendar-day-view'+(dayKey(d)===dayKey(Date.now())?' is-today':'')),head=node('div','calendar-day-view-head'),dateBox=node('div','calendar-day-date');dateBox.append(node('span','calendar-day-weekday',new Intl.DateTimeFormat('it-IT',{weekday:'long'}).format(d)),node('strong','calendar-day-date-number',d.getDate()),node('span','calendar-day-month',new Intl.DateTimeFormat('it-IT',{month:'long',year:'numeric'}).format(d)));head.append(dateBox);const list=dayEvents(d),summary=node('div','calendar-day-summary');summary.append(node('span','section-label','La tua giornata'),node('strong','',list.length?list.length+' '+(list.length===1?'impegno':'impegni'):'Nessun impegno'));head.append(summary);wrap.append(head);const timeline=node('div','calendar-day-events');if(list.length){list.forEach(e=>timeline.append(eventButton(e,true)));}else{const empty=node('div','calendar-day-empty');empty.append(node('strong','','Spazio libero.'),node('p','','Una giornata senza impegni nel calendario.'));timeline.append(empty);}wrap.append(timeline);container.append(wrap);}
-function render(){title();const root=$('cal-content');root.dataset.view=view;root.replaceChildren();const empty=!sources.length&&!getSettings().calendarHolidays;$('cal-empty').hidden=true;$('cal-empty-add').hidden=!empty;if(view==='year')year(root);else if(view==='month')month(root);else if(view==='week')week(root);else if(view==='day')day(root);else agenda(root);$('cal-warnings').hidden=!warnings.length;$('cal-warning-list').replaceChildren();warnings.forEach(w=>$('cal-warning-list').append(node('li','',w)));renderSources();}
+function render(){title();const root=$('cal-content');root.dataset.view=view;root.replaceChildren();const empty=!sources.length&&!getSettings().calendarHolidays;$('calendar-view').classList.toggle('calendar-is-empty',empty);$('cal-empty').hidden=true;$('cal-empty-add').hidden=!empty;if(view==='year')year(root);else if(view==='month')month(root);else if(view==='week')week(root);else if(view==='day')day(root);else agenda(root);$('cal-warnings').hidden=!warnings.length;$('cal-warning-list').replaceChildren();warnings.forEach(w=>$('cal-warning-list').append(node('li','',w)));renderSources();}
 function finish(id,result){if(id!==ticket)return;dayCache.clear();$('cal-content').setAttribute('aria-busy','false');document.querySelector('.calendar-main').classList.remove('is-loading');if(result.error){warnings=[result.error];events=[];}else{events=result.events;warnings=result.warnings;}render();}
 function load(){range();title();const id=++ticket;$('cal-content').setAttribute('aria-busy','true');document.querySelector('.calendar-main').classList.add('is-loading');clearTimeout(workerTimer);if(worker)worker.terminate();worker=null;
- if(typeof Worker==='function'&&location.protocol!=='file:'){try{worker=new Worker('assets/js/calendar-worker.js?v=3.13.14');const currentWorker=worker;workerTimer=setTimeout(()=>{currentWorker.terminate();finish(id,{error:'Il calendario richiede troppo tempo. Usa un file pi\u00f9 piccolo o restringi la vista.'});},6000);worker.onmessage=e=>{clearTimeout(workerTimer);currentWorker.terminate();finish(id,e.data);};worker.onerror=()=>{clearTimeout(workerTimer);currentWorker.terminate();worker=null;fallback();};worker.postMessage({id,sources:withHolidays(from,to),from,to});return;}catch(_){} }
+ if(typeof Worker==='function'&&location.protocol!=='file:'){try{worker=new Worker('assets/js/calendar-worker.js?v=3.13.15');const currentWorker=worker;workerTimer=setTimeout(()=>{currentWorker.terminate();finish(id,{error:'Il calendario richiede troppo tempo. Usa un file pi\u00f9 piccolo o restringi la vista.'});},6000);worker.onmessage=e=>{clearTimeout(workerTimer);currentWorker.terminate();finish(id,e.data);};worker.onerror=()=>{clearTimeout(workerTimer);currentWorker.terminate();worker=null;fallback();};worker.postMessage({id,sources:withHolidays(from,to),from,to});return;}catch(_){} }
  function fallback(){const input=withHolidays(from,to),rangeFrom=from,rangeTo=to;setTimeout(()=>{if(id!==ticket)return;try{finish(id,C.expand(input,rangeFrom,rangeTo));}catch(e){finish(id,{error:e.message});}},0);}fallback();
 }
 function renderSources(){const list=$('cal-source-list'),manager=$('cal-source-manager'),count=$('cal-source-count');if(count)count.textContent=String(sources.length);list.replaceChildren();manager.replaceChildren();for(const s of sources){const label=node('label','calendar-source-toggle'),check=document.createElement('input');check.type='checkbox';check.checked=s.enabled;check.onchange=()=>{try{persist(sources.map(x=>x.id===s.id?{...x,enabled:check.checked}:x));load();}catch(e){check.checked=s.enabled;message(e.message);}};label.style.setProperty('--event-color',COLORS[s.color]);label.append(check,node('i'),node('span','',s.name));list.append(label);const row=node('div','calendar-source-item'),info=node('div');info.append(node('strong','',s.name),node('small','',(s.url?'Collegato':'File locale')+' \u00b7 '+new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}).format(s.updatedAt)));row.append(info,iconButton('download','Esporta '+s.name,()=>download(s)),iconButton('trash','Elimina '+s.name,()=>{if(!confirm('Eliminare "'+s.name+'" da questo dispositivo?'))return;try{persist(sources.filter(x=>x.id!==s.id));load();message('Calendario rimosso.');}catch(e){message(e.message);}}));manager.append(row);}if(getSettings().calendarHolidays){const row=node('div','calendar-holidays-status');row.innerHTML='<span class="icon">'+window.IstanteIcons.render('calendar')+'</span>';row.append(document.createTextNode('Festivit\u00e0 italiane'));row.dataset.istanteTooltip='Attive. Puoi disattivarle nelle impostazioni del calendario.';list.append(row);}}
@@ -70,26 +70,44 @@ let touchStart=null;const calContent=$('cal-content'),calendarReturnDistance=()=
 window.addEventListener('storage',e=>{if(e.key===KEY){try{sources=C.cleanSources(JSON.parse(e.newValue||'[]'));load();queueUpcoming();}catch(_){}}});document.addEventListener('visibilitychange',()=>{if(!document.hidden&&getSettings().calendarEnabled)void refresh();});window.addEventListener('online',()=>void refresh(true));window.addEventListener('offline',()=>$('cal-sync-status').textContent='Offline \u00b7 ultima copia salvata.');setInterval(()=>{if(!document.hidden&&getSettings().calendarEnabled)void refresh();},60000);window.addEventListener('pagehide',()=>worker?.terminate());
 let upcomingWorker=null,upcomingTimer=0,upcomingVersion=0,nextEvent=null,upcomingRefresh=0;
 function withHolidays(a,b){return getSettings().calendarHolidays?[...sources,window.IstanteHolidays.source(new Date(a).getFullYear(),new Date(b).getFullYear())]:sources;}
-function renderIdleUpcoming(s){
- const box=$('idle-upcoming-event');if(!box)return;bindAgendaShortcut(box.querySelector('.idle-upcoming-arrow'));
- const label=$('idle-upcoming-label'),title=$('idle-upcoming-title'),whenNode=$('idle-upcoming-time');
- if(!s.calendarEnabled||!s.calendarUpcoming){box.hidden=true;label.textContent='Calendario';title.textContent='Disattivato';whenNode.textContent='';box.disabled=true;box.dataset.istanteTooltip='Calendario disattivato';box.setAttribute('aria-label',box.dataset.istanteTooltip);box.onclick=null;return;}
- box.hidden=false;box.disabled=false;
- if(!nextEvent){label.textContent='Prossimo evento';title.textContent='Nessun impegno in vista';whenNode.textContent='Apri calendario';box.dataset.istanteTooltip='Apri il calendario';box.setAttribute('aria-label',box.dataset.istanteTooltip);box.onclick=()=>$('calendar-open').click();return;}
+function setUpcomingState(box,{visible=true,empty=false,label='',title='',when='',tooltip='',onOpen=null}={}){
+ if(!box)return;
+ box.hidden=!visible;
+ box.disabled=!visible;
+ box.classList.toggle('is-empty',visible&&empty);
+ if(!visible){box.onclick=null;return;}
+ const labelNode=box.querySelector('small'),titleNode=box.querySelector('[id$="upcoming-title"]'),timeNode=box.querySelector('time');
+ if(labelNode)labelNode.textContent=label;
+ if(titleNode)titleNode.textContent=title;
+ if(timeNode)timeNode.textContent=when;
+ box.dataset.istanteTooltip=tooltip;
+ box.setAttribute('aria-label',tooltip);
+ box.onclick=onOpen;
+}
+function upcomingPresentation(labelWhenActive='Adesso',labelWhenNext='Prossimo evento'){
+ if(!nextEvent)return null;
  const now=Date.now(),active=nextEvent.start<=now&&nextEvent.end>now,when=new Date(nextEvent.start),same=dayKey(when)===dayKey(now);
- label.textContent=active?'Adesso':'Prossimo evento';title.textContent=nextEvent.title;whenNode.textContent=(same?'Oggi':new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'short'}).format(when))+' \u00b7 '+eventTime(nextEvent);
- box.dataset.istanteTooltip=nextEvent.title+' \u00b7 '+whenNode.textContent;box.setAttribute('aria-label',box.dataset.istanteTooltip);box.onclick=()=>detail(nextEvent);
+ const whenText=(same?'Oggi':new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'short'}).format(when))+' · '+eventTime(nextEvent);
+ return{label:active?labelWhenActive:labelWhenNext,title:nextEvent.title,when:whenText,tooltip:nextEvent.title+' · '+whenText};
+}
+function renderIdleUpcoming(s){
+ const box=$('idle-upcoming-event');if(!box)return;
+ bindAgendaShortcut(box.querySelector('.idle-upcoming-arrow'));
+ const visible=!!(s.calendarEnabled&&s.calendarUpcoming);
+ if(!visible){setUpcomingState(box,{visible:false});return;}
+ const event=upcomingPresentation('Adesso','Prossimo evento');
+ if(!event){setUpcomingState(box,{empty:true,label:'Prossimo evento',title:'Nessun impegno in vista',when:'Apri calendario',tooltip:'Apri il calendario',onOpen:()=>$('calendar-open').click()});return;}
+ setUpcomingState(box,{...event,onOpen:()=>detail(nextEvent)});
 }
 function renderUpcoming(){
- const box=$('upcoming-event'),s=getSettings();renderIdleUpcoming(s);bindAgendaShortcut(box?.querySelector('.upcoming-arrow'));box.hidden=!s.calendarEnabled||!s.calendarUpcoming;
- if(box.hidden)return;
- const hasEvent=!!nextEvent;
- if(!hasEvent){$('upcoming-label').textContent='Calendario';$('upcoming-title').textContent=s.calendarUpcoming?'Nessun impegno in vista':'Il tuo calendario';$('upcoming-time').textContent='Apri calendario';box.dataset.istanteTooltip='Apri il calendario';box.setAttribute('aria-label',box.dataset.istanteTooltip);box.onclick=()=>$('calendar-open').click();return;}
- const now=Date.now(),active=nextEvent.start<=now&&nextEvent.end>now;
- $('upcoming-label').textContent=active?'Adesso':'Prossimo impegno';$('upcoming-title').textContent=nextEvent.title;
- const when=new Date(nextEvent.start),same=dayKey(when)===dayKey(now);
- $('upcoming-time').textContent=(same?'Oggi':new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'short'}).format(when))+' \u00b7 '+eventTime(nextEvent);
- box.dataset.istanteTooltip=nextEvent.title+' \u00b7 '+$('upcoming-time').textContent;box.setAttribute('aria-label',box.dataset.istanteTooltip);box.onclick=()=>detail(nextEvent);
+ const box=$('upcoming-event'),s=getSettings();
+ renderIdleUpcoming(s);
+ bindAgendaShortcut(box?.querySelector('.upcoming-arrow'));
+ const visible=!!(s.calendarEnabled&&s.calendarUpcoming);
+ if(!visible){setUpcomingState(box,{visible:false});return;}
+ const event=upcomingPresentation('Adesso','Prossimo impegno');
+ if(!event){setUpcomingState(box,{empty:true,label:'Calendario',title:'Nessun impegno in vista',when:'Apri calendario',tooltip:'Apri il calendario',onOpen:()=>$('calendar-open').click()});return;}
+ setUpcomingState(box,{...event,onOpen:()=>detail(nextEvent)});
 }
 
 function openAgendaFromDashboard(event){
@@ -113,7 +131,7 @@ function updateUpcoming(){
  const now=Date.now(),a=+new Date(new Date().setHours(0,0,0,0)),b=now+90*86400000;
  const finish=result=>{if(v!==upcomingVersion)return;const candidates=(result.events||[]).filter(e=>e.end>now||e.start>=now);nextEvent=candidates[0]||null;upcomingRefresh=Date.now();renderUpcoming();};
  if(typeof Worker==='function'&&location.protocol!=='file:'){
-  try{const w=new Worker('assets/js/calendar-worker.js?v=3.13.14');upcomingWorker=w;const timeout=setTimeout(()=>{w.terminate();finish({events:[]});},6000);w.onmessage=e=>{clearTimeout(timeout);w.terminate();finish(e.data);};w.onerror=()=>{clearTimeout(timeout);w.terminate();try{finish(C.expand(sources,a,b));}catch(_){finish({events:[]});}};w.postMessage({id:v,sources,from:a,to:b});return;}catch(_){}
+  try{const w=new Worker('assets/js/calendar-worker.js?v=3.13.15');upcomingWorker=w;const timeout=setTimeout(()=>{w.terminate();finish({events:[]});},6000);w.onmessage=e=>{clearTimeout(timeout);w.terminate();finish(e.data);};w.onerror=()=>{clearTimeout(timeout);w.terminate();try{finish(C.expand(sources,a,b));}catch(_){finish({events:[]});}};w.postMessage({id:v,sources,from:a,to:b});return;}catch(_){}
  }
  try{finish(C.expand(sources,a,b));}catch(_){finish({events:[]});}
 }

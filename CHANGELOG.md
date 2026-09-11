@@ -1,5 +1,17 @@
 # Changelog
 
+## 3.13.15 — 11 settembre 2026
+
+- Freccia Agenda del prossimo evento resa visibile e coerente anche su desktop e schermi grandi, senza cambiare il click sulla card che continua ad aprire il dettaglio.
+- Stato “Nessun impegno in vista” centrato geometricamente, inclusi icona calendario e collegamento Agenda.
+- Header Calendario telefono stabilizzato: l'area azioni riserva sempre lo spazio del pulsante Aggiungi e del pulsante calendari, quindi la comparsa di `+` non sposta periodo o navigazione.
+- Sidebar dei calendari trasformata in pannello a tutto schermo sui telefoni, con intestazione, sorgenti e azioni sempre accessibili.
+- Condivisione: nuovo interruttore Meteo, attivo di default quando meteo e località sono configurati; temperatura, condizioni e località vengono inserite nella cartolina.
+- Responsive consolidato: le regole introdotte nelle 3.13.12–3.13.14 sono state riordinate in un unico foglio `responsive.css`, eliminando la catena di tre override successivi.
+- Refactoring mirato di calendario e condivisione: stato del prossimo evento centralizzato, snapshot di condivisione separato e opzioni di share gestite da un'unica lista.
+- Versioni interne di worker, backup, documentazione e controllo aggiornamenti riallineate alla release.
+- Service worker ripulito dal vecchio percorso `calendario.html`: il Calendario è una vista interna di `index.html` e non viene più trattato come pagina separata.
+
 ## 3.13.14 — 11 settembre 2026
 
 - Vista semplificata su telefono verticale corretta anche per viewport tra 640 e 740 px: Meteo, Traguardo e Calendario/Evento sono realmente impilati e centrati.

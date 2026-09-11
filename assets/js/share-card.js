@@ -145,6 +145,30 @@
   if(c.measureText(text).width<=width)return text;
   const chars=Array.from(text);while(chars.length&&c.measureText(chars.join('')+'\u2026').width>width)chars.pop();return chars.join('')+'\u2026';
  }
+
+ function cardMetadata(snapshot,opt){
+  const rows=[];
+  if(opt.sky&&snapshot.sky){
+   const skyInfo=snapshot.sky,atmosphere=skyInfo.atmosphere;
+   if(opt.weather){
+    rows.push(skyInfo.isDay?'Luce del giorno.':skyInfo.name||'Un momento, sotto le stelle.');
+   }else{
+    rows.push(atmosphere?.label?(atmosphere.source==='manual'?'Atmosfera: ':'')+atmosphere.label+(skyInfo.isDay?'':' · '+(skyInfo.name||'Notte')):skyInfo.isDay?'Sotto la stessa luce.':skyInfo.name||'Un momento, sotto le stelle.');
+   }
+  }
+  if(opt.weather&&snapshot.weather?.configured){
+   const weather=snapshot.weather;
+   rows.push(weather.available
+    ? ['Meteo',weather.temperature,weather.condition,weather.place].filter(Boolean).join(' · ')
+    : ['Meteo','dati non disponibili',weather.place].filter(Boolean).join(' · '));
+  }
+  if(opt.goal&&snapshot.goal){
+   const goal=snapshot.goal;
+   rows.push((goal.title||'Il mio obiettivo')+' · '+(goal.done?'Traguardo raggiunto':goal.days+' giorni, '+goal.hours+' ore'));
+  }
+  if(opt.radio&&snapshot.station)rows.push('In ascolto · '+snapshot.station);
+  return rows;
+ }
  function draw(snapshot,format='square',options=true){
   snapshot=snapshot||{};
   const opt=typeof options==='boolean'?{clock:options,qr:true,date:true,sky:true}:options||{};
@@ -180,10 +204,7 @@
     const y=land?193:story?304:259;c.fillText(snapshot.time||'',W/2,y);top=y+(land?25:56);
    }
   }
-  const footer=H-Math.max(land?182:207,qrSide/scale+45),metadata=[];
-  if(opt.sky&&snapshot.sky){const k=snapshot.sky;const a=k.atmosphere;metadata.push(a?.label?(a.source==='manual'?'Atmosfera: ':'')+a.label+(k.isDay?'':' \u00b7 '+(k.name||'Notte')):k.isDay?'Sotto la stessa luce.':k.name||'Un momento, sotto le stelle.');}
-  if(opt.goal&&snapshot.goal){const g=snapshot.goal;metadata.push((g.title||'Il mio obiettivo')+' \u00b7 '+(g.done?'Traguardo raggiunto':g.days+' giorni, '+g.hours+' ore'));}
-  if(opt.radio&&snapshot.station)metadata.push('In ascolto \u00b7 '+snapshot.station);
+  const footer=H-Math.max(land?182:207,qrSide/scale+45),metadata=cardMetadata(snapshot,opt);
   const rowH=land?22:30,metaSpace=metadata.length?metadata.length*rowH+22:0,bottom=footer-35-metaSpace;
   let font=land?44:story?78:61,lines;
   do{c.font=font+'px Georgia,serif';lines=wrap(c,snapshot.phrase||'Prenditi un momento per te.',W-pad*2-60);if(lines.length*font*1.32<=bottom-top)break;font--;}while(font>8);
