@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.13.14 — 11 settembre 2026
+
+- Vista semplificata su telefono verticale corretta anche per viewport tra 640 e 740 px: Meteo, Traguardo e Calendario/Evento sono realmente impilati e centrati.
+- Testi della barra inferiore ulteriormente compattati; “Nessun impegno in vista” resta leggibile per intero.
+- Calendario: eliminato il pulsante Indietro circolare; il logo completo Istante con nome e payoff resta a sinistra e può tornare alla dashboard.
+- Vista Anno mobile ricostruita con mesi a tutta larghezza, altezza autonoma e scorrimento verticale; nessuna sovrapposizione tra i mini-calendari.
+- Vista Anno landscape mantenuta a due mesi per riga con altezza corretta delle settimane.
+
 ## 3.13.13 — 11 settembre 2026
 
 - Vista semplificata mobile riallineata alla composizione verticale Meteo → Traguardo → Evento.
@@ -175,7 +183,7 @@
 - condivisione alleggerita: rimossa l'etichetta visibile “Formato” e preview resa sempre contenuta, senza taglio dell'immagine;
 - **Biblioteca** ripensata con due soli livelli, Frasi e Raccolte: tutte le raccolte sono mostrate come card in un unico catalogo e possono essere filtrate per **In uso / Scaricate / Da scaricare**;
 - rimosso il comando permanente “Configura il prossimo capitolo” dalla fascia: il riepilogo del traguardo apre ora una **modale dedicata** con avanzamento, tempo residuo e accesso alle impostazioni;
-- **Timer** ridisegnato con impostazione principale tramite slider 1–120 minuti, durata precisa in un pannello secondario e stato in corso animato con orbita/progresso;
+- **Timer** ridisegnato con impostazione principale tramite slider 1–120 minuti, durata precisa in un pannello secondario è stato in corso animato con orbita/progresso;
 - toast reso più riconoscibile con superficie più piena, bordo e ombra dedicata anche nel tema Carta;
 - scala dei testi trasformata in uno **slider a quattro livelli**: Piccolo, Medio, Grande, Molto grande; la UI cresce più lentamente della frase e le barre di avanzamento mantengono una dimensione fisica minima;
 - calendario: logo ricostruito come **un unico pulsante** con simbolo centrato verticalmente tra `istante.` e `Un momento, per te.`;

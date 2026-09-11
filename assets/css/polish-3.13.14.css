@@ -1,0 +1,280 @@
+/* Istante v3.13.14 - narrow phone correction after real-device validation. */
+
+/* The brand is the way back. The redundant circular back button is removed. */
+#calendar-view .calendar-back-button{display:none!important}
+
+/* Real narrow phones can expose CSS viewports between 640 and 740 px.
+   Keep both the normal ribbon and the compact idle ribbon vertically composed. */
+@media (max-width:740px) and (orientation:portrait){
+  .dashboard-lower,
+  body.is-idle:not(.has-panel) .dashboard-lower.chrome{
+    width:min(520px,calc(100vw - 24px))!important;
+    max-width:none!important;
+    min-height:0!important;
+    height:auto!important;
+    margin-inline:auto!important;
+    margin-bottom:2px!important;
+    gap:0!important;
+    align-content:initial!important;
+  }
+
+  .dashboard-lower .active-info-strip,
+  body[data-compact-idle-bar='false'].is-idle:not(.has-panel) .dashboard-lower .active-info-strip{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    width:100%!important;
+    min-height:0!important;
+    height:auto!important;
+    max-height:none!important;
+    grid-template-columns:none!important;
+    grid-template-rows:none!important;
+    overflow:visible!important;
+  }
+  .dashboard-lower .active-info-strip>#environment-line,
+  .dashboard-lower .active-info-strip>.goal-strip,
+  .dashboard-lower .active-info-strip>#upcoming-event,
+  body[data-compact-idle-bar='false'].is-idle:not(.has-panel) .dashboard-lower .active-info-strip>#environment-line,
+  body[data-compact-idle-bar='false'].is-idle:not(.has-panel) .dashboard-lower .active-info-strip>.goal-strip,
+  body[data-compact-idle-bar='false'].is-idle:not(.has-panel) .dashboard-lower .active-info-strip>#upcoming-event{
+    grid-column:auto!important;
+    grid-row:auto!important;
+    width:100%!important;
+    height:auto!important;
+    max-height:none!important;
+    margin:0!important;
+    border-left:0!important;
+    border-right:0!important;
+    overflow:visible!important;
+    text-align:center!important;
+  }
+  .dashboard-lower .active-info-strip>#environment-line{
+    order:1!important;
+    min-height:44px!important;
+    padding:6px 10px!important;
+    justify-items:center!important;
+    border-bottom:1px solid color-mix(in srgb,var(--line) 42%,transparent)!important;
+  }
+  .dashboard-lower .active-info-strip .weather-line{
+    justify-content:center!important;
+    text-align:center!important;
+    gap:3px 6px!important;
+  }
+  .dashboard-lower .active-info-strip #weather-text{font-size:15px!important}
+  .dashboard-lower .active-info-strip #weather-condition{font-size:9px!important}
+  .dashboard-lower .active-info-strip .solar-line{justify-content:center!important;gap:10px!important}
+  .dashboard-lower .active-info-strip .solar-label{font-size:8px!important}
+  .dashboard-lower .active-info-strip .solar-time time{font-size:8.5px!important}
+
+  .dashboard-lower .active-info-strip>.goal-strip{
+    order:2!important;
+    min-height:70px!important;
+    padding:6px 10px 7px!important;
+    justify-items:center!important;
+    text-align:center!important;
+    gap:3px 8px!important;
+    border-bottom:1px solid color-mix(in srgb,var(--line) 42%,transparent)!important;
+  }
+  .dashboard-lower .active-info-strip .goal-heading{justify-items:center!important;text-align:center!important}
+  .dashboard-lower .active-info-strip .goal-heading .section-label{font-size:7.8px!important}
+  .dashboard-lower .active-info-strip .goal-heading h2{font-size:12px!important;line-height:1.15!important}
+  .dashboard-lower .active-info-strip .countdown{justify-content:center!important;gap:8px!important}
+  .dashboard-lower .active-info-strip .countdown strong{font-size:17px!important}
+  .dashboard-lower .active-info-strip .countdown>div>span{font-size:7.5px!important}
+  .dashboard-lower .active-info-strip .count-separator{font-size:9px!important;margin-top:-5px!important}
+  .dashboard-lower .active-info-strip .goal-progress{width:min(82%,330px)!important;justify-self:center!important}
+  .dashboard-lower .active-info-strip .progress-labels{font-size:7.5px!important}
+  .dashboard-lower .active-info-strip .goal-date{display:none!important}
+
+  .dashboard-lower .active-info-strip>#upcoming-event{
+    order:3!important;
+    min-height:46px!important;
+    padding:6px 10px!important;
+    grid-template-columns:20px minmax(0,1fr) 20px!important;
+    grid-template-areas:'icon copy arrow' 'icon time arrow'!important;
+    gap:2px 7px!important;
+    align-content:center!important;
+  }
+  .dashboard-lower .active-info-strip>#upcoming-event>.icon:first-child{grid-area:icon!important;width:13px!important;height:13px!important;justify-self:center!important}
+  .dashboard-lower .active-info-strip .upcoming-copy{grid-area:copy!important;width:100%!important;justify-items:center!important;text-align:center!important}
+  .dashboard-lower .active-info-strip .upcoming-copy small{font-size:7.8px!important}
+  .dashboard-lower .active-info-strip #upcoming-title{
+    display:block!important;width:100%!important;max-width:100%!important;
+    white-space:normal!important;overflow:visible!important;text-overflow:clip!important;
+    text-align:center!important;font-size:10.5px!important;line-height:1.22!important;
+  }
+  .dashboard-lower .active-info-strip #upcoming-time{grid-area:time!important;width:100%!important;text-align:center!important;font-size:8.3px!important;line-height:1.2!important}
+  .dashboard-lower .active-info-strip .upcoming-arrow{grid-area:arrow!important;align-self:center!important;justify-self:end!important;width:20px!important;height:20px!important;min-width:20px!important}
+
+  body[data-compact-idle-bar='true'].is-idle:not(.has-panel) .idle-summary-strip,
+  body.is-idle:not(.has-panel) .idle-summary-strip{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    width:100%!important;
+    min-height:0!important;
+    height:auto!important;
+    max-height:none!important;
+    grid-template-columns:none!important;
+    grid-template-rows:none!important;
+    padding:0!important;
+    overflow:visible!important;
+  }
+  body.is-idle:not(.has-panel) .idle-summary-strip :is(.idle-weather-summary,.idle-goal-summary,.idle-upcoming-event){
+    grid-column:auto!important;grid-row:auto!important;width:100%!important;height:auto!important;max-height:none!important;
+    border-left:0!important;border-right:0!important;text-align:center!important;
+  }
+  body.is-idle:not(.has-panel) .idle-weather-summary{
+    order:1!important;min-height:40px!important;padding:5px 10px!important;justify-items:center!important;
+    border-bottom:1px solid color-mix(in srgb,var(--line) 32%,transparent)!important;
+  }
+  body.is-idle:not(.has-panel) .idle-weather-primary,
+  body.is-idle:not(.has-panel) .idle-solar-summary{justify-content:center!important}
+  body.is-idle:not(.has-panel) #idle-weather-text{font-size:12px!important}
+  body.is-idle:not(.has-panel) #idle-weather-condition{display:inline!important;font-size:7.8px!important}
+  body.is-idle:not(.has-panel) .idle-solar-time time{font-size:7.5px!important}
+
+  body.is-idle:not(.has-panel) .idle-goal-summary{
+    order:2!important;min-height:54px!important;padding:5px 10px!important;
+    grid-template-columns:1fr!important;grid-template-areas:'heading' 'title' 'track' 'count'!important;
+    justify-items:center!important;text-align:center!important;gap:2px!important;
+    border-bottom:1px solid color-mix(in srgb,var(--line) 32%,transparent)!important;
+  }
+  body.is-idle:not(.has-panel) .idle-goal-heading{width:min(90%,330px)!important;justify-content:center!important;gap:8px!important;font-size:7px!important}
+  body.is-idle:not(.has-panel) .idle-goal-title{display:block!important;width:100%!important;text-align:center!important;font-size:8.7px!important;line-height:1.15!important}
+  body.is-idle:not(.has-panel) .idle-progress-track{width:min(82%,310px)!important}
+  body.is-idle:not(.has-panel) .idle-goal-countdown{justify-content:center!important;gap:8px!important;font-size:7px!important}
+
+  body.is-idle:not(.has-panel) .idle-upcoming-event{
+    order:3!important;min-height:42px!important;padding:5px 10px!important;
+    display:grid!important;grid-template-columns:20px minmax(0,1fr) 20px!important;
+    grid-template-areas:'icon copy arrow' 'icon time arrow'!important;
+    gap:2px 7px!important;align-content:center!important;
+  }
+  body.is-idle:not(.has-panel) .idle-upcoming-event>.icon:first-child{display:inline-flex!important;grid-area:icon!important;width:12px!important;height:12px!important;justify-self:center!important}
+  body.is-idle:not(.has-panel) .idle-upcoming-copy{grid-area:copy!important;width:100%!important;justify-items:center!important;text-align:center!important}
+  body.is-idle:not(.has-panel) .idle-upcoming-copy small{font-size:7px!important}
+  body.is-idle:not(.has-panel) #idle-upcoming-title{
+    display:block!important;width:100%!important;max-width:100%!important;
+    white-space:normal!important;overflow:visible!important;text-overflow:clip!important;
+    text-align:center!important;font-size:8.7px!important;line-height:1.2!important;
+  }
+  body.is-idle:not(.has-panel) #idle-upcoming-time{grid-area:time!important;width:100%!important;text-align:center!important;font-size:7.5px!important;line-height:1.2!important}
+  body.is-idle:not(.has-panel) .idle-upcoming-arrow{grid-area:arrow!important;align-self:center!important;justify-self:end!important;width:20px!important;height:20px!important;min-width:20px!important}
+
+  /* Make enough vertical room for the three stacked information rows. */
+  .stage-viewport{min-height:205px!important}
+  #main.main-stage{padding:6px 4px!important}
+  .clock{font-size:clamp(70px,21vw,100px)!important}
+  .clock-seconds{font-size:14px!important}
+  .thought-block{margin-top:14px!important}
+  .quote-wrap{margin-top:9px!important;min-height:56px!important}
+  .quote-wrap blockquote{font-size:clamp(20px,5.6vw,27px)!important;line-height:1.25!important}
+  .phrase-meta{margin-top:8px!important;font-size:8px!important}
+
+  /* Calendar header: complete two-line brand at the left, period and controls beside it. */
+  #calendar-view .calendar-heading-combined{
+    grid-template-columns:minmax(94px,auto) minmax(44px,1fr) auto 30px!important;
+    grid-template-areas:'brand title nav actions' 'views views views views'!important;
+    align-items:center!important;gap:7px 5px!important;padding-bottom:8px!important;
+  }
+  #calendar-view .calendar-brand-lockup{grid-area:brand!important;min-width:0!important;justify-items:start!important;justify-self:start!important}
+  #calendar-view .calendar-brand-lockup .brand-home-link{
+    display:flex!important;align-items:center!important;justify-content:flex-start!important;
+    gap:6px!important;min-width:0!important;padding:0!important;
+  }
+  #calendar-view .calendar-brand-lockup .brand-logo-image{width:24px!important;height:24px!important;flex:0 0 24px!important;border-radius:7px!important}
+  #calendar-view .calendar-brand-lockup .brand-home-copy{display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:1px!important;min-width:0!important}
+  #calendar-view .calendar-brand-lockup .brand-home-name{display:block!important;font-size:15px!important;line-height:1!important;white-space:nowrap!important}
+  #calendar-view .calendar-brand-lockup .brand-home-tagline{display:block!important;font-size:6.4px!important;line-height:1.05!important;white-space:nowrap!important;letter-spacing:.01em!important}
+  #calendar-view .calendar-title-copy{grid-area:title!important;min-width:0!important}
+  #calendar-view .calendar-period-button{width:100%!important;min-width:0!important;justify-content:center!important;padding:2px!important}
+  #calendar-view .calendar-period-title{font-size:clamp(13px,3.6vw,15px)!important;line-height:1!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;text-align:center!important}
+  #calendar-view .calendar-toolbar{display:contents!important}
+  #calendar-view .calendar-navigation{grid-area:nav!important;justify-self:end!important;gap:1px!important}
+  #calendar-view .calendar-navigation .icon-button{width:27px!important;height:27px!important;min-width:27px!important;min-height:27px!important}
+  #calendar-view .calendar-navigation .secondary-button{min-width:41px!important;height:27px!important;min-height:27px!important;padding:3px 6px!important;font-size:8.8px!important}
+  #calendar-view .calendar-heading-actions{grid-area:actions!important;justify-self:end!important;gap:0!important}
+  #calendar-view .calendar-heading-actions .calendar-sidebar-toggle{width:29px!important;height:29px!important;min-width:29px!important;min-height:29px!important;padding:0!important}
+
+  /* Year is a scrollable list of real calendars, never a compressed 12-card sheet. */
+  #calendar-view .calendar-main{min-height:0!important;overflow:hidden!important}
+  #calendar-view #cal-content[data-view='year']{height:100%!important;min-height:0!important;overflow-x:hidden!important;overflow-y:auto!important;padding:0 3px 54px 0!important;-webkit-overflow-scrolling:touch!important;touch-action:pan-y!important}
+  #calendar-view #cal-content[data-view='year']>.calendar-year{
+    display:grid!important;grid-template-columns:1fr!important;grid-template-rows:none!important;
+    grid-auto-rows:max-content!important;align-content:start!important;
+    width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;
+    gap:14px!important;padding:0!important;overflow:visible!important;position:relative!important;
+  }
+  #calendar-view #cal-content[data-view='year'] .calendar-mini{
+    display:grid!important;grid-template-rows:auto auto auto!important;
+    width:100%!important;height:auto!important;min-height:258px!important;max-height:none!important;
+    padding:12px 14px!important;overflow:hidden!important;align-content:start!important;
+    position:relative!important;inset:auto!important;transform:none!important;box-sizing:border-box!important;
+  }
+  #calendar-view #cal-content[data-view='year'] .calendar-mini h2{min-height:24px!important;margin:0 0 7px!important;padding:0 2px 7px!important}
+  #calendar-view #cal-content[data-view='year'] .calendar-mini h2 button{font-size:15px!important;line-height:1.1!important;margin:0!important}
+  #calendar-view #cal-content[data-view='year'] .calendar-mini-weekdays{height:auto!important;min-height:15px!important;margin:0 0 4px!important;gap:2px!important}
+  #calendar-view #cal-content[data-view='year'] .calendar-mini-weekdays span{font-size:9px!important;line-height:1!important;padding:0!important}
+  #calendar-view #cal-content[data-view='year'] .calendar-mini-grid{
+    display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr))!important;
+    grid-template-rows:repeat(6,30px)!important;grid-auto-rows:30px!important;
+    flex:none!important;width:100%!important;height:auto!important;min-height:180px!important;
+    gap:3px 2px!important;align-items:center!important;align-content:start!important;overflow:visible!important;
+  }
+  #calendar-view #cal-content[data-view='year'] .calendar-mini-grid button{
+    width:28px!important;height:28px!important;min-width:28px!important;min-height:28px!important;
+    max-width:100%!important;font-size:10px!important;line-height:1!important;justify-self:center!important;align-self:center!important;
+  }
+}
+
+@media (max-width:380px) and (orientation:portrait){
+  #calendar-view .calendar-heading-combined{grid-template-columns:minmax(86px,auto) minmax(38px,1fr) auto 28px!important;gap:6px 3px!important}
+  #calendar-view .calendar-brand-lockup .brand-logo-image{width:21px!important;height:21px!important;flex-basis:21px!important}
+  #calendar-view .calendar-brand-lockup .brand-home-name{font-size:13.5px!important}
+  #calendar-view .calendar-brand-lockup .brand-home-tagline{font-size:5.8px!important}
+  #calendar-view .calendar-period-title{font-size:12.5px!important}
+  #calendar-view .calendar-navigation .icon-button{width:25px!important;height:25px!important;min-width:25px!important;min-height:25px!important}
+  #calendar-view .calendar-navigation .secondary-button{min-width:37px!important;height:25px!important;min-height:25px!important;font-size:8px!important;padding-inline:4px!important}
+  #calendar-view .calendar-heading-actions .calendar-sidebar-toggle{width:27px!important;height:27px!important;min-width:27px!important;min-height:27px!important}
+  #calendar-view #cal-content[data-view='year'] .calendar-mini{min-height:244px!important;padding:11px 12px!important}
+  #calendar-view #cal-content[data-view='year'] .calendar-mini-grid{grid-template-rows:repeat(6,28px)!important;grid-auto-rows:28px!important;min-height:168px!important}
+  #calendar-view #cal-content[data-view='year'] .calendar-mini-grid button{width:26px!important;height:26px!important;min-width:26px!important;min-height:26px!important;font-size:9.5px!important}
+}
+
+/* Phone landscape remains a single header row. Keep the complete brand and two months per year row. */
+@media (max-width:1000px) and (orientation:landscape) and (max-height:560px){
+  #calendar-view .calendar-heading-combined{
+    grid-template-columns:minmax(92px,auto) minmax(72px,.55fr) auto minmax(225px,1.4fr) 28px!important;
+    grid-template-areas:'brand title nav views actions'!important;
+    gap:4px 5px!important;
+  }
+  #calendar-view .calendar-brand-lockup{justify-self:start!important;justify-items:start!important}
+  #calendar-view .calendar-brand-lockup .brand-home-link{display:flex!important;align-items:center!important;gap:5px!important;padding:0!important}
+  #calendar-view .calendar-brand-lockup .brand-logo-image{width:22px!important;height:22px!important;flex:0 0 22px!important;border-radius:6px!important}
+  #calendar-view .calendar-brand-lockup .brand-home-copy{display:flex!important;flex-direction:column!important;gap:1px!important}
+  #calendar-view .calendar-brand-lockup .brand-home-name{display:block!important;font-size:13px!important;line-height:1!important}
+  #calendar-view .calendar-brand-lockup .brand-home-tagline{display:block!important;font-size:5.7px!important;line-height:1!important;white-space:nowrap!important}
+  #calendar-view #cal-content[data-view='year']{height:100%!important;min-height:0!important;overflow-x:hidden!important;overflow-y:auto!important;padding:0 3px 40px 0!important;-webkit-overflow-scrolling:touch!important;touch-action:pan-y!important}
+  #calendar-view #cal-content[data-view='year']>.calendar-year{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-template-rows:none!important;
+    grid-auto-rows:max-content!important;height:auto!important;min-height:0!important;align-content:start!important;
+    gap:9px!important;overflow:visible!important;
+  }
+  #calendar-view #cal-content[data-view='year'] .calendar-mini{
+    display:grid!important;grid-template-rows:auto auto auto!important;height:auto!important;min-height:188px!important;max-height:none!important;
+    padding:7px 9px!important;overflow:hidden!important;align-content:start!important;
+    position:relative!important;inset:auto!important;transform:none!important;box-sizing:border-box!important;
+  }
+  #calendar-view #cal-content[data-view='year'] .calendar-mini h2{min-height:18px!important;margin:0 0 4px!important;padding:0 1px 4px!important}
+  #calendar-view #cal-content[data-view='year'] .calendar-mini h2 button{font-size:11.5px!important;margin:0!important}
+  #calendar-view #cal-content[data-view='year'] .calendar-mini-weekdays{min-height:11px!important;margin:0 0 2px!important}
+  #calendar-view #cal-content[data-view='year'] .calendar-mini-weekdays span{font-size:7px!important;padding:0!important}
+  #calendar-view #cal-content[data-view='year'] .calendar-mini-grid{
+    grid-template-rows:repeat(6,20px)!important;grid-auto-rows:20px!important;flex:none!important;
+    height:auto!important;min-height:120px!important;gap:1px 2px!important;align-content:start!important;
+  }
+  #calendar-view #cal-content[data-view='year'] .calendar-mini-grid button{
+    width:19px!important;height:19px!important;min-width:19px!important;min-height:19px!important;font-size:8px!important;
+  }
+}

@@ -1,4 +1,4 @@
-/* Istante v3.13.13 - application and local preferences. */
+/* Istante v3.13.14 - application and local preferences. */
 (function () {
 'use strict';
 const C = window.IstanteCore;
