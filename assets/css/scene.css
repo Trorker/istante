@@ -140,7 +140,7 @@ dialog .panel-content,.timer-content,.settings-scroll,.library-list-wrap,.custom
 @media (max-height:375px) and (orientation:landscape){
  .phrase-meta{display:none}.moment-greeting{margin-bottom:4px;font-size:10px}#main.main-stage{gap:4px 14px}
  
- .thought-eyebrow .tiny-line{width:12px}.bottom-bar .toolbar-separator{margin:0 1px}
+ .thought-eyebrow .tiny-line{width:12px}
 }
 @media (prefers-reduced-motion:reduce){.sky-weather-veil{animation:none;transition:none}}
 

@@ -1,6 +1,6 @@
 # Istante
 
-**Versione corrente: 3.13.22**  
+**Versione corrente: 3.13.24**  
 **Un momento, per te.**  
 Un progetto di **Ruslan Dzyuba**.
 
@@ -52,6 +52,8 @@ in **mesi o anni**. Dalla dashboard il riepilogo apre una **modale dedicata** co
 Quando la distanza è lunga, il riepilogo usa anche mesi e anni invece di
 riempire lo schermo con un numero enorme di giorni.
 
+La barra inferiore della Dashboard è **adattiva**: Meteo, Traguardo e Prossimo impegno cedono realmente il proprio spazio quando non sono disponibili. Con tre moduli conserva la gerarchia originale; con due moduli i contenuti rimasti si ridistribuiscono sull'intera larghezza. Quando rimane soltanto il Prossimo impegno, il modulo resta compatto e centrato invece di allungarsi inutilmente; negli altri casi singoli lo spazio viene usato senza lasciare colonne fantasma. Sul telefono verticale i moduli disponibili restano impilati senza lasciare vuoti.
+
 ## Musica, relax e timer
 
 Il mini player ha tre sorgenti: **Radio**, **Ambiente** e **Melodie**. La Radio supporta stazioni lo-fi e personali, preferiti, programmazioni multiple e scelta casuale; dalla gestione delle stazioni puoi anche **spostare una radio più in alto o più in basso** nell’ordine del catalogo. Ambiente genera rumore rosa, marrone, pioggia o vento. Melodie aggiunge quattro paesaggi sonori procedurali — **Respiro lento, Meditazione, Notturno e Onde lente** — generati sul dispositivo con Web Audio, senza file audio da scaricare. Le Melodie possono essere abilitate o disabilitate separatamente dalle Impostazioni. Respiro lento segue un ciclo guidato **4-4-6** (4 secondi di inspirazione, 4 di pausa piena, 6 di espirazione) come riferimento ritmico facoltativo; il livello delle melodie ha più margine sui diffusori piccoli e Meditazione resta volutamente nei registri bassi e morbidi; Notturno conserva gli accordi profondi e quasi immobili; Onde lente usa swell alternati senza un battito marcato. Sui dispositivi touch le gesture audio sono attive di default nella sola zona destra della Dashboard: un doppio tap alterna Play/Pausa e uno swipe verticale modifica il volume di **10 punti esatti**. Le gesture possono essere disattivate dalle Impostazioni e non vengono mai applicate nel Calendario.
@@ -72,7 +74,7 @@ in fusi IANA quando possibile.
 
 ## Condivisione
 
-Istante può creare una cartolina PNG del momento: frase, tema, posizione del sole o della luna, stelle, effetti atmosferici e, quando realmente disponibili, meteo, obiettivo e colonna sonora. Le informazioni non disponibili non vengono proposte né disegnate nella cartolina. La cartolina rispetta lo stile **Classic / Excalifont** scelto nella Home. La località viene aggiunta soltanto quando esiste un nome significativo, come una città selezionata; le etichette generiche della geolocalizzazione o delle coordinate manuali non vengono stampate. La preview nella modale mantiene sempre l'intero rapporto d'aspetto, senza essere tagliata dalla superficie di anteprima. La cartolina non incorpora eventuali foto di sfondo personali o Picsum. Il QR apre il sito ufficiale e può portare con sé
+Istante può creare una cartolina PNG del momento: frase, tema, posizione del sole o della luna, stelle, effetti atmosferici e, quando realmente disponibili, meteo, obiettivo e colonna sonora. Le informazioni non disponibili non vengono proposte né disegnate nella cartolina. La cartolina rispetta lo stile **Classic / Excalifont** scelto nella Home. La località viene aggiunta soltanto quando esiste un nome significativo, come una città selezionata; le etichette generiche della geolocalizzazione o delle coordinate manuali non vengono stampate. La preview nella modale mantiene sempre l'intero rapporto d'aspetto, senza essere tagliata dalla superficie di anteprima. La cartolina riprende anche lo **sfondo realmente visibile** nella Dashboard, incluse le fotografie personali/Picsum e gli effetti. Sole e Luna vengono acquisiti dalla stessa resa della Dashboard, quindi mantengono fase, aspetto e posizione relativa; quando il formato cambia, la scena viene ritagliata senza deformarla. Il QR apre il sito ufficiale e può portare con sé
 la frase condivisa. Firma e indirizzo ufficiale restano parte della composizione.
 
 ## Offline, privacy e backup
@@ -96,11 +98,11 @@ Su desktop con mouse o trackpad puoi attivare un **cursore personalizzato discre
 ## Struttura del progetto
 
 - `index.html`: dashboard, viste e pannelli principali.
-- `assets/`: CSS, JavaScript, icone e immagine social.
+- `assets/`: CSS, JavaScript, icone e immagine social. I vecchi fogli `polish-*` sono stati consolidati in `legacy-foundation.css` e `legacy-components.css`, mentre il comportamento responsive corrente vive in `responsive.css`.
 - `data/`: frasi, catalogo raccolte e stazioni predefinite.
 - `README.md`: descrizione del progetto e release corrente.
 - `CHANGELOG.md`: storico delle modifiche.
-- `docs/release/v3.13.22.md`: note dettagliate di questa release.
+- `docs/release/v3.13.24.md`: note dettagliate di questa release.
 - `docs/LICENZA.md`: licenza non commerciale con attribuzione obbligatoria.
 - `docs/TERZE-PARTI.md`: dipendenze, servizi e attribuzioni.
 - `docs/VISIONE-E-DESIGN.md`: valori, regole grafiche e criteri responsive da mantenere nelle release future.

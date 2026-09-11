@@ -1,5 +1,21 @@
 # Changelog
 
+## 3.13.24 — 11 settembre 2026
+
+- **Traguardo su telefono:** riservato un margine interno reale alla percentuale sotto la progress bar, così anche l’ultimo carattere e il simbolo `%` restano interamente visibili sui display verticali più stretti.
+- **Barra adattiva senza Traguardo:** quando resta soltanto il Prossimo impegno, il modulo Evento si contrae alla propria misura leggibile e viene centrato nella barra invece di distendersi verso sinistra; la coppia Meteo + Evento conserva il bilanciamento centrale introdotto nella release precedente.
+- **Impostazioni Traguardo:** la sezione usa ora l’icona **coppa**, separata visivamente dal Calendario.
+- **Condivisione Sole/Luna:** rimossa la reinterpretazione grafica dedicata alla cartolina. La condivisione usa lo stesso snapshot celeste della Dashboard, con la stessa fase lunare, lo stesso aspetto e la stessa posizione relativa nella scena.
+- **Pulizia per produzione:** rimossi ulteriori selettori CSS riferiti a vecchi componenti non più presenti (vecchio brand Calendario, pulsante Indietro, layout precedenti della libreria e altri controlli dismessi) e consolidate le regole correnti senza reintrodurre file `polish-*`.
+
+## 3.13.23 — 11 settembre 2026
+
+- **Barra informativa adattiva:** Meteo, Traguardo e Prossimo impegno cedono realmente la propria colonna quando sono nascosti. Le combinazioni a due moduli riempiono tutta la barra, Meteo+Evento diventano una coppia bilanciata, un modulo singolo usa l'intera larghezza e nessun modulo non lascia spazio fantasma.
+- **Traguardo mobile:** il valore sotto la progress bar ha una colonna minima dedicata e margine destro, così il simbolo `%` rimane sempre visibile anche sui telefoni stretti.
+- **Gestione stazioni:** “Aggiungi una stazione” resta in fondo al pannello, dopo l'elenco e le azioni sulle stazioni esistenti.
+- **Condivisione:** la cartolina riprende lo sfondo realmente visibile nella Dashboard, incluse fotografie personali/Picsum, oscuramento ed effetti. La scena usa un ritaglio proporzionale `cover` e Sole/Luna mantengono la posizione relativa della Dashboard senza deformare lo sfondo.
+- **Pulizia CSS:** eliminati tutti i 23 file `polish-*` dalla produzione e consolidate le regole ancora necessarie in `legacy-foundation.css` e `legacy-components.css`, mantenendo l'ordine della cascata. Rimossi anche blocchi vuoti/commenti storici e 22 regole esattamente duplicate; la pagina documentale non dipende più da fogli `polish-*`.
+
 ## 3.13.22 — 11 settembre 2026
 
 - **Volume Melodie:** aumentato il livello reale delle melodie, con make-up gain dedicato a Respiro lento e Meditazione e compressione più morbida per mantenere headroom.

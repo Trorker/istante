@@ -1,4 +1,4 @@
-/* Istante v3.13.22 - application and local preferences. */
+/* Istante v3.13.24 - application and local preferences. */
 (function () {
 'use strict';
 const C = window.IstanteCore;
@@ -102,6 +102,31 @@ function shareSnapshot(){
  };
 }
 const sharing=window.IstanteShare.create({getSnapshot:shareSnapshot,open:()=>openDialog('share'),notify:toast});
+
+/* Keep the lower information ribbon adaptive without layout ghosts. The three
+ * modules own their hidden state; this observer only translates that state into
+ * a stable layout descriptor used by the canonical responsive stylesheet. */
+const infoStrip=$('#active-info-strip');
+function syncInfoStripLayout(){
+ if(!infoStrip)return;
+ const modules=[['weather',$('#environment-line')],['goal',$('#goal-strip')],['event',$('#upcoming-event')]];
+ const visible=modules.filter(([,node])=>node&&!node.hidden);
+ infoStrip.dataset.layout=visible.map(([name])=>name).join('-')||'none';
+ infoStrip.dataset.visibleCount=String(visible.length);
+ modules.forEach(([,node])=>node?.classList.remove('is-ribbon-first','is-ribbon-last','is-ribbon-divider'));
+ visible.forEach(([,node],index)=>{
+  node.classList.toggle('is-ribbon-first',index===0);
+  node.classList.toggle('is-ribbon-last',index===visible.length-1);
+  node.classList.toggle('is-ribbon-divider',index<visible.length-1);
+ });
+}
+if(infoStrip){
+ const ribbonObserver=new MutationObserver(records=>{
+  if(records.some(record=>record.type==='attributes'&&record.attributeName==='hidden'))requestAnimationFrame(syncInfoStripLayout);
+ });
+ ['environment-line','goal-strip','upcoming-event'].forEach(id=>{const node=$('#'+id);if(node)ribbonObserver.observe(node,{attributes:true,attributeFilter:['hidden']});});
+ syncInfoStripLayout();
+}
 
 function toast(message) {
  const el=$('#toast'),host=$('#toast-host');

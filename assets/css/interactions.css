@@ -94,7 +94,7 @@ button:disabled,input:disabled,select:disabled,.is-dependent-disabled{opacity:.4
  .date-popup .calendar-day{height:41px}.date-popup .control-head{margin-bottom:8px}
  .timer-content{padding:20px}.timer-duration input{width:75px;height:66px;font-size:33px}.timer-actions{flex-wrap:wrap}
  .bottom-bar{grid-template-columns:1fr;gap:5px;justify-items:center}.bottom-bar .collection-link{justify-self:center;min-height:32px;font-size:11px}.bottom-bar .toolbar{justify-content:center;gap:1px}
- .bottom-bar .toolbar .icon-button{width:42px;height:42px}.bottom-bar .toolbar-separator{margin:0 2px}
+ .bottom-bar .toolbar .icon-button{width:42px;height:42px}
  .timer-chip{margin-bottom:11px}.timer-chip-main{font-size:11px;gap:7px}.timer-chip-main strong{font-size:16px}
  .weekday-choices button{width:36px;height:36px}.weekday-choices{gap:3px}
 }

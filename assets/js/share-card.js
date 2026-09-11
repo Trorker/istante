@@ -1,4 +1,4 @@
-/* Local, resolution-independent share artwork. It reuses the app typography and does not embed user or third-party images. */
+/* Local, resolution-independent share artwork. It freezes the visible dashboard scene, including the active wallpaper when available, and reuses the app typography. */
 (function(){'use strict';
  const URL='https://istante.ruslan-dzyuba.it/';
  // QR has a four-module quiet zone on each side. Keep the matrix unmodified.
@@ -32,8 +32,8 @@
   return lines;
  }
  function palette(light,isDay){
-  if(light)return {background:'#f1eee5',ink:'#303b33',muted:'#687461',accent:'#697f55',line:'#75836636',halo:isDay?'#cfb56a35':'#9cb8b543',glow:isDay?'#ead1984d':'#b8cabc40',sun:'#c5a765',moon:'#6c7f73',qrBg:isDay?'#e9e3d4':'#e4e8e1',qrInk:isDay?'#3d4931':'#304840'};
-  return {background:'#141c19',ink:'#efece2',muted:'#a2b29f',accent:'#beccaa',line:'#bacbab30',halo:isDay?'#b6995338':'#5b898144',glow:isDay?'#d0b06d31':'#739ba634',sun:'#eed6a3',moon:'#cddbd5',qrBg:isDay?'#e2dac5':'#d8e0d9',qrInk:isDay?'#35422e':'#243d34'};
+  if(light)return {background:'#f1eee5',ink:'#303b33',muted:'#687461',accent:'#697f55',line:'#75836636'};
+  return {background:'#141c19',ink:'#efece2',muted:'#a2b29f',accent:'#beccaa',line:'#bacbab30'};
  }
  function disk(c,x,y,r){c.beginPath();c.arc(x,y,r,0,TAU);}
  function haze(c,x,y,r,color,W,H){
@@ -43,144 +43,12 @@
   c.save();c.translate(x,y);c.strokeStyle=color;c.lineWidth=size*3.5/192;c.lineCap='round';
   disk(c,size/2,size/2,size*52/192);c.stroke();c.beginPath();c.moveTo(size*111/192,size*72/192);c.lineTo(size*81/192,size*120/192);c.stroke();c.restore();
  }
- function spaced(c,text,x,y,spacing){
-  const letters=Array.from(text),width=letters.reduce((n,ch)=>n+c.measureText(ch).width,0)+Math.max(0,letters.length-1)*spacing;
-  c.textAlign='left';let left=x-width/2;for(const ch of letters){c.fillText(ch,left,y);left+=c.measureText(ch).width+spacing;}
- }
- function moon(c,x,y,r,phase,P){
-  // Orthographic phase plus a subtle deterministic lunar surface. The texture
-  // stays visible in earthshine, so a new moon never looks like a flat circle.
-  const p=Number.isFinite(phase)?((phase%1)+1)%1:.5;
-  const illumination=-Math.cos(TAU*p),side=p<=.5?1:-1;
-  c.save();disk(c,x,y,r);c.clip();
-
-  const shadow=c.createRadialGradient(x-r*.28,y-r*.32,r*.05,x,y,r*1.15);
-  shadow.addColorStop(0,P.moon+'32');shadow.addColorStop(.62,P.moon+'20');shadow.addColorStop(1,P.moon+'10');
-  c.fillStyle=shadow;c.fillRect(x-r,y-r,r*2,r*2);
-
-  c.beginPath();
-  const steps=128;
-  for(let i=0;i<=steps;i++){
-   const yy=-r+i*2*r/steps,xx=side*Math.sqrt(Math.max(0,r*r-yy*yy));
-   if(i===0)c.moveTo(x+xx,y+yy);else c.lineTo(x+xx,y+yy);
-  }
-  for(let i=steps;i>=0;i--){const yy=-r+i*2*r/steps,xx=-side*illumination*Math.sqrt(Math.max(0,r*r-yy*yy));c.lineTo(x+xx,y+yy);}
-  c.closePath();
-  const light=c.createRadialGradient(x+side*r*.28,y-r*.34,r*.04,x,y,r*1.45);
-  light.addColorStop(0,P.moon);light.addColorStop(.62,P.moon+'e8');light.addColorStop(1,P.moon+'a8');c.fillStyle=light;c.fill();
-
-  // Broad maria break the perfect disk before the smaller crater marks.
-  const maria=[[-.30,-.08,.29,.18,.18],[.18,-.31,.20,.13,-.35],[.27,.20,.24,.16,.32],[-.12,.35,.18,.11,-.18]];
-  c.save();c.fillStyle=P.background;c.globalAlpha=.12;
-  for(const [ox,oy,rx,ry,rot] of maria){c.beginPath();c.ellipse(x+ox*r,y+oy*r,rx*r,ry*r,rot,0,TAU);c.fill();}
-  c.restore();
-
-  const craters=[[-.42,-.34,.10],[.05,-.43,.075],[.38,-.12,.12],[-.18,.04,.065],[.12,.18,.095],[-.38,.31,.075],[.34,.39,.055]];
-  for(const [ox,oy,rr] of craters){
-   const cx=x+ox*r,cy=y+oy*r,rad=rr*r;
-   c.save();c.globalAlpha=.13;c.fillStyle=P.background;disk(c,cx,cy,rad);c.fill();
-   c.globalAlpha=.18;c.strokeStyle=P.moon;c.lineWidth=Math.max(.45,r*.018);disk(c,cx-rad*.12,cy-rad*.10,rad*.92);c.stroke();c.restore();
-  }
-
-  // Fine grain is seeded so exported cards are stable across redraws.
-  const rand=seeded(7349);c.save();c.fillStyle=P.moon;
-  for(let i=0;i<44;i++){
-   const a=rand()*TAU,d=Math.sqrt(rand())*r*.88,rr=.25+rand()*.55;
-   c.globalAlpha=.035+rand()*.055;disk(c,x+Math.cos(a)*d,y+Math.sin(a)*d,rr);c.fill();
-  }
-  c.restore();c.restore();
-
-  c.save();c.globalAlpha=.30;c.strokeStyle=P.moon;c.lineWidth=Math.max(.65,r*.025);disk(c,x,y,r);c.stroke();c.restore();
- }
- function celestialOrb(c,info,P,W,H,land,story,A){
-  if(info.celestialEnabled===false||A.orb<=0)return;
-  const x=W*.815,y=land?150:story?250:210,r=land?38:story?48:44;
-  c.save();
-  haze(c,x,y,land?220:330,P.halo,W,H);haze(c,x-r*.45,y-r*.45,r*4.1,P.glow,W,H);
-  if(info.isDay){
-   c.save();c.translate(x,y);c.strokeStyle=P.sun;c.lineCap='round';
-   for(let i=0;i<12;i++){
-    const a=i*TAU/12,inner=r*1.48,outer=r*(i%3===0?1.88:1.72);
-    c.globalAlpha=(i%3===0?.36:.22)*A.orb;c.lineWidth=Math.max(1,r*.035);
-    c.beginPath();c.moveTo(Math.cos(a)*inner,Math.sin(a)*inner);c.lineTo(Math.cos(a)*outer,Math.sin(a)*outer);c.stroke();
-   }
-   for(const [radius,alpha]of [[r*1.30,.26],[r*2.18,.09]]){c.globalAlpha=alpha*A.orb;c.lineWidth=Math.max(.8,r*.024);disk(c,0,0,radius);c.stroke();}
-   c.globalAlpha=.93*A.orb;
-   const g=c.createRadialGradient(-r*.30,-r*.34,r*.04,0,0,r*1.25);
-   g.addColorStop(0,'#fff4c9');g.addColorStop(.28,P.sun);g.addColorStop(1,P.sun+'a8');c.fillStyle=g;disk(c,0,0,r);c.fill();
-   c.globalAlpha=.15*A.orb;c.fillStyle=P.background;c.beginPath();c.ellipse(-r*.20,r*.18,r*.35,r*.12,-.45,0,TAU);c.fill();
-   c.restore();
-  }else{
-   c.globalAlpha=A.orb;moon(c,x,y,r,info.phase,P);
-  }
-  c.globalAlpha=.23;c.strokeStyle=P.line;c.lineWidth=1;
-  c.beginPath();c.ellipse(W*.82,y+10,W*.48,H*.32,-.3,.05,Math.PI*.80);c.stroke();c.restore();
- }
- function sky(c,info,P,W,H,land,story){
-  const A=info.atmosphere||{kind:'neutral',orb:1,stars:1,clouds:0};
-  const captured=!!(info.capture&&window.IstanteSceneSnapshot.draw(c,info,W,H,{skipOrb:true}));
-  if(captured){celestialOrb(c,info,P,W,H,land,story,A);return;}
-  const x=W*.815,y=land?150:story?250:210,r=land?38:story?48:44;
-  if(!info.isDay){
-   const rand=seeded(417);c.save();
-   for(let i=0;i<70;i++){
-    const xx=50+rand()*(W-100),yy=110+rand()*Math.min(H*.75,1100);
-    if((xx>200&&xx<W-180&&yy>175)||Math.hypot(xx-x,yy-y)<r*1.8)continue;
-    c.globalAlpha=(.14+rand()*.30)*A.stars;c.fillStyle=P.moon;disk(c,xx,yy,.6+rand()*.9);c.fill();
-   }
-   c.restore();
-  }
-  ambient(c,info,P,W,H);
-  weather(c,A,P,W,H,land,story);
-  celestialOrb(c,info,P,W,H,land,story,A);
- }
- function seeded(seed){return()=>{seed=(Math.imul(1664525,seed)+1013904223)>>>0;return seed/4294967296;};}
- function ambient(c,info,P,W,H){
-  const effect=info.effect||'none',strength=Number.isFinite(info.intensity)?info.intensity:.35;
-  c.save();c.globalAlpha=Math.min(.85,.3+strength);
-  if(effect==='halos'||effect==='aurora'){
-   haze(c,W*.08,H*.30,W*.5,P.halo,W,H);haze(c,W*.91,H*.68,W*.47,P.glow,W,H);
-   if(effect==='aurora'){
-    c.save();c.translate(W*.10,H*.32);c.rotate(-.35);c.scale(1,.24);
-    haze(c,W*.3,0,W*.85,P.halo,W*1.5,H*5);c.restore();
-   }
-  }else if(effect==='particles'){
-   const rand=seeded(957);c.fillStyle=P.accent;
-   for(let i=0;i<54;i++){const x=rand()*W,y=100+rand()*(H-170),edge=x<W*.18||x>W*.82;c.globalAlpha=(edge?.25:.055)*(.6+strength);disk(c,x,y,.6+rand()*2);c.fill();}
-  }
-  c.restore();
- }
- function weather(c,A,P,W,H,land,story){
-  const k=A.kind,rand=seeded(29371),top=100,bottom=H-190;
-  c.save();
-  // A real canvas layer: clouds and precipitation are encoded in the exported PNG.
-  // Keep the center quieter; footer / QR are rendered afterwards on top.
-  if(A.clouds>0){
-   const colour=P.background==='#141c19'?'#829d9e':'#73878c';
-   for(let i=0;i<9;i++){
-    const x=(i%2?W*.78:W*.09)+(rand()-.5)*W*.35,y=120+rand()*(H*.6),r=140+rand()*210;
-    c.save();c.translate(x,y);c.scale(1,.30+rand()*.24);c.globalAlpha=A.clouds*(k==='fog'?.19:.32);
-    const g=c.createRadialGradient(0,0,2,0,0,r);g.addColorStop(0,colour+'cc');g.addColorStop(.55,colour+'50');g.addColorStop(1,colour+'00');c.fillStyle=g;c.fillRect(-r,-r,2*r,2*r);c.restore();
-   }
-  }
-  const isRain=k==='rain'||k==='storm';
-  if(isRain||k==='snow'){
-   c.strokeStyle=P.muted;c.fillStyle=P.ink;c.lineCap='round';
-   const count=isRain?(story?210:145):(story?140:90);
-   for(let i=0;i<count;i++){
-    const x=30+rand()*(W-60),y=top+rand()*Math.max(70,bottom-top),edge=x<W*.19||x>W*.81;
-    c.globalAlpha=(edge?.45:.085)*( .55+rand()*.45 );
-    if(isRain){const len=(land?12:22)+rand()*25;c.lineWidth=.65+rand()*.65;c.beginPath();c.moveTo(x,y);c.lineTo(x-len*.23,y+len);c.stroke();}
-    else{const r=1.1+rand()*2.2;disk(c,x,y,r);c.fill();if(edge&&r>2.7){c.lineWidth=.7;c.beginPath();c.moveTo(x-r*2,y);c.lineTo(x+r*2,y);c.moveTo(x,y-r*2);c.lineTo(x,y+r*2);c.stroke();}}
-   }
-  }
-  if(k==='storm'){
-   c.globalAlpha=.35;haze(c,W*.91,H*.27,W*.21,P.glow,W,H);
-   c.strokeStyle=P.muted;c.lineWidth=1.3;c.globalAlpha=.20;
-   c.beginPath();c.moveTo(W*.92,top+8);c.lineTo(W*.89,top+57);c.lineTo(W*.92,top+54);c.lineTo(W*.88,top+115);c.stroke();
-  }
-  if(k==='sun'&&A.orb>0){c.globalAlpha=.45;haze(c,W*.9,H*.23,W*.42,P.glow,W,H);}
-  c.restore();
+ function sky(c,info,W,H,showSky=true){
+  if(!info?.capture)return null;
+  /* The export reuses the captured Dashboard scene verbatim. In particular the
+     celestial body is the same rendered Sun/Moon, at the same orbit position,
+     transformed only by the card's cover crop. */
+  return window.IstanteSceneSnapshot.draw(c,info,W,H,{includeSky:showSky,fit:'cover'});
  }
  function analog(c,x,y,r,snapshot,P){
   c.save();c.translate(x,y);c.strokeStyle=P.line;c.lineWidth=1.4;disk(c,0,0,r);c.stroke();
@@ -224,14 +92,14 @@
   const [w,h]=sizes[format]||sizes.square,canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
   const c=canvas.getContext('2d');if(!c)throw Error('Canvas non disponibile');
   const scale=w/1080,W=1080,H=h/scale,land=w>h,story=h>w*1.5,pad=72,light=snapshot.theme==='light';
-  const P=palette(light,opt.sky&&snapshot.sky?!!snapshot.sky.isDay:true),F=fontSet(snapshot);
-  if(opt.sky&&snapshot.sky?.capture)P.background=snapshot.sky.capture.background;
+  const P=palette(light,snapshot.sky?!!snapshot.sky.isDay:true),F=fontSet(snapshot);
+  if(snapshot.sky?.capture)P.background=snapshot.sky.capture.background;
   const qrMatrix=opt.qr?window.IstanteQR.matrix(snapshot.shareURL||URL):null,qrTotal=qrMatrix?qrMatrix.length+8:0;
   const qrTarget=(format==='landscape'?96:format==='square'?112:148)*scale;
   const qrCell=qrMatrix?Math.max(2,Math.floor(qrTarget/qrTotal)):0,qrSide=qrTotal*qrCell;
   c.scale(scale,scale);c.fillStyle=P.background;c.fillRect(0,0,W,H);
   if(!snapshot.sky?.capture){haze(c,W*.04,H*.05,650,light?'#b5c8a137':'#6d91552c',W,H);haze(c,W*.88,H*.92,540,light?'#d7c39732':'#9d845221',W,H);}
-  if(opt.sky&&snapshot.sky){sky(c,snapshot.sky,P,W,H,land,story);if(!snapshot.sky.capture&&snapshot.sky.warmth>0){c.save();c.globalAlpha=Math.min(1,snapshot.sky.warmth)*.6;haze(c,W*.85,H*.5,W*.55,light?'#e7984c66':'#ee792f66',W,H);c.restore();}}
+  if(snapshot.sky)sky(c,snapshot.sky,W,H,!!opt.sky);
   c.strokeStyle=P.line;c.lineWidth=1;c.strokeRect(24,24,W-48,H-48);
   // Header: the same Istante mark, no repeated author credit.
   mark(c,pad-16,28,75,P.accent);c.textAlign='left';c.fillStyle=P.ink;c.font='42px '+F.display;c.fillText('istante.',pad+59,80);

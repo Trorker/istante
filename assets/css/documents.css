@@ -21,3 +21,11 @@ html{background:#131615;scroll-behavior:smooth}body.document-body{margin:0;min-h
 .document-article hr{border:0;border-top:1px solid var(--line);margin:36px 0}.document-footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-top:48px;padding-top:22px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}.document-footer a{color:var(--muted);text-underline-offset:4px}
 @media(max-width:480px){.document-header{align-items:flex-start}.document-brand{font-size:32px}.document-back{font-size:12px;padding:8px 12px}.document-article{font-size:16px}.document-nav{gap:7px}.document-nav a{padding:9px 12px;font-size:12px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* Documentation tooltip — retained here so the document page has no legacy polish dependency. */
+.istante-tooltip{position:fixed;z-index:10000;max-width:min(240px,calc(100vw - 18px));padding:7px 10px;border:1px solid var(--line);border-radius:9px;background:color-mix(in srgb,var(--surface) 90%,transparent);color:var(--ink);font:500 10px/1.35 var(--sans);letter-spacing:.01em;text-align:center;box-shadow:0 10px 35px color-mix(in srgb,#000 16%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);opacity:0;transform:translateY(3px) scale(.98);transition:opacity .12s ease,transform .12s ease;pointer-events:none}
+.istante-tooltip.is-visible{opacity:1;transform:translateY(0) scale(1)}
+.istante-tooltip::after{content:"";position:absolute;width:7px;height:7px;background:inherit;border:inherit;transform:rotate(45deg);left:50%;margin-left:-4px}
+.istante-tooltip[data-side="top"]::after{bottom:-5px;border-left:0;border-top:0}
+.istante-tooltip[data-side="bottom"]::after{top:-5px;border-right:0;border-bottom:0}
+@media (prefers-reduced-motion:reduce){.istante-tooltip{transition:none}}

@@ -16,7 +16,7 @@
 }
 #calendar-view .calendar-brand-lockup{display:grid!important;justify-items:start!important;align-content:center!important;gap:3px!important;min-width:max-content!important}
 #calendar-view .calendar-heading-combined .wordmark{background:transparent!important;padding:0!important;color:var(--ink)!important;font-size:22px!important;line-height:1!important}
-#calendar-view .calendar-brand-tagline{padding-left:33px!important;font:calc(9px * var(--ui-scale,1))/1.15 var(--sans)!important;color:var(--muted)!important;white-space:nowrap!important}
+
 #calendar-view .calendar-title-copy{min-width:0!important}
 #calendar-view .calendar-title-copy .section-label{display:none!important}
 #calendar-view .calendar-title-copy h1{
@@ -27,8 +27,8 @@
 #calendar-view .calendar-heading-actions{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:7px!important;min-width:0!important}
 #calendar-view .calendar-heading-actions .primary-button,#calendar-view .calendar-heading-actions .secondary-button{min-height:38px!important;padding:8px 12px!important;font-size:calc(12px * var(--ui-scale,1))!important;white-space:nowrap!important}
 #calendar-view .calendar-heading-actions .icon{width:16px!important;height:16px!important}
-#calendar-view .calendar-back-button{display:none!important;width:38px!important;height:38px!important}
-#calendar-view .calendar-back-button .icon{transform:rotate(180deg)!important}
+
+
 
 #calendar-view .calendar-toolbar{display:flex!important;flex-flow:row nowrap!important;align-items:center!important;justify-content:center!important;gap:10px!important;margin:0!important;padding:0!important;min-width:0!important;background:transparent!important;border:0!important}
 #calendar-view .calendar-navigation{display:flex!important;align-items:center!important;gap:4px!important;flex:0 0 auto!important}
@@ -41,7 +41,7 @@
 
 /* Main area */
 #calendar-view .calendar-shell>main{min-height:0!important;overflow:hidden!important;display:flex!important;flex-direction:column!important;padding:0!important}
-#cal-empty,#calendar-view .calendar-empty-start{display:none!important}
+#cal-empty{display:none!important}
 #calendar-view .calendar-layout{
   position:relative!important;min-height:0!important;flex:1!important;display:grid!important;
   grid-template-columns:minmax(0,1fr)!important;grid-template-rows:minmax(0,1fr)!important;
@@ -178,7 +178,7 @@
   
   
   
-  #calendar-view .calendar-back-button{display:none!important}#calendar-view .calendar-add-shortcut{display:none!important}
+  #calendar-view .calendar-add-shortcut{display:none!important}
   
   
   #calendar-view .calendar-layout{padding-top:8px!important}
@@ -219,11 +219,8 @@
 #calendar-view .calendar-brand-lockup .wordmark{
   display:flex!important;align-items:center!important;gap:9px!important;padding:0!important;
 }
-#calendar-view .calendar-brand-lockup .brand-symbol{
-  position:static!important;inset:auto!important;transform:none!important;
-  flex:0 0 22px!important;width:22px!important;height:22px!important;margin:0!important;
-}
-#calendar-view .calendar-brand-tagline{padding-left:31px!important;font-size:calc(10px * var(--ui-scale,1))!important}
+
+
 
 /* Never let useful calendar text collapse to decorative micro-copy. */
 #calendar-view .calendar-sync-status,#calendar-view .calendar-device-note{font-size:calc(10.5px * var(--ui-scale,1))!important}
@@ -305,15 +302,7 @@
 @media (max-width:360px){}
 
 /* v3.12.6 — readability floor. “Piccolo” remains compact, never microscopic. */
-#calendar-view .calendar-brand-tagline,
-#calendar-view .calendar-sync-status,
-#calendar-view .calendar-device-note,
-#calendar-view .calendar-event .event-time,
-#calendar-view .calendar-more,
-#calendar-view .calendar-mini-weekdays span,
-#calendar-view .calendar-week-event .event-time,
-#calendar-view .calendar-agenda-time,
-#calendar-view .calendar-agenda-item small{
+#calendar-view .calendar-sync-status,#calendar-view .calendar-device-note,#calendar-view .calendar-event .event-time,#calendar-view .calendar-more,#calendar-view .calendar-mini-weekdays span,#calendar-view .calendar-week-event .event-time,#calendar-view .calendar-agenda-time,#calendar-view .calendar-agenda-item small{
   font-size:max(9.5px,calc(10px * var(--ui-scale,1)))!important;
 }
 #calendar-view .calendar-views button{

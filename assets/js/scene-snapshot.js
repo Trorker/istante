@@ -5,6 +5,7 @@
  */
 (function(){'use strict';
  const MAX_SURFACE=2048,TAU=Math.PI*2;
+ let wallpaperImage=null;
  const grainImage=new Image();
  grainImage.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".72" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100%" height="100%" filter="url(#n)" opacity=".5"/></svg>');
  function split(value,delimiter=','){
@@ -50,29 +51,49 @@
   const minX=Math.min(0,a*w,cc*h,a*w+cc*h),minY=Math.min(0,b*w,d*h,b*w+d*h);
   return{canvas,width:w,height:h,matrix:[a,b,cc,d,box.left-minX,box.top-minY]};
  }
+ function setWallpaper(image){wallpaperImage=image&&image.naturalWidth&&image.naturalHeight?image:null;}
+ function wallpaperLayer(w,h){
+  if(document.body.dataset.background!=='photo'||!wallpaperImage)return null;
+  const node=document.querySelector('.wallpaper.photo-active');if(!visible(node)||opacity(node)<.001)return null;
+  const box=node.getBoundingClientRect(),iw=wallpaperImage.naturalWidth,ih=wallpaperImage.naturalHeight;
+  if(!iw||!ih||box.width<=0||box.height<=0)return null;
+  const fit=Math.max(box.width/iw,box.height/ih),dw=iw*fit,dh=ih*fit;
+  const dx=box.left+(box.width-dw)/2,dy=box.top+(box.height-dh)/2;
+  const scale=Math.min(1,MAX_SURFACE/w,MAX_SURFACE/h),canvas=document.createElement('canvas');
+  canvas.width=Math.max(1,Math.ceil(w*scale));canvas.height=Math.max(1,Math.ceil(h*scale));
+  const c=canvas.getContext('2d');if(!c)return null;c.scale(scale,scale);c.drawImage(wallpaperImage,dx,dy,dw,dh);
+  return{kind:'wallpaper',group:'background',alpha:opacity(node),canvas,rect:{x:0,y:0,w:1,h:1}};
+ }
  function capture(info,settings){
   const w=innerWidth,h=innerHeight,layers=[],root=getComputedStyle(document.documentElement),light=document.documentElement.dataset.theme==='light';
-  function css(n){if(!visible(n)||opacity(n)<.001)return;const r=raster(n);if(r)layers.push({kind:'css',alpha:opacity(n),...r});}
-  function copy(selector,kind){const n=document.querySelector(selector);if(!visible(n)||!n.width||!n.height||opacity(n)<.001)return;const out=document.createElement('canvas');out.width=n.width;out.height=n.height;const c=out.getContext('2d');if(!c)return;c.drawImage(n,0,0);const box=n.getBoundingClientRect();layers.push({kind,alpha:opacity(n),canvas:out,rect:{x:box.x/w,y:box.y/h,w:box.width/w,h:box.height/h}});}
-  css(document.querySelector('.backdrop>.ambient'));css(document.querySelector('.breathing-light'));
+  function css(n,group='background'){if(!visible(n)||opacity(n)<.001)return;const r=raster(n);if(r)layers.push({kind:'css',group,alpha:opacity(n),...r});}
+  function copy(selector,kind,group='effects'){const n=document.querySelector(selector);if(!visible(n)||!n.width||!n.height||opacity(n)<.001)return;const out=document.createElement('canvas');out.width=n.width;out.height=n.height;const c=out.getContext('2d');if(!c)return;c.drawImage(n,0,0);const box=n.getBoundingClientRect();layers.push({kind,group,alpha:opacity(n),canvas:out,rect:{x:box.x/w,y:box.y/h,w:box.width/w,h:box.height/h}});}
+  css(document.querySelector('.backdrop>.ambient'),'background');css(document.querySelector('.breathing-light'),'background');
+  const wallpaper=wallpaperLayer(w,h);if(wallpaper)layers.push(wallpaper);
+  css(document.querySelector('.photo-shade'),'background');
   // Equal z-index layers follow DOM order: environmental effects, then the sky.
-  const fx=document.getElementById('ambient-fx');if(visible(fx)){fx.querySelectorAll('.fx-halos i,.fx-aurora,.fx-weather-light,.fx-clouds').forEach(css);copy('#fx-canvas','field');}
-  const sky=document.getElementById('celestial-sky');if(visible(sky)){copy('#sky-stars','field');css(sky.querySelector('.sky-halo'));const orb=document.getElementById('sky-body'),mirror=document.getElementById('sky-body-snapshot');if(orb&&mirror&&mirror.width&&mirror.height&&opacity(orb)>.001){const out=document.createElement('canvas');out.width=mirror.width;out.height=mirror.height;out.getContext('2d')?.drawImage(mirror,0,0);const box=orb.getBoundingClientRect();layers.push({kind:'orb',alpha:opacity(orb),canvas:out,rect:{x:box.x/w,y:box.y/h,w:box.width/w,h:box.height/h}});}css(sky.querySelector('.sky-weather-veil'));css(sky.querySelector('.sky-twilight'));}
+  const fx=document.getElementById('ambient-fx');if(visible(fx)){fx.querySelectorAll('.fx-halos i,.fx-aurora,.fx-weather-light,.fx-clouds').forEach(n=>css(n,'effects'));copy('#fx-canvas','field','effects');}
+  const sky=document.getElementById('celestial-sky');if(visible(sky)){copy('#sky-stars','field','sky');css(sky.querySelector('.sky-halo'),'sky');const orb=document.getElementById('sky-body'),mirror=document.getElementById('sky-body-snapshot');if(orb&&mirror&&mirror.width&&mirror.height&&opacity(orb)>.001){const out=document.createElement('canvas');out.width=mirror.width;out.height=mirror.height;out.getContext('2d')?.drawImage(mirror,0,0);const box=orb.getBoundingClientRect();layers.push({kind:'orb',group:'sky',alpha:opacity(orb),canvas:out,rect:{x:box.x/w,y:box.y/h,w:box.width/w,h:box.height/h}});}css(sky.querySelector('.sky-weather-veil'),'sky');css(sky.querySelector('.sky-twilight'),'sky');}
   // The transition in progress is also an on-screen decorative layer.
-  css(document.querySelector('#celestial-transition .transition-horizon'));
+  css(document.querySelector('#celestial-transition .transition-horizon'),'sky');
   let grain=null;
   if(settings.grain&&grainImage.complete&&grainImage.naturalWidth){grain=document.createElement('canvas');grain.width=grain.height=160;grain.getContext('2d').drawImage(grainImage,0,0);}
   return{...info,capture:{width:w,height:h,background:root.getPropertyValue('--bg').trim()||(light?'#f1eee7':'#131615'),light,layers,grain,grainOpacity:opacity(document.querySelector('.paper-grain')),capturedAt:Date.now()},celestialEnabled:!!settings.celestialSky};
  }
- function draw(c,info,W,H,options={}){const s=info.capture;if(!s)return false;
+ function transformFor(s,W,H,fit='cover'){
+  const scale=fit==='contain'?Math.min(W/s.width,H/s.height):Math.max(W/s.width,H/s.height);
+  return{fit,scale,offsetX:(W-s.width*scale)/2,offsetY:(H-s.height*scale)/2,sourceWidth:s.width,sourceHeight:s.height};
+ }
+ function draw(c,info,W,H,options={}){const s=info.capture;if(!s)return null;
+  const t=transformFor(s,W,H,options.fit||'cover');
   c.save();c.beginPath();c.rect(0,0,W,H);c.clip();
-  for(const layer of s.layers){if(options.skipOrb&&layer.kind==='orb')continue;c.save();c.globalAlpha=layer.alpha;
-   if(layer.kind==='css'){c.scale(W/s.width,H/s.height);c.transform(...layer.matrix);c.drawImage(layer.canvas,0,0,layer.width,layer.height);}
-   else{const r=layer.rect;if(layer.kind==='orb'){const side=Math.min(r.w*W,r.h*H);c.drawImage(layer.canvas,(r.x+r.w/2)*W-side/2,(r.y+r.h/2)*H-side/2,side,side);}else c.drawImage(layer.canvas,r.x*W,r.y*H,r.w*W,r.h*H);}
+  for(const layer of s.layers){if(options.includeSky===false&&layer.group==='sky')continue;c.save();c.globalAlpha=layer.alpha;
+   if(layer.kind==='css'){c.translate(t.offsetX,t.offsetY);c.scale(t.scale,t.scale);c.transform(...layer.matrix);c.drawImage(layer.canvas,0,0,layer.width,layer.height);}
+   else{const r=layer.rect,rx=r.x*s.width,ry=r.y*s.height,rw=r.w*s.width,rh=r.h*s.height;if(layer.kind==='orb'){const side=Math.min(rw,rh)*t.scale;c.drawImage(layer.canvas,t.offsetX+(rx+rw/2)*t.scale-side/2,t.offsetY+(ry+rh/2)*t.scale-side/2,side,side);}else c.drawImage(layer.canvas,t.offsetX+rx*t.scale,t.offsetY+ry*t.scale,rw*t.scale,rh*t.scale);}
    c.restore();
   }
-  if(s.grain){c.save();c.scale(W/s.width,H/s.height);c.globalAlpha=s.grainOpacity;c.fillStyle=c.createPattern(s.grain,'repeat');c.fillRect(0,0,s.width,s.height);c.restore();}
-  c.restore();return true;
+  if(s.grain){c.save();c.translate(t.offsetX,t.offsetY);c.scale(t.scale,t.scale);c.globalAlpha=s.grainOpacity;c.fillStyle=c.createPattern(s.grain,'repeat');c.fillRect(0,0,s.width,s.height);c.restore();}
+  c.restore();return t;
  }
- window.IstanteSceneSnapshot={capture,draw};
+ window.IstanteSceneSnapshot={capture,draw,setWallpaper,transformFor};
 })();

@@ -1,4 +1,4 @@
-/* Istante 3.13.22 — canonical responsive and lower-ribbon layout.
+/* Istante — canonical responsive and lower-ribbon layout.
  * Historical styles keep their visual foundations; current dashboard/calendar
  * composition lives here so state changes cannot reactivate obsolete layouts.
  */
@@ -47,7 +47,7 @@
   grid-column:1!important;
   grid-row:2!important;
   display:grid!important;
-  grid-template-columns:20% 60% 20%!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
   grid-template-rows:84px!important;
   align-items:stretch!important;
   width:100%!important;
@@ -62,7 +62,6 @@
   mask-image:none!important;
   -webkit-mask-image:none!important;
 }
-.dashboard-lower .active-info-strip:not(:has(>:not([hidden]))){display:none!important}
 .dashboard-lower .active-info-strip>#environment-line,
 .dashboard-lower .active-info-strip>.goal-strip,
 .dashboard-lower .active-info-strip>#upcoming-event{
@@ -79,9 +78,6 @@
   box-shadow:none!important;
   background:transparent!important;
 }
-.dashboard-lower .active-info-strip>#environment-line{grid-column:1!important}
-.dashboard-lower .active-info-strip>.goal-strip{grid-column:2!important}
-.dashboard-lower .active-info-strip>#upcoming-event{grid-column:3!important}
 .dashboard-lower .active-info-strip>#environment-line[hidden],
 .dashboard-lower .active-info-strip>.goal-strip[hidden],
 .dashboard-lower .active-info-strip>#upcoming-event[hidden]{display:none!important}
@@ -91,7 +87,7 @@
   display:grid!important;
   grid-template-columns:minmax(0,1fr)!important;
   grid-template-rows:auto auto auto!important;
-  grid-template-areas:'eyebrow' 'weather' 'solar'!important;
+  grid-template-areas:"eyebrow" "weather" "solar"!important;
   align-content:center!important;
   gap:4px!important;
   max-width:none!important;
@@ -100,7 +96,7 @@
   text-align:left!important;
 }
 .dashboard-lower .active-info-strip>#environment-line::before{
-  content:'Meteo';
+  content:"Meteo";
   grid-area:eyebrow!important;
   display:block!important;
   margin:0!important;
@@ -115,7 +111,7 @@
   grid-area:weather!important;
   display:grid!important;
   grid-template-columns:19px auto minmax(0,1fr)!important;
-  grid-template-areas:'icon temp condition' 'icon temp place'!important;
+  grid-template-areas:"icon temp condition" "icon temp place"!important;
   align-items:center!important;
   gap:1px 7px!important;
   min-width:0!important;
@@ -158,7 +154,7 @@
   display:grid!important;
   grid-template-columns:minmax(0,1fr) auto!important;
   grid-template-rows:auto auto!important;
-  grid-template-areas:'heading countdown' 'progress progress'!important;
+  grid-template-areas:"heading countdown" "progress progress"!important;
   align-items:center!important;
   align-content:center!important;
   gap:4px 18px!important;
@@ -175,7 +171,7 @@
 .dashboard-lower .active-info-strip>.goal-strip:focus-visible{outline:1px solid var(--accent)!important;outline-offset:4px!important}
 .dashboard-lower .active-info-strip>.goal-strip:active{transform:scale(.997)!important}
 .dashboard-lower .active-info-strip .goal-progress-summary{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;gap:12px!important;width:100%!important;max-width:100%!important;min-width:0!important;overflow:hidden!important;box-sizing:border-box!important;font-size:calc(10px * var(--ui-scale,1))!important;line-height:1!important;color:var(--faint)!important}
-.dashboard-lower .active-info-strip .goal-heading{grid-area:heading!important;display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-areas:'label' 'title'!important;align-items:center!important;gap:2px!important;min-width:0!important}
+.dashboard-lower .active-info-strip .goal-heading{grid-area:heading!important;display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-areas:"label" "title"!important;align-items:center!important;gap:2px!important;min-width:0!important}
 .dashboard-lower .active-info-strip .goal-heading .section-label{grid-area:label!important;margin:0!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font-size:calc(9.5px * var(--ui-scale,1))!important;line-height:1!important;letter-spacing:.12em!important;color:var(--faint)!important}
 .dashboard-lower .active-info-strip .goal-heading h2{grid-area:title!important;margin:0!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font:400 calc(15.5px * var(--ui-scale,1))/1.12 var(--serif)!important;letter-spacing:-.02em!important;color:var(--ink)!important;text-align:left!important}
 .dashboard-lower .active-info-strip .countdown{grid-area:countdown!important;justify-self:end!important;display:flex!important;align-items:center!important;gap:10px!important;white-space:nowrap!important}
@@ -215,7 +211,7 @@
   grid-column:1!important;grid-row:1!important;
   display:grid!important;
   grid-template-columns:22px minmax(0,1fr)!important;
-  grid-template-areas:'icon details'!important;
+  grid-template-areas:"icon details"!important;
   align-content:center!important;align-items:center!important;
   gap:8px!important;
   width:100%!important;height:100%!important;min-width:0!important;
@@ -239,6 +235,55 @@
 #upcoming-event.is-empty>.upcoming-main>.upcoming-details small,
 #upcoming-event.is-empty #upcoming-title,
 #upcoming-event.is-empty #upcoming-time{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;text-align:center!important}
+
+/* Adaptive ribbon: hidden modules surrender their space instead of leaving a
+   ghost column. DOM order remains Weather -> Goal -> Event, while the remaining
+   modules expand to use the full ribbon width. */
+.dashboard-lower .active-info-strip{grid-auto-flow:column!important}
+.dashboard-lower .active-info-strip[data-layout="weather-goal-event"]{grid-template-columns:minmax(0,20%) minmax(0,60%) minmax(0,20%)!important}
+.dashboard-lower .active-info-strip[data-layout="weather-goal"]{grid-template-columns:minmax(0,32%) minmax(0,68%)!important}
+.dashboard-lower .active-info-strip[data-layout="goal-event"]{grid-template-columns:minmax(0,68%) minmax(0,32%)!important}
+.dashboard-lower .active-info-strip[data-layout="weather-event"]{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+.dashboard-lower .active-info-strip[data-visible-count="1"]{grid-template-columns:minmax(0,1fr)!important}
+.dashboard-lower .active-info-strip[data-layout="none"]{display:none!important}
+.dashboard-lower .active-info-strip>#environment-line,
+.dashboard-lower .active-info-strip>.goal-strip,
+.dashboard-lower .active-info-strip>#upcoming-event{grid-column:auto!important;border-left:0!important;border-right:0!important}
+.dashboard-lower .active-info-strip>.is-ribbon-divider{border-right:1px solid color-mix(in srgb,var(--line) 58%,transparent)!important}
+.dashboard-lower .active-info-strip[data-visible-count="1"]>#environment-line,
+.dashboard-lower .active-info-strip[data-visible-count="1"]>.goal-strip,
+.dashboard-lower .active-info-strip[data-visible-count="1"]>#upcoming-event{padding-left:clamp(18px,5vw,72px)!important;padding-right:clamp(18px,5vw,72px)!important}
+/* When Goal is absent the two lighter modules become a balanced pair,
+   rather than looking anchored to the abandoned outer columns. */
+.dashboard-lower .active-info-strip[data-layout="weather-event"]>#environment-line,
+.dashboard-lower .active-info-strip[data-visible-count="1"]>#environment-line{justify-items:center!important;text-align:center!important}
+.dashboard-lower .active-info-strip[data-layout="weather-event"]>#environment-line::before,
+.dashboard-lower .active-info-strip[data-visible-count="1"]>#environment-line::before{width:100%!important;text-align:center!important}
+.dashboard-lower .active-info-strip[data-layout="weather-event"] .weather-line,
+.dashboard-lower .active-info-strip[data-visible-count="1"] .weather-line{width:auto!important;justify-self:center!important}
+.dashboard-lower .active-info-strip[data-layout="weather-event"] .solar-line,
+.dashboard-lower .active-info-strip[data-visible-count="1"] .solar-line{justify-content:center!important}
+.dashboard-lower .active-info-strip[data-layout="weather-event"]>#upcoming-event,
+.dashboard-lower .active-info-strip[data-visible-count="1"]>#upcoming-event{justify-content:center!important}
+/* Without Goal, Event keeps a compact readable measure and is centred inside
+   its half of the ribbon instead of stretching from the left edge. */
+.dashboard-lower .active-info-strip[data-layout="weather-event"]>#upcoming-event{
+  width:min(88%,360px)!important;
+  max-width:360px!important;
+  justify-self:center!important;
+  padding-inline:0!important;
+}
+.dashboard-lower .active-info-strip[data-layout="weather-event"]>#upcoming-event>.upcoming-main{padding-left:8px!important}
+/* If Event is the only surviving module, keep the event itself compact and
+   centered instead of stretching its content from the left edge to the full ribbon. */
+.dashboard-lower .active-info-strip[data-layout="event"]{justify-items:center!important}
+.dashboard-lower .active-info-strip[data-layout="event"]>#upcoming-event{
+  width:min(100%,420px)!important;
+  max-width:420px!important;
+  justify-self:center!important;
+  padding-inline:0!important;
+}
+.dashboard-lower .active-info-strip[data-layout="event"]>#upcoming-event>.upcoming-main{padding-left:10px!important}
 
 /* Screensaver inactivity now keeps the same information ribbon. There is only
    one dashboard layout to maintain; only the top/bottom controls fade away. */
@@ -305,7 +350,7 @@ body.is-idle-pre:not(.has-panel) .dashboard-lower .active-info-strip{
 #calendar-view .calendar-brand-lockup .brand-home-tagline{
   display:block!important;
   padding:0!important;
-  font:500 9px/1.1 -apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',Arial,sans-serif!important;
+  font:500 9px/1.1 -apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI",Arial,sans-serif!important;
   letter-spacing:.01em!important;
   color:var(--muted)!important;
   white-space:nowrap!important;
@@ -414,7 +459,7 @@ body.is-idle-pre:not(.has-panel) .dashboard-lower .active-info-strip{
    -------------------------------------------------------------------------- */
 @media (max-width:740px){
   #calendar-view .calendar-shell{padding:8px 10px max(48px,calc(env(safe-area-inset-bottom) + 42px))!important}
-  #calendar-view .calendar-back-button{display:none!important}
+  
   #calendar-view .calendar-layout{padding-top:8px!important}
   #calendar-view #cal-content{padding-right:0!important}
   #calendar-view .calendar-view-label,#calendar-view .calendar-today-label{display:inline!important}
@@ -508,6 +553,7 @@ body.is-idle-pre:not(.has-panel) .dashboard-lower .active-info-strip{
    header uses two stable rows. 740px is deliberately shared by both features.
    -------------------------------------------------------------------------- */
 @media (max-width:740px) and (orientation:portrait){
+  .dashboard-lower .active-info-strip>.is-ribbon-divider{border-right:0!important}
   .dashboard-lower,
   body.is-idle:not(.has-panel) .dashboard-lower.chrome,
   body.is-idle-pre:not(.has-panel) .dashboard-lower.chrome{
@@ -537,6 +583,9 @@ body.is-idle-pre:not(.has-panel) .dashboard-lower .active-info-strip{
     grid-template-rows:none!important;
     overflow:visible!important;
   }
+  .dashboard-lower .active-info-strip[data-visible-count="1"]>#environment-line{padding:8px 10px!important}
+  .dashboard-lower .active-info-strip[data-visible-count="1"]>.goal-strip{padding:7px 7px 8px!important}
+  .dashboard-lower .active-info-strip[data-visible-count="1"]>#upcoming-event{padding:0 8px!important}
   .dashboard-lower .active-info-strip>#environment-line,
   .dashboard-lower .active-info-strip>.goal-strip,
   .dashboard-lower .active-info-strip>#upcoming-event{
@@ -632,7 +681,7 @@ body.is-idle-pre:not(.has-panel) .dashboard-lower .active-info-strip{
     align-items:center!important;justify-items:stretch!important;gap:5px 7px!important;text-align:left!important;
     border-bottom:1px solid color-mix(in srgb,var(--line) 42%,transparent)!important;
   }
-  .dashboard-lower .active-info-strip .goal-progress-summary{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;width:100%!important;max-width:100%!important;min-width:0!important;overflow:hidden!important;box-sizing:border-box!important;font-size:9px!important;gap:8px!important}
+  .dashboard-lower .active-info-strip .goal-progress-summary{display:grid!important;grid-template-columns:minmax(0,1fr) max-content!important;width:100%!important;max-width:100%!important;min-width:0!important;overflow:visible!important;box-sizing:border-box!important;margin:0!important;padding:0 12px 0 1px!important;font-size:9px!important;gap:6px!important}
   .dashboard-lower .active-info-strip .goal-heading{grid-area:heading!important;display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-areas:"label" "title"!important;justify-items:start!important;text-align:left!important;min-width:0!important}
   .dashboard-lower .active-info-strip .goal-heading .section-label{grid-area:label!important;margin:0!important;font-size:7.4px!important;text-align:left!important}
   .dashboard-lower .active-info-strip .goal-heading h2{grid-area:title!important;font-size:11.5px!important;line-height:1.15!important;text-align:left!important}
@@ -641,8 +690,8 @@ body.is-idle-pre:not(.has-panel) .dashboard-lower .active-info-strip{
   .dashboard-lower .active-info-strip .countdown>div{flex:1 1 0!important;min-width:0!important}
   .dashboard-lower .active-info-strip .countdown>div>span{font-size:clamp(6.4px,1.9vw,7.2px)!important}
   .dashboard-lower .active-info-strip .count-separator{flex:0 0 auto!important;font-size:8px!important;margin-top:-5px!important}
-  .dashboard-lower .active-info-strip .goal-progress{grid-area:progress!important;display:grid!important;grid-template-rows:auto auto!important;gap:4px!important;width:100%!important;max-width:100%!important;min-width:0!important;justify-self:stretch!important;overflow:hidden!important;box-sizing:border-box!important}
-  .dashboard-lower .active-info-strip #progress-value{justify-self:end!important;max-width:100%!important;min-width:0!important;white-space:nowrap!important;font-size:clamp(10.5px,3vw,12px)!important;font-weight:750!important;color:var(--accent)!important}
+  .dashboard-lower .active-info-strip .goal-progress{grid-area:progress!important;display:grid!important;grid-template-rows:auto auto!important;gap:4px!important;width:100%!important;max-width:100%!important;min-width:0!important;justify-self:stretch!important;overflow:visible!important;box-sizing:border-box!important}
+  .dashboard-lower .active-info-strip #progress-value{justify-self:end!important;display:block!important;width:max-content!important;max-width:none!important;min-width:max-content!important;overflow:visible!important;white-space:nowrap!important;text-align:right!important;padding:0!important;box-sizing:border-box!important;font-size:clamp(10.5px,3vw,12px)!important;font-weight:750!important;color:var(--accent)!important;font-variant-numeric:tabular-nums!important}
   .dashboard-lower .active-info-strip .goal-date{display:none!important}
 
   /* Event keeps the same three-row information block. Only its whole group is centred. */
@@ -657,7 +706,7 @@ body.is-idle-pre:not(.has-panel) .dashboard-lower .active-info-strip{
   }
   .dashboard-lower .active-info-strip>#upcoming-event>.upcoming-main{
     grid-column:1!important;width:100%!important;max-width:100%!important;min-height:54px!important;padding:6px 4px!important;
-    grid-template-columns:18px minmax(0,1fr)!important;grid-template-areas:'icon details'!important;gap:7px!important;
+    grid-template-columns:18px minmax(0,1fr)!important;grid-template-areas:"icon details"!important;gap:7px!important;
   }
   .dashboard-lower .active-info-strip>#upcoming-event>.upcoming-main>.icon:first-child{display:inline-flex!important;width:13px!important;height:13px!important}
   .dashboard-lower .active-info-strip>#upcoming-event>.upcoming-main>.upcoming-details{width:100%!important;max-width:240px!important;justify-items:start!important;text-align:left!important;gap:2px!important}
@@ -685,7 +734,7 @@ body.is-idle-pre:not(.has-panel) .dashboard-lower .active-info-strip{
      immediately beside navigation; view tabs (including Agenda) stay together. */
   #calendar-view .calendar-heading-combined{
     grid-template-columns:minmax(82px,.95fr) minmax(54px,.72fr) auto 30px!important;
-    grid-template-areas:'brand title nav actions' 'views views views views'!important;
+    grid-template-areas:"brand title nav actions" "views views views views"!important;
     align-items:center!important;
     justify-items:stretch!important;
     column-gap:3px!important;

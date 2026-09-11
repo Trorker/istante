@@ -1,0 +1,1806 @@
+/* Istante 3.13.24 — legacy component refinements loaded after calendar.css.
+ * Historical visual rules consolidated without changing their cascade order.
+ */
+
+.bottom-bar .toolbar{
+  width:100%!important;max-width:none!important;display:flex!important;justify-content:center!important;align-items:center!important;
+  padding-inline:max(10px,env(safe-area-inset-left)) max(10px,env(safe-area-inset-right))!important;
+}
+.toolbar-cluster{
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:9px!important;
+  width:max-content!important;max-width:100%!important;margin-inline:auto!important;
+}
+.toolbar-group{display:flex!important;align-items:center!important;justify-content:center!important;gap:2px!important;justify-self:auto!important}
+.toolbar-group-left,.toolbar-group-center,.toolbar-group-right{justify-self:auto!important}
+.toolbar-group-center{padding-inline:9px!important;border-inline:1px solid color-mix(in srgb,var(--line) 62%,transparent)!important}
+.toolbar-group-right{padding-left:1px!important}
+@media(max-width:520px){
+  .toolbar-cluster{gap:3px!important}.toolbar-group-center{padding-inline:4px!important}.toolbar-group .icon-button{width:36px!important;height:38px!important;min-width:36px!important}
+}
+@media(max-width:360px){.toolbar-group .icon-button{width:33px!important;min-width:33px!important}.toolbar-cluster{gap:1px!important}}
+.share-format-label{display:none!important}
+.share-format-row{grid-template-columns:1fr!important}
+.share-preview-wrap{
+  min-height:0!important;max-height:none!important;height:auto!important;padding:10px!important;overflow:auto!important;
+  align-items:center!important;justify-content:flex-start!important;background:color-mix(in srgb,var(--surface) 88%,transparent)!important;
+}
+.share-preview-wrap #share-preview{
+  display:block!important;width:auto!important;height:auto!important;max-width:100%!important;max-height:min(28dvh,280px)!important;
+  object-fit:contain!important;object-position:center!important;margin:auto!important;border-radius:10px!important;
+}
+@media(max-width:740px){.share-preview-wrap #share-preview{max-height:24dvh!important}.share-preview-wrap{padding:8px!important}}
+.library-navigation{display:flex!important;align-items:center!important;gap:12px!important;justify-content:space-between!important}
+.library-navigation .library-view-label{font-size:max(10.5px,calc(10.5px * var(--ui-scale,1)))!important;color:var(--muted)!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+.library-collections-button{flex:0 0 auto!important}
+#library-dialog[data-library-view="collections"]>.library-tools{display:none!important}
+.collection-library-inline-head{justify-content:flex-start!important}
+.collection-library-toolbar{display:grid!important;grid-template-columns:auto minmax(240px,1fr)!important;gap:14px!important;align-items:center!important}
+.collection-status-filters{display:flex!important;align-items:center!important;gap:5px!important;flex-wrap:wrap!important}
+.collection-status-filters button{
+  min-height:34px!important;padding:7px 11px!important;border:1px solid var(--line)!important;border-radius:999px!important;
+  background:transparent!important;color:var(--muted)!important;font-size:10.5px!important;
+}
+.collection-status-filters button[aria-pressed="true"]{background:var(--accent-soft)!important;color:var(--ink)!important;border-color:color-mix(in srgb,var(--accent) 45%,var(--line))!important}
+#collection-library-inline .collection-library-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important;padding-top:7px!important}
+#collection-library-inline .collection-card{
+  position:relative!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:8px!important;
+  padding:16px!important;border:1px solid var(--line)!important;border-radius:14px!important;background:color-mix(in srgb,var(--surface) 76%,transparent)!important;
+  min-height:190px!important;transition:transform .18s cubic-bezier(.2,.8,.2,1),border-color .18s ease,background .18s ease!important;
+}
+#collection-library-inline .collection-card:hover{transform:translateY(-1px)!important;background:color-mix(in srgb,var(--accent-soft) 30%,var(--surface))!important}
+#collection-library-inline .collection-card.is-selected{border-color:color-mix(in srgb,var(--accent) 64%,var(--line))!important;background:color-mix(in srgb,var(--accent-soft) 42%,var(--surface))!important}
+.collection-card-top{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;min-width:0!important}
+#collection-library-inline .collection-card .collection-card-meta{font-size:max(10px,calc(10px * var(--ui-scale,1)))!important;color:var(--faint)!important;text-transform:uppercase!important;letter-spacing:.07em!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+.collection-status-badge{display:inline-flex!important;align-items:center!important;gap:5px!important;flex:0 0 auto!important;padding:5px 8px!important;border-radius:999px!important;font-size:10px!important;color:var(--muted)!important;background:color-mix(in srgb,var(--surface-2) 76%,transparent)!important;border:1px solid var(--line)!important}
+.collection-status-badge .icon{width:12px!important;height:12px!important}.collection-status-badge.status-active{color:var(--accent)!important;border-color:color-mix(in srgb,var(--accent) 40%,var(--line))!important}.collection-status-badge.status-available{border-style:dashed!important}
+#collection-library-inline .collection-card>strong{font:400 max(19px,calc(19px * var(--ui-scale,1)))/1.2 var(--serif)!important;color:var(--ink)!important}
+#collection-library-inline .collection-card>p{font-size:max(11.5px,calc(11.5px * var(--ui-scale,1)))!important;line-height:1.55!important;color:var(--muted)!important;flex:1 1 auto!important;margin:0!important}
+#collection-library-inline .collection-card-actions{display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:6px!important;flex-wrap:wrap!important;margin-top:auto!important}
+.collection-active-note{font-size:10.5px!important;color:var(--accent)!important;padding:0 5px!important}
+@media(max-width:760px){
+  .collection-library-toolbar{grid-template-columns:1fr!important}.collection-status-filters{overflow-x:auto!important;flex-wrap:nowrap!important;padding-bottom:2px!important;scrollbar-width:none!important}
+  #collection-library-inline .collection-library-grid{grid-template-columns:1fr!important}.library-navigation{align-items:flex-start!important;flex-direction:column!important;gap:7px!important}.library-navigation .library-view-label{white-space:normal!important}
+}
+.timer-panel{width:min(590px,calc(100vw - 24px))!important}
+.timer-content{padding-top:16px!important}
+.timer-time-stage{height:auto!important;min-height:242px!important;display:grid!important;place-items:center!important}
+#timer-duration[hidden],#timer-running[hidden]{display:none!important;visibility:visible!important;pointer-events:auto!important}
+.timer-duration{width:100%!important;display:flex!important;flex-direction:column!important;gap:14px!important;align-items:stretch!important}
+.timer-range-picker{display:grid!important;gap:11px!important;padding:8px 4px 2px!important}
+.timer-range-picker>.section-label{margin:0!important;text-align:center!important;font-size:10.5px!important}
+#timer-duration-display{display:block!important;text-align:center!important;font:400 clamp(34px,6vw,48px)/1 var(--serif)!important;letter-spacing:-.035em!important;color:var(--ink)!important}
+#timer-duration-range{width:100%!important;accent-color:var(--accent)!important;height:28px!important;cursor:pointer!important}
+.timer-range-scale{display:grid!important;grid-template-columns:repeat(5,1fr)!important;font-size:9px!important;color:var(--faint)!important;margin-top:-7px!important}.timer-range-scale span{text-align:center!important}.timer-range-scale span:first-child{text-align:left!important}.timer-range-scale span:last-child{text-align:right!important}
+.timer-precise{border-top:1px solid var(--line)!important;border-bottom:1px solid var(--line)!important;padding:0 2px!important}.timer-precise>summary{list-style:none!important;cursor:pointer!important;min-height:42px!important;display:flex!important;align-items:center!important;justify-content:center!important;color:var(--muted)!important;font-size:10.5px!important}.timer-precise>summary::-webkit-details-marker{display:none!important}.timer-precise>summary:after{content:"+"!important;margin-left:8px!important;color:var(--accent)!important}.timer-precise[open]>summary:after{content:"−"!important}
+.timer-precise-grid{display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:10px!important;padding:4px 0 14px!important}.timer-precise-grid label{display:grid!important;gap:5px!important;text-align:center!important;font-size:9.5px!important;color:var(--muted)!important}.timer-precise-grid input{width:100%!important;min-width:0!important;height:52px!important;font-size:25px!important;text-align:center!important}
+#timer-running{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:12px!important;padding:8px 0!important}
+.timer-orbit{--timer-progress:0%;position:relative!important;width:176px!important;height:176px!important;border-radius:50%!important;display:grid!important;place-items:center!important;background:conic-gradient(var(--accent) var(--timer-progress),color-mix(in srgb,var(--line) 72%,transparent) 0)!important;box-shadow:0 14px 46px color-mix(in srgb,var(--bg) 70%,transparent)!important}
+.timer-orbit:before{content:""!important;position:absolute!important;inset:7px!important;border-radius:50%!important;background:var(--surface)!important;border:1px solid color-mix(in srgb,var(--line) 75%,transparent)!important}
+.timer-orbit:after{content:""!important;position:absolute!important;left:50%!important;top:-3px!important;width:8px!important;height:8px!important;margin-left:-4px!important;border-radius:50%!important;background:var(--accent)!important;transform-origin:4px 91px!important;opacity:0!important}
+.timer-orbit[data-state="running"]:after{opacity:1!important;animation:timer-orbit-dot 7s linear infinite!important}.timer-orbit[data-state="running"]{animation:timer-breathe 2.8s ease-in-out infinite!important}.timer-orbit[data-state="paused"]{filter:saturate(.55)!important}
+#timer-readout{position:relative!important;z-index:1!important;font:400 46px/1 var(--serif)!important;letter-spacing:-.035em!important;font-variant-numeric:tabular-nums!important}
+.timer-track{height:5px!important;min-height:5px!important;max-width:280px!important;border-radius:999px!important;overflow:hidden!important;background:color-mix(in srgb,var(--line) 75%,transparent)!important}.timer-track i{display:block!important;height:100%!important;background:var(--accent)!important;border-radius:inherit!important;transition:width .35s linear!important}
+@keyframes timer-orbit-dot{to{transform:rotate(360deg)}}@keyframes timer-breathe{50%{transform:scale(1.018)}}
+@media(prefers-reduced-motion:reduce){.timer-orbit{animation:none!important}.timer-orbit:after{animation:none!important}}
+@media(max-width:520px){.timer-time-stage{min-height:220px!important}.timer-orbit{width:158px!important;height:158px!important}.timer-orbit:after{transform-origin:4px 82px!important}.timer-precise-grid input{height:48px!important;font-size:22px!important}}
+#timer-dialog[data-state="running"] .timer-time-stage,#timer-dialog[data-state="paused"] .timer-time-stage,#timer-dialog[data-state="done"] .timer-time-stage{min-height:300px!important}
+#timer-dialog[data-state="running"] .timer-content,#timer-dialog[data-state="paused"] .timer-content,#timer-dialog[data-state="done"] .timer-content{padding-top:6px!important}
+#timer-dialog[data-state="running"] .timer-notice,#timer-dialog[data-state="paused"] .timer-notice{min-height:18px!important}
+#toast{
+  border:1px solid color-mix(in srgb,var(--accent) 34%,var(--line))!important;
+  background:color-mix(in srgb,var(--surface-2) 94%,var(--bg))!important;
+  box-shadow:0 18px 52px rgba(0,0,0,.34),0 2px 8px rgba(0,0,0,.2)!important;
+  padding:13px 20px!important;border-radius:14px!important;font-weight:500!important;
+}
+html[data-theme="light"] #toast{box-shadow:0 16px 42px rgba(41,48,43,.2),0 2px 8px rgba(41,48,43,.12)!important;background:color-mix(in srgb,var(--surface-2) 96%,white)!important}
+.text-size-setting{display:grid!important;gap:12px!important}.text-size-setting>legend{font-size:11px!important;color:var(--muted)!important;margin-bottom:2px!important}
+.text-size-range-wrap{display:grid!important;gap:6px!important}.text-size-range-wrap input[type="range"]{width:100%!important;accent-color:var(--accent)!important;cursor:pointer!important}.text-size-range-labels{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:6px!important;font-size:9.5px!important;color:var(--faint)!important}.text-size-range-labels span{text-align:center!important}.text-size-range-labels span:first-child{text-align:left!important}.text-size-range-labels span:last-child{text-align:right!important}
+.goal-detail-panel{width:min(520px,calc(100vw - 24px))!important}.goal-detail-content{display:grid!important;gap:18px!important}.goal-detail-progress-head{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;font-size:11px!important;color:var(--muted)!important}.goal-detail-progress-head strong{font:400 22px/1 var(--serif)!important;color:var(--ink)!important}.goal-detail-track{height:8px!important;border-radius:999px!important;background:var(--line)!important;overflow:hidden!important}.goal-detail-track>span{display:block!important;height:100%!important;background:var(--accent)!important;border-radius:inherit!important;transition:width .4s ease!important}.goal-detail-countdown{display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:8px!important}.goal-detail-countdown>div{display:grid!important;place-items:center!important;gap:4px!important;padding:15px 8px!important;border-block:1px solid var(--line)!important}.goal-detail-countdown strong{font:400 30px/1 var(--serif)!important}.goal-detail-countdown span{font-size:9.5px!important;color:var(--muted)!important}.goal-detail-date{text-align:center!important;color:var(--muted)!important;font-size:10.5px!important}
+
+
+
+
+
+
+#calendar-view .calendar-cell{display:flex!important;flex-direction:column!important;min-width:0!important}
+#calendar-view .calendar-day-number{flex:0 0 auto!important}
+#calendar-view .calendar-cell>.calendar-event{flex:0 0 auto!important}
+#calendar-view .calendar-more{display:block!important;flex:0 0 auto!important;margin-top:auto!important;min-height:20px!important;padding:4px 3px 2px!important;font-size:max(10px,calc(10.5px * var(--ui-scale,1)))!important;font-weight:600!important;color:var(--accent)!important;text-align:left!important;overflow:visible!important;white-space:nowrap!important}
+#calendar-view .calendar-mini-grid button{overflow:visible!important}
+#calendar-view .calendar-mini-grid button.has-events:after{width:5.5px!important;height:5.5px!important;bottom:-2px!important;background:var(--accent)!important;box-shadow:0 0 0 1.5px color-mix(in srgb,var(--surface) 86%,transparent)!important}
+#calendar-view .calendar-mini-grid button.is-today.has-events:after{background:var(--bg)!important;box-shadow:0 0 0 1.5px var(--accent)!important}
+@media(min-width:900px){
+  #calendar-view #cal-content>.calendar-week{grid-template-columns:repeat(7,minmax(0,1fr))!important;gap:6px!important;width:100%!important}
+  #calendar-view .calendar-week-day{min-width:0!important;padding:10px 7px!important}
+}
+#calendar-view .calendar-week-day>button{font-size:max(12px,calc(12.5px * var(--ui-scale,1)))!important}
+#calendar-view .calendar-week-day>button strong{font-size:max(26px,calc(28px * var(--ui-scale,1)))!important}
+#calendar-view .calendar-week-day .calendar-event{font-size:max(11.5px,calc(12px * var(--ui-scale,1)))!important;line-height:1.28!important}
+#calendar-view .calendar-week-day .calendar-event .event-time{font-size:max(10px,calc(10px * var(--ui-scale,1)))!important}
+@media(min-width:1181px) and (min-height:620px){
+  #calendar-view #cal-content>.calendar-year{width:100%!important;height:100%!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;grid-template-rows:repeat(3,minmax(0,1fr))!important;align-content:stretch!important}
+}
+@media(min-width:2200px){#calendar-view #cal-content>.calendar-year{max-width:1680px!important;margin-inline:auto!important}}
+html[data-theme="light"] .ambient-fx[data-weather="sun"] .fx-weather-light{filter:saturate(1.18) contrast(1.08)!important;opacity:max(.55,var(--fx-intensity))!important}
+html[data-theme="light"] .ambient-fx:is([data-weather="clouds"],[data-weather="storm"],[data-weather="fog"]) .fx-clouds{filter:contrast(1.18) saturate(1.08)!important;opacity:max(.48,var(--fx-intensity))!important}
+html[data-theme="light"] .ambient-fx[data-weather="clear-night"] .fx-weather-light{opacity:max(.48,var(--fx-intensity))!important}
+html[data-theme="light"] .ambient-fx .fx-canvas{filter:contrast(1.16) saturate(1.1)!important}
+.touch-volume-field{display:grid!important;grid-template-columns:1fr!important;gap:7px!important;margin-top:10px!important}.touch-volume-field input[type="range"]{width:100%!important}
+button,[role="button"],summary{touch-action:manipulation}
+.panel,.calendar-sidebar{transform-style:flat}
+
+.topbar .brand-lockup{display:flex!important;align-items:center!important;min-width:0!important}
+.topbar .brand-home-link{
+  display:flex!important;align-items:center!important;gap:10px!important;padding:3px 5px 3px 3px!important;
+  line-height:1!important;border-radius:11px!important;text-decoration:none!important;color:var(--ink)!important;
+}
+.topbar .brand-home-link:hover,.topbar .brand-home-link:focus-visible{background:color-mix(in srgb,var(--accent-soft) 72%,transparent)!important}
+.brand-logo-image{display:block!important;flex:0 0 auto!important;width:32px!important;height:32px!important;border-radius:9px!important;object-fit:cover!important}
+.brand-home-copy{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;gap:2px!important;min-width:0!important}
+.brand-home-name{font:500 23px/1 var(--serif)!important;letter-spacing:-.04em!important;color:var(--ink)!important}
+.brand-home-tagline{font:500 10px/1.15 var(--sans)!important;letter-spacing:.015em!important;color:var(--muted)!important;white-space:nowrap!important}
+@media (max-width:520px){
+  .brand-logo-image{width:29px!important;height:29px!important;border-radius:8px!important}
+  .brand-home-name{font-size:20px!important}.brand-home-tagline{font-size:9.5px!important}
+}
+
+
+
+
+
+.phrase-library-tools{
+  display:grid!important;grid-template-columns:minmax(160px,.7fr) minmax(0,1.5fr)!important;
+  grid-template-areas:"current searchrow" "tabs tabs"!important;gap:10px 18px!important;align-items:center!important;
+}
+.library-current{grid-area:current!important}
+.library-search-row{grid-area:searchrow!important;display:grid!important;grid-template-columns:minmax(220px,1fr) auto!important;align-items:center!important;gap:12px!important;min-width:0!important}
+.library-search-row>.search-field{min-width:0!important}
+.library-search-actions{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:10px!important;white-space:nowrap!important}
+.library-search-actions .result-count{font-size:max(10.5px,calc(10.5px * var(--ui-scale,1)))!important;color:var(--muted)!important;font-variant-numeric:tabular-nums!important}
+.library-collections-button{min-height:38px!important;padding:8px 13px!important;border-radius:10px!important}
+.library-collections-button .icon{width:15px!important;height:15px!important}
+.library-tabs{grid-area:tabs!important;display:flex!important;justify-content:flex-end!important;margin:0!important;border-bottom:1px solid color-mix(in srgb,var(--line) 78%,transparent)!important}
+.library-tabs>div{display:flex!important;justify-content:flex-end!important;gap:20px!important}
+.collection-library-inline-head{justify-content:flex-start!important;gap:16px!important}
+.collection-back-button{
+  flex:0 0 auto!important;min-height:40px!important;padding:9px 13px!important;border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line))!important;
+  background:color-mix(in srgb,var(--accent-soft) 54%,transparent)!important;color:var(--ink)!important;font-weight:600!important;
+}
+.collection-back-button .icon{width:15px!important;height:15px!important;transform:rotate(180deg)!important}
+.collection-back-button:hover,.collection-back-button:focus-visible{border-color:color-mix(in srgb,var(--accent) 62%,var(--line))!important;background:var(--accent-soft)!important}
+.collection-library-toolbar{
+  display:grid!important;grid-template-columns:minmax(250px,1fr) auto!important;gap:18px!important;align-items:center!important;
+  padding:10px 28px 9px!important;
+}
+.collection-library-toolbar>.search-field{min-width:0!important}
+.collection-status-filters{
+  justify-self:end!important;display:flex!important;align-items:center!important;gap:3px!important;flex-wrap:nowrap!important;
+  padding:3px!important;border:1px solid var(--line)!important;border-radius:11px!important;background:color-mix(in srgb,var(--bg) 72%,transparent)!important;
+}
+.collection-status-filters button{
+  min-height:34px!important;padding:6px 11px!important;border:0!important;border-radius:8px!important;background:transparent!important;
+  color:var(--muted)!important;font-size:max(10.5px,calc(10.5px * var(--ui-scale,1)))!important;white-space:nowrap!important;
+}
+.collection-status-filters button[aria-pressed="true"]{
+  background:var(--surface-2)!important;color:var(--ink)!important;box-shadow:0 1px 0 color-mix(in srgb,var(--line) 70%,transparent)!important;
+}
+#collection-library-inline .collection-card{padding:16px!important;min-height:194px!important}
+#collection-library-inline .collection-card-actions{justify-content:flex-end!important;align-items:flex-end!important;min-height:38px!important;margin-top:auto!important}
+#collection-library-inline .collection-card-actions .collection-download-button{
+  min-height:31px!important;padding:6px 11px!important;border-radius:8px!important;font-size:10px!important;margin-left:auto!important;
+}
+#collection-library-inline .collection-card-actions .icon-button{width:34px!important;height:34px!important;min-width:34px!important}
+.collection-active-note{margin-right:auto!important}
+@media (max-width:760px){
+  .phrase-library-tools{grid-template-columns:1fr!important;grid-template-areas:"current" "searchrow" "tabs"!important;gap:9px!important}
+  .library-search-actions{gap:6px!important}.library-search-actions .result-count{display:none!important}.library-collections-button{padding-inline:10px!important}
+  .collection-status-filters{justify-self:stretch!important;overflow-x:auto!important;scrollbar-width:none!important}.collection-status-filters button{flex:1 0 auto!important}
+  .collection-library-inline-head{align-items:flex-start!important;flex-wrap:wrap!important}.collection-back-button{order:0!important}
+}
+.timer-duration-control{display:grid!important;grid-template-columns:46px minmax(0,1fr) 46px!important;align-items:center!important;gap:12px!important;width:min(420px,100%)!important;margin-inline:auto!important}
+.timer-step-button{
+  width:46px!important;height:46px!important;border-radius:50%!important;border:1px solid color-mix(in srgb,var(--accent) 30%,var(--line))!important;
+  background:color-mix(in srgb,var(--surface-2) 74%,transparent)!important;color:var(--ink)!important;display:grid!important;place-items:center!important;
+  font:400 26px/1 var(--sans)!important;transition:transform .16s cubic-bezier(.2,.8,.2,1),background .16s ease,border-color .16s ease!important;
+}
+.timer-step-button:hover,.timer-step-button:focus-visible{background:var(--accent-soft)!important;border-color:color-mix(in srgb,var(--accent) 65%,var(--line))!important;transform:scale(1.04)!important}
+.timer-step-button:active{transform:scale(.96)!important}
+#timer-duration-display{min-width:0!important}
+@media (max-width:520px){.timer-duration-control{grid-template-columns:42px minmax(0,1fr) 42px!important;gap:8px!important}.timer-step-button{width:42px!important;height:42px!important;font-size:24px!important}}
+#calendar-view .calendar-week-day .calendar-week-event{
+  display:flex!important;flex-direction:column!important;gap:4px!important;position:relative!important;
+  margin:5px 0!important;padding:8px 9px 9px!important;border:1px solid color-mix(in srgb,var(--event-color) 34%,var(--line))!important;
+  border-left:3px solid var(--event-color)!important;border-radius:8px!important;
+  background:color-mix(in srgb,var(--event-color) 9%,var(--surface))!important;color:var(--ink)!important;white-space:normal!important;
+  box-shadow:0 1px 0 color-mix(in srgb,var(--event-color) 12%,transparent)!important;
+  transition:transform .16s cubic-bezier(.2,.8,.2,1),background .16s ease,border-color .16s ease!important;
+}
+#calendar-view .calendar-week-day .calendar-week-event:hover,#calendar-view .calendar-week-day .calendar-week-event:focus-visible{
+  transform:translateY(-1px)!important;background:color-mix(in srgb,var(--event-color) 14%,var(--surface))!important;border-color:color-mix(in srgb,var(--event-color) 58%,var(--line))!important;
+}
+#calendar-view .week-event-top{display:flex!important;align-items:center!important;gap:6px!important;min-width:0!important}
+#calendar-view .week-event-dot{display:block!important;width:7px!important;height:7px!important;flex:0 0 7px!important;border-radius:50%!important;background:var(--event-color)!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--event-color) 14%,transparent)!important}
+#calendar-view .calendar-week-event .event-time{
+  display:block!important;margin:0!important;padding:0!important;font-size:max(10.5px,calc(10.5px * var(--ui-scale,1)))!important;font-weight:700!important;
+  letter-spacing:.015em!important;color:var(--ink)!important;opacity:.82!important;font-variant-numeric:tabular-nums!important;
+}
+#calendar-view .week-event-title{display:block!important;font-size:max(11.8px,calc(12.3px * var(--ui-scale,1)))!important;line-height:1.25!important;font-weight:650!important;overflow-wrap:anywhere!important}
+#calendar-view .week-event-source{display:block!important;font-size:max(9.8px,calc(10px * var(--ui-scale,1)))!important;line-height:1.25!important;color:var(--muted)!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+#calendar-view .calendar-week-day.is-today{background:color-mix(in srgb,var(--accent-soft) 16%,transparent)!important}
+@media (max-width:740px){
+  #calendar-view .calendar-week-day .calendar-week-event{padding:7px 8px!important;margin:4px 0!important}
+  #calendar-view .week-event-source{white-space:normal!important}
+}
+.istante-cursor-dot,.istante-cursor-ring{
+  position:fixed!important;left:0!important;top:0!important;z-index:100000!important;pointer-events:none!important;opacity:0;
+  transform:translate3d(-80px,-80px,0) translate(-50%,-50%);will-change:transform,opacity,width,height,background,border-color;
+}
+.istante-cursor-dot{width:5px!important;height:5px!important;border-radius:50%!important;background:var(--accent)!important;box-shadow:0 0 10px color-mix(in srgb,var(--accent) 44%,transparent)!important;transition:opacity .12s ease!important}
+.istante-cursor-ring{
+  width:24px!important;height:24px!important;border-radius:50%!important;border:1px solid color-mix(in srgb,var(--accent) 72%,transparent)!important;
+  background:color-mix(in srgb,var(--accent-soft) 10%,transparent)!important;transition:opacity .12s ease,width .16s cubic-bezier(.2,.8,.2,1),height .16s cubic-bezier(.2,.8,.2,1),background .16s ease,border-color .16s ease!important;
+}
+.istante-cursor-dot.is-visible,.istante-cursor-ring.is-visible{opacity:1!important}
+.istante-cursor-ring.is-action{width:34px!important;height:34px!important;background:color-mix(in srgb,var(--accent-soft) 32%,transparent)!important;border-color:var(--accent)!important}
+.istante-cursor-ring.is-pressed{width:20px!important;height:20px!important;background:color-mix(in srgb,var(--accent-soft) 48%,transparent)!important}
+@media (hover:hover) and (pointer:fine){
+  html.istante-custom-cursor body,html.istante-custom-cursor a,html.istante-custom-cursor button,html.istante-custom-cursor [role="button"],html.istante-custom-cursor summary,html.istante-custom-cursor input[type="range"],html.istante-custom-cursor label.file-button{cursor:none!important}
+  html.istante-custom-cursor input:not([type="range"]):not([type="button"]):not([type="submit"]),html.istante-custom-cursor textarea,html.istante-custom-cursor [contenteditable="true"]{cursor:text!important}
+}
+@media (hover:none),(pointer:coarse){.istante-cursor-dot,.istante-cursor-ring{display:none!important}}
+@media (prefers-reduced-motion:reduce){.istante-cursor-ring,.istante-cursor-dot{transition:opacity .08s linear!important}}
+#collection-library-inline .collection-card-available .collection-card-actions{
+  position:absolute!important;right:14px!important;bottom:14px!important;width:auto!important;min-width:0!important;min-height:0!important;margin:0!important;
+}
+#collection-library-inline .collection-card-available .collection-download-button{
+  min-height:28px!important;padding:5px 9px!important;border-radius:8px!important;font-size:9.5px!important;margin:0!important;
+}
+#calendar-view .calendar-week-day>button.calendar-week-event{
+  grid-row:auto!important;text-align:left!important;width:100%!important;color:var(--ink)!important;
+}
+#calendar-view .calendar-week-day>button.calendar-week-event .week-event-title{
+  display:block!important;margin:0!important;font-family:var(--sans)!important;
+  font-size:max(11.8px,calc(12.3px * var(--ui-scale,1)))!important;font-weight:650!important;line-height:1.25!important;
+}
+html[data-font-style="excalifont"]{--serif:"Excalifont","Segoe Print","Bradley Hand",cursive}
+html[data-font-style="excalifont"] .brand-home-name{letter-spacing:-.015em!important}
+.binary-setting{border:0!important;padding:0!important;margin:18px 0 0!important;min-width:0!important}
+.binary-setting>legend{font-size:12px!important;color:var(--muted)!important;margin-bottom:8px!important}
+.binary-tabs{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:3px!important;padding:3px!important;border:1px solid var(--line)!important;border-radius:12px!important;background:color-mix(in srgb,var(--bg) 72%,transparent)!important}
+.binary-tabs label{position:relative!important;display:block!important;min-width:0!important;cursor:pointer!important}
+.binary-tabs input{position:absolute!important;opacity:0!important;pointer-events:none!important;width:1px!important;height:1px!important}
+.binary-tabs label>span{display:flex!important;align-items:center!important;justify-content:center!important;gap:6px!important;min-height:39px!important;padding:7px 10px!important;border-radius:9px!important;color:var(--muted)!important;font-size:12px!important;line-height:1.2!important;text-align:center!important;transition:background .16s ease,color .16s ease,box-shadow .16s ease!important}
+.binary-tabs label>span small{font-size:10px!important;color:inherit!important;opacity:.72!important}
+.binary-tabs input:checked+span{background:var(--surface-2)!important;color:var(--ink)!important;box-shadow:0 1px 7px color-mix(in srgb,var(--ink) 7%,transparent)!important}
+.binary-tabs input:focus-visible+span{outline:0!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 34%,transparent),0 1px 7px color-mix(in srgb,var(--ink) 7%,transparent)!important}
+.custom-cursor-setting{margin-top:15px!important}
+@media (pointer:coarse){.custom-cursor-setting{opacity:.58!important}.custom-cursor-setting small::after{content:" Non viene mostrato sui dispositivi touch."}}
+.text-size-range-wrap input[type="range"]:focus-visible{outline:0!important;border-radius:999px!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)!important}
+.phrase-library-tools{grid-template-columns:1fr!important;grid-template-areas:"current" "searchrow" "tabs"!important;gap:11px!important}
+.library-search-row{display:grid!important;grid-template-columns:minmax(70px,1fr) minmax(320px,650px) minmax(70px,1fr)!important;gap:12px!important;align-items:center!important;width:100%!important}
+.library-search-row>.search-field{grid-column:2!important;width:100%!important;justify-self:center!important}
+.library-search-actions{grid-column:3!important;justify-self:start!important}
+.library-collections-button{min-height:37px!important;padding:7px 11px!important}
+.library-tabs{justify-content:flex-end!important}
+#library-dialog[data-library-view="collections"] .library-collections-button{visibility:hidden!important;pointer-events:none!important}
+#collection-library-inline .collection-library-inline-head{padding-inline:28px!important;justify-content:flex-start!important}
+#collection-library-inline .collection-library-inline-head>div{max-width:720px!important}
+.collection-library-toolbar{grid-template-columns:minmax(360px,1.45fr) auto!important;gap:24px!important;padding:11px 28px 10px!important}
+.collection-library-toolbar>.search-field{width:100%!important;max-width:720px!important}
+.collection-status-filters{justify-self:end!important}
+.collection-library-footer{justify-content:space-between!important;align-items:center!important}
+.collection-import-link{padding:4px 2px!important;min-height:32px!important;background:transparent!important;color:var(--faint)!important;font-size:10.5px!important;border:0!important;box-shadow:none!important}
+.collection-import-link:hover,.collection-import-link:focus-visible{color:var(--muted)!important;background:transparent!important;text-decoration:underline!important;text-underline-offset:3px!important}
+.collection-return-button{min-height:40px!important;padding:9px 14px!important;font-weight:650!important}
+.collection-return-button .icon{width:15px!important;height:15px!important;transform:rotate(180deg)!important}
+#collection-library-inline .collection-card{position:relative!important;padding:16px 16px 58px!important;min-height:198px!important}
+#collection-library-inline .collection-card-actions{position:absolute!important;right:13px!important;bottom:12px!important;width:auto!important;min-width:0!important;min-height:30px!important;margin:0!important;display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:5px!important;flex-wrap:nowrap!important}
+#collection-library-inline .collection-card-actions .primary-button,
+#collection-library-inline .collection-card-actions .secondary-button{min-height:28px!important;padding:5px 9px!important;border-radius:8px!important;font-size:9.5px!important;line-height:1!important;white-space:nowrap!important}
+#collection-library-inline .collection-card-actions .icon-button{width:29px!important;height:29px!important;min-width:29px!important;border-radius:8px!important}
+#collection-library-inline .collection-card-actions .icon-button .icon,
+#collection-library-inline .collection-card-actions .icon-button svg{width:13px!important;height:13px!important}
+#collection-library-inline .collection-card-available{padding-bottom:58px!important}
+#collection-library-inline .collection-card-available .collection-card-actions{right:13px!important;bottom:12px!important}
+#collection-library-inline .collection-card-actions .collection-download-button{min-height:28px!important;padding:5px 9px!important;font-size:9.5px!important;margin:0!important}
+.collection-active-note{position:absolute!important;left:auto!important;right:0!important;bottom:4px!important;margin:0!important;padding:0!important;font-size:9.5px!important;color:var(--accent)!important;white-space:nowrap!important;transform:translateX(calc(-100% - 72px))!important}
+@media (max-width:760px){
+  .library-search-row{grid-template-columns:minmax(0,1fr) auto!important;gap:8px!important}.library-search-row>.search-field{grid-column:1!important}.library-search-actions{grid-column:2!important}
+  .collection-library-toolbar{grid-template-columns:1fr!important;gap:9px!important}.collection-library-toolbar>.search-field{max-width:none!important}.collection-status-filters{justify-self:stretch!important}
+  #collection-library-inline .collection-library-inline-head{padding-inline:20px!important}
+}
+.timer-step-button{display:flex!important;align-items:center!important;justify-content:center!important;padding:0!important;text-align:center!important}
+.timer-step-button>span{display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;height:100%!important;line-height:1!important;font-size:28px!important;transform:translateY(-1px)!important}
+#timer-duration-increase>span{transform:translateY(-1.5px)!important}
+#timer-dialog .timer-content{min-height:480px!important;display:flex!important;flex-direction:column!important}
+#timer-dialog .timer-time-stage{min-height:300px!important;flex:0 0 300px!important}
+#timer-dialog .timer-presets{min-height:39px!important;flex:0 0 auto!important}
+#timer-dialog .timer-session-options{min-height:105px!important;flex:0 0 auto!important}
+#timer-dialog[data-state="running"] .timer-content,#timer-dialog[data-state="paused"] .timer-content,#timer-dialog[data-state="done"] .timer-content{min-height:480px!important;padding-top:16px!important}
+#timer-dialog[data-state="running"] #timer-presets[hidden],#timer-dialog[data-state="paused"] #timer-presets[hidden],#timer-dialog[data-state="done"] #timer-presets[hidden]{display:flex!important;visibility:hidden!important;pointer-events:none!important}
+#timer-dialog[data-state="running"] #timer-session-options[hidden],#timer-dialog[data-state="paused"] #timer-session-options[hidden],#timer-dialog[data-state="done"] #timer-session-options[hidden]{display:block!important;visibility:hidden!important;pointer-events:none!important}
+@media (max-width:520px){#timer-dialog .timer-content,#timer-dialog[data-state="running"] .timer-content,#timer-dialog[data-state="paused"] .timer-content,#timer-dialog[data-state="done"] .timer-content{min-height:440px!important}#timer-dialog .timer-time-stage{min-height:270px!important;flex-basis:270px!important}.timer-step-button>span{font-size:26px!important}}
+#calendar-view .calendar-brand-lockup{padding-left:4px!important;overflow:visible!important}
+
+
+
+
+.topbar .brand-logo-image{width:36px!important;height:36px!important;border-radius:10px!important;object-fit:contain!important}
+.topbar .brand-home-copy{min-height:36px!important}
+#calendar-view .calendar-title-copy{position:relative!important}
+#calendar-view .calendar-period-button{display:inline-flex!important;align-items:center!important;gap:8px!important;max-width:100%!important;margin:0!important;padding:3px 7px 4px 0!important;border:0!important;border-radius:9px!important;background:transparent!important;color:var(--ink)!important;text-align:left!important}
+#calendar-view .calendar-period-icon{width:15px!important;height:15px!important;flex:0 0 15px!important;color:var(--faint)!important;opacity:.75!important}
+#calendar-view .calendar-period-button:hover{background:color-mix(in srgb,var(--accent-soft) 45%,transparent)!important;padding-left:7px!important}
+#calendar-view .calendar-period-button:focus-visible{outline:0!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 25%,transparent)!important;padding-left:7px!important}
+#calendar-view .calendar-date-picker{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;left:0!important;bottom:0!important}
+#calendar-view .calendar-mini h2{padding-bottom:9px!important;margin-bottom:7px!important;border-bottom:1px solid color-mix(in srgb,var(--line) 76%,transparent)!important}
+#calendar-view .calendar-mini h2 button{margin:0 0 0 2px!important}
+#calendar-view .calendar-mini-weekdays{margin-top:1px!important;margin-bottom:3px!important}
+#calendar-view .calendar-mini-grid{row-gap:4px!important}
+#calendar-view .calendar-mini-grid button.has-events:after{bottom:-1px!important;width:4px!important;height:4px!important;opacity:.8!important}
+#calendar-view .calendar-week-day .calendar-week-event{gap:3px!important;margin:4px 0!important;padding:6px 7px 7px!important;border:1px solid color-mix(in srgb,var(--event-color) 18%,var(--line))!important;border-left:2px solid color-mix(in srgb,var(--event-color) 78%,transparent)!important;border-radius:7px!important;background:color-mix(in srgb,var(--event-color) 3.5%,transparent)!important;box-shadow:none!important}
+#calendar-view .calendar-week-day .calendar-week-event:hover,#calendar-view .calendar-week-day .calendar-week-event:focus-visible{transform:none!important;background:color-mix(in srgb,var(--event-color) 7%,var(--surface))!important;border-color:color-mix(in srgb,var(--event-color) 34%,var(--line))!important}
+#calendar-view .week-event-dot{width:5px!important;height:5px!important;flex-basis:5px!important;box-shadow:none!important;opacity:.82!important}
+#calendar-view .calendar-week-event .event-time{font-weight:620!important;opacity:.72!important}
+#calendar-view .week-event-title{font-weight:570!important}
+#calendar-view .week-event-source{opacity:.68!important}
+#calendar-view #cal-content{touch-action:pan-y!important}
+@media (max-width:980px){
+  
+  
+  
+  #calendar-view .calendar-mini-grid button.has-events:after{width:12px!important;height:2px!important;bottom:-1px!important;border-radius:999px!important;opacity:.72!important}
+  #calendar-view .calendar-mini-grid button.is-today{width:25px!important;height:25px!important;justify-self:center!important;align-self:center!important}
+  #calendar-view .calendar-mini-grid button.is-today.has-events:after{background:var(--bg)!important;bottom:1px!important;width:9px!important}
+}
+.select-popup .custom-option{font-family:var(--sans)!important;font-weight:500!important;letter-spacing:0!important;font-variant-numeric:tabular-nums!important}
+.istante-cursor-dot,.istante-cursor-ring{z-index:2147483647!important}
+.istante-cursor-dot,.istante-cursor-ring{isolation:isolate!important}
+.station-manager-row{grid-template-columns:minmax(0,1fr) auto auto auto!important}
+.station-reorder{display:flex!important;align-items:center!important;gap:2px!important;margin-left:auto!important}
+.station-move-button{width:30px!important;height:30px!important;min-width:30px!important;border-radius:8px!important;color:var(--muted)!important}
+.station-move-button:disabled{opacity:.24!important}
+.station-move-glyph{font:500 15px/1 var(--sans)!important;transform:translateY(-1px)!important}
+@media (max-width:520px){.station-manager-row{gap:4px!important}.station-reorder{gap:1px!important}.station-move-button,.station-manager-row .icon-button{width:29px!important;height:29px!important;min-width:29px!important;flex-basis:29px!important}}
+.share-preview-wrap{position:relative!important;overflow:hidden!important}
+.share-generation-placeholder{display:grid!important;place-items:center!important;align-content:center!important;gap:12px!important;min-height:210px!important;width:100%!important;color:var(--muted)!important}
+.share-generation-placeholder[hidden]{display:none!important}
+.share-placeholder-card{position:relative!important;width:min(210px,55%)!important;aspect-ratio:1/1!important;border:1px solid color-mix(in srgb,var(--line) 72%,transparent)!important;border-radius:15px!important;background:color-mix(in srgb,var(--surface-2) 76%,transparent)!important;overflow:hidden!important;box-shadow:0 8px 34px color-mix(in srgb,var(--ink) 8%,transparent)!important}
+.share-placeholder-card:after{content:"";position:absolute!important;inset:-30% -60%!important;background:linear-gradient(105deg,transparent 35%,color-mix(in srgb,var(--accent-soft) 62%,transparent) 50%,transparent 65%)!important;animation:share-shimmer 1.15s ease-in-out infinite!important}
+.share-placeholder-card i,.share-placeholder-card span{position:absolute!important;left:14%!important;right:14%!important;border-radius:999px!important;background:color-mix(in srgb,var(--line) 60%,transparent)!important}
+.share-placeholder-card i:nth-child(1){top:25%!important;height:6px!important}.share-placeholder-card i:nth-child(2){top:34%!important;right:34%!important;height:6px!important}.share-placeholder-card i:nth-child(3){bottom:25%!important;left:35%!important;height:4px!important}.share-placeholder-card span{left:41%!important;right:41%!important;top:48%!important;height:18%!important;border-radius:50%!important;background:color-mix(in srgb,var(--accent) 28%,transparent)!important}
+.share-generation-placeholder small{font-size:11px!important;letter-spacing:.02em!important}
+@keyframes share-shimmer{0%{transform:translateX(-18%)}100%{transform:translateX(18%)}}
+@media (prefers-reduced-motion:reduce){.share-placeholder-card:after{animation:none!important;opacity:.45!important}}
+@media (max-height:700px),(max-width:900px) and (orientation:landscape){
+  .tour-card{padding:13px 17px 14px!important;max-height:calc(100dvh - 18px)!important;border-radius:16px!important}
+  .tour-topline{margin-bottom:5px!important}.tour-card .tour-note{font-size:12px!important;margin-bottom:6px!important}.tour-card h2{font-size:clamp(21px,4.1vh,26px)!important;margin-bottom:8px!important}#tour-copy{font-size:11.5px!important;line-height:1.45!important}.tour-navigation{margin-top:10px!important}.tour-navigation button{min-height:34px!important;padding-block:7px!important}.tour-choices{gap:6px!important}.tour-choice{min-height:34px!important;padding:7px 9px!important;font-size:11px!important}
+}
+.tour-inline-setup{display:grid!important;gap:8px!important;margin-top:9px!important;padding-top:9px!important;border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent)!important}
+.tour-setup-actions{display:flex!important;align-items:center!important;gap:7px!important;flex-wrap:wrap!important}
+.tour-setup-fields{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important}.tour-setup-fields input:first-child{grid-column:1/-1!important}.tour-setup-fields button{grid-column:1/-1!important}
+.tour-inline-setup input{min-height:37px!important;padding:8px 9px!important;border:1px solid var(--line)!important;border-radius:8px!important;background:var(--bg)!important;color:var(--ink)!important;font-size:12px!important}
+.tour-calendar-setup label{display:grid!important;gap:6px!important;font-size:10px!important;color:var(--muted)!important}
+@media (pointer:coarse){.tour-inline-setup input{font-size:16px!important}}
+:root{--viewport-index:1.7778;--viewport-w:1440;--viewport-h:810}
+body[data-viewport-shape="wide"] .tour-card{--tour-density:.92}
+.station-manager-row{display:flex!important;grid-template-columns:none!important}
+.station-manager-title{min-width:0!important;flex:1 1 auto!important}
+.station-reorder{flex:0 0 auto!important;margin-left:auto!important}
+#environment-line.tour-simulated-weather{opacity:1!important;visibility:visible!important}
+#environment-line.tour-simulated-weather #weather-line,#environment-line.tour-simulated-weather #solar-line{opacity:1!important}
+#environment-line.tour-simulated-weather #weather-place,#environment-line.tour-simulated-weather #solar-note{opacity:.72!important}
+@media (max-height:650px) and (orientation:landscape){
+  #timer-dialog .timer-content,#timer-dialog[data-state="running"] .timer-content,#timer-dialog[data-state="paused"] .timer-content,#timer-dialog[data-state="done"] .timer-content{min-height:360px!important;max-height:calc(100dvh - 132px)!important;overflow:auto!important}
+  #timer-dialog .timer-time-stage{min-height:238px!important;flex-basis:238px!important}
+  #timer-dialog .timer-session-options{min-height:94px!important}
+}
+.timer-step-button>span{position:relative!important;width:18px!important;height:18px!important;display:block!important;font-size:0!important;line-height:0!important;transform:none!important}
+.timer-step-button>span::before,.timer-step-button>span::after{content:"";position:absolute;left:50%;top:50%;width:14px;height:2px;border-radius:999px;background:currentColor;transform:translate(-50%,-50%)}
+#timer-duration-decrease>span::after{display:none}
+#timer-duration-increase>span::after{transform:translate(-50%,-50%) rotate(90deg)}
+
+html[data-font-style="excalifont"][data-font-scope="calendar"]{--serif:"Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,Georgia,serif}
+html[data-font-style="excalifont"][data-font-scope="all"] :is(.quote-wrap blockquote,.panel-head h2,.welcome-content h2,.tour-card h2,.goal-title,#goal-dialog-title,.library-phrase-text,.collection-card>strong,.timer-orbit strong){font-family:"Excalifont","Segoe Print","Bradley Hand",cursive!important}
+html[data-font-style="excalifont"] #calendar-view :is(.calendar-period-title,.calendar-mini h2 button,.calendar-day-date-number,.calendar-day-weekday,.calendar-day-month,.calendar-agenda-day h2,.week-event-title,.calendar-event){font-family:"Excalifont","Segoe Print","Bradley Hand",cursive!important}
+
+.text-size-range-wrap{padding:8px 5px!important}
+.text-size-range-wrap input[type="range"],#font-size-range{outline:0!important;box-shadow:none!important;border-radius:999px!important}
+.text-size-range-wrap input[type="range"]:focus:not(:focus-visible),#font-size-range:focus:not(:focus-visible){outline:0!important;box-shadow:none!important}
+.text-size-range-wrap input[type="range"]:focus-visible,#font-size-range:focus-visible{outline:2px solid color-mix(in srgb,var(--accent) 58%,transparent)!important;outline-offset:7px!important;box-shadow:none!important;border-radius:999px!important}
+.phrase-library-tools{display:grid!important;grid-template-columns:minmax(150px,.62fr) minmax(300px,1.55fr) auto!important;grid-template-areas:"current searchrow searchrow" "tabs tabs tabs"!important;align-items:center!important;gap:10px 16px!important}
+.library-current{grid-area:current!important;min-width:0!important;margin:0!important}
+.library-search-row{grid-area:searchrow!important;display:grid!important;grid-template-columns:minmax(300px,1fr) auto!important;align-items:center!important;gap:10px!important;width:100%!important}
+.library-search-row>.search-field{grid-column:1!important;max-width:none!important;width:100%!important}
+.library-search-actions{grid-column:2!important;justify-self:end!important}
+.library-tabs{grid-area:tabs!important;margin-top:0!important}
+#library-result-count,.library-result-count{display:none!important}
+.library-collections-button{white-space:nowrap!important}
+.collection-library-toolbar{display:grid!important;grid-template-columns:minmax(420px,1fr) auto!important;align-items:center!important;gap:18px!important;padding-inline:28px!important}
+.collection-library-toolbar>.search-field{width:100%!important;max-width:none!important}
+.collection-status-filters{justify-self:end!important;display:flex!important;gap:3px!important;padding:3px!important;border:1px solid var(--line)!important;border-radius:999px!important;background:color-mix(in srgb,var(--surface-2) 52%,transparent)!important}
+.collection-status-filters button{border-radius:999px!important;padding:7px 10px!important;min-height:32px!important;font-size:10.5px!important;color:var(--muted)!important}
+.collection-status-filters button[aria-pressed="true"]{background:var(--surface)!important;color:var(--ink)!important;box-shadow:0 1px 8px color-mix(in srgb,var(--ink) 7%,transparent)!important}
+.collection-import-link{opacity:.68!important;font-size:10px!important}
+.collection-import-link:hover,.collection-import-link:focus-visible{opacity:1!important}
+.collection-return-button{min-height:42px!important;padding:9px 16px!important;box-shadow:0 8px 24px color-mix(in srgb,var(--accent) 12%,transparent)!important}
+.share-preview-wrap{display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:minmax(210px,auto) auto!important;align-items:center!important;justify-items:center!important;overflow:hidden!important}
+#share-preview,.share-generation-placeholder{grid-column:1!important;grid-row:1!important;align-self:center!important;justify-self:center!important}
+#share-preview{max-width:100%!important;max-height:310px!important;object-fit:contain!important;z-index:1!important}
+.share-generation-placeholder{min-height:210px!important;height:100%!important;z-index:2!important;background:var(--surface)!important}
+#share-status{grid-column:1!important;grid-row:2!important;width:100%!important;margin-top:8px!important}
+.station-manager-row{position:relative!important;padding-left:14px!important}
+.station-manager-row.is-current:before{left:3px!important;top:10px!important;bottom:10px!important;width:2px!important}
+.station-manager-title{padding-left:3px!important}
+#timer-dialog .timer-time-stage{min-height:326px!important;flex-basis:326px!important}
+#timer-dialog .timer-running{width:100%!important;min-height:300px!important;display:grid!important;grid-template-rows:auto 1fr auto!important;place-items:center!important;align-content:center!important;gap:8px!important}
+#timer-dialog .timer-running[hidden]{display:none!important}
+#timer-dialog .timer-orbit{width:min(260px,68vw)!important;height:min(260px,68vw)!important;max-width:260px!important;max-height:260px!important}
+#timer-dialog .timer-orbit:after{transform-origin:4px calc(min(260px,68vw)/2 + 4px)!important}
+#timer-dialog[data-state="running"] .timer-time-stage,#timer-dialog[data-state="paused"] .timer-time-stage,#timer-dialog[data-state="done"] .timer-time-stage{min-height:326px!important;flex-basis:326px!important}
+@media (max-height:690px){#timer-dialog .timer-time-stage,#timer-dialog[data-state="running"] .timer-time-stage,#timer-dialog[data-state="paused"] .timer-time-stage,#timer-dialog[data-state="done"] .timer-time-stage{min-height:255px!important;flex-basis:255px!important}#timer-dialog .timer-running{min-height:235px!important}#timer-dialog .timer-orbit{width:205px!important;height:205px!important}}
+.virtual-timer{position:fixed;inset:0;z-index:12;background:var(--bg);color:var(--ink);overflow:hidden;transform:translateX(-100%);opacity:0;transition:transform .34s cubic-bezier(.22,.8,.24,1),opacity .28s ease;contain:layout paint;touch-action:pan-y}
+.view-timer .virtual-timer{transform:translateX(0);opacity:1}
+.view-timer #app-shell{transform:translateX(9%);opacity:0;pointer-events:none}
+
+
+
+
+
+
+
+
+
+@media (prefers-reduced-motion:reduce){.virtual-timer{transition:none!important;animation:none!important}}
+.view-dots button:disabled{cursor:default!important}.view-dots button:disabled span{width:17px!important;background:var(--accent)!important;opacity:1!important}
+#calendar-view .calendar-brand-lockup{padding-left:0!important;overflow:visible!important}
+
+
+
+
+
+
+#calendar-view .calendar-period-button,#calendar-view .calendar-period-button:hover,#calendar-view .calendar-period-button:focus-visible{transform:none!important;margin:0!important;translate:none!important}
+#cal-date-picker+.custom-trigger{display:none!important}
+#calendar-view .calendar-grid{grid-template-rows:repeat(var(--month-weeks,6),minmax(66px,1fr))!important}
+#calendar-view .calendar-mini h2{padding:0 2px 8px!important;margin-bottom:7px!important;border-bottom:1px solid color-mix(in srgb,var(--line) 88%,transparent)!important}
+#calendar-view .calendar-mini h2 button{margin:0!important}
+#calendar-view .calendar-mini-weekdays{margin-top:2px!important;margin-bottom:5px!important}
+#calendar-view .calendar-mini-grid{row-gap:5px!important}
+#calendar-view .calendar-mini-grid button.is-today{justify-self:center!important;align-self:center!important;transform:none!important}
+#calendar-view .calendar-week-date:hover,#calendar-view .calendar-week-date:focus-visible{transform:none!important;background:transparent!important}
+#calendar-view .calendar-week-day .calendar-week-event{padding:5px 6px 6px!important;margin:3px 0!important;border:0!important;border-left:2px solid color-mix(in srgb,var(--event-color) 55%,transparent)!important;border-radius:4px!important;background:transparent!important;box-shadow:none!important}
+#calendar-view .calendar-week-day .calendar-week-event:hover,#calendar-view .calendar-week-day .calendar-week-event:focus-visible{background:color-mix(in srgb,var(--event-color) 4%,transparent)!important;border-left-color:var(--event-color)!important}
+#calendar-view .calendar-week-event .event-time{opacity:.66!important;font-weight:560!important}
+#calendar-view .week-event-title{font-weight:520!important}.week-event-source{opacity:.55!important}
+.calendar-return-setting>.custom-trigger{font:500 12px/1.2 var(--sans)!important;letter-spacing:0!important;font-variant-numeric:tabular-nums!important}
+.control-popup.select-popup .custom-option{font:500 12px/1.2 var(--sans)!important;letter-spacing:0!important;font-variant-numeric:tabular-nums!important}
+.tour-timer-setup{display:grid;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
+.tour-inline-label{font-size:10px;color:var(--muted)}.tour-mini-tabs{display:flex;gap:3px;padding:3px;border:1px solid var(--line);border-radius:10px;background:color-mix(in srgb,var(--surface-2) 45%,transparent)}.tour-mini-tabs button{flex:1;min-height:32px;padding:6px 9px;border-radius:7px;color:var(--muted);font-size:10.5px}.tour-mini-tabs button[aria-pressed="true"]{background:var(--surface);color:var(--ink)}
+@media (max-width:980px),(max-height:720px){.tour-card{width:min(350px,calc(100vw - 24px))!important;padding:14px 17px!important}.tour-card h2{font-size:clamp(20px,3.6vh,27px)!important;margin-bottom:8px!important}.tour-card #tour-copy{font-size:11px!important;line-height:1.42!important}.tour-card .tour-note{font-size:12px!important;margin-bottom:6px!important}.tour-choice{font-size:10.5px!important;min-height:33px!important}.tour-inline-setup,.tour-timer-setup{margin-top:6px!important;padding-top:6px!important}}
+@media (max-width:980px){
+ 
+ #calendar-view .calendar-view-glyph{display:inline!important;font:600 10px/1 var(--sans)!important;letter-spacing:-.02em!important}
+ 
+ #calendar-view #cal-today{width:36px!important;min-width:36px!important;padding:0!important;display:grid!important;place-items:center!important}
+ #calendar-view .calendar-mini-grid button.has-events:after{width:12px!important;height:2px!important;bottom:-1px!important;border-radius:999px!important;left:50%!important;transform:translateX(-50%)!important}
+ #calendar-view .calendar-mini-grid button.is-today{width:26px!important;height:26px!important;min-width:26px!important;justify-self:center!important;align-self:center!important}
+ #calendar-view .calendar-mini-grid button.is-today.has-events:after{bottom:1px!important;width:9px!important;background:var(--bg)!important}
+}
+@media (max-width:760px){
+ .phrase-library-tools{grid-template-columns:minmax(120px,.7fr) minmax(0,1.3fr)!important;grid-template-areas:"current searchrow" "tabs tabs"!important;gap:8px!important}.library-search-row{grid-template-columns:minmax(0,1fr) auto!important}.library-collections-button span:last-child{display:none!important}.library-collections-button{width:38px!important;min-width:38px!important;padding:0!important;display:grid!important;place-items:center!important}
+ .collection-library-toolbar{grid-template-columns:1fr!important;gap:9px!important;padding-inline:20px!important}.collection-status-filters{justify-self:start!important;max-width:100%!important;overflow-x:auto!important}
+ 
+}
+#timer-dialog .timer-orbit:after{transform-origin:4px 134px!important}
+.view-timer .backdrop *{animation-play-state:paused!important}
+@media (max-width:520px){#timer-dialog .timer-orbit:after{transform-origin:4px 112px!important}}
+
+.about-wordmark-lockup{display:inline-flex;align-items:center;gap:14px}
+.about-wordmark-logo{width:34px;height:34px;display:block;filter:drop-shadow(0 12px 24px color-mix(in srgb,var(--accent) 18%,transparent))}
+.about-intro>p{margin-top:10px}
+.text-size-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}
+.collection-composer{border:1px solid color-mix(in srgb,var(--line) 78%,transparent);border-radius:24px;padding:18px 18px 16px;margin:8px 0 22px;background:color-mix(in srgb,var(--panel) 84%,transparent);display:grid;gap:16px}
+.collection-composer-head{display:grid;gap:6px}
+.collection-composer-head h4{margin:0;font-size:20px;letter-spacing:-.03em}
+.collection-composer-fields{display:grid;gap:14px}
+.collection-compose-add-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:end}
+.collection-compose-input textarea{min-height:94px;resize:vertical}
+.collection-compose-add{min-height:52px;white-space:nowrap}
+.collection-compose-list-wrap{border:1px solid color-mix(in srgb,var(--line) 70%,transparent);border-radius:18px;padding:14px 16px;background:color-mix(in srgb,var(--bg) 35%,transparent);display:grid;gap:12px}
+.collection-compose-status{display:flex;align-items:baseline;justify-content:space-between;gap:12px;color:var(--muted)}
+.collection-compose-status strong{font-size:15px;color:var(--ink)}
+.collection-compose-list{display:grid;gap:10px;margin:0;padding:0;list-style:none;max-height:260px;overflow:auto}
+.collection-compose-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;padding:12px 0;border-top:1px solid color-mix(in srgb,var(--line) 55%,transparent)}
+.collection-compose-item:first-child{border-top:0;padding-top:0}
+.collection-compose-copy{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start}
+.collection-compose-index{font-size:11px;letter-spacing:.14em;color:var(--muted);padding-top:4px}
+.collection-compose-copy p{margin:0;line-height:1.45}
+.collection-composer-actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center}
+#collection-compose-empty{margin:0}
+
+.chrome{transition:opacity .7s,transform .7s,filter .7s}
+.is-idle-pre:not(.has-panel) .chrome{opacity:.72;transform:translateY(1px) scale(.992);filter:saturate(.82)}
+.is-idle-pre:not(.has-panel) .bottom-bar.chrome{transform:translateY(2px) scale(.988)}
+.is-idle-pre:not(.has-panel) .toolbar{padding-inline:8px;border-radius:999px;background:color-mix(in srgb,var(--panel) 64%,transparent);box-shadow:0 10px 30px rgba(0,0,0,.08)}
+.is-idle-pre:not(.has-panel) .collection-link{opacity:.8}
+@media(max-width:740px){
+ .collection-compose-add-row{grid-template-columns:1fr}
+ .collection-compose-add{width:100%}
+ .collection-composer{padding:16px}
+ .about-wordmark-lockup{gap:12px}
+ .about-wordmark-logo{width:30px;height:30px}
+}
+
+.text-size-setting .binary-tabs,.text-size-tabs{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;width:100%!important;gap:4px!important}
+.text-size-setting .binary-tabs label,.text-size-setting .binary-tabs span{min-width:0!important;white-space:nowrap!important;text-align:center!important}
+@media (max-width:380px){.text-size-setting .binary-tabs span{font-size:10px!important}}
+html[data-font-style="excalifont"] :is(.quote-wrap blockquote,.quote-intro,.panel-head h2,.welcome-content h2,.tour-card h2,.goal-heading h2,#goal-dialog-title,.collection-card>strong,.library-phrase-text,.timer-orbit strong,.about-wordmark){font-family:"Excalifont","Segoe Print","Bradley Hand",cursive!important}
+html[data-calendar-font="excalifont"] #calendar-view :is(.calendar-period-title,.calendar-mini h2 button,.calendar-day-date-number,.calendar-day-weekday,.calendar-day-month,.calendar-agenda-day h2,.week-event-title,.calendar-event,.calendar-more){font-family:"Excalifont","Segoe Print","Bradley Hand",cursive!important}
+.calendar-excalifont-setting[hidden]{display:none!important}
+.about-wordmark-lockup{display:inline-flex!important;align-items:center!important;gap:14px!important}.about-wordmark-logo{width:38px!important;height:38px!important;object-fit:contain!important}.about-wordmark{line-height:1!important}
+.library-collections-intro{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:18px!important;padding-inline:28px!important}.collection-create-button{flex:none!important;min-height:40px!important;padding:8px 14px!important}
+.collection-library-toolbar{display:grid!important;grid-template-columns:minmax(360px,1fr) auto!important;align-items:center!important;gap:18px!important;padding:12px 28px!important}.collection-library-toolbar>.search-field{height:42px!important;margin:0!important}.collection-status-filters{height:42px!important;align-items:center!important;margin:0!important}
+#collection-library-inline .collection-card.is-selected{border-color:var(--accent)!important;background:color-mix(in srgb,var(--accent-soft) 34%,var(--surface))!important;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 42%,transparent)!important}
+.collection-create-panel,.collection-edit-panel{width:min(620px,calc(100vw - 24px))!important}.collection-create-content,.collection-edit-content{display:grid!important;gap:16px!important}.collection-edit-meta{margin-top:7px!important;color:var(--muted)!important;font-size:11px!important}.collection-edit-meta-form{padding-bottom:16px!important;border-bottom:1px solid var(--line)!important}.collection-edit-add{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:end!important;gap:12px!important}.collection-edit-add .primary-button{min-height:48px!important}.collection-edit-list-head{display:flex!important;justify-content:space-between!important;align-items:baseline!important;gap:12px!important;color:var(--muted)!important}.collection-edit-list{list-style:none!important;padding:0!important;margin:0!important;display:grid!important;gap:0!important;max-height:300px!important;overflow:auto!important}.collection-edit-item{display:grid!important;grid-template-columns:28px minmax(0,1fr) auto!important;gap:10px!important;align-items:start!important;padding:12px 0!important;border-top:1px solid color-mix(in srgb,var(--line) 62%,transparent)!important}.collection-edit-item>span{font-size:9px!important;color:var(--faint)!important;letter-spacing:.12em!important;padding-top:4px!important}.collection-edit-item p{margin:0!important;line-height:1.5!important}.collection-edit-item .icon-button{width:30px!important;height:30px!important}.collection-edit-panel .empty-state{padding:18px 0!important}
+@media (max-width:700px){.collection-library-toolbar{grid-template-columns:1fr!important;gap:10px!important}.collection-status-filters{justify-self:start!important;max-width:100%!important;overflow:auto!important}.library-collections-intro{padding-inline:20px!important}.collection-edit-add{grid-template-columns:1fr!important}.collection-edit-add .primary-button{width:100%!important}}
+#calendar-view .calendar-brand-lockup{padding:0!important;overflow:visible!important}
+
+
+
+
+
+.calendar-view-glyph{position:relative!important;width:18px!important;height:18px!important;display:inline-block!important;flex:0 0 18px!important;color:currentColor!important}
+.calendar-view-glyph::before,.calendar-view-glyph::after{content:"";position:absolute;inset:2px;border:1.4px solid currentColor;border-radius:3px;opacity:.9}
+.calendar-view-year::after{inset:5px;background:linear-gradient(90deg,transparent 43%,currentColor 44% 56%,transparent 57%),linear-gradient(0deg,transparent 43%,currentColor 44% 56%,transparent 57%);border:0;border-radius:0}
+.calendar-view-month::after{inset:5px 4px;border:0;border-radius:0;background:repeating-linear-gradient(0deg,currentColor 0 1px,transparent 1px 4px)}
+.calendar-view-week::after{inset:5px 4px;border:0;border-radius:0;background:repeating-linear-gradient(90deg,currentColor 0 1px,transparent 1px 3px)}
+.calendar-view-day::after{inset:5px;border-radius:2px;background:color-mix(in srgb,currentColor 12%,transparent)}
+.calendar-view-agenda::before{border:0;border-radius:0;inset:4px 2px;background:repeating-linear-gradient(0deg,currentColor 0 1px,transparent 1px 4px)}.calendar-view-agenda::after{display:none}
+#calendar-view .calendar-layout,#calendar-view .calendar-main,#calendar-view #cal-content{min-height:0!important;height:100%!important}
+#calendar-view .calendar-main{display:flex!important;flex-direction:column!important}#calendar-view #cal-content{flex:1 1 auto!important;display:flex!important;flex-direction:column!important}
+#calendar-view #cal-content>.calendar-month{flex:1 1 auto!important;height:100%!important;min-height:0!important}
+#calendar-view .calendar-grid{grid-template-rows:repeat(var(--month-weeks,6),minmax(0,1fr))!important;min-height:0!important;height:100%!important}
+#calendar-view .calendar-period-button,#calendar-view .calendar-period-button:hover,#calendar-view .calendar-period-button:focus-visible{padding:4px 7px!important;margin:0!important;transform:none!important;translate:none!important}
+#timer-dialog{width:min(560px,calc(100vw - 24px))!important}.timer-time-stage{min-height:360px!important;flex-basis:360px!important;height:360px!important}.timer-duration,.timer-running{height:100%!important;display:grid!important;place-items:center!important}.timer-range-picker.timer-dial-picker{position:relative!important;width:100%!important;display:grid!important;justify-items:center!important;gap:10px!important}.timer-dial-picker>#timer-duration-range{position:absolute!important;opacity:0!important;pointer-events:none!important;width:1px!important;height:1px!important}.timer-duration-dial{width:min(330px,72vw)!important;aspect-ratio:1!important;border-radius:50%!important;position:relative!important;touch-action:none!important;outline:none!important}.timer-duration-dial:focus-visible{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 28%,transparent)!important}.timer-dial-face{position:absolute!important;inset:0!important;border-radius:50%!important;background:radial-gradient(circle at 50% 46%,color-mix(in srgb,var(--surface-2) 58%,transparent),transparent 62%),conic-gradient(from 0deg,color-mix(in srgb,var(--line) 70%,transparent),color-mix(in srgb,var(--line) 18%,transparent),color-mix(in srgb,var(--line) 70%,transparent));box-shadow:inset 0 0 0 1px var(--line),0 24px 60px rgba(0,0,0,.08)!important}.timer-dial-face::before{content:"";position:absolute;inset:10px;border-radius:50%;background:var(--surface)!important;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--line) 72%,transparent)!important}.timer-dial-mark{position:absolute!important;left:50%!important;top:50%!important;width:28px!important;height:28px!important;margin:-14px!important;display:grid!important;place-items:center!important;border-radius:50%!important;font-size:10px!important;color:var(--muted)!important;z-index:3!important;transform:rotate(calc(var(--i,0)*30deg)) translateY(-140px) rotate(calc(var(--i,0)*-30deg))!important;cursor:pointer!important}.timer-dial-mark:nth-child(1){--i:1}.timer-dial-mark:nth-child(2){--i:2}.timer-dial-mark:nth-child(3){--i:3}.timer-dial-mark:nth-child(4){--i:4}.timer-dial-mark:nth-child(5){--i:5}.timer-dial-mark:nth-child(6){--i:6}.timer-dial-mark:nth-child(7){--i:7}.timer-dial-mark:nth-child(8){--i:8}.timer-dial-mark:nth-child(9){--i:9}.timer-dial-mark:nth-child(10){--i:10}.timer-dial-mark:nth-child(11){--i:11}.timer-dial-mark:nth-child(12){--i:12}.timer-dial-mark.active{background:var(--accent)!important;color:var(--bg)!important}.timer-dial-hand{position:absolute!important;left:50%!important;top:50%!important;width:2px!important;height:37%!important;background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent) 30%,transparent))!important;transform-origin:50% 100%!important;z-index:2!important;border-radius:2px!important}.timer-dial-knob{position:absolute!important;left:50%!important;top:50%!important;width:10px!important;height:10px!important;border-radius:50%!important;background:var(--accent)!important;transform:translate(-50%,-50%)!important;z-index:4!important}.timer-dial-face output{position:absolute!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;z-index:3!important;font:400 30px/1 var(--serif)!important;white-space:nowrap!important}.timer-dial-nudge{position:absolute!important;left:50%!important;bottom:8px!important;transform:translateX(-50%)!important;display:flex!important;align-items:center!important;gap:10px!important;z-index:5!important}.timer-dial-nudge>span{font-size:9px!important;color:var(--faint)!important;white-space:nowrap!important}.timer-dial-nudge .timer-step-button{width:34px!important;height:34px!important}.timer-dial-nudge .timer-step-button>span{display:block!important;position:relative!important;width:14px!important;height:14px!important}.timer-dial-nudge #timer-duration-decrease span::before,.timer-dial-nudge #timer-duration-increase span::before,.timer-dial-nudge #timer-duration-increase span::after{content:""!important;position:absolute!important;left:2px!important;right:2px!important;top:6px!important;height:1.5px!important;background:currentColor!important;border-radius:2px!important}.timer-dial-nudge #timer-duration-increase span::after{left:6px!important;right:auto!important;top:2px!important;bottom:2px!important;width:1.5px!important;height:auto!important}
+#timer-dialog .timer-running{min-height:360px!important}#timer-dialog .timer-orbit{width:min(340px,74vw)!important;height:min(340px,74vw)!important;max-width:340px!important;max-height:340px!important;margin:auto!important}#timer-dialog #timer-readout{font-size:clamp(58px,12vw,86px)!important}.timer-panel .timer-presets{margin-top:8px!important}
+.select-popup:not(.station-select-popup) .custom-option .option-title{font:500 12px/1.35 var(--sans)!important;letter-spacing:0!important;color:inherit!important}.select-popup:not(.station-select-popup) .custom-option{font-variant-numeric:normal!important}
+.tour-card{max-width:min(380px,calc(100vw - 24px))!important}.tour-card h2{font-size:clamp(22px,3vw,30px)!important;line-height:1.08!important}.tour-card #tour-copy,.tour-card .field-note{font-size:11px!important;line-height:1.45!important}.tour-choices{gap:6px!important}.tour-choice{min-height:34px!important;padding:7px 10px!important}.tour-inline-setup{margin-top:8px!important}.tour-weather-actions{display:grid!important;grid-template-columns:1fr auto!important;gap:8px!important}.tour-calendar-open-link{padding-inline:0!important;justify-content:flex-start!important}.tour-mini-tabs{margin-top:4px!important}
+@media (max-height:720px),(max-width:900px) and (orientation:landscape){.tour-card{max-height:calc(100dvh - 18px)!important;padding:14px 16px!important}.tour-card h2{font-size:21px!important;margin-block:5px 7px!important}.tour-card #tour-copy{font-size:10px!important;line-height:1.35!important}.tour-choice{font-size:10px!important;min-height:30px!important}.tour-inline-setup .field-note{font-size:9px!important}.tour-weather-actions{grid-template-columns:1fr 1fr!important}.tour-card .section-label{margin-bottom:3px!important}}
+
+@media (max-width:740px){.timer-time-stage{min-height:315px!important;flex-basis:315px!important;height:315px!important}.timer-duration-dial,#timer-dialog .timer-orbit{width:min(286px,76vw)!important;height:min(286px,76vw)!important}.timer-dial-mark{transform:rotate(calc(var(--i,0)*30deg)) translateY(-119px) rotate(calc(var(--i,0)*-30deg))!important}}
+#tour-dialog[data-step="2"] .tour-card{width:min(340px,calc(100vw - 24px))!important}#tour-dialog[data-step="3"] .tour-card,#tour-dialog[data-step="8"] .tour-card,#tour-dialog[data-step="9"] .tour-card{width:min(350px,calc(100vw - 24px))!important}
+.moon-phase-mini{border-radius:50%!important;filter:drop-shadow(0 2px 4px rgba(0,0,0,.20)) drop-shadow(0 0 5px color-mix(in srgb,var(--accent) 16%,transparent))!important}html[data-theme="light"] .moon-phase-mini{filter:drop-shadow(0 1px 3px rgba(42,46,55,.28))!important}
+#sky-body{overflow:visible!important}
+#sky-body .sky-moon-dark{opacity:.82}
+#sky-body .sky-moon-crater{fill:rgba(62,66,70,.20)}
+html[data-theme="dark"] #sky-body .sky-moon-crater{fill:rgba(36,39,43,.24)}
+#sky-body .sky-moon-edge{opacity:.28}
+#sky-body .sky-sun-rays{opacity:.5}
+
+
+
+
+@media (min-width:741px) and (min-height:760px){
+ #timer-dialog{width:min(620px,calc(100vw - 28px))!important}
+ #timer-dialog .timer-time-stage{min-height:430px!important;flex-basis:430px!important;height:430px!important}
+ #timer-dialog .timer-duration-dial{width:398px!important;height:398px!important}
+ #timer-dialog .timer-orbit{width:410px!important;height:410px!important;max-width:410px!important;max-height:410px!important}
+ #timer-dialog .timer-dial-mark{transform:rotate(calc(var(--i,0)*30deg)) translateY(-168px) rotate(calc(var(--i,0)*-30deg))!important}
+}
+#tour-dialog[data-step="2"] .tour-card{width:min(380px,calc(100vw - 24px))!important}
+.timer-dial-hand{top:auto!important;bottom:50%!important;transform-origin:50% 100%!important}
+#cal-date-picker + .custom-trigger{display:none!important}
+#calendar-view #cal-content>.calendar-month .calendar-grid{
+  grid-template-rows:repeat(var(--month-weeks,6),minmax(0,1fr))!important;
+  height:100%!important;
+  min-height:0!important;
+  align-content:stretch!important;
+}
+.collection-library-toolbar>.search-field{width:100%!important;max-width:none!important;min-width:0!important}
+#sky-body .sky-moon-halo{fill:#aebcb9;opacity:.075;filter:blur(4px)}
+html[data-theme="light"] #sky-body .sky-moon-halo{fill:#5f6a70;opacity:.09}
+.timer-dial-nudge{gap:12px!important;bottom:13px!important}
+.timer-dial-nudge>span{font-size:9px!important;letter-spacing:.08em!important;text-transform:uppercase!important;opacity:.64!important}
+.timer-step-button{width:34px!important;height:34px!important;min-width:34px!important}
+#timer-duration-increase>span::before,#timer-duration-decrease>span::before{content:""!important;position:absolute!important;left:5px!important;right:5px!important;top:50%!important;height:1.5px!important;background:currentColor!important;transform:translateY(-50%)!important;border-radius:2px!important}
+#timer-duration-increase>span::after{content:""!important;position:absolute!important;top:5px!important;bottom:5px!important;left:50%!important;width:1.5px!important;background:currentColor!important;transform:translateX(-50%)!important;border-radius:2px!important}
+#timer-duration-decrease>span::after{display:none!important}
+.timer-step-button>span{position:relative!important;width:14px!important;height:14px!important;font-size:0!important;display:block!important;transform:none!important}
+
+#sky-body .sky-moon-shadow-detail{fill:#131a1d;opacity:.30}
+html[data-theme="light"] #sky-body .sky-moon-shadow-detail{fill:#39444a;opacity:.20}
+@media (max-height:650px){
+  #timer-dialog{max-height:calc(100dvh - 14px)!important}
+  #timer-dialog .timer-content{padding-top:7px!important}
+  #timer-dialog .timer-time-stage,#timer-dialog[data-state="running"] .timer-time-stage,#timer-dialog[data-state="paused"] .timer-time-stage,#timer-dialog[data-state="done"] .timer-time-stage{min-height:250px!important;flex-basis:250px!important;height:250px!important}
+  #timer-dialog .timer-duration-dial{width:232px!important;height:232px!important}
+  #timer-dialog .timer-dial-mark{width:24px!important;height:24px!important;margin:-12px!important;font-size:9px!important;transform:rotate(calc(var(--i,0)*30deg)) translateY(-96px) rotate(calc(var(--i,0)*-30deg))!important}
+  #timer-dialog .timer-dial-face output{font-size:27px!important}
+  #timer-dialog .timer-running{min-height:240px!important}
+  #timer-dialog .timer-orbit{width:238px!important;height:238px!important;max-width:238px!important;max-height:238px!important}
+  #timer-dialog #timer-readout{font-size:52px!important}
+  #timer-dialog .timer-presets{margin:4px 0 8px!important}
+  #timer-dialog .timer-dial-nudge{bottom:8px!important}
+}
+@media (max-height:650px){
+  #timer-dialog .timer-duration-dial{width:210px!important;height:210px!important}
+  #timer-dialog .timer-dial-mark{transform:rotate(calc(var(--i,0)*30deg)) translateY(-86px) rotate(calc(var(--i,0)*-30deg))!important}
+  #timer-dialog .timer-orbit{width:218px!important;height:218px!important;max-width:218px!important;max-height:218px!important}
+}
+
+.visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important;border:0!important;pointer-events:none!important}
+.library-collections-intro{padding-bottom:6px!important}
+.collection-library-toolbar{display:grid!important;grid-template-columns:minmax(340px,1fr) auto!important;align-items:center!important;gap:18px!important;padding-top:8px!important;padding-bottom:12px!important}
+.collection-library-toolbar>.search-field{height:42px!important;margin:0!important;align-self:center!important}.collection-library-toolbar>.search-field input{height:42px!important}
+.collection-status-filters{height:42px!important;display:flex!important;align-items:center!important;justify-content:flex-end!important;margin:0!important}.collection-status-filters button{height:34px!important;display:inline-flex!important;align-items:center!important}
+.collection-library-footer{justify-content:space-between!important}.collection-library-file-actions{display:flex!important;align-items:center!important;gap:18px!important;min-width:0!important}.collection-library-file-actions .text-button{padding-inline:0!important;background:transparent!important;color:var(--muted)!important}.collection-library-file-actions .collection-create-button{color:var(--ink)!important}.collection-library-file-actions .icon{width:15px!important;height:15px!important}
+#collection-library-inline .collection-card.is-selected{border-color:color-mix(in srgb,var(--accent) 72%,var(--line))!important;background:color-mix(in srgb,var(--accent-soft) 38%,var(--surface))!important;box-shadow:0 8px 28px color-mix(in srgb,var(--ink) 4%,transparent)!important}
+#collection-library-inline .collection-card.is-selected::before{display:none!important;content:none!important}
+@media (max-width:700px){.collection-library-toolbar{grid-template-columns:1fr!important;gap:8px!important}.collection-status-filters{justify-content:flex-start!important;overflow-x:auto!important}.collection-library-footer{align-items:flex-start!important}.collection-library-file-actions{gap:12px!important;flex-wrap:wrap!important}}
+html[data-font-style="excalifont"]{--serif:"Excalifont","Segoe Print","Bradley Hand",cursive;--sans:"Excalifont","Segoe Print","Bradley Hand",cursive}
+html[data-font-style="excalifont"] :is(.section-label,.date-label,.progress-labels,.goal-date,.field-note,.local-note,.keyboard-note,.small-chip,.calendar-weekdays,.calendar-mini-weekdays,.timer-choice-label,.station-no,kbd,.brand-home-tagline){font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI",Arial,sans-serif!important}
+html[data-calendar-font="excalifont"] #calendar-view{--serif:"Excalifont","Segoe Print","Bradley Hand",cursive;--sans:"Excalifont","Segoe Print","Bradley Hand",cursive}
+html[data-calendar-font="excalifont"] #calendar-view :is(.calendar-weekdays,.calendar-mini-weekdays,.calendar-sync-status){font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI",Arial,sans-serif!important}
+.topbar .brand-home-link{display:flex!important;align-items:center!important;gap:10px!important;padding:3px 5px 3px 3px!important;line-height:1!important;border-radius:11px!important;text-decoration:none!important;color:var(--ink)!important;background:transparent!important;transform:none!important;overflow:visible!important}
+.topbar .brand-home-link:hover,.topbar .brand-home-link:focus-visible{background:color-mix(in srgb,var(--accent-soft) 72%,transparent)!important;transform:none!important;box-shadow:none!important}
+.topbar .brand-logo-image{display:block!important;width:36px!important;height:36px!important;flex:0 0 36px!important;border-radius:10px!important;object-fit:contain!important;margin:0!important;transform:none!important}
+.topbar .brand-home-copy{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;gap:2px!important;min-height:36px!important}
+.topbar .brand-home-name{font:500 23px/1 var(--serif)!important;letter-spacing:-.04em!important;color:var(--ink)!important}.topbar .brand-home-tagline{font:500 10px/1.15 -apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI",Arial,sans-serif!important;letter-spacing:.015em!important;color:var(--muted)!important;padding:0!important;white-space:nowrap!important}
+#calendar-view .calendar-shell{width:min(100%,1720px)!important;height:var(--view-h,100dvh)!important;margin:0 auto!important;padding:clamp(14px,1.9vw,28px) clamp(16px,2.7vw,44px) max(30px,calc(env(safe-area-inset-bottom) + 24px))!important;display:grid!important;grid-template-rows:auto minmax(0,1fr)!important;overflow:hidden!important}
+#calendar-view .calendar-heading-combined{display:grid!important;grid-template-columns:auto minmax(180px,.78fr) minmax(510px,1.45fr) auto!important;grid-template-areas:"brand title toolbar actions"!important;align-items:center!important;gap:12px 20px!important;min-width:0!important;margin:0!important;padding:0 0 13px!important;border-bottom:1px solid var(--line)!important}
+#calendar-view .calendar-brand-lockup{grid-area:brand!important;display:flex!important;align-items:center!important;min-width:max-content!important;padding:0!important;overflow:visible!important}
+#calendar-view .calendar-title-copy{grid-area:title!important;min-width:0!important;padding:0!important}.calendar-title-copy .section-label,#calendar-view .calendar-subtitle{display:none!important}
+#calendar-view .calendar-period-button,#calendar-view .calendar-period-button:hover,#calendar-view .calendar-period-button:focus-visible{display:inline-flex!important;align-items:center!important;gap:7px!important;max-width:100%!important;margin:0!important;padding:3px 7px 4px 0!important;border:0!important;border-radius:9px!important;background:transparent!important;color:var(--ink)!important;transform:none!important;translate:none!important;box-shadow:none!important}
+#calendar-view .calendar-period-title{font:400 calc(27px * var(--ui-scale,1))/1.08 var(--serif)!important;letter-spacing:-.025em!important;text-transform:capitalize!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+#calendar-view .calendar-period-icon{width:14px!important;height:14px!important;color:var(--faint)!important;opacity:.62!important}
+#calendar-view .calendar-toolbar{grid-area:toolbar!important;display:flex!important;flex-flow:row nowrap!important;align-items:center!important;justify-content:center!important;gap:10px!important;margin:0!important;padding:0!important;min-width:0!important;background:transparent!important;border:0!important;width:auto!important}
+.calendar-navigation .icon-button{width:36px!important;height:36px!important}.calendar-navigation .secondary-button{min-height:36px!important;padding:7px 12px!important}
+
+#calendar-view .calendar-views button{width:auto!important;min-width:0!important;min-height:34px!important;padding:7px 11px!important;border-radius:999px!important;background:transparent!important;color:var(--muted)!important;font-size:calc(12px * var(--ui-scale,1))!important;line-height:1!important;white-space:nowrap!important;display:inline-flex!important;align-items:center!important;justify-content:center!important}
+
+#calendar-view .calendar-view-glyph{display:none!important}.calendar-view-label{display:inline!important}
+#calendar-view .calendar-heading-actions{grid-area:actions!important;display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:7px!important;min-width:0!important}.calendar-heading-actions #cal-sidebar-toggle,.calendar-heading-actions #cal-manage{width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important;padding:0!important;border-radius:50%!important;display:inline-flex!important;align-items:center!important;justify-content:center!important}.calendar-heading-actions #cal-sidebar-toggle>span:not(.icon),.calendar-heading-actions #cal-manage>span:not(.icon){display:none!important}.calendar-heading-actions .icon{width:16px!important;height:16px!important}
+#calendar-view .calendar-layout{padding-top:15px!important;min-height:0!important;flex:1!important}.calendar-main{min-width:0!important;min-height:0!important}.calendar-main #cal-content{height:100%!important;min-height:0!important}
+#calendar-view #cal-content>.calendar-month{height:100%!important;min-height:0!important;border:1px solid var(--line)!important;border-radius:14px!important;overflow:hidden!important;display:flex!important;flex-direction:column!important;background:color-mix(in srgb,var(--surface) 22%,transparent)!important}
+#calendar-view .calendar-weekdays{flex:0 0 auto!important}.calendar-grid{flex:1 1 auto!important;height:auto!important;min-height:0!important;grid-template-rows:repeat(var(--month-weeks,6),minmax(0,1fr))!important;align-content:stretch!important}
+#calendar-view .calendar-cell{min-height:0!important;overflow:hidden!important}.calendar-more{margin-top:auto!important}
+#calendar-view .calendar-week-day .calendar-week-event{padding:6px 7px 7px!important;margin:4px 0!important;border:0!important;border-left:2px solid color-mix(in srgb,var(--event-color) 62%,transparent)!important;border-radius:6px!important;background:color-mix(in srgb,var(--event-color) 5%,var(--surface))!important;box-shadow:none!important;transform:none!important}
+#calendar-view .calendar-week-day .calendar-week-event:hover,#calendar-view .calendar-week-day .calendar-week-event:focus-visible{background:color-mix(in srgb,var(--event-color) 8%,var(--surface))!important;border-left-color:var(--event-color)!important;transform:none!important}
+#calendar-view .week-event-dot{display:none!important}.week-event-source{opacity:.58!important}.week-event-title{font-weight:550!important}
+#calendar-view .calendar-week-date{width:100%!important;padding:2px 2px 10px!important;margin:0 0 8px!important;border-bottom:1px solid color-mix(in srgb,var(--line) 90%,transparent)!important;border-radius:0!important}.calendar-week-date:hover,.calendar-week-date:focus-visible{transform:none!important;background:transparent!important}
+#timer-dialog{width:min(620px,calc(100vw - 28px))!important}.timer-content{padding-top:8px!important}.timer-time-stage{min-height:448px!important;flex-basis:448px!important;height:448px!important}.timer-range-picker.timer-dial-picker{width:100%!important;display:grid!important;justify-items:center!important;gap:7px!important}.timer-dial-shell{position:relative!important;width:min(520px,100%)!important;display:grid!important;place-items:center!important;margin:0 auto!important}.timer-duration-dial{width:min(430px,72vw)!important;height:min(430px,72vw)!important;max-width:430px!important;max-height:430px!important;z-index:2!important}.timer-step-side{position:absolute!important;top:50%!important;transform:translateY(-50%)!important;width:42px!important;height:42px!important;min-width:42px!important;z-index:5!important;border:1px solid var(--line)!important;background:var(--surface)!important;box-shadow:0 8px 24px rgba(0,0,0,.08)!important}.timer-step-side-left{left:4px!important}.timer-step-side-right{right:4px!important}.timer-step-side:active{transform:translateY(-50%) scale(.94)!important}.timer-dial-step-note{font:9px/1 -apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI",Arial,sans-serif!important;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)!important;margin-top:2px!important}.timer-dial-nudge{display:none!important}.timer-presets{position:relative!important;z-index:6!important;display:flex!important;gap:6px!important;margin:7px 0 12px!important;pointer-events:auto!important}.timer-presets button{position:relative!important;z-index:7!important;pointer-events:auto!important;cursor:pointer!important;min-height:34px!important}.timer-presets button.active{background:var(--accent-soft)!important;color:var(--accent)!important;border-color:color-mix(in srgb,var(--accent) 34%,var(--line))!important}
+#timer-dialog .timer-running{min-height:448px!important}.timer-orbit{width:min(438px,74vw)!important;height:min(438px,74vw)!important;max-width:438px!important;max-height:438px!important;margin:auto!important}.timer-session-options{padding:10px 0 2px!important;border:0!important}.timer-sound-choice{display:block!important}.timer-sound-segments{width:100%!important;margin:0!important}.timer-sound-segments button{min-height:42px!important}.timer-notice,.timer-preference-summary,.timer-source-description{margin:0!important}.timer-actions{margin-top:0!important}
+@media (max-width:740px){.timer-time-stage{min-height:330px!important;flex-basis:330px!important;height:330px!important}.timer-dial-shell{width:100%!important}.timer-duration-dial{width:min(292px,70vw)!important;height:min(292px,70vw)!important}.timer-step-side{width:36px!important;height:36px!important;min-width:36px!important}.timer-step-side-left{left:1px!important}.timer-step-side-right{right:1px!important}.timer-orbit{width:min(302px,72vw)!important;height:min(302px,72vw)!important;max-width:302px!important;max-height:302px!important}}
+@media (max-height:690px){#timer-dialog{max-height:calc(100dvh - 14px)!important}.timer-time-stage{min-height:260px!important;flex-basis:260px!important;height:260px!important}.timer-duration-dial{width:230px!important;height:230px!important}.timer-dial-mark{transform:rotate(calc(var(--i,0)*30deg)) translateY(-94px) rotate(calc(var(--i,0)*-30deg))!important}.timer-step-side{width:34px!important;height:34px!important;min-width:34px!important}.timer-orbit{width:238px!important;height:238px!important;max-width:238px!important;max-height:238px!important}.timer-presets{margin:3px 0 7px!important}.timer-session-options{padding-top:5px!important}}
+.celestial-sky[data-period="night"] #sky-stars{opacity:.96!important;filter:drop-shadow(0 0 2px rgba(220,235,232,.16))!important;mix-blend-mode:screen!important}.celestial-sky[data-period="day"] #sky-stars{opacity:0!important}
+#timer-dialog .timer-notice #timer-retry-audio{display:none!important}
+#timer-dialog .timer-session-options{display:block!important;visibility:visible!important;pointer-events:auto!important}
+#timer-dialog[data-state="running"] .timer-sound-segments button,#timer-dialog[data-state="paused"] .timer-sound-segments button,#timer-dialog[data-state="done"] .timer-sound-segments button{opacity:.72!important}
+.timer-step-side>span{position:relative!important;display:block!important;width:18px!important;height:18px!important;font-size:0!important;transform:none!important}
+.timer-step-side>span::before,.timer-step-side>span::after{content:""!important;position:absolute!important;left:50%!important;top:50%!important;width:14px!important;height:2px!important;border-radius:999px!important;background:currentColor!important;transform:translate(-50%,-50%)!important}
+.timer-step-side-left>span::after{display:none!important}
+.timer-step-side-right>span::after{display:block!important;transform:translate(-50%,-50%) rotate(90deg)!important}
+.timer-step-side-right>span::after{width:2px!important;height:14px!important;transform:translate(-50%,-50%)!important}
+@media (min-height:760px) and (min-width:741px){#timer-dialog .timer-content{max-height:none!important;overflow-y:hidden!important}}
+
+.timer-display-setting{display:none!important}
+#calendar-view .calendar-brand-lockup{display:flex!important;align-items:center!important;overflow:visible!important;min-width:max-content!important;padding:0!important;margin:0!important}
+#calendar-view .calendar-brand-lockup .brand-home-link{display:flex!important;align-items:center!important;gap:10px!important;padding:3px 5px 3px 3px!important;margin:0!important;border-radius:11px!important;overflow:visible!important;transform:none!important;background:transparent!important}
+#calendar-view .calendar-brand-lockup .brand-logo-image{width:36px!important;height:36px!important;flex:0 0 36px!important;border-radius:10px!important;margin:0!important;object-fit:contain!important}
+#calendar-view .calendar-brand-lockup .brand-home-copy{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;gap:2px!important;min-height:36px!important}
+#calendar-view .calendar-brand-lockup .brand-home-name{font:500 23px/1 var(--serif)!important;letter-spacing:-.04em!important;color:var(--ink)!important}
+#calendar-view .calendar-brand-lockup .brand-home-tagline{font:500 10px/1.15 -apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI",Arial,sans-serif!important;color:var(--muted)!important;padding:0!important;white-space:nowrap!important}
+#calendar-view .calendar-brand-lockup .brand-home-link:hover,#calendar-view .calendar-brand-lockup .brand-home-link:focus-visible{background:color-mix(in srgb,var(--accent-soft) 72%,transparent)!important;transform:none!important}
+#calendar-view .calendar-day-view{width:100%!important;max-width:1480px!important;margin:0 auto!important;padding-inline:clamp(2px,1.2vw,18px)!important}
+#calendar-view #cal-content>.calendar-agenda{width:100%!important;max-width:1520px!important;margin:0 auto!important;padding-inline:clamp(2px,1.2vw,18px)!important}
+#calendar-view .calendar-day-events,#calendar-view .calendar-agenda-day{width:100%!important}
+#sky-body{width:clamp(104px,7.4vw,154px)!important;height:clamp(104px,7.4vw,154px)!important;opacity:calc(.74 * var(--orb-opacity,1))!important;z-index:3!important}
+.celestial-sky[data-period=day] #sky-body{width:clamp(118px,8.2vw,176px)!important;height:clamp(118px,8.2vw,176px)!important;opacity:calc(.60 * var(--orb-opacity,1))!important}
+#sky-stars{z-index:1!important}.sky-halo{z-index:2!important}.sky-weather-veil{z-index:0!important}.sky-twilight{z-index:0!important}
+.celestial-sky[data-period=night] #sky-stars{opacity:1!important;mix-blend-mode:screen!important}
+@media (min-width:1800px) and (min-height:850px){#sky-body{width:166px!important;height:166px!important}.celestial-sky[data-period=day] #sky-body{width:190px!important;height:190px!important}}
+#timer-dialog{width:min(600px,calc(100vw - 24px))!important;max-height:calc(100dvh - 20px)!important}
+#timer-dialog .panel-head{padding-bottom:16px!important}.timer-modal-now{display:flex!important;align-items:baseline!important;gap:8px!important;margin-top:6px!important;color:var(--muted)!important}.timer-modal-now span{font:9px/1 -apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI",Arial,sans-serif!important;text-transform:uppercase!important;letter-spacing:.13em!important}.timer-modal-now strong{font:400 16px/1 var(--serif)!important;font-variant-numeric:tabular-nums!important;color:var(--ink)!important}
+#timer-dialog .timer-content{padding:8px 24px 4px!important;overflow-y:auto!important;overscroll-behavior:contain!important}
+#timer-dialog .timer-time-stage{height:382px!important;min-height:382px!important;flex-basis:382px!important}
+#timer-dialog .timer-duration,#timer-dialog .timer-running{height:100%!important;min-height:0!important;display:grid!important;place-items:center!important}
+#timer-dialog .timer-range-picker.timer-dial-picker{width:100%!important;display:grid!important;justify-items:center!important;gap:6px!important}
+#timer-dialog .timer-dial-shell{--dial-size:350px;--dial-radius:-146px;position:relative!important;width:min(500px,100%)!important;display:grid!important;place-items:center!important;margin:0 auto!important}
+#timer-dialog .timer-duration-dial{width:var(--dial-size)!important;height:var(--dial-size)!important;max-width:none!important;max-height:none!important;touch-action:none!important}
+#timer-dialog .timer-dial-face output{left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;width:62%!important;max-width:62%!important;text-align:center!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:clip!important;font-size:clamp(27px,5vw,38px)!important;line-height:1!important}
+#timer-dialog .timer-step-side{top:50%!important;width:44px!important;height:44px!important;min-width:44px!important;border-radius:50%!important;background:var(--surface)!important;border:1px solid var(--line)!important;box-shadow:0 10px 28px rgba(0,0,0,.10)!important}
+#timer-dialog .timer-step-side-left{left:18px!important}#timer-dialog .timer-step-side-right{right:18px!important}
+#timer-dialog .timer-orbit{width:350px!important;height:350px!important;max-width:350px!important;max-height:350px!important;margin:auto!important}
+#timer-dialog #timer-readout{font-size:clamp(42px,8vw,62px)!important;position:relative!important;z-index:2!important}
+#timer-dialog .timer-presets{display:flex!important;align-items:center!important;justify-content:center!important;gap:4px!important;margin:5px auto 12px!important;padding:4px!important;border:1px solid var(--line)!important;border-radius:999px!important;background:color-mix(in srgb,var(--surface-2) 48%,transparent)!important;width:max-content!important;max-width:100%!important;overflow-x:auto!important;scrollbar-width:none!important;touch-action:pan-x!important}
+#timer-dialog .timer-presets::-webkit-scrollbar{display:none!important}
+#timer-dialog .timer-presets button{min-width:58px!important;min-height:38px!important;padding:7px 10px!important;border-radius:999px!important;border:0!important;background:transparent!important;color:var(--muted)!important;font-size:11px!important;touch-action:manipulation!important}
+#timer-dialog .timer-presets button.active{background:var(--surface)!important;color:var(--ink)!important;box-shadow:0 2px 10px rgba(0,0,0,.08)!important}
+#timer-dialog .timer-session-options{padding:6px 0 2px!important}.timer-sound-segments button{min-height:44px!important;touch-action:manipulation!important}
+#timer-dialog .timer-actions{grid-template-columns:minmax(100px,.72fr) minmax(180px,1.65fr)!important;gap:10px!important;padding-top:14px!important}.timer-actions>.primary-button{min-height:50px!important}.timer-actions>.text-button{min-height:44px!important}
+#timer-dialog[data-state=running] .timer-time-stage,#timer-dialog[data-state=paused] .timer-time-stage,#timer-dialog[data-state=done] .timer-time-stage{height:382px!important;min-height:382px!important;flex-basis:382px!important}
+@media (max-width:740px){
+ #sky-body{width:72px!important;height:72px!important}.celestial-sky[data-period=day] #sky-body{width:84px!important;height:84px!important}
+ 
+ #calendar-view .calendar-day-view,#calendar-view #cal-content>.calendar-agenda{max-width:none!important;padding-inline:0!important}
+ #timer-dialog{width:min(540px,calc(100vw - 12px))!important;max-height:calc(100dvh - 10px)!important;border-radius:18px!important}
+ #timer-dialog .panel-head{padding:17px 16px 13px!important}#timer-dialog .panel-head h2{font-size:27px!important}
+ #timer-dialog .timer-content{padding:4px 14px 2px!important}
+ #timer-dialog .timer-time-stage,#timer-dialog[data-state=running] .timer-time-stage,#timer-dialog[data-state=paused] .timer-time-stage,#timer-dialog[data-state=done] .timer-time-stage{height:300px!important;min-height:300px!important;flex-basis:300px!important}
+ #timer-dialog .timer-dial-shell{--dial-size:268px;--dial-radius:-109px;width:100%!important}
+ #timer-dialog .timer-orbit{width:268px!important;height:268px!important;max-width:268px!important;max-height:268px!important}
+ #timer-dialog .timer-step-side{width:42px!important;height:42px!important;min-width:42px!important}.timer-step-side-left{left:0!important}.timer-step-side-right{right:0!important}
+ #timer-dialog .timer-presets{justify-content:flex-start!important;width:100%!important}.timer-presets button{min-width:54px!important;min-height:42px!important}
+ #timer-dialog .timer-actions{padding:11px 14px max(12px,env(safe-area-inset-bottom))!important}
+}
+@media (max-height:650px){
+ #timer-dialog .panel-head{padding-top:12px!important;padding-bottom:9px!important}.timer-modal-now{margin-top:3px!important}
+ #timer-dialog .timer-content{padding-top:1px!important}
+ #timer-dialog .timer-time-stage,#timer-dialog[data-state=running] .timer-time-stage,#timer-dialog[data-state=paused] .timer-time-stage,#timer-dialog[data-state=done] .timer-time-stage{height:238px!important;min-height:238px!important;flex-basis:238px!important}
+ #timer-dialog .timer-dial-shell{--dial-size:214px;--dial-radius:-84px}.timer-duration-dial{width:214px!important;height:214px!important}.timer-orbit{width:214px!important;height:214px!important;max-width:214px!important;max-height:214px!important}
+ #timer-dialog .timer-dial-mark{width:24px!important;height:24px!important;margin:-12px!important;font-size:9px!important}.timer-dial-face output{font-size:25px!important}
+ #timer-dialog .timer-presets{margin:2px auto 5px!important}.timer-presets button{min-height:36px!important}.timer-session-options{padding-top:2px!important}.timer-sound-segments button{min-height:38px!important;font-size:10px!important}.timer-actions{padding-top:8px!important}
+}
+@media (pointer:coarse){body.view-calendar #calendar-view::after{content:"";position:fixed;left:50%;bottom:max(6px,env(safe-area-inset-bottom));width:42px;height:3px;transform:translateX(-50%);border-radius:999px;background:color-mix(in srgb,var(--muted) 34%,transparent);pointer-events:none;z-index:8}}
+@media (max-width:740px), (max-height:650px){
+ .tour-card{max-width:calc(100vw - 16px)!important;max-height:calc(100dvh - 12px)!important;padding:12px 14px 13px!important;border-radius:17px!important}
+ .tour-topline{margin-bottom:5px!important}.tour-card .tour-note{font-size:11px!important;margin-bottom:5px!important}.tour-card h2{font-size:19px!important;line-height:1.08!important;margin:4px 0 7px!important}.tour-card #tour-copy{font-size:10.5px!important;line-height:1.38!important}.tour-navigation{margin-top:10px!important}.tour-navigation button{min-height:38px!important}.tour-choices{margin-top:9px!important;gap:5px!important}.tour-choice{min-height:34px!important;font-size:10px!important}
+ #tour-dialog[data-step="2"] .tour-card{width:min(310px,calc(100vw - 16px))!important}#tour-dialog[data-step="2"] .tour-note{display:none!important}#tour-dialog[data-step="2"] #tour-copy{line-height:1.32!important}
+}
+@media (pointer:coarse){dialog:not(.tour-layer) button:not(.timer-dial-mark),dialog:not(.tour-layer) .file-button{min-height:42px}input,select,textarea{font-size:16px}}
+@media (min-width:1000px){
+ #sky-body{width:clamp(145px,10vw,220px)!important;height:clamp(145px,10vw,220px)!important}
+ .celestial-sky[data-period=day] #sky-body{width:clamp(160px,11.2vw,240px)!important;height:clamp(160px,11.2vw,240px)!important}
+}
+@media (max-height:500px) and (orientation:landscape) and (pointer:coarse){
+ #timer-dialog{width:min(760px,calc(100vw - 12px))!important;height:calc(100dvh - 8px)!important;max-height:calc(100dvh - 8px)!important}
+ #timer-dialog .panel-head{padding:8px 16px 7px!important;min-height:70px!important;align-items:center!important}
+ #timer-dialog .panel-head .section-label{margin-bottom:3px!important;font-size:8px!important}
+ #timer-dialog .panel-head h2{font-size:25px!important;line-height:1!important}
+ #timer-dialog .timer-modal-now{margin-top:4px!important}.timer-modal-now span{font-size:8px!important}.timer-modal-now strong{font-size:14px!important}
+ #timer-dialog .timer-content{display:grid!important;grid-template-columns:minmax(250px,.9fr) minmax(280px,1.1fr)!important;grid-template-rows:auto 1fr!important;grid-template-areas:"stage presets" "stage options"!important;column-gap:18px!important;row-gap:7px!important;height:234px!important;min-height:234px!important;max-height:234px!important;padding:5px 16px!important;overflow:hidden!important}
+ #timer-dialog .timer-time-stage,#timer-dialog[data-state=running] .timer-time-stage,#timer-dialog[data-state=paused] .timer-time-stage,#timer-dialog[data-state=done] .timer-time-stage{grid-area:stage!important;height:224px!important;min-height:224px!important;flex-basis:224px!important;align-self:center!important}
+ #timer-dialog .timer-range-picker.timer-dial-picker{gap:2px!important}.timer-range-picker>.section-label{font-size:8px!important;margin-bottom:0!important}
+ #timer-dialog .timer-dial-shell{--dial-size:198px;--dial-radius:-78px;width:246px!important}
+ #timer-dialog .timer-duration-dial,#timer-dialog .timer-orbit{width:198px!important;height:198px!important;max-width:198px!important;max-height:198px!important}
+ #timer-dialog .timer-dial-mark{width:22px!important;height:22px!important;margin:-11px!important;font-size:8.5px!important}
+ #timer-dialog .timer-step-side{width:38px!important;height:38px!important;min-width:38px!important}.timer-step-side-left{left:0!important}.timer-step-side-right{right:0!important}
+ #timer-dialog .timer-dial-face output{font-size:27px!important;width:58%!important;max-width:58%!important}
+ #timer-dialog .timer-dial-step-note,#timer-dialog .timer-precise{display:none!important}
+ #timer-dialog .timer-presets{grid-area:presets!important;align-self:end!important;width:100%!important;max-width:none!important;justify-content:space-between!important;margin:0!important;padding:3px!important;overflow:visible!important}
+ #timer-dialog .timer-presets button{min-width:0!important;flex:1 1 0!important;min-height:36px!important;padding:6px 5px!important;font-size:10px!important}
+ #timer-dialog .timer-session-options{grid-area:options!important;align-self:start!important;padding:0!important;margin:0!important}
+ #timer-dialog .timer-sound-segments{width:100%!important}.timer-sound-segments button{min-height:42px!important;padding-inline:6px!important;font-size:10px!important}
+ #timer-dialog .timer-actions{min-height:58px!important;padding:8px 16px max(8px,env(safe-area-inset-bottom))!important;grid-template-columns:minmax(100px,.7fr) minmax(190px,1.5fr)!important}
+ #timer-dialog #timer-readout{font-size:42px!important}
+}
+@media (max-width:620px) and (max-height:500px) and (orientation:landscape) and (pointer:coarse){
+ #timer-dialog{width:calc(100vw - 6px)!important;height:calc(100dvh - 4px)!important;max-height:calc(100dvh - 4px)!important;border-radius:14px!important}
+ #timer-dialog .panel-head{min-height:57px!important;padding:6px 11px 5px!important}.timer-panel .panel-head .section-label{display:none!important}#timer-dialog .panel-head h2{font-size:22px!important}.timer-modal-now{margin-top:2px!important}
+ #timer-dialog .timer-content{grid-template-columns:minmax(205px,.86fr) minmax(230px,1.14fr)!important;column-gap:9px!important;height:204px!important;min-height:204px!important;max-height:204px!important;padding:2px 9px!important}
+ #timer-dialog .timer-time-stage,#timer-dialog[data-state=running] .timer-time-stage,#timer-dialog[data-state=paused] .timer-time-stage,#timer-dialog[data-state=done] .timer-time-stage{height:196px!important;min-height:196px!important;flex-basis:196px!important}
+ #timer-dialog .timer-dial-shell{--dial-size:174px;--dial-radius:-68px;width:212px!important}.timer-duration-dial,#timer-dialog .timer-orbit{width:174px!important;height:174px!important;max-width:174px!important;max-height:174px!important}
+ #timer-dialog .timer-step-side{width:34px!important;height:34px!important;min-width:34px!important}.timer-dial-face output{font-size:24px!important}
+ #timer-dialog .timer-presets button{font-size:9px!important;padding-inline:2px!important;min-height:32px!important}.timer-sound-segments button{min-height:36px!important;font-size:9px!important;padding-inline:3px!important}.timer-sound-segments .icon{width:14px!important;height:14px!important}
+ #timer-dialog .timer-actions{min-height:52px!important;padding:5px 10px max(5px,env(safe-area-inset-bottom))!important}.timer-actions>.primary-button{min-height:42px!important}.timer-actions>.text-button{min-height:38px!important}
+}
+
+#welcome-dialog,
+#welcome-dialog *,
+#tour-dialog,
+#tour-dialog *{
+  font-family:"Excalifont","Segoe Print","Bradley Hand",cursive!important
+}
+#welcome-dialog .icon,
+#tour-dialog .icon{font-family:inherit!important}
+#timer-dialog .timer-precise,
+#timer-dialog .timer-dial-step-note{display:none!important}
+#timer-dialog .timer-range-picker.timer-dial-picker{gap:8px!important}
+#timer-dialog .timer-dial-shell{
+  --dial-size:350px;
+  --dial-radius:-146px;
+  --timer-side:44px;
+  position:relative!important;
+  width:max-content!important;
+  max-width:100%!important;
+  display:grid!important;
+  grid-template-columns:var(--timer-side) var(--dial-size) var(--timer-side)!important;
+  align-items:center!important;
+  justify-items:center!important;
+  column-gap:18px!important;
+  margin:0 auto!important
+}
+#timer-dialog .timer-duration-dial{
+  grid-column:2!important;
+  width:var(--dial-size)!important;
+  height:var(--dial-size)!important;
+  min-width:var(--dial-size)!important;
+  min-height:var(--dial-size)!important;
+  max-width:none!important;
+  max-height:none!important;
+  aspect-ratio:1/1!important;
+  border-radius:50%!important;
+  box-sizing:border-box!important;
+  transform:none!important
+}
+#timer-dialog .timer-dial-face{
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  aspect-ratio:1/1!important;
+  box-sizing:border-box!important;
+  transform:none!important
+}
+#timer-dialog .timer-dial-mark{
+  transform:rotate(calc(var(--i,0)*30deg)) translateY(var(--dial-radius)) rotate(calc(var(--i,0)*-30deg))!important
+}
+#timer-dialog .timer-step-side{
+  position:static!important;
+  top:auto!important;
+  left:auto!important;
+  right:auto!important;
+  transform:none!important;
+  margin:0!important;
+  width:var(--timer-side)!important;
+  height:var(--timer-side)!important;
+  min-width:var(--timer-side)!important;
+  min-height:var(--timer-side)!important;
+  padding:0!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:50%!important;
+  border:1px solid var(--line)!important;
+  background:var(--surface)!important;
+  color:var(--muted)!important;
+  box-shadow:none!important;
+  transition:none!important
+}
+#timer-dialog .timer-step-side-left{grid-column:1!important;grid-row:1!important}
+#timer-dialog .timer-step-side-right{grid-column:3!important;grid-row:1!important}
+#timer-dialog .timer-step-side:hover,
+#timer-dialog .timer-step-side:focus,
+#timer-dialog .timer-step-side:active{
+  transform:none!important;
+  background:var(--surface)!important;
+  color:var(--muted)!important;
+  border-color:var(--line)!important;
+  box-shadow:none!important
+}
+#timer-dialog .timer-step-side:focus-visible{
+  outline:2px solid var(--accent)!important;
+  outline-offset:3px!important
+}
+#timer-dialog .timer-step-side>span,
+#timer-dialog .timer-step-side .icon{
+  position:static!important;
+  display:grid!important;
+  place-items:center!important;
+  width:20px!important;
+  height:20px!important;
+  font-size:0!important;
+  transform:none!important
+}
+#timer-dialog .timer-step-side>span::before,
+#timer-dialog .timer-step-side>span::after{display:none!important;content:none!important}
+#timer-dialog .timer-step-side .icon svg{
+  display:block!important;
+  width:20px!important;
+  height:20px!important;
+  margin:auto!important
+}
+#timer-dialog .timer-presets{
+  margin:24px auto 12px!important
+}
+#timer-dialog .timer-orbit{
+  --timer-orbit-dot-origin:179px;
+  width:var(--timer-orbit-size,350px)!important;
+  height:var(--timer-orbit-size,350px)!important;
+  min-width:var(--timer-orbit-size,350px)!important;
+  min-height:var(--timer-orbit-size,350px)!important;
+  max-width:var(--timer-orbit-size,350px)!important;
+  max-height:var(--timer-orbit-size,350px)!important;
+  aspect-ratio:1/1!important;
+  border-radius:50%!important;
+  box-sizing:border-box!important;
+  transform-origin:50% 50%!important
+}
+#timer-dialog .timer-orbit:before{inset:7px!important;border-radius:50%!important}
+#timer-dialog .timer-orbit:after{
+  left:50%!important;
+  top:-3px!important;
+  margin-left:-4px!important;
+  transform-origin:4px var(--timer-orbit-dot-origin)!important
+}
+#toast-host{
+  inset:max(14px,env(safe-area-inset-top)) 0 auto!important;
+  padding:0 max(16px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left))!important
+}
+
+@media(max-width:740px){
+  #timer-dialog .timer-dial-shell{
+    --dial-size:258px;
+    --dial-radius:-105px;
+    --timer-side:42px;
+    column-gap:12px!important
+  }
+  #timer-dialog{--timer-orbit-size:268px} #timer-dialog .timer-orbit{--timer-orbit-dot-origin:138px}
+  #timer-dialog .timer-presets{margin-top:20px!important}
+}
+
+@media(max-width:390px){
+  #timer-dialog .timer-dial-shell{
+    --dial-size:218px;
+    --dial-radius:-88px;
+    --timer-side:38px;
+    column-gap:8px!important
+  }
+  #timer-dialog{--timer-orbit-size:218px} #timer-dialog .timer-orbit{--timer-orbit-dot-origin:113px}
+}
+
+@media(max-width:340px){
+  #timer-dialog .timer-dial-shell{
+    --dial-size:180px;
+    --dial-radius:-72px;
+    --timer-side:32px;
+    column-gap:5px!important
+  }
+  #timer-dialog{--timer-orbit-size:190px} #timer-dialog .timer-orbit{--timer-orbit-dot-origin:99px}
+  #timer-dialog .timer-presets{margin-top:16px!important}
+}
+
+@media(max-height:650px){
+  #timer-dialog .timer-dial-shell{
+    --dial-size:210px;
+    --dial-radius:-84px;
+    --timer-side:36px;
+    column-gap:10px!important
+  }
+  #timer-dialog{--timer-orbit-size:214px} #timer-dialog .timer-orbit{--timer-orbit-dot-origin:111px}
+  #timer-dialog .timer-presets{margin:15px auto 6px!important}
+}
+
+@media(max-height:500px) and (orientation:landscape) and (pointer:coarse){
+  #timer-dialog .timer-dial-shell{
+    --dial-size:174px;
+    --dial-radius:-68px;
+    --timer-side:32px;
+    column-gap:6px!important
+  }
+  #timer-dialog .timer-presets{margin:0!important}
+}
+
+@media(max-width:620px) and (max-height:500px) and (orientation:landscape) and (pointer:coarse){
+  #timer-dialog .timer-dial-shell{
+    --dial-size:145px;
+    --dial-radius:-56px;
+    --timer-side:30px;
+    column-gap:0!important
+  }
+}
+@media(max-width:340px) and (orientation:portrait){
+  #timer-dialog .timer-dial-shell{
+    --dial-size:180px;
+    --dial-radius:-72px;
+    --timer-side:32px;
+    column-gap:5px!important
+  }
+  #timer-dialog{--timer-orbit-size:190px} #timer-dialog .timer-orbit{--timer-orbit-dot-origin:99px}
+  #timer-dialog .timer-presets{margin-top:14px!important}
+}
+
+#timer-dialog .timer-orbit{
+  --timer-second-angle:0deg;
+  transform:none!important;
+  transition:none!important;
+}
+#timer-dialog .timer-orbit[data-state="running"]{
+  animation:timer-halo-breathe 3.6s ease-in-out infinite!important;
+  filter:none!important;
+}
+#timer-dialog .timer-orbit[data-state="paused"]{
+  animation:none!important;
+  filter:saturate(.62)!important;
+}
+#timer-dialog .timer-orbit[data-state="running"]:after,
+#timer-dialog .timer-orbit[data-state="paused"]:after{
+  opacity:1!important;
+  animation:none!important;
+  transform:rotate(var(--timer-second-angle,0deg))!important;
+  transition:transform .5s linear!important;
+  box-shadow:0 0 0 5px color-mix(in srgb,var(--accent) 12%,transparent),0 0 18px color-mix(in srgb,var(--accent) 44%,transparent)!important;
+}
+#timer-dialog .timer-orbit[data-state="done"]:after{opacity:0!important;animation:none!important}
+@keyframes timer-halo-breathe{
+  0%,100%{box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 5%,transparent),0 18px 58px color-mix(in srgb,var(--bg) 70%,transparent)!important}
+  50%{box-shadow:0 0 0 15px color-mix(in srgb,var(--accent) 12%,transparent),0 24px 74px color-mix(in srgb,var(--accent) 14%,transparent)!important}
+}
+@media(prefers-reduced-motion:reduce){
+  #timer-dialog .timer-orbit[data-state="running"]{animation:none!important}
+  #timer-dialog .timer-orbit:after{transition:none!important}
+}
+#timer-dialog .timer-duration-dial,
+#timer-dialog .timer-dial-mark,
+#timer-dialog .timer-presets button{-webkit-tap-highlight-color:transparent!important}
+#timer-dialog .timer-dial-mark.active{
+  background:transparent!important;
+  color:var(--accent)!important;
+  box-shadow:none!important;
+  outline:0!important;
+}
+#tour-dialog #tour-copy{max-width:none!important}
+
+#timer-dialog .timer-dial-pointer{
+  --timer-select-angle:150deg;
+  position:absolute!important;
+  left:50%!important;
+  top:50%!important;
+  width:14px!important;
+  height:14px!important;
+  margin:-7px!important;
+  border-radius:50%!important;
+  background:var(--accent)!important;
+  box-shadow:0 0 0 5px color-mix(in srgb,var(--accent) 13%,transparent),0 0 18px color-mix(in srgb,var(--accent) 46%,transparent)!important;
+  transform:rotate(var(--timer-select-angle)) translateY(calc(var(--dial-radius) + 16px))!important;
+  transform-origin:50% 50%!important;
+  transition:transform .16s ease!important;
+  pointer-events:none!important;
+  z-index:4!important
+}
+#timer-dialog .timer-dial-mark.active{
+  background:transparent!important;
+  color:var(--accent)!important;
+  box-shadow:none!important
+}
+#timer-dialog:not([data-state="idle"]) #timer-duration-decrease,
+#timer-dialog:not([data-state="idle"]) #timer-duration-increase,
+#timer-dialog:not([data-state="idle"]) #timer-duration-display{
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important
+}
+#timer-dialog .timer-orbit[data-state="running"]{
+  animation:timer-halo-breathe-316 3.2s ease-in-out infinite!important;
+  filter:none!important
+}
+#timer-dialog .timer-orbit[data-state="paused"]{animation:none!important}
+@keyframes timer-halo-breathe-316{
+  0%,100%{
+    box-shadow:0 0 0 7px color-mix(in srgb,var(--accent) 8%,transparent),0 0 26px color-mix(in srgb,var(--accent) 18%,transparent),0 18px 58px color-mix(in srgb,var(--bg) 68%,transparent)!important
+  }
+  50%{
+    box-shadow:0 0 0 22px color-mix(in srgb,var(--accent) 18%,transparent),0 0 54px color-mix(in srgb,var(--accent) 31%,transparent),0 24px 76px color-mix(in srgb,var(--accent) 18%,transparent)!important
+  }
+}
+body.is-touring #app-shell,
+body.is-touring #calendar-view,
+body.is-touring .chrome{
+  transition:none!important
+}
+body.is-touring .tour-step-transition{animation:none!important}
+#tour-dialog.tour-virtual-target .tour-outline{
+  stroke-dasharray:9 7!important;
+  stroke-width:1.65!important;
+  opacity:.96!important
+}
+@media(prefers-reduced-motion:reduce){
+  #timer-dialog .timer-dial-pointer{transition:none!important}
+  #timer-dialog .timer-orbit[data-state="running"]{animation:none!important}
+}
+
+#timer-dialog{
+  --timer-halo-main:color-mix(in srgb,var(--accent-strong) 88%,#c4a57e 12%);
+  --timer-halo-warm:color-mix(in srgb,var(--accent) 76%,#aa8068 24%)
+}
+html[data-theme="light"] #timer-dialog{
+  --timer-halo-main:color-mix(in srgb,var(--accent-strong) 91%,#9c7e60 9%);
+  --timer-halo-warm:color-mix(in srgb,var(--accent) 84%,#a57f65 16%)
+}
+
+#timer-dialog .timer-running{
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:visible!important
+}
+#timer-dialog .timer-running::before{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:calc(var(--timer-orbit-size,350px) + 26px);
+  height:calc(var(--timer-orbit-size,350px) + 26px);
+  border-radius:50%;
+  pointer-events:none;
+  z-index:0;
+  opacity:0;
+  transform:translate(-50%,-50%) scale(.93);
+  background:
+    radial-gradient(circle at 50% 50%,
+      transparent 48%,
+      color-mix(in srgb,var(--timer-halo-main) 22%,transparent) 54%,
+      color-mix(in srgb,var(--timer-halo-main) 46%,transparent) 60%,
+      color-mix(in srgb,var(--timer-halo-warm) 27%,transparent) 68%,
+      transparent 78%);
+  filter:blur(7px);
+  will-change:transform,opacity,filter
+}
+#timer-dialog .timer-orbit{
+  position:relative!important;
+  z-index:1!important
+}
+#timer-dialog .timer-orbit[data-state="running"]{
+  animation:timer-ring-breathe-317 3.15s cubic-bezier(.45,0,.55,1) infinite!important
+}
+#timer-dialog[data-state="running"] .timer-running::before{
+  animation:timer-halo-breathe-317 3.15s cubic-bezier(.45,0,.55,1) infinite!important
+}
+#timer-dialog[data-state="paused"] .timer-running::before{
+  opacity:.25!important;
+  transform:translate(-50%,-50%) scale(.98)!important
+}
+#timer-dialog[data-state="done"] .timer-running::before{opacity:0!important}
+
+@keyframes timer-halo-breathe-317{
+  0%,100%{
+    opacity:.48;
+    transform:translate(-50%,-50%) scale(.93);
+    filter:blur(8px)
+  }
+  46%,54%{
+    opacity:1;
+    transform:translate(-50%,-50%) scale(1.075);
+    filter:blur(12px)
+  }
+}
+@keyframes timer-ring-breathe-317{
+  0%,100%{
+    box-shadow:
+      0 0 0 5px color-mix(in srgb,var(--timer-halo-main) 13%,transparent),
+      0 0 26px color-mix(in srgb,var(--timer-halo-main) 30%,transparent),
+      0 0 54px color-mix(in srgb,var(--timer-halo-warm) 18%,transparent)!important
+  }
+  46%,54%{
+    box-shadow:
+      0 0 0 14px color-mix(in srgb,var(--timer-halo-main) 26%,transparent),
+      0 0 44px color-mix(in srgb,var(--timer-halo-main) 54%,transparent),
+      0 0 82px color-mix(in srgb,var(--timer-halo-warm) 34%,transparent)!important
+  }
+}
+#timer-dialog #timer-presets,
+#timer-dialog .timer-presets{display:none!important}
+#timer-dialog .timer-content{
+  padding-bottom:5px!important
+}
+#timer-dialog .timer-session-options{
+  margin-top:2px!important;
+  padding-top:5px!important
+}
+@media (pointer:coarse) and (min-width:600px) and (max-width:1100px){
+  #timer-dialog{
+    width:min(590px,calc(100vw - 20px))!important;
+    max-height:calc(100dvh - 18px)!important
+  }
+  #timer-dialog .panel-head{padding:17px 20px 13px!important}
+  #timer-dialog .timer-content{padding:5px 20px 3px!important;overflow-y:hidden!important}
+  #timer-dialog .timer-time-stage,
+  #timer-dialog[data-state="running"] .timer-time-stage,
+  #timer-dialog[data-state="paused"] .timer-time-stage,
+  #timer-dialog[data-state="done"] .timer-time-stage{
+    height:326px!important;
+    min-height:326px!important;
+    flex-basis:326px!important
+  }
+  #timer-dialog .timer-dial-shell{
+    --dial-size:292px;
+    --dial-radius:-119px;
+    --timer-side:42px
+  }
+  #timer-dialog{--timer-orbit-size:292px}
+  #timer-dialog .timer-orbit{--timer-orbit-dot-origin:150px}
+  #timer-dialog .timer-actions{padding-top:10px!important;padding-bottom:max(10px,env(safe-area-inset-bottom))!important}
+}
+@media (pointer:coarse) and (max-height:700px){
+  #timer-dialog .panel-head{padding-top:12px!important;padding-bottom:9px!important}
+  #timer-dialog .timer-content{padding-top:2px!important}
+  #timer-dialog .timer-time-stage,
+  #timer-dialog[data-state="running"] .timer-time-stage,
+  #timer-dialog[data-state="paused"] .timer-time-stage,
+  #timer-dialog[data-state="done"] .timer-time-stage{
+    height:246px!important;
+    min-height:246px!important;
+    flex-basis:246px!important
+  }
+  #timer-dialog .timer-dial-shell{
+    --dial-size:220px;
+    --dial-radius:-87px;
+    --timer-side:36px
+  }
+  #timer-dialog{--timer-orbit-size:220px}
+  #timer-dialog .timer-orbit{--timer-orbit-dot-origin:113px}
+  #timer-dialog .timer-session-options{padding-top:2px!important}
+  #timer-dialog .timer-actions{padding-top:7px!important;padding-bottom:max(7px,env(safe-area-inset-bottom))!important}
+}
+@media(max-height:500px) and (orientation:landscape) and (pointer:coarse){
+  #timer-dialog .timer-content{
+    grid-template-rows:1fr!important;
+    grid-template-areas:"stage options"!important;
+    align-items:center!important;
+    row-gap:0!important
+  }
+  #timer-dialog .timer-session-options{
+    grid-area:options!important;
+    align-self:center!important
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  #timer-dialog .timer-orbit[data-state="running"],
+  #timer-dialog[data-state="running"] .timer-running::before{animation:none!important}
+  #timer-dialog[data-state="running"] .timer-running::before{
+    opacity:.58!important;
+    transform:translate(-50%,-50%) scale(1)!important
+  }
+}
+@media(max-height:500px) and (orientation:landscape) and (pointer:coarse){
+  #timer-dialog .timer-time-stage,
+  #timer-dialog[data-state="running"] .timer-time-stage,
+  #timer-dialog[data-state="paused"] .timer-time-stage,
+  #timer-dialog[data-state="done"] .timer-time-stage{
+    height:224px!important;
+    min-height:224px!important;
+    flex-basis:224px!important
+  }
+  #timer-dialog .timer-dial-shell{
+    --dial-size:198px;
+    --dial-radius:-78px;
+    --timer-side:38px
+  }
+  #timer-dialog{--timer-orbit-size:198px}
+  #timer-dialog .timer-orbit{--timer-orbit-dot-origin:103px}
+}
+@media(max-width:620px) and (max-height:500px) and (orientation:landscape) and (pointer:coarse){
+  #timer-dialog .timer-time-stage,
+  #timer-dialog[data-state="running"] .timer-time-stage,
+  #timer-dialog[data-state="paused"] .timer-time-stage,
+  #timer-dialog[data-state="done"] .timer-time-stage{
+    height:196px!important;
+    min-height:196px!important;
+    flex-basis:196px!important
+  }
+  #timer-dialog .timer-dial-shell{
+    --dial-size:174px;
+    --dial-radius:-68px;
+    --timer-side:34px
+  }
+  #timer-dialog{--timer-orbit-size:174px}
+  #timer-dialog .timer-orbit{--timer-orbit-dot-origin:91px}
+}
+
+@media (pointer:coarse) and (min-width:600px) and (max-width:1100px) and (min-height:701px){
+  #timer-dialog{
+    width:min(680px,calc(100vw - 20px))!important;
+    max-height:calc(100dvh - 18px)!important
+  }
+  #timer-dialog .panel-head{
+    padding:20px 24px 15px!important
+  }
+  #timer-dialog .timer-content,
+  #timer-dialog[data-state="running"] .timer-content,
+  #timer-dialog[data-state="paused"] .timer-content,
+  #timer-dialog[data-state="done"] .timer-content{
+    min-height:0!important;
+    height:auto!important;
+    padding:10px 24px 8px!important;
+    overflow:hidden!important
+  }
+  #timer-dialog .timer-time-stage,
+  #timer-dialog[data-state="running"] .timer-time-stage,
+  #timer-dialog[data-state="paused"] .timer-time-stage,
+  #timer-dialog[data-state="done"] .timer-time-stage{
+    height:432px!important;
+    min-height:432px!important;
+    flex:0 0 432px!important
+  }
+  #timer-dialog .timer-range-picker.timer-dial-picker{
+    gap:11px!important
+  }
+  #timer-dialog .timer-dial-shell{
+    --dial-size:390px;
+    --dial-radius:-163px;
+    --timer-side:46px;
+    column-gap:18px!important
+  }
+  #timer-dialog .timer-dial-mark{
+    width:30px!important;
+    height:30px!important;
+    margin:-15px!important;
+    font-size:11px!important
+  }
+  #timer-dialog .timer-dial-face output{
+    font-size:clamp(38px,6.1vw,48px)!important
+  }
+  #timer-dialog{
+    --timer-orbit-size:390px
+  }
+  #timer-dialog .timer-orbit{
+    --timer-orbit-dot-origin:199px
+  }
+  #timer-dialog .timer-session-options{
+    min-height:0!important;
+    margin:8px 0 0!important;
+    padding:8px 0 4px!important
+  }
+  #timer-dialog .timer-sound-segments button{
+    min-height:52px!important;
+    font-size:12px!important
+  }
+  #timer-dialog .timer-actions{
+    min-height:72px!important;
+    padding:12px 24px max(12px,env(safe-area-inset-bottom))!important
+  }
+  #timer-dialog .timer-actions>.primary-button{
+    min-height:52px!important;
+    font-size:13px!important
+  }
+}
+@media (pointer:coarse) and (min-width:600px) and (max-width:1100px) and (min-height:621px) and (max-height:700px) and (orientation:portrait){
+  #timer-dialog{
+    width:min(640px,calc(100vw - 16px))!important
+  }
+  #timer-dialog .timer-content,
+  #timer-dialog[data-state="running"] .timer-content,
+  #timer-dialog[data-state="paused"] .timer-content,
+  #timer-dialog[data-state="done"] .timer-content{
+    min-height:0!important;
+    height:auto!important;
+    overflow:hidden!important
+  }
+  #timer-dialog .timer-time-stage,
+  #timer-dialog[data-state="running"] .timer-time-stage,
+  #timer-dialog[data-state="paused"] .timer-time-stage,
+  #timer-dialog[data-state="done"] .timer-time-stage{
+    height:300px!important;
+    min-height:300px!important;
+    flex:0 0 300px!important
+  }
+  #timer-dialog .timer-dial-shell{
+    --dial-size:276px;
+    --dial-radius:-113px;
+    --timer-side:40px
+  }
+  #timer-dialog{
+    --timer-orbit-size:276px
+  }
+  #timer-dialog .timer-orbit{
+    --timer-orbit-dot-origin:142px
+  }
+  #timer-dialog .timer-session-options{
+    min-height:0!important;
+    margin-top:4px!important
+  }
+}
+
+#timer-dialog .timer-orbit{
+  display:grid!important;
+  place-items:center!important;
+  align-content:center!important;
+  gap:8px!important
+}
+#timer-dialog .timer-countdown-label{
+  position:relative!important;
+  z-index:2!important;
+  display:block!important;
+  margin:0!important;
+  color:var(--accent)!important;
+  font:700 9px/1.1 var(--sans)!important;
+  letter-spacing:.14em!important;
+  text-transform:uppercase!important;
+  opacity:.9!important;
+  pointer-events:none!important
+}
+#timer-dialog #timer-readout{
+  margin:0!important;
+  font-variant-numeric:tabular-nums!important
+}
+#timer-dialog[data-state="done"] .timer-countdown-label{opacity:.5!important}
+@media (min-width:600px) and (max-width:1500px) and (min-height:840px){
+  html[data-touch-capable="true"] #timer-dialog{
+    width:min(780px,calc(100vw - 28px))!important;
+    max-height:calc(100dvh - 20px)!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .panel-head{
+    padding:22px 28px 16px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-content,
+  html[data-touch-capable="true"] #timer-dialog[data-state="running"] .timer-content,
+  html[data-touch-capable="true"] #timer-dialog[data-state="paused"] .timer-content,
+  html[data-touch-capable="true"] #timer-dialog[data-state="done"] .timer-content{
+    min-height:0!important;
+    height:auto!important;
+    padding:10px 28px 8px!important;
+    overflow:hidden!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-time-stage,
+  html[data-touch-capable="true"] #timer-dialog[data-state="running"] .timer-time-stage,
+  html[data-touch-capable="true"] #timer-dialog[data-state="paused"] .timer-time-stage,
+  html[data-touch-capable="true"] #timer-dialog[data-state="done"] .timer-time-stage{
+    height:472px!important;
+    min-height:472px!important;
+    flex:0 0 472px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-dial-shell{
+    --dial-size:430px;
+    --dial-radius:-180px;
+    --timer-side:50px;
+    column-gap:20px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog{
+    --timer-orbit-size:430px
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-orbit{
+    --timer-orbit-dot-origin:219px
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-dial-mark{
+    width:32px!important;
+    height:32px!important;
+    margin:-16px!important;
+    font-size:12px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-dial-face output{
+    font-size:50px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog #timer-readout{
+    font-size:72px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-countdown-label{
+    font-size:10px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-session-options{
+    min-height:0!important;
+    margin:8px 0 0!important;
+    padding:8px 0 4px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-sound-segments button{
+    min-height:58px!important;
+    font-size:13px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-actions{
+    min-height:78px!important;
+    padding:12px 28px max(12px,env(safe-area-inset-bottom))!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-actions>.primary-button{
+    min-height:56px!important;
+    font-size:13px!important
+  }
+}
+@media (min-width:600px) and (max-width:1500px) and (min-height:700px) and (max-height:839px){
+  html[data-touch-capable="true"] #timer-dialog{
+    width:min(720px,calc(100vw - 24px))!important;
+    max-height:calc(100dvh - 16px)!important;
+    --timer-orbit-size:390px
+  }
+  html[data-touch-capable="true"] #timer-dialog .panel-head{
+    padding:17px 24px 12px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-content,
+  html[data-touch-capable="true"] #timer-dialog[data-state="running"] .timer-content,
+  html[data-touch-capable="true"] #timer-dialog[data-state="paused"] .timer-content,
+  html[data-touch-capable="true"] #timer-dialog[data-state="done"] .timer-content{
+    min-height:0!important;
+    height:auto!important;
+    padding:5px 24px 3px!important;
+    overflow:hidden!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-time-stage,
+  html[data-touch-capable="true"] #timer-dialog[data-state="running"] .timer-time-stage,
+  html[data-touch-capable="true"] #timer-dialog[data-state="paused"] .timer-time-stage,
+  html[data-touch-capable="true"] #timer-dialog[data-state="done"] .timer-time-stage{
+    height:428px!important;
+    min-height:428px!important;
+    flex:0 0 428px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-dial-shell{
+    --dial-size:390px;
+    --dial-radius:-163px;
+    --timer-side:46px;
+    column-gap:18px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-orbit{
+    --timer-orbit-dot-origin:199px
+  }
+  html[data-touch-capable="true"] #timer-dialog #timer-readout{
+    font-size:66px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-session-options{
+    min-height:0!important;
+    margin:5px 0 0!important;
+    padding:5px 0 2px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-sound-segments button{
+    min-height:52px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-actions{
+    min-height:70px!important;
+    padding:9px 24px max(9px,env(safe-area-inset-bottom))!important
+  }
+}
+
+#timer-dialog #timer-duration[hidden],
+#timer-dialog #timer-running[hidden]{display:none!important}
+
+#timer-dialog .timer-countdown-label{display:none!important}
+#timer-dialog .timer-orbit{
+  gap:0!important;
+  align-content:center!important;
+  justify-content:center!important
+}
+#timer-dialog #timer-readout{
+  margin:0!important;
+  line-height:1!important;
+  text-align:center!important;
+  font-variant-numeric:tabular-nums!important
+}
+@media (min-width:600px) and (min-height:700px){
+  html[data-touch-capable="true"] #timer-dialog{
+    width:min(800px,calc(100vw - 24px))!important;
+    height:calc(100dvh - 20px)!important;
+    max-height:calc(100dvh - 20px)!important;
+    max-width:calc(100vw - 24px)!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .panel-head{
+    flex:0 0 auto!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-content,
+  html[data-touch-capable="true"] #timer-dialog[data-state="running"] .timer-content,
+  html[data-touch-capable="true"] #timer-dialog[data-state="paused"] .timer-content,
+  html[data-touch-capable="true"] #timer-dialog[data-state="done"] .timer-content{
+    display:flex!important;
+    flex:1 1 auto!important;
+    flex-direction:column!important;
+    min-height:0!important;
+    height:auto!important;
+    max-height:none!important;
+    padding:10px 28px 10px!important;
+    overflow:hidden!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-time-stage,
+  html[data-touch-capable="true"] #timer-dialog[data-state="running"] .timer-time-stage,
+  html[data-touch-capable="true"] #timer-dialog[data-state="paused"] .timer-time-stage,
+  html[data-touch-capable="true"] #timer-dialog[data-state="done"] .timer-time-stage{
+    display:grid!important;
+    place-items:center!important;
+    flex:1 1 auto!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    flex-basis:auto!important;
+    overflow:visible!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-duration,
+  html[data-touch-capable="true"] #timer-dialog .timer-running{
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+    align-self:stretch!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-range-picker.timer-dial-picker{
+    align-content:center!important;
+    justify-content:center!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-session-options{
+    flex:0 0 auto!important;
+    min-height:0!important;
+    width:100%!important;
+    margin:auto 0 0!important;
+    padding:10px 0 4px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-actions{
+    flex:0 0 auto!important;
+    min-height:76px!important;
+    padding:11px 28px max(11px,env(safe-area-inset-bottom))!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-actions>.primary-button{
+    min-height:54px!important
+  }
+}
+@media (min-width:600px) and (max-width:699px) and (min-height:700px){
+  html[data-touch-capable="true"] #timer-dialog{
+    width:calc(100vw - 16px)!important;
+    max-width:calc(100vw - 16px)!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-dial-shell{
+    --dial-size:380px;
+    --dial-radius:-158px;
+    --timer-side:44px;
+    column-gap:12px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog{--timer-orbit-size:390px}
+  html[data-touch-capable="true"] #timer-dialog .timer-orbit{--timer-orbit-dot-origin:199px}
+  html[data-touch-capable="true"] #timer-dialog #timer-readout{font-size:68px!important}
+}
+@media (min-width:700px) and (max-width:739px) and (min-height:840px){
+  html[data-touch-capable="true"] #timer-dialog .timer-dial-shell{
+    --dial-size:470px;
+    --dial-radius:-196px;
+    --timer-side:46px;
+    column-gap:14px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog{--timer-orbit-size:470px}
+  html[data-touch-capable="true"] #timer-dialog .timer-orbit{--timer-orbit-dot-origin:239px}
+  html[data-touch-capable="true"] #timer-dialog .timer-dial-face output{font-size:51px!important}
+  html[data-touch-capable="true"] #timer-dialog #timer-readout{font-size:80px!important}
+}
+@media (min-width:740px) and (max-width:899px) and (min-height:840px){
+  html[data-touch-capable="true"] #timer-dialog .timer-dial-shell{
+    --dial-size:500px;
+    --dial-radius:-209px;
+    --timer-side:48px;
+    column-gap:16px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog{--timer-orbit-size:500px}
+  html[data-touch-capable="true"] #timer-dialog .timer-orbit{--timer-orbit-dot-origin:254px}
+  html[data-touch-capable="true"] #timer-dialog .timer-dial-mark{
+    width:34px!important;
+    height:34px!important;
+    margin:-17px!important;
+    font-size:12px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-dial-face output{font-size:54px!important}
+  html[data-touch-capable="true"] #timer-dialog #timer-readout{font-size:84px!important}
+}
+@media (min-width:900px) and (max-width:1500px) and (min-height:840px){
+  html[data-touch-capable="true"] #timer-dialog .timer-dial-shell{
+    --dial-size:520px;
+    --dial-radius:-217px;
+    --timer-side:50px;
+    column-gap:18px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog{--timer-orbit-size:520px}
+  html[data-touch-capable="true"] #timer-dialog .timer-orbit{--timer-orbit-dot-origin:264px}
+  html[data-touch-capable="true"] #timer-dialog .timer-dial-mark{
+    width:34px!important;
+    height:34px!important;
+    margin:-17px!important;
+    font-size:12px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-dial-face output{font-size:56px!important}
+  html[data-touch-capable="true"] #timer-dialog #timer-readout{font-size:88px!important}
+}
+@media (min-width:700px) and (max-width:1500px) and (min-height:700px) and (max-height:839px){
+  html[data-touch-capable="true"] #timer-dialog{
+    width:min(760px,calc(100vw - 18px))!important;
+    height:calc(100dvh - 12px)!important;
+    max-height:calc(100dvh - 12px)!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .panel-head{
+    padding:14px 24px 10px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-content,
+  html[data-touch-capable="true"] #timer-dialog[data-state="running"] .timer-content,
+  html[data-touch-capable="true"] #timer-dialog[data-state="paused"] .timer-content,
+  html[data-touch-capable="true"] #timer-dialog[data-state="done"] .timer-content{
+    padding:3px 24px 4px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-dial-shell{
+    --dial-size:450px;
+    --dial-radius:-188px;
+    --timer-side:46px;
+    column-gap:14px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog{--timer-orbit-size:450px}
+  html[data-touch-capable="true"] #timer-dialog .timer-orbit{--timer-orbit-dot-origin:229px}
+  html[data-touch-capable="true"] #timer-dialog .timer-session-options{
+    padding:4px 0 1px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-sound-segments button{
+    min-height:48px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-actions{
+    min-height:64px!important;
+    padding:7px 24px max(7px,env(safe-area-inset-bottom))!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-actions>.primary-button{min-height:48px!important}
+  html[data-touch-capable="true"] #timer-dialog #timer-readout{font-size:76px!important}
+}
+
+#timer-dialog[data-state="running"] .timer-sound-segments button,
+#timer-dialog[data-state="paused"] .timer-sound-segments button{
+  opacity:1!important;
+  pointer-events:auto!important;
+  cursor:pointer!important
+}
+#timer-dialog[data-state="running"] .timer-sound-segments button:disabled,
+#timer-dialog[data-state="paused"] .timer-sound-segments button:disabled{
+  opacity:.38!important;
+  cursor:default!important
+}
+#timer-dialog[data-state="running"] .timer-sound-segments button[aria-pressed="true"],
+#timer-dialog[data-state="paused"] .timer-sound-segments button[aria-pressed="true"]{
+  opacity:1!important
+}
+@media (orientation:landscape) and (min-width:900px) and (min-height:620px){
+  html[data-touch-capable="true"] #timer-dialog{
+    width:calc(100vw - 16px)!important;
+    max-width:calc(100vw - 16px)!important;
+    height:calc(100dvh - 12px)!important;
+    max-height:calc(100dvh - 12px)!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .panel-head{
+    padding:14px 32px 10px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-content,
+  html[data-touch-capable="true"] #timer-dialog[data-state="running"] .timer-content,
+  html[data-touch-capable="true"] #timer-dialog[data-state="paused"] .timer-content,
+  html[data-touch-capable="true"] #timer-dialog[data-state="done"] .timer-content{
+    padding:2px 38px 4px!important;
+    max-width:none!important;
+    width:100%!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-time-stage,
+  html[data-touch-capable="true"] #timer-dialog[data-state="running"] .timer-time-stage,
+  html[data-touch-capable="true"] #timer-dialog[data-state="paused"] .timer-time-stage,
+  html[data-touch-capable="true"] #timer-dialog[data-state="done"] .timer-time-stage{
+    width:100%!important;
+    min-width:0!important;
+    min-height:0!important;
+    height:auto!important;
+    flex:1 1 auto!important;
+    flex-basis:auto!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-duration,
+  html[data-touch-capable="true"] #timer-dialog .timer-running{
+    width:100%!important;
+    max-width:none!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-dial-shell{
+    --dial-size:500px;
+    --dial-radius:-209px;
+    --timer-side:50px;
+    width:100%!important;
+    max-width:none!important;
+    column-gap:24px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog{--timer-orbit-size:500px}
+  html[data-touch-capable="true"] #timer-dialog .timer-orbit{--timer-orbit-dot-origin:254px}
+  html[data-touch-capable="true"] #timer-dialog .timer-session-options{
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    padding:4px 0 2px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-sound-choice,
+  html[data-touch-capable="true"] #timer-dialog .timer-sound-segments{
+    width:100%!important;
+    max-width:none!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-sound-segments button{
+    min-height:52px!important;
+    font-size:12px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-actions{
+    min-height:64px!important;
+    padding:7px 38px max(7px,env(safe-area-inset-bottom))!important
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-actions>.primary-button{min-height:50px!important}
+}
+@media (orientation:landscape) and (min-width:900px) and (min-height:620px) and (max-height:780px){
+  html[data-touch-capable="true"] #timer-dialog .panel-head{padding-top:10px!important;padding-bottom:7px!important}
+  html[data-touch-capable="true"] #timer-dialog .timer-content{padding-top:0!important}
+  html[data-touch-capable="true"] #timer-dialog .timer-dial-shell{
+    --dial-size:430px;
+    --dial-radius:-179px;
+    --timer-side:46px;
+    column-gap:18px!important
+  }
+  html[data-touch-capable="true"] #timer-dialog{--timer-orbit-size:430px}
+  html[data-touch-capable="true"] #timer-dialog .timer-orbit{--timer-orbit-dot-origin:219px}
+  html[data-touch-capable="true"] #timer-dialog .timer-sound-segments button{min-height:46px!important}
+}
+@media (orientation:landscape) and (min-width:900px) and (min-height:1000px){
+  html[data-touch-capable="true"] #timer-dialog .timer-dial-shell{
+    --dial-size:600px;
+    --dial-radius:-250px
+  }
+  html[data-touch-capable="true"] #timer-dialog{--timer-orbit-size:600px}
+  html[data-touch-capable="true"] #timer-dialog .timer-orbit{--timer-orbit-dot-origin:304px}
+}

@@ -5,15 +5,15 @@
 html,body{width:100%;height:100%;overflow:hidden!important}
 body{user-select:none;-webkit-user-select:none}
 input,textarea{user-select:text;-webkit-user-select:text}
-.app-shell{max-width:1920px}
+
 .brand-lockup{display:grid;grid-template-columns:auto;gap:3px;align-items:start;min-width:max-content}
 .brand-lockup .wordmark{line-height:1}
-.brand-lockup .brand-tagline{padding-left:36px;font-size:10px;line-height:1.25;color:var(--muted)}
-.topbar>.brand-tagline{display:none}
+
+
 
 /* The v3.8 settings rhythm is the reference for every new option. */
 #settings-dialog{width:590px}
-#settings-dialog .panel-content{padding-top:4px}
+
 .settings-section>summary{padding-inline:2px}
 .settings-section-body{padding:2px 0 20px}
 .settings-section-body>.stacked-label,
@@ -61,9 +61,9 @@ input[type=checkbox]:not([role=switch]):focus-visible{outline:2px solid var(--ac
 #performance-setting>small{font-size:10px;line-height:1.55;color:var(--muted)}
 .backup-actions,.station-management-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
 .backup-actions>*{flex:1 1 180px}
-.audio-source-switch,.timer-sound-segments,.collection-library-tabs{display:flex;gap:5px;padding:5px;border-radius:10px;background:var(--bg);border:0}
-.audio-source-switch button,.timer-sound-segments button,.collection-library-tabs button{flex:1;min-height:38px;border-radius:7px;background:transparent;color:var(--muted);font:11px var(--sans);display:flex;align-items:center;justify-content:center;gap:7px}
-.audio-source-switch button[aria-pressed=true],.timer-sound-segments button[aria-pressed=true],.collection-library-tabs button[aria-pressed=true]{background:var(--surface-2);color:var(--ink)}
+.audio-source-switch,.timer-sound-segments{display:flex;gap:5px;padding:5px;border-radius:10px;background:var(--bg);border:0}
+.audio-source-switch button,.timer-sound-segments button{flex:1;min-height:38px;border-radius:7px;background:transparent;color:var(--muted);font:11px var(--sans);display:flex;align-items:center;justify-content:center;gap:7px}
+.audio-source-switch button[aria-pressed=true],.timer-sound-segments button[aria-pressed=true]{background:var(--surface-2);color:var(--ink)}
 
 .timer-chip{border:1px solid var(--line);border-radius:24px;background:var(--surface);box-shadow:none;max-width:min(460px,92vw);margin:auto}
 .timer-chip-main{min-width:0}
@@ -87,28 +87,28 @@ input[type=checkbox]:not([role=switch]):focus-visible{outline:2px solid var(--ac
 @keyframes tour-card-step{from{opacity:.45;transform:translateY(8px) scale(.988)}to{opacity:1;transform:none}}
 
 /* Collections added after 3.8, styled like the original library. */
-.collection-library-panel{width:850px;height:min(760px,calc(100dvh - 36px))}
+
 .collection-library-toolbar{padding:18px 28px 0;display:grid;grid-template-columns:auto minmax(200px,1fr);gap:12px;align-items:center}
-.collection-library-tabs{min-width:235px}
+
 .collection-library-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:16px}
 .collection-card{border:1px solid var(--line);border-radius:12px;background:transparent;padding:15px;min-width:0}
 .collection-card:hover{background:var(--accent-soft)}
-.collection-library-launch{width:100%;display:flex;align-items:center;gap:13px;padding:14px 0;background:transparent;text-align:left;color:var(--ink);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.collection-library-launch>.icon{width:20px;height:20px;color:var(--accent)}
-.collection-library-launch>span{display:grid;gap:3px;flex:1;min-width:0}.collection-library-launch strong{font-size:12px;font-weight:500}.collection-library-launch small{font-size:10px;color:var(--muted)}
+
+
+
 
 /* Calendar: same-screen workspace with the quiet 3.8 hierarchy. */
 .virtual-calendar{background:var(--bg);color:var(--ink)}
 #calendar-view .calendar-shell{max-width:1680px;margin:0 auto;padding:28px 42px max(38px,env(safe-area-inset-bottom));height:var(--view-h,100dvh);display:flex;flex-direction:column;overflow:hidden}
 #calendar-view .calendar-heading-combined{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:28px;margin:0;padding:0 0 22px;border-bottom:1px solid var(--line);flex:0 0 auto}
 #calendar-view .calendar-heading-combined>.wordmark{background:transparent;padding:0;color:var(--ink);font-size:22px}
-#calendar-view .calendar-title-copy{min-width:0}
+
 #calendar-view .calendar-title-copy .section-label{margin:0 0 6px}
 #calendar-view .calendar-title-copy h1{font:400 clamp(30px,3.5vw,46px)/1.05 var(--serif);letter-spacing:-.035em;margin:0}
 #calendar-view .calendar-subtitle{font-size:11px;line-height:1.5;color:var(--muted);margin:7px 0 0}
 #calendar-view .calendar-heading-actions{display:flex;align-items:center;gap:8px}
 #calendar-view .calendar-heading-actions .primary-button,#calendar-view .calendar-heading-actions .secondary-button{min-height:40px}
-#calendar-view .calendar-back-button{display:none}
+
 #calendar-view .calendar-shell>main{min-height:0;flex:1;display:flex;flex-direction:column;overflow:hidden;padding:0}
 #calendar-view .calendar-toolbar{position:static;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:15px 0 13px;background:transparent;border-bottom:1px solid var(--line);flex:0 0 auto}
 #calendar-view .calendar-navigation,#calendar-view .calendar-views{display:flex;align-items:center;gap:5px}
@@ -120,7 +120,7 @@ input[type=checkbox]:not([role=switch]):focus-visible{outline:2px solid var(--ac
 #calendar-view .calendar-main{min-width:0;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;padding-right:3px}
 #calendar-view #cal-content{min-height:0}
 #calendar-view .calendar-warnings{flex:0 0 auto;max-height:108px;overflow:auto;margin:10px 0 0;padding:10px 14px;border:1px solid var(--line);border-radius:9px;color:var(--muted);font-size:10px}
-#calendar-view .calendar-footer{display:none}
+
 #calendar-view .calendar-cell{min-height:76px}
 #calendar-view .calendar-event{border-radius:4px}
 .view-dots{bottom:max(5px,env(safe-area-inset-bottom))}
@@ -138,7 +138,7 @@ input[type=checkbox]:not([role=switch]):focus-visible{outline:2px solid var(--ac
  #calendar-view .calendar-shell{padding:22px 24px 38px}
  
  
- #calendar-view .calendar-back-button{display:inline-flex}
+ 
  #calendar-view .calendar-layout{grid-template-columns:minmax(0,1fr);gap:10px;padding-top:10px}
  
 
@@ -146,10 +146,10 @@ input[type=checkbox]:not([role=switch]):focus-visible{outline:2px solid var(--ac
  .about-docs{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 @media (max-width:740px){
- .brand-lockup .brand-tagline{padding-left:34px;font-size:9px}
+ 
   #settings-dialog{width:min(590px,calc(100vw - 20px));max-height:calc(100dvh - 18px)}
  .goal-quick-row{grid-template-columns:repeat(2,minmax(0,1fr))}.goal-quick-row .secondary-button{grid-column:1/-1;width:100%;justify-content:center}
- .collection-library-toolbar{grid-template-columns:1fr;padding-inline:20px}.collection-library-tabs{min-width:0}.collection-library-grid{grid-template-columns:1fr}
+ .collection-library-toolbar{grid-template-columns:1fr;padding-inline:20px}.collection-library-grid{grid-template-columns:1fr}
  #calendar-view .calendar-shell{padding:17px 14px 34px}
  
  
@@ -164,11 +164,11 @@ input[type=checkbox]:not([role=switch]):focus-visible{outline:2px solid var(--ac
  .about-docs{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (max-height:520px) and (orientation:landscape){
- .brand-lockup .brand-tagline{display:none}
+ 
  .goal-heading h2{font-size:15px}.countdown strong{font-size:20px}.goal-progress{max-width:230px}.goal-date{margin-top:4px}
  #calendar-view .calendar-shell{padding:10px 16px 28px}
  
- .calendar-back-button{width:34px;height:34px}
+ 
  
  .calendar-layout{padding-top:6px!important}.calendar-main{overflow:auto!important}
  .welcome-panel{max-height:calc(100dvh - 12px)}.welcome-content{padding:9px 26px 14px}.welcome-content .welcome-lead{line-height:1.55}.welcome-promises{display:none}.welcome-content .welcome-footnote{margin-top:10px}.welcome-emblem{display:grid!important;width:52px;height:52px;margin-bottom:8px}.welcome-emblem img{width:40px;height:40px}.welcome-content h2{font-size:31px;margin:8px 0 11px}

@@ -34,6 +34,42 @@ function moonLightPath(phase){
  for(let i=steps;i>=0;i--){const yn=-1+2*i/steps,span=Math.sqrt(Math.max(0,1-yn*yn));const x=(waxing?k*span:-k*span),y=yn;term.push([cx+r*x,cy+r*y]);}
  const pts=edge.concat(term);return pts.length?'M '+pts.map((p,i)=>(i?'L ':'')+p[0].toFixed(2)+' '+p[1].toFixed(2)).join(' ')+' Z':'';
 }
+function paintSkySnapshot(canvas,phase,isDay,light=false){
+ const c=canvas?.getContext?.('2d');if(!c)return;const w=canvas.width||160,h=canvas.height||160,sx=w/160,sy=h/160;
+ c.clearRect(0,0,w,h);c.save();c.scale(sx,sy);
+ if(isDay){
+  c.save();c.globalAlpha=.5;c.strokeStyle='#f2cf87';c.lineWidth=2.2;c.lineCap='round';
+  for(const [x1,y1,x2,y2] of [[80,13,80,2],[80,147,80,158],[13,80,2,80],[147,80,158,80],[33,33,25,25],[127,127,135,135],[127,33,135,25],[33,127,25,135]]){c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();}
+  c.restore();
+  c.save();c.shadowColor='rgba(242,207,135,.32)';c.shadowBlur=10;const g=c.createRadialGradient(61,51,2,80,80,55);g.addColorStop(0,'#fff9dc');g.addColorStop(.56,'#f4d381');g.addColorStop(1,'#dfa95f');c.fillStyle=g;c.beginPath();c.arc(80,80,49,0,2*PI);c.fill();c.restore();
+ }else{
+  c.save();c.globalAlpha=light?.09:.075;c.fillStyle=light?'#5f6a70':'#aebcb9';c.filter='blur(4px)';c.beginPath();c.arc(80,80,58,0,2*PI);c.fill();c.restore();
+  c.save();c.globalAlpha=.82;c.fillStyle=light?'#70787e':'#31383f';c.beginPath();c.arc(80,80,49,0,2*PI);c.fill();c.restore();
+  c.save();c.globalAlpha=light?.20:.30;c.fillStyle=light?'#39444a':'#131a1d';
+  for(const [x,y,rx,ry] of [[62,66,8,6],[99,75,5,7],[76,101,6,4]]){c.beginPath();c.ellipse(x,y,rx,ry,0,0,2*PI);c.fill();}
+  c.beginPath();c.moveTo(48,87);c.bezierCurveTo(57,81,62,84,67,92);c.bezierCurveTo(61,98,53,99,47,94);c.closePath();c.fill();
+  c.beginPath();c.moveTo(88,49);c.bezierCurveTo(94,45,103,48,108,54);c.bezierCurveTo(102,60,95,60,89,56);c.closePath();c.fill();c.restore();
+  c.save();try{c.clip(new Path2D(moonLightPath(phase)));}catch(_){c.beginPath();c.arc(80,80,49,0,2*PI);c.clip();}
+  c.shadowColor='rgba(238,238,228,.22)';c.shadowBlur=9;const g=c.createRadialGradient(58,48,1,80,80,58);const colors=light?['#f0eee4','#c4c4bc','#858b90']:['#f4f1e2','#cfd0c8','#92999e'];g.addColorStop(0,colors[0]);g.addColorStop(.62,colors[1]);g.addColorStop(1,colors[2]);c.fillStyle=g;c.beginPath();c.arc(80,80,49,0,2*PI);c.fill();c.shadowBlur=0;c.fillStyle=light?'rgba(62,66,70,.20)':'rgba(36,39,43,.24)';for(const [x,y,r] of [[64,68,7],[91,80,5],[76,101,4],[101,99,3]]){c.beginPath();c.arc(x,y,r,0,2*PI);c.fill();}c.restore();
+  c.save();c.globalAlpha=.28;c.strokeStyle=light?'rgba(65,72,78,.22)':'rgba(244,244,235,.14)';c.lineWidth=1.2;c.beginPath();c.arc(80,80,49,0,2*PI);c.stroke();c.restore();
+ }
+ c.restore();
+}
+function syncSkySnapshotFromSvg(svg,canvas){
+ if(!svg||!canvas||typeof XMLSerializer!=='function'||typeof Image!=='function')return;
+ const clone=svg.cloneNode(true),source=[svg,...svg.querySelectorAll('*')],target=[clone,...clone.querySelectorAll('*')];
+ clone.setAttribute('xmlns','http://www.w3.org/2000/svg');
+ source.forEach((node,index)=>{
+  const out=target[index];if(!out||node.nodeType!==1)return;
+  const style=getComputedStyle(node),props=['display','opacity','fill','stroke','stroke-width','stroke-linecap','stroke-linejoin','filter'];
+  const inline=props.map(name=>name+':'+style.getPropertyValue(name)).join(';');
+  if(inline)out.setAttribute('style',inline);
+ });
+ const ticket=(canvas._istanteSkyTicket||0)+1;canvas._istanteSkyTicket=ticket;
+ const image=new Image(),url=URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(clone)],{type:'image/svg+xml'}));
+ image.onload=()=>{try{if(canvas._istanteSkyTicket!==ticket)return;const c=canvas.getContext('2d');if(!c)return;c.clearRect(0,0,canvas.width,canvas.height);c.drawImage(image,0,0,canvas.width,canvas.height);}finally{URL.revokeObjectURL(url);}};
+ image.onerror=()=>URL.revokeObjectURL(url);image.src=url;
+}
 function paintSkyBody(svg,phase,isDay,light=false){
  if(!svg)return;const sun=svg.querySelector('#sky-sun-art'),moonArt=svg.querySelector('#sky-moon-art');
  if(sun)sun.style.display=isDay?'':'none';if(moonArt)moonArt.style.display=isDay?'none':'';
@@ -43,7 +79,7 @@ function paintSkyBody(svg,phase,isDay,light=false){
  if(edge){edge.setAttribute('stroke',light?'rgba(65,72,78,.22)':'rgba(244,244,235,.14)');edge.setAttribute('stroke-width','1.2');}
  const stops=[svg.querySelector('#sky-moon-stop-a'),svg.querySelector('#sky-moon-stop-b'),svg.querySelector('#sky-moon-stop-c')];
  const colors=light?['#f0eee4','#c4c4bc','#858b90']:['#f4f1e2','#cfd0c8','#92999e'];stops.forEach((stop,i)=>stop?.setAttribute('stop-color',colors[i]));
- const mirror=document.getElementById('sky-body-snapshot');if(mirror){if(isDay){const c=mirror.getContext('2d');if(c){c.clearRect(0,0,160,160);const g=c.createRadialGradient(66,60,3,80,80,58);g.addColorStop(0,'#fff9dc');g.addColorStop(.58,'#f4d381');g.addColorStop(1,'#dfa95f');c.fillStyle=g;c.beginPath();c.arc(80,80,49,0,2*PI);c.fill();}}else paintMoon(mirror,phase,light);}
+ const mirror=document.getElementById('sky-body-snapshot');if(mirror){paintSkySnapshot(mirror,phase,isDay,light);syncSkySnapshotFromSvg(svg,mirror);}
 }
 function create({getSettings,getSun,getWeather=()=>null,store,openGuide}){
  const $=id=>document.getElementById(id),sky=$('celestial-sky'),body=$('sky-body'),stars=$('sky-stars'),main=$('main'),viewport=document.querySelector('.stage-main-slot'),reduced=matchMedia('(prefers-reduced-motion: reduce)');
@@ -79,5 +115,5 @@ function create({getSettings,getSun,getWeather=()=>null,store,openGuide}){
  document.addEventListener('wheel',e=>{if(!e.ctrlKey&&!e.target.closest('dialog[open],#radio-panel,#calendar-view'))e.preventDefault();},{passive:false});document.addEventListener('touchmove',e=>{if(e.touches.length===1&&!e.target.closest('dialog[open],#radio-panel,#calendar-view'))e.preventDefault();},{passive:false});document.addEventListener('keydown',e=>{if(['ArrowDown','ArrowUp','PageDown','PageUp','Home','End',' '].includes(e.key)&&!e.target.closest('dialog,button,input,select,textarea,a'))e.preventDefault();});
  return{update,describe:()=>({...snapshot}),collapseSettings,ready(){ready=true;queueFit();void persistence();onboarding.ready();}};
 }
-window.IstanteScene={create,moon,paintMoon,paintSkyBody};
+window.IstanteScene={create,moon,paintMoon,paintSkyBody,paintSkySnapshot};
 })();
