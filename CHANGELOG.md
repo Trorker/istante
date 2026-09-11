@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.13.13 — 11 settembre 2026
+
+- Vista semplificata mobile riallineata alla composizione verticale Meteo → Traguardo → Evento.
+- Tipografia telefono leggermente ridotta e centratura migliorata, incluso “Nessun impegno in vista”.
+- Freccia separata sul prossimo evento per aprire direttamente Calendario → Agenda, mantenendo il click sulla card per il dettaglio evento.
+- Header calendario telefono verticale ricomposto su due righe; landscape raccolto in una singola riga.
+- Vista Anno: un mese per riga in verticale, due mesi per riga in orizzontale.
+- Vista Mese preservata con spazio inferiore riservato alla paginazione.
+
 ## 3.13.12 — 11 settembre 2026
 
 - Responsive di produzione: dashboard stretta ricomposta verticalmente in Meteo → Traguardo → Evento; calendario riorganizzato per telefono e tablet con controlli e tipografia touch-first.
