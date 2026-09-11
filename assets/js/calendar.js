@@ -1,5 +1,5 @@
 (function(){'use strict';
-function create({getSettings,notify}){
+function create({getSettings,saveSetting,notify}){
 const $=id=>document.getElementById(id),C=window.IstanteCalendarCore,KEY='istante.original1.calendars.v1',COLORS=['#a8b999','#c8a783','#8eaab6','#b899b2','#c4b97f','#8db7aa','#b99d96','#9d9bb8'];
 let settings=getSettings();
 let sources=[],cursor=new Date(),view='month',events=[],warnings=[],worker=null,workerTimer=0,dayCache=new Map(),ticket=0,refreshing=false,refreshAt=0,from=0,to=0,lastFocus=null;
@@ -8,7 +8,6 @@ function preferredView(){const mode=getSettings().calendarViewMode||'last';if(mo
 function rememberView(){try{localStorage.setItem(VIEW_KEY,view);}catch(_){}}
 cursor.setHours(12,0,0,0);view=preferredView();try{sources=C.cleanSources(JSON.parse(localStorage.getItem(KEY)||'[]'));}catch(e){$('cal-sync-status').textContent='Dati locali non leggibili. Importa nuovamente i calendari.';}
 const dayKey=d=>{const a=new Date(d);return a.getFullYear()+'-'+String(a.getMonth()+1).padStart(2,'0')+'-'+String(a.getDate()).padStart(2,'0');},plus=(d,n)=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+n),monthName=new Intl.DateTimeFormat('it-IT',{month:'long'}),fullDate=new Intl.DateTimeFormat('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'}),monthTitle=new Intl.DateTimeFormat('it-IT',{month:'long',year:'numeric'}),shortDate=new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'short'}),time={format:value=>window.IstanteTime.formatTime(value,getSettings().timeFormat)},days=['Lun','Mar','Mer','Gio','Ven','Sab','Dom'];
-$('cal-zone').textContent='Orari nel fuso del dispositivo: '+Intl.DateTimeFormat().resolvedOptions().timeZone;
 function node(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=String(text);return e;}
 function button(cls,label,fn){const b=node('button',cls,label);b.type='button';b.onclick=fn;return b;}
 function iconButton(name,label,fn){const b=button('icon-button','',fn);b.innerHTML='<span class="icon">'+window.IstanteIcons.render(name)+'</span>';b.dataset.istanteTooltip=label;b.setAttribute('aria-label',label);return b;}
@@ -39,10 +38,38 @@ function day(container){const d=new Date(from),wrap=node('section','calendar-day
 function render(){title();const root=$('cal-content');root.dataset.view=view;root.replaceChildren();const empty=!sources.length&&!getSettings().calendarHolidays;$('calendar-view').classList.toggle('calendar-is-empty',empty);$('cal-empty').hidden=true;$('cal-empty-add').hidden=!empty;if(view==='year')year(root);else if(view==='month')month(root);else if(view==='week')week(root);else if(view==='day')day(root);else agenda(root);$('cal-warnings').hidden=!warnings.length;$('cal-warning-list').replaceChildren();warnings.forEach(w=>$('cal-warning-list').append(node('li','',w)));renderSources();}
 function finish(id,result){if(id!==ticket)return;dayCache.clear();$('cal-content').setAttribute('aria-busy','false');document.querySelector('.calendar-main').classList.remove('is-loading');if(result.error){warnings=[result.error];events=[];}else{events=result.events;warnings=result.warnings;}render();}
 function load(){range();title();const id=++ticket;$('cal-content').setAttribute('aria-busy','true');document.querySelector('.calendar-main').classList.add('is-loading');clearTimeout(workerTimer);if(worker)worker.terminate();worker=null;
- if(typeof Worker==='function'&&location.protocol!=='file:'){try{worker=new Worker('assets/js/calendar-worker.js?v=3.13.18');const currentWorker=worker;workerTimer=setTimeout(()=>{currentWorker.terminate();finish(id,{error:'Il calendario richiede troppo tempo. Usa un file pi\u00f9 piccolo o restringi la vista.'});},6000);worker.onmessage=e=>{clearTimeout(workerTimer);currentWorker.terminate();finish(id,e.data);};worker.onerror=()=>{clearTimeout(workerTimer);currentWorker.terminate();worker=null;fallback();};worker.postMessage({id,sources:withHolidays(from,to),from,to});return;}catch(_){} }
+ if(typeof Worker==='function'&&location.protocol!=='file:'){try{worker=new Worker('assets/js/calendar-worker.js?v=3.13.20');const currentWorker=worker;workerTimer=setTimeout(()=>{currentWorker.terminate();finish(id,{error:'Il calendario richiede troppo tempo. Usa un file pi\u00f9 piccolo o restringi la vista.'});},6000);worker.onmessage=e=>{clearTimeout(workerTimer);currentWorker.terminate();finish(id,e.data);};worker.onerror=()=>{clearTimeout(workerTimer);currentWorker.terminate();worker=null;fallback();};worker.postMessage({id,sources:withHolidays(from,to),from,to});return;}catch(_){} }
  function fallback(){const input=withHolidays(from,to),rangeFrom=from,rangeTo=to;setTimeout(()=>{if(id!==ticket)return;try{finish(id,C.expand(input,rangeFrom,rangeTo));}catch(e){finish(id,{error:e.message});}},0);}fallback();
 }
-function renderSources(){const list=$('cal-source-list'),manager=$('cal-source-manager'),count=$('cal-source-count');if(count)count.textContent=String(sources.length);list.replaceChildren();manager.replaceChildren();for(const s of sources){const label=node('label','calendar-source-toggle'),check=document.createElement('input');check.type='checkbox';check.checked=s.enabled;check.onchange=()=>{try{persist(sources.map(x=>x.id===s.id?{...x,enabled:check.checked}:x));load();}catch(e){check.checked=s.enabled;message(e.message);}};label.style.setProperty('--event-color',COLORS[s.color]);label.append(check,node('i'),node('span','',s.name));list.append(label);const row=node('div','calendar-source-item'),info=node('div');info.append(node('strong','',s.name),node('small','',(s.url?'Collegato':'File locale')+' \u00b7 '+new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}).format(s.updatedAt)));row.append(info,iconButton('download','Esporta '+s.name,()=>download(s)),iconButton('trash','Elimina '+s.name,()=>{if(!confirm('Eliminare "'+s.name+'" da questo dispositivo?'))return;try{persist(sources.filter(x=>x.id!==s.id));load();message('Calendario rimosso.');}catch(e){message(e.message);}}));manager.append(row);}if(getSettings().calendarHolidays){const row=node('div','calendar-holidays-status');row.innerHTML='<span class="icon">'+window.IstanteIcons.render('calendar')+'</span>';row.append(document.createTextNode('Festivit\u00e0 italiane'));row.dataset.istanteTooltip='Attive. Puoi disattivarle nelle impostazioni del calendario.';list.append(row);}}
+function renderSources(){
+ const list=$('cal-source-list'),manager=$('cal-source-manager'),count=$('cal-source-count');
+ if(count)count.textContent=String(sources.length);
+ list.replaceChildren();manager.replaceChildren();
+
+ const holidayLabel=node('label','calendar-source-toggle calendar-holiday-toggle');
+ const holidayCheck=document.createElement('input');
+ holidayCheck.type='checkbox';holidayCheck.checked=!!getSettings().calendarHolidays;
+ holidayCheck.setAttribute('aria-label','Festività italiane');
+ holidayCheck.onchange=()=>{
+  const next=holidayCheck.checked;
+  if(typeof saveSetting==='function'&&!saveSetting('calendarHolidays',next)){holidayCheck.checked=!next;message('Preferenza non salvata.');return;}
+  settings=getSettings();load();queueUpcoming();message(next?'Festività italiane attive.':'Festività italiane nascoste.');
+ };
+ holidayLabel.style.setProperty('--event-color',COLORS[4]);
+ holidayLabel.append(holidayCheck,node('i'),node('span','','Festività italiane'));
+ list.append(holidayLabel);
+
+ for(const s of sources){
+  const label=node('label','calendar-source-toggle'),check=document.createElement('input');
+  check.type='checkbox';check.checked=s.enabled;
+  check.onchange=()=>{try{persist(sources.map(x=>x.id===s.id?{...x,enabled:check.checked}:x));load();}catch(e){check.checked=s.enabled;message(e.message);}};
+  label.style.setProperty('--event-color',COLORS[s.color]);label.append(check,node('i'),node('span','',s.name));list.append(label);
+  const row=node('div','calendar-source-item'),info=node('div');
+  info.append(node('strong','',s.name),node('small','',(s.url?'Collegato':'File locale')+' · '+new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}).format(s.updatedAt)));
+  row.append(info,iconButton('download','Esporta '+s.name,()=>download(s)),iconButton('trash','Elimina '+s.name,()=>{if(!confirm('Eliminare "'+s.name+'" da questo dispositivo?'))return;try{persist(sources.filter(x=>x.id!==s.id));load();message('Calendario rimosso.');}catch(e){message(e.message);}}));
+  manager.append(row);
+ }
+}
 function download(s){const u=URL.createObjectURL(new Blob([s.ics],{type:'text/calendar;charset=utf-8'})),a=document.createElement('a');a.href=u;a.download=s.name.replace(/[^a-zA-Z0-9_-]/g,'-')+'.ics';a.click();setTimeout(()=>URL.revokeObjectURL(u),10000);}
 function add(ics,name,url=''){const parsed=C.parse(ics);if(sources.length>=8)throw Error('Raggiunto il limite di otto calendari.');if(sources.some(s=>s.ics===ics||url&&s.url===url))throw Error('Questo calendario \u00e8 gi\u00e0 presente. Usa Aggiorna per i calendari collegati.');const s={id:'cal-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,6),name:(name||parsed.title||'Il mio calendario').slice(0,80),url,ics,enabled:true,color:sources.length%8,updatedAt:Date.now()};persist([...sources,s]);load();message('Calendario aggiunto: '+parsed.events.length+' eventi di origine. Ricorrenze calcolate per la vista selezionata.');}
 function safeURL(raw){const value=String(raw).trim().replace(/^webcal:/i,'https:'),u=new URL(value);if(u.protocol!=='https:'||u.username||u.password)throw Error('Usa un indirizzo HTTPS o webcal senza credenziali.');return u.href;}
@@ -94,7 +121,7 @@ function renderUpcoming(){
  bindAgendaShortcut(box?.querySelector('.upcoming-arrow'));
  const visible=!!(s.calendarEnabled&&s.calendarUpcoming);
  if(!visible){setUpcomingState(box,{visible:false});return;}
- const event=upcomingPresentation('Adesso','Prossimo impegno');
+ const event=upcomingPresentation('Prossimo impegno','Prossimo impegno');
  if(!event){setUpcomingState(box,{empty:true,label:'Calendario',title:'Nessun impegno in vista',when:'Apri calendario',tooltip:'Apri il calendario',onOpen:()=>$('calendar-open').click()});return;}
  setUpcomingState(box,{...event,onOpen:()=>detail(nextEvent)});
 }
@@ -116,12 +143,12 @@ function queueUpcoming(){
 function updateUpcoming(){
  const v=++upcomingVersion;upcomingWorker?.terminate();upcomingWorker=null;
  if(!getSettings().calendarEnabled){nextEvent=null;renderUpcoming();return;}
- const now=Date.now(),a=+new Date(new Date().setHours(0,0,0,0)),b=now+90*86400000;
+ const now=Date.now(),a=+new Date(new Date().setHours(0,0,0,0)),b=now+90*86400000,input=withHolidays(a,b);
  const finish=result=>{if(v!==upcomingVersion)return;const candidates=(result.events||[]).filter(e=>e.end>now||e.start>=now);nextEvent=candidates[0]||null;upcomingRefresh=Date.now();renderUpcoming();};
  if(typeof Worker==='function'&&location.protocol!=='file:'){
-  try{const w=new Worker('assets/js/calendar-worker.js?v=3.13.18');upcomingWorker=w;const timeout=setTimeout(()=>{w.terminate();finish({events:[]});},6000);w.onmessage=e=>{clearTimeout(timeout);w.terminate();finish(e.data);};w.onerror=()=>{clearTimeout(timeout);w.terminate();try{finish(C.expand(sources,a,b));}catch(_){finish({events:[]});}};w.postMessage({id:v,sources,from:a,to:b});return;}catch(_){}
+  try{const w=new Worker('assets/js/calendar-worker.js?v=3.13.20');upcomingWorker=w;const timeout=setTimeout(()=>{w.terminate();finish({events:[]});},6000);w.onmessage=e=>{clearTimeout(timeout);w.terminate();finish(e.data);};w.onerror=()=>{clearTimeout(timeout);w.terminate();try{finish(C.expand(input,a,b));}catch(_){finish({events:[]});}};w.postMessage({id:v,sources:input,from:a,to:b});return;}catch(_){}
  }
- try{finish(C.expand(sources,a,b));}catch(_){finish({events:[]});}
+ try{finish(C.expand(input,a,b));}catch(_){finish({events:[]});}
 }
 function apply(){settings=getSettings();if(settings.calendarEnabled){if(settings.calendarViewMode!=='last'&&VALID_VIEWS.includes(settings.calendarViewMode))view=settings.calendarViewMode;load();void refresh();}else{ticket++;worker?.terminate();clearTimeout(workerTimer);}queueUpcoming();}
 const heartbeat=setInterval(()=>{if(!document.hidden&&getSettings().calendarEnabled){if(Date.now()-upcomingRefresh>60000)updateUpcoming();else renderUpcoming();}},60000);

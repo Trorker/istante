@@ -4,7 +4,7 @@
  function create({store,open}){
   const $=s=>document.querySelector(s),byId=id=>document.getElementById(id),M=window.IstanteMotion;
   const dialog=byId('tour-dialog'),card=byId('tour-card'),seenKey='welcome.3.10';
-  let ready=false,pending=false,index=0,steps=[],raf=0,target=null,virtualTarget='',transitioning=false,simulations=[],originView='dashboard',positionToken=0;
+  let ready=false,pending=false,index=0,steps=[],raf=0,target=null,virtualTarget='',transitioning=false,simulations=[],originView='dashboard',positionToken=0,cardMove=null;
   const isTouch=()=>navigator.maxTouchPoints>0||matchMedia('(pointer:coarse)').matches;
   const definitions=[
    {target:'.clock-block',fallback:'.clock-section',note:'inizia dal tuo ritmo',title:'Il tempo resta al centro.',copy:'Orologio e data sono la base di Istante: leggibili da vicino e da lontano, senza riempire lo schermo di informazioni inutili.'},
@@ -114,7 +114,10 @@
    const ch=card.offsetHeight,cw=card.offsetWidth,cx=r.x+r.w/2,cy=r.y+r.h/2,gap=48;
    const spots=[{x:cx-cw/2,y:r.y+r.h+gap},{x:cx-cw/2,y:r.y-ch-gap},{x:r.x+r.w+gap,y:cy-ch/2},{x:r.x-cw-gap,y:cy-ch/2}];
    function scored(p){const x=clamp(p.x,14,W-cw-14),y=clamp(p.y,14,H-ch-14),ox=Math.max(0,Math.min(x+cw,r.x+r.w+margin)-Math.max(x,r.x-margin)),oy=Math.max(0,Math.min(y+ch,r.y+r.h+margin)-Math.max(y,r.y-margin));return{x,y,score:ox*oy*100+Math.abs(x-p.x)+Math.abs(y-p.y)};}
-   const chosen=spots.map(scored).sort((a,b)=>a.score-b.score)[0];card.style.left=chosen.x+'px';card.style.top=chosen.y+'px';
+   const chosen=spots.map(scored).sort((a,b)=>a.score-b.score)[0];
+   const previous=card.dataset.positioned==='true'?card.getBoundingClientRect():null;
+   card.style.left=chosen.x+'px';card.style.top=chosen.y+'px';card.dataset.positioned='true';
+   if(previous&&M.allowed?.()&&card.animate){const dx=previous.left-chosen.x,dy=previous.top-chosen.y;if(Math.hypot(dx,dy)>3){cardMove?.cancel();cardMove=card.animate([{transform:`translate(${dx}px,${dy}px)`},{transform:'translate(0,0)'}],{duration:320,easing:'cubic-bezier(.2,.8,.2,1)'});cardMove.onfinish=()=>{cardMove=null;};}}
    const cut=byId('tour-cutout');for(const [k,v]of Object.entries({x:r.x,y:r.y,width:r.w,height:r.h}))cut.setAttribute(k,v);
    byId('tour-outline').setAttribute('d',rectPath(r.x,r.y,r.w,r.h));
    const ccx=chosen.x+cw/2,ccy=chosen.y+ch/2,dx=cx-ccx,dy=cy-ccy;let sx,sy,ex,ey;
@@ -163,7 +166,7 @@
   byId('tour-next').addEventListener('click',()=>{if(index>=steps.length-1)M.dismiss(dialog);else{index++;showStep();}});
   byId('tour-back').addEventListener('click',()=>{if(index>0){index--;showStep();}});
   dialog.addEventListener('keydown',e=>{if(e.key==='ArrowRight'){e.preventDefault();byId('tour-next').click();}else if(e.key==='ArrowLeft'){e.preventDefault();byId('tour-back').click();}});
-  dialog.addEventListener('close',()=>{document.body.classList.remove('is-touring');positionToken++;if(raf)cancelAnimationFrame(raf);raf=0;target=null;virtualTarget='';dialog.classList.remove('tour-virtual-target');setSidebarPreview(false);restoreSimulation();document.dispatchEvent(new CustomEvent('istante:onboarding-preview-view',{detail:{view:originView}}));store.write(seenKey,true);});
+  dialog.addEventListener('close',()=>{document.body.classList.remove('is-touring');positionToken++;if(raf)cancelAnimationFrame(raf);raf=0;cardMove?.cancel();cardMove=null;delete card.dataset.positioned;target=null;virtualTarget='';dialog.classList.remove('tour-virtual-target');setSidebarPreview(false);restoreSimulation();document.dispatchEvent(new CustomEvent('istante:onboarding-preview-view',{detail:{view:originView}}));store.write(seenKey,true);});
   byId('welcome-dialog').addEventListener('close',()=>{store.write(seenKey,true);store.write('welcome.seen',true);});
   byId('welcome-reopen').addEventListener('click',()=>{const d=byId('settings-dialog');d.addEventListener('close',()=>showWelcome(true),{once:true});M.dismiss(d);});
   const brand=document.querySelector('.topbar .brand-home-link');brand?.addEventListener('click',e=>{e.preventDefault();if(document.querySelector('dialog[open]'))return;launchTour();});

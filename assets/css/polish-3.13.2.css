@@ -28,7 +28,7 @@
 html[data-font-style="excalifont"]{--serif:"Excalifont","Segoe Print","Bradley Hand",cursive;--sans:"Excalifont","Segoe Print","Bradley Hand",cursive}
 html[data-font-style="excalifont"] :is(.section-label,.date-label,.progress-labels,.goal-date,.field-note,.local-note,.keyboard-note,.small-chip,.calendar-weekdays,.calendar-mini-weekdays,.timer-choice-label,.timer-page-quick-label,.station-no,kbd,.brand-home-tagline,.calendar-brand-tagline){font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI",Arial,sans-serif!important}
 html[data-calendar-font="excalifont"] #calendar-view{--serif:"Excalifont","Segoe Print","Bradley Hand",cursive;--sans:"Excalifont","Segoe Print","Bradley Hand",cursive}
-html[data-calendar-font="excalifont"] #calendar-view :is(.calendar-weekdays,.calendar-mini-weekdays,.calendar-local-note,.calendar-sync-status,.calendar-brand-tagline){font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI",Arial,sans-serif!important}
+html[data-calendar-font="excalifont"] #calendar-view :is(.calendar-weekdays,.calendar-mini-weekdays,.calendar-sync-status,.calendar-brand-tagline){font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI",Arial,sans-serif!important}
 
 /* One brand geometry everywhere: same image, copy and hit target as Dashboard. */
 .topbar .brand-home-link,#calendar-view .calendar-brand-button,.timer-page-brand{display:flex!important;align-items:center!important;gap:10px!important;padding:3px 5px 3px 3px!important;line-height:1!important;border-radius:11px!important;text-decoration:none!important;color:var(--ink)!important;background:transparent!important;transform:none!important;overflow:visible!important}

@@ -1,4 +1,4 @@
-/* Istante v3.13.18 - application and local preferences. */
+/* Istante v3.13.20 - application and local preferences. */
 (function () {
 'use strict';
 const C = window.IstanteCore;
@@ -63,18 +63,18 @@ let appearanceReady=false;
 const moments=window.IstanteMoments.create({getSettings:()=>settings,getDraft:readDraftSettings,radio,ambient,notify:toast,openTimer:()=>openDialog('timer'),icon});
 const touchFeedback=window.IstanteTouchFeedback.create({getSettings:()=>settings});
 
-const calendar=window.IstanteCalendar.create({getSettings:()=>settings,notify:toast});
+const calendar=window.IstanteCalendar.create({getSettings:()=>settings,saveSetting:(key,value)=>{settings=C.cleanSettings({...settings,[key]:value});const ok=store.write('settings',settings);const field=$('#settings-form')?.elements?.namedItem(key);if(field?.type==='checkbox')field.checked=!!settings[key];saveNotice(ok);return true;},notify:toast});
 const pages=window.IstantePages.create({getSettings:()=>settings,calendar,onChange:()=>{radio.close();X.pause();effectHub.sync();if(!document.body.classList.contains('view-calendar')&&!document.body.classList.contains('view-timer'))X.resume();}});
 const scene=window.IstanteScene.create({getSettings:()=>settings,getSun:()=>X.solar(new Date()),getWeather:now=>X.weather(now),store,openGuide:which=>openDialog(which)});
 
 function shareWeatherSnapshot(now){
- const place=X.place(),configured=!!(settings.weather&&place);
- if(!configured)return{configured:false,available:false};
- const current=X.weather(now),visiblePlace=X.placeLabel?.()||'';
- const valid=current&&Number.isFinite(current.temperature_2m)&&Number.isFinite(current.weather_code);
- if(!valid)return{configured:true,available:false,place:visiblePlace};
+ const place=X.place();
+ if(!settings.weather||!place)return null;
+ const current=X.weather(now);
+ if(!current||!Number.isFinite(current.temperature_2m)||!Number.isFinite(current.weather_code))return null;
  const [condition]=window.IstanteSolar.weather(current.weather_code,current.is_day===1);
- return{configured:true,available:true,temperature:Math.round(current.temperature_2m)+'°',condition,place:visiblePlace};
+ const visiblePlace=X.placeLabel?.()||'';
+ return{available:true,temperature:Math.round(current.temperature_2m)+'°',condition,place:visiblePlace||undefined};
 }
 function shareSnapshot(){
  const now=new Date();
@@ -91,7 +91,14 @@ function shareSnapshot(){
   sky:window.IstanteSceneSnapshot.capture(scene.describe(),settings),
   weather:shareWeatherSnapshot(now),
   goal:C.getGoal(now,settings),
-  station:['ambient','melody'].includes(settings.audioSource)&&((settings.audioSource==='ambient'&&settings.ambientEnabled)||(settings.audioSource==='melody'&&settings.melodyEnabled))?ambient.label():settings.radioEnabled?radio.station().name:''
+  station:(()=>{
+   if(settings.audioSource==='radio')return settings.radioEnabled&&radio.getState?.().state==='playing'?radio.station().name:'';
+   if(['ambient','melody'].includes(settings.audioSource)){
+    const enabled=settings.audioSource==='ambient'?settings.ambientEnabled:settings.melodyEnabled;
+    return enabled&&ambient.inspect?.().playing?ambient.label():'';
+   }
+   return '';
+  })()
  };
 }
 const sharing=window.IstanteShare.create({getSnapshot:shareSnapshot,open:()=>openDialog('share'),notify:toast});

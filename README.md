@@ -1,6 +1,6 @@
 # Istante
 
-**Versione corrente: 3.13.18**  
+**Versione corrente: 3.13.20**  
 **Un momento, per te.**  
 Un progetto di **Ruslan Dzyuba**.
 
@@ -54,7 +54,7 @@ riempire lo schermo con un numero enorme di giorni.
 
 ## Musica, relax e timer
 
-Il mini player ha tre sorgenti: **Radio**, **Ambiente** e **Melodie**. La Radio supporta stazioni lo-fi e personali, preferiti, programmazioni multiple e scelta casuale; dalla gestione delle stazioni puoi anche **spostare una radio più in alto o più in basso** nell’ordine del catalogo. Ambiente genera rumore rosa, marrone, pioggia o vento. Melodie aggiunge quattro composizioni originali procedurali — **Aurora lenta, Vetro e pioggia, Notturno e Orizzonte** — generate sul dispositivo con Web Audio, senza file audio da scaricare. Sui dispositivi touch le gesture audio sono attive di default nella sola zona destra della Dashboard: un doppio tap alterna Play/Pausa e uno swipe verticale modifica il volume di **10 punti esatti**. Le gesture possono essere disattivate dalle Impostazioni e non vengono mai applicate nel Calendario.
+Il mini player ha tre sorgenti: **Radio**, **Ambiente** e **Melodie**. La Radio supporta stazioni lo-fi e personali, preferiti, programmazioni multiple e scelta casuale; dalla gestione delle stazioni puoi anche **spostare una radio più in alto o più in basso** nell’ordine del catalogo. Ambiente genera rumore rosa, marrone, pioggia o vento. Melodie aggiunge quattro paesaggi sonori procedurali — **Respiro lento, Meditazione, Notturno e Onde lente** — generati sul dispositivo con Web Audio, senza file audio da scaricare. Respiro lento usa un'ampiezza ciclica molto lenta come riferimento musicale; Meditazione privilegia drone e rintocchi distanziati; Notturno conserva gli accordi profondi e quasi immobili; Onde lente usa swell alternati senza un battito marcato. Sui dispositivi touch le gesture audio sono attive di default nella sola zona destra della Dashboard: un doppio tap alterna Play/Pausa e uno swipe verticale modifica il volume di **10 punti esatti**. Le gesture possono essere disattivate dalle Impostazioni e non vengono mai applicate nel Calendario.
 
 Il timer rimane volutamente semplice: la durata principale si sceglie su un **quadrante circolare tipo orologio** da 1 a 60 minuti e può essere rifinita di un minuto alla volta con i pulsanti **− / +** esterni al cerchio. Per questa prima release pubblica il Timer usa una sola esperienza: una **modale** ottimizzata per mouse e touch. Durante il conto alla rovescia l’anello si riempie seguendo il tempo trascorso, un dot compie un giro ogni minuto seguendo i secondi e un alone più evidente respira attorno al cerchio. Non c’è una seconda progress bar: tutto l’avanzamento vive nel quadrante. Silenzio, radio o suono rilassante restano configurabili senza appesantire la schermata principale.
 
@@ -63,7 +63,7 @@ Il timer rimane volutamente semplice: la durata principale si sceglie su un **qu
 Il calendario è **opzionale** e vive nella stessa istanza della dashboard: su
 dispositivi touch puoi passare alla vista calendario con uno swipe, oppure usare
 i controlli dedicati. Sono disponibili viste mese, settimana, anno, giorno e
-agenda; puoi scegliere una vista iniziale fissa oppure **riprendere l’ultima vista usata**. Il Mese usa solo le 4/5/6 settimane realmente necessarie. Nelle viste Mese e Settimana uno swipe breve cambia soltanto periodo; uno swipe lungo da sinistra verso destra torna alla Dashboard, senza confondersi con la navigazione del calendario. Sono supportati fino a 8 calendari ICS e festività italiane facoltative. La vista Anno sfrutta lo spazio disponibile sui desktop normali senza dilatarsi sui monitor ultrawide. Nella vista Settimana l'elenco dei calendari è un **drawer richiamabile**: quando è chiuso, i sette giorni usano tutta la larghezza disponibile. Gli eventi usano superfici molto leggere con colore della sorgente, ora, titolo e calendario di origine, così restano distinguibili senza trasformare la Settimana in un mosaico di card.
+agenda; puoi scegliere una vista iniziale fissa oppure **riprendere l’ultima vista usata**. Il Mese usa solo le 4/5/6 settimane realmente necessarie. Nelle viste Mese e Settimana uno swipe breve cambia soltanto periodo; uno swipe lungo da sinistra verso destra torna alla Dashboard, senza confondersi con la navigazione del calendario. Sono supportati fino a 8 calendari ICS; le **Festività italiane** sono una sorgente integrata che puoi mostrare o nascondere direttamente dalla sidebar “Le tue giornate”. La vista Anno sfrutta lo spazio disponibile sui desktop normali senza dilatarsi sui monitor ultrawide. Nella vista Settimana l'elenco dei calendari è un **drawer richiamabile**: quando è chiuso, i sette giorni usano tutta la larghezza disponibile. Gli eventi usano superfici molto leggere con colore della sorgente, ora, titolo e calendario di origine, così restano distinguibili senza trasformare la Settimana in un mosaico di card.
 
 La vista torna alla dashboard dopo un periodo configurabile di inattività.
 Il prossimo impegno può comparire in modo discreto sulla hero. Nella vista mese, quando un giorno contiene più eventi di quanti possano essere mostrati con calma, compare **“altri eventi”**: apre direttamente quel giorno invece di comprimere il calendario. I feed ICS sono
@@ -100,7 +100,7 @@ Su desktop con mouse o trackpad puoi attivare un **cursore personalizzato discre
 - `data/`: frasi, catalogo raccolte e stazioni predefinite.
 - `README.md`: descrizione del progetto e release corrente.
 - `CHANGELOG.md`: storico delle modifiche.
-- `docs/release/v3.13.18.md`: note dettagliate di questa release.
+- `docs/release/v3.13.20.md`: note dettagliate di questa release.
 - `docs/LICENZA.md`: licenza non commerciale con attribuzione obbligatoria.
 - `docs/TERZE-PARTI.md`: dipendenze, servizi e attribuzioni.
 - `docs/VISIONE-E-DESIGN.md`: valori, regole grafiche e criteri responsive da mantenere nelle release future.

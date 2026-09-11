@@ -145,26 +145,6 @@
 
 
 
-/* Calendar source drawer follows its control and opens from the right. */
-#calendar-view .calendar-sidebar{
-  display:flex!important;
-  flex-direction:column!important;
-  left:auto!important;
-  right:0!important;
-  transform:translateX(calc(100% + 24px))!important
-}
-#calendar-view.sidebar-open .calendar-sidebar{transform:translateX(0)!important}
-#calendar-view .calendar-sidebar-actions{
-  margin-top:auto!important;
-  padding-top:16px!important;
-  border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent)!important
-}
-#calendar-view .calendar-sidebar-actions #cal-manage{
-  width:100%!important;
-  min-height:44px!important;
-  justify-content:center!important
-}
-
 /* Toasts belong at the top-center, clear of the bottom navigation. */
 #toast-host{
   inset:max(14px,env(safe-area-inset-top)) 0 auto!important;

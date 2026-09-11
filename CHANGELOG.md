@@ -1,5 +1,27 @@
 # Changelog
 
+## 3.13.20 — 11 settembre 2026
+
+- **Melodie offline:** mantenuto Notturno e riscritte le altre tre identità sonore per uso da sottofondo: Respiro lento con swell di circa 10 secondi, Meditazione con drone e rintocchi distanziati, Onde lente con movimenti alternati senza battito marcato.
+- **Player:** il titolo “La tua colonna sonora” è stato abbreviato in **“Il tuo suono”**, così resta leggibile su una sola riga anche negli spazi stretti.
+- **Traguardo:** invertita la gerarchia del riepilogo: percentuale e “Il percorso di quest’anno” precedono ora la riga “Il prossimo capitolo”; l’avanzamento rimane in fondo.
+- **Festività:** aggiunto nella sidebar del Calendario un interruttore dedicato a **Festività italiane**, persistente nelle impostazioni e applicato anche al prossimo impegno della Dashboard.
+- **Meteo:** le parole “Alba” e “Tramonto” sono nascoste nel ribbon standard; restano visibili soltanto sui display molto larghi e quando i widget sono impilati in colonna.
+- **Prossimo impegno:** il modulo è separato in due aree reali: dettagli a sinistra e scorciatoia Agenda a destra. I dettagli seguono tre righe — etichetta, evento, data/ora — con gerarchia coerente con il Meteo.
+- **Sidebar calendario:** eliminate le note verbose su sola lettura, copie e fuso orario. Resta soltanto **“Solo sul tuo dispositivo”** in basso, sopra l’azione di gestione.
+- **Condivisione:** le informazioni opzionali restano disponibili soltanto quando esistono davvero; anche la voce audio viene ora proposta solo se una Radio, un Ambiente o una Melodia è effettivamente in riproduzione.
+- **Wizard:** la scheda della visita guidata anima lo spostamento tra un elemento e l’altro con una transizione FLIP discreta, rispettando “Riduci movimento”.
+- **Impostazioni Traguardo:** sostituita l’icona calendario con una bandiera dedicata.
+- **Pulizia tecnica:** il drawer “Le tue giornate” è stato consolidato in `calendar.css`; rimossi gli override duplicati che ne definivano direzione e posizione in `polish-3.12.6.css` e `polish-3.13.4.css`. Eliminati anche il foglio non referenziato `polish-3.12.7.css` e tre vecchie immagini social non più utilizzate. Rimossi inoltre selettori obsoleti della vecchia sidebar e corretto l’aggiornamento della preferenza festività senza dipendere dall’esito della persistenza locale della sessione.
+
+## 3.13.19 — 11 settembre 2026
+
+- Melodie offline riscritte per avere quattro identità sonore realmente diverse: arpeggio luminoso, campane sparse, accordi notturni e pulsazioni calde.
+- Scorciatoia Agenda: rimossa la forma circolare, icona `arrow_forward_ios` leggermente più grande e mantenuta rientrata dal bordo.
+- Calendario telefono verticale: logo completo, periodo, navigazione/Oggi e pulsante Calendari sono ora sulla stessa riga; le viste restano nella riga inferiore.
+- Traguardo telefono verticale vincolato sempre al 100% della larghezza disponibile, con countdown flessibile che non può oltrepassare il contenitore.
+- Percentuale di avanzamento del Traguardo resa più grande e leggibile, anche sui display piccoli.
+
 ## 3.13.18 — 11 settembre 2026
 
 - **Barra informativa ripulita alla radice:** Meteo, Traguardo e Calendario/Evento hanno ora un solo layout autorevole. Sono state eliminate altre 294 regole storiche o duplicate della ribbon dai vecchi fogli CSS; la composizione corrente vive in `responsive.css` e non cambia più quando altri comandi vengono nascosti.

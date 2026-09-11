@@ -153,18 +153,6 @@ html[data-theme="light"] #toast{box-shadow:0 16px 42px rgba(41,48,43,.2),0 2px 8
 #calendar-view .calendar-brand-tagline{padding:0!important;margin:0!important;font-size:max(9.5px,calc(9.5px * var(--ui-scale,1)))!important;line-height:1.15!important;color:var(--muted)!important}
 #calendar-view .calendar-brand-button:hover,#calendar-view .calendar-brand-button:focus-visible{background:var(--accent-soft)!important}
 
-#calendar-view .calendar-layout{position:relative!important;display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:0!important;overflow:hidden!important}
-#calendar-view .calendar-main{grid-column:1!important;min-width:0!important;width:100%!important;overflow:auto!important}
-#calendar-view .calendar-sidebar{
-  display:block!important;position:absolute!important;z-index:12!important;top:9px!important;bottom:0!important;left:0!important;width:min(292px,calc(100vw - 36px))!important;
-  padding:16px!important;border:1px solid var(--line)!important;border-radius:14px!important;background:color-mix(in srgb,var(--surface) 96%,var(--bg))!important;
-  box-shadow:0 22px 60px rgba(0,0,0,.26)!important;transform:translateX(calc(-100% - 24px))!important;opacity:0!important;pointer-events:none!important;
-  transition:transform .28s cubic-bezier(.2,.8,.2,1),opacity .2s ease!important;overflow:auto!important;
-}
-#calendar-view.sidebar-open .calendar-sidebar{transform:translateX(0)!important;opacity:1!important;pointer-events:auto!important}
-#calendar-view .calendar-sidebar-toggle{display:inline-flex!important}
-@media(prefers-reduced-motion:reduce){#calendar-view .calendar-sidebar{transition:none!important}}
-
 /* Month: always reserve a visible line for “+ N altri eventi”. */
 #calendar-view .calendar-cell{display:flex!important;flex-direction:column!important;min-width:0!important}
 #calendar-view .calendar-day-number{flex:0 0 auto!important}

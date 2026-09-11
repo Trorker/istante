@@ -153,7 +153,7 @@ input[type=checkbox]:not([role=switch]):focus-visible{outline:2px solid var(--ac
  #calendar-view .calendar-back-button{display:inline-flex}
  #calendar-view .calendar-layout{grid-template-columns:minmax(0,1fr);gap:10px;padding-top:10px}
  
- .calendar-local-note{display:none!important}
+
  
  .about-docs{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
@@ -193,6 +193,3 @@ input[type=checkbox]:not([role=switch]):focus-visible{outline:2px solid var(--ac
  .about-docs{grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion:reduce){.welcome-emblem img,.welcome-emblem:before,.tour-step-transition{animation:none!important}}
-/* Empty calendar keeps the 3.8 breathing room without reserving a blank sidebar. */
-#calendar-view .calendar-sidebar:has(#cal-source-list:empty){display:none}
-#calendar-view .calendar-layout:has(.calendar-sidebar #cal-source-list:empty){grid-template-columns:minmax(0,1fr);gap:0}
