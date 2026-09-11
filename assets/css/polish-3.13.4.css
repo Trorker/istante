@@ -11,19 +11,8 @@
 #tour-dialog .icon{font-family:inherit!important}
 
 /* Reserve the timer-chip row from first paint so the lower dashboard never jumps. */
-.dashboard-lower .timer-slot,
-.dashboard-lower .timer-slot:has(.timer-chip[hidden]){
-  display:flex!important;
-  min-height:42px!important;
-  height:42px!important;
-  align-items:center!important;
-  justify-content:center!important
-}
-.dashboard-lower .timer-chip[hidden]{
-  display:flex!important;
-  visibility:hidden!important;
-  pointer-events:none!important
-}
+
+
 
 /* Timer: clean clock geometry, external controls, no hover motion. */
 #timer-dialog .timer-precise,
@@ -153,13 +142,8 @@
 
 
 /* Only Meteo and Il prossimo capitolo react on hover in the dashboard ribbon. */
-.dashboard-lower #upcoming-event{transition:none!important}
-.dashboard-lower #upcoming-event:hover,.dashboard-lower #upcoming-event:focus-visible,.dashboard-lower #upcoming-event:active{
-  background:transparent!important;
-  color:inherit!important;
-  transform:none!important;
-  box-shadow:none!important
-}
+
+
 
 /* Calendar source drawer follows its control and opens from the right. */
 #calendar-view .calendar-sidebar{

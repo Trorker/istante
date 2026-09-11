@@ -8,16 +8,17 @@
 
   const status=text=>{$('share-status').textContent=text;};
   const optionNode=key=>$('share-'+key);
-  const optionValues=()=>Object.fromEntries(OPTION_KEYS.map(key=>{
-   const input=optionNode(key);
-   return[key,!!(input?.checked&&!input.disabled)];
-  }));
+  const optionValues=()=>{
+   const available={clock:!!snapshot?.time,qr:true,date:!!snapshot?.date,sky:!!snapshot?.sky,weather:!!snapshot?.weather?.available,goal:!!snapshot?.goal,radio:!!snapshot?.station};
+   return Object.fromEntries(OPTION_KEYS.map(key=>{const input=optionNode(key);return[key,!!(available[key]&&input?.checked&&!input.disabled)];}));
+  };
 
   function setAvailability(key,{available,checked}){
    const input=optionNode(key);if(!input)return;
+   const row=input.closest('label');
    input.disabled=!available;
    if(typeof checked==='boolean')input.checked=checked;
-   input.closest('label')?.classList.toggle('is-unavailable',!available);
+   if(row){row.hidden=!available;row.classList.toggle('is-unavailable',!available);}
   }
 
   function download(){
@@ -118,7 +119,10 @@
    prepare(){
     snapshot=getSnapshot();
     snapshot.shareURL=window.IstanteShareLink.make(snapshot.phrase);
-    setAvailability('weather',{available:!!snapshot.weather?.configured,checked:!!snapshot.weather?.configured});
+    setAvailability('clock',{available:!!snapshot.time});
+    setAvailability('date',{available:!!snapshot.date});
+    setAvailability('sky',{available:!!snapshot.sky});
+    setAvailability('weather',{available:!!snapshot.weather?.available,checked:!!snapshot.weather?.available});
     setAvailability('goal',{available:!!snapshot.goal,checked:false});
     setAvailability('radio',{available:!!snapshot.station,checked:false});
     if(snapshot.fontStyle==='excalifont'&&document.fonts?.load){

@@ -25,10 +25,10 @@
 .collection-library-toolbar .search-field{margin-bottom:9px}
 .collection-library-panel>.panel-content{overflow:auto;padding-top:10px}
 .collection-library-grid{display:block!important;margin-top:4px}
-.collection-card{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:'meta actions' 'name actions' 'desc actions';gap:3px 18px;padding:17px 0;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent!important}
+.collection-card{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"meta actions" "name actions" "desc actions";gap:3px 18px;padding:17px 0;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent!important}
 .collection-card:hover{background:transparent!important}
 .collection-card.is-selected{position:relative}
-.collection-card.is-selected:before{content:'';position:absolute;left:-12px;top:17px;bottom:17px;width:2px;border-radius:2px;background:var(--accent)}
+.collection-card.is-selected:before{content:"";position:absolute;left:-12px;top:17px;bottom:17px;width:2px;border-radius:2px;background:var(--accent)}
 .collection-card>small{grid-area:meta;font-size:9px;color:var(--faint);letter-spacing:.035em;text-transform:uppercase}
 .collection-card>strong{grid-area:name;font:400 20px/1.25 var(--serif);letter-spacing:-.02em;color:var(--ink)}
 .collection-card>p{grid-area:desc;margin:4px 0 0;max-width:520px;font-size:10px;line-height:1.55;color:var(--muted)}
@@ -51,26 +51,26 @@
 #calendar-view #cal-content>.calendar-agenda{max-width:100%}
 
 /* Phone landscape: dashboard, timer and goal remain proportionate instead of being scaled into each other. */
-@media(max-height:540px) and (orientation:landscape){
+@media (max-height:540px) and (orientation:landscape){
  #app-shell{padding-top:6px!important;padding-bottom:max(4px,env(safe-area-inset-bottom))!important}
  .stage-viewport{min-height:0;flex:1 1 auto}
  #main.main-stage{padding:2px 0 3px!important;gap:3px 18px!important}
  .moment-greeting{font-size:9px;margin-bottom:2px}.date-label{margin-bottom:3px!important}
  .quote-wrap blockquote{font-size:clamp(20px,5.2vh,27px)!important}.phrase-meta{margin-top:4px!important}
- .environment-line{margin-top:3px!important;min-height:18px}
+ 
  .timer-slot:has(.timer-chip:not([hidden])){height:28px!important;flex-basis:28px!important;padding:1px 0 2px!important}
  .timer-chip{min-height:26px;max-width:min(420px,76vw)}.timer-chip .icon-button{width:28px;height:28px}.timer-chip-main{min-height:28px;padding-block:2px}
- #goal-strip:not([hidden]){grid-template-columns:minmax(130px,.75fr) auto minmax(150px,.9fr)!important;gap:10px 18px!important;min-height:45px!important;padding:5px 0!important;margin:0!important}
- #goal-strip .goal-progress{grid-column:auto!important;align-self:center}.goal-configure{display:none}.goal-date{display:none!important}.progress-labels{font-size:8px}.progress-track{margin-top:3px!important}
+ 
+ .goal-configure{display:none}.goal-date{display:none!important}.progress-labels{font-size:8px}.progress-track{margin-top:3px!important}
  #calendar-view .calendar-shell{height:var(--view-h,100dvh)!important;max-width:none!important;padding:7px 10px 22px!important}
- #calendar-view .calendar-heading-combined{grid-template-columns:auto minmax(0,1fr) auto!important;gap:10px!important;padding-bottom:4px!important;margin-bottom:2px!important}
- #calendar-view .calendar-brand-tagline{font-size:7px;padding-left:29px}.calendar-heading-combined .wordmark{font-size:19px!important}
- #calendar-view .calendar-title-copy .section-label,#calendar-view .calendar-title-copy .calendar-subtitle{display:none!important}
- #calendar-view .calendar-title-copy h1{font-size:19px!important}
- #calendar-view .calendar-heading-actions .primary-button{min-height:28px!important;padding:4px 7px!important}
- #calendar-view .calendar-toolbar{padding:3px 0!important;margin:0!important;gap:5px!important;flex:0 0 auto}
- #calendar-view .calendar-navigation .icon-button{width:30px;height:30px}#calendar-view .calendar-navigation .secondary-button{min-height:30px!important;padding:5px 10px!important}
- #calendar-view .calendar-views{padding:2px!important}#calendar-view .calendar-views button{min-height:28px!important;padding:4px 7px!important;font-size:9px!important}
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  #calendar-view .calendar-layout{flex:1!important;min-height:0!important;padding-top:3px!important;overflow:hidden!important}
  #calendar-view .calendar-main{height:100%!important;min-height:0!important;overflow:hidden!important}
  #calendar-view #cal-content{height:100%!important;min-height:0!important;overflow:auto!important}
@@ -83,12 +83,12 @@
  .view-dots{bottom:1px!important}
 }
 
-@media(max-width:740px){
- #calendar-view .calendar-brand-tagline{padding-left:31px;font-size:8px}
- .collection-library-toolbar{grid-template-columns:1fr;padding:10px 20px 0;gap:7px}.collection-library-tabs{gap:18px}.collection-library-toolbar .search-field{margin:0 0 9px}.collection-card{grid-template-columns:minmax(0,1fr);grid-template-areas:'meta' 'name' 'desc' 'actions';gap:4px}.collection-card-actions{justify-content:flex-start;margin-top:7px;flex-wrap:wrap}.collection-card.is-selected:before{left:-8px}
+@media (max-width:740px){
+ 
+ .collection-library-toolbar{grid-template-columns:1fr;padding:10px 20px 0;gap:7px}.collection-library-tabs{gap:18px}.collection-library-toolbar .search-field{margin:0 0 9px}.collection-card{grid-template-columns:minmax(0,1fr);grid-template-areas:"meta" "name" "desc" "actions";gap:4px}.collection-card-actions{justify-content:flex-start;margin-top:7px;flex-wrap:wrap}.collection-card.is-selected:before{left:-8px}
 }
 
-@media(max-width:420px){
+@media (max-width:420px){
  .collection-library-panel{width:calc(100vw - 16px);height:calc(100dvh - 16px)}
  #calendar-view .calendar-mini-grid button{width:22px!important;height:22px!important;min-width:22px!important;min-height:22px!important;line-height:22px}
 }
@@ -99,4 +99,4 @@
 .tour-goal-editor input{width:100%;min-width:0;min-height:39px;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:color-mix(in srgb,var(--bg) 92%,transparent);color:var(--ink);font:11px/1.25 var(--sans);outline:0}
 .tour-goal-editor input:focus{border-color:color-mix(in srgb,var(--accent) 55%,var(--line));box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 10%,transparent)}
 .tour-goal-editor>.secondary-button{justify-content:center;min-height:38px;margin-top:1px}
-@media(max-height:540px) and (orientation:landscape){.tour-goal-editor{grid-template-columns:minmax(120px,1fr) minmax(170px,1fr) auto;align-items:end;gap:8px}.tour-goal-editor>.secondary-button{margin:0;white-space:nowrap}}
+@media (max-height:540px) and (orientation:landscape){.tour-goal-editor{grid-template-columns:minmax(120px,1fr) minmax(170px,1fr) auto;align-items:end;gap:8px}.tour-goal-editor>.secondary-button{margin:0;white-space:nowrap}}

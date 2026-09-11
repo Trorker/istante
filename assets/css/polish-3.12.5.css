@@ -26,24 +26,7 @@
   z-index:1!important;
   pointer-events:auto!important;
 }
-.dashboard-lower{
-  grid-column:1!important;
-  grid-row:2!important;
-  align-self:end!important;
-  position:relative!important;
-  z-index:7!important;
-  width:min(80vw,1600px)!important;
-  max-width:calc(100vw - 40px)!important;
-  min-width:0!important;
-  min-height:0!important;
-  margin:0 auto 5px!important;
-  padding:0!important;
-  display:grid!important;
-  grid-template-columns:minmax(0,1fr)!important;
-  grid-template-rows:auto auto!important;
-  gap:5px!important;
-  border:0!important;
-}
+
 .bottom-bar{
   grid-column:1!important;
   grid-row:3!important;
@@ -55,171 +38,73 @@
 }
 
 /* The timer remains independent and exactly centred above the ribbon. */
-.dashboard-lower .timer-slot{
-  grid-column:1!important;
-  grid-row:1!important;
-  position:relative!important;
-  width:100%!important;
-  height:auto!important;
-  min-height:0!important;
-  margin:0!important;
-  padding:0!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-}
-.dashboard-lower .timer-slot:has(.timer-chip[hidden]){display:none!important}
-.dashboard-lower .timer-chip{
-  max-height:38px!important;
-  margin:0 auto!important;
-  box-shadow:none!important;
-}
+
+
+
 
 /* --------------------------------------------------------------------------
    Active information ribbon — Weather 20 | Countdown 60 | Calendar 20
    -------------------------------------------------------------------------- */
-.active-info-strip{
-  grid-column:1!important;
-  grid-row:2!important;
-  width:100%!important;
-  min-width:0!important;
-  margin:0!important;
-}
-.active-info-strip{
-  display:grid!important;
-  grid-template-columns:20% 60% 20%!important;
-  grid-template-rows:70px!important;
-  grid-auto-rows:0!important;
-  align-items:stretch!important;
-  min-height:70px!important;
-  max-height:70px!important;
-  overflow:hidden!important;
-  border-top:1px solid color-mix(in srgb,var(--line) 68%,transparent)!important;
-  border-bottom:1px solid color-mix(in srgb,var(--line) 48%,transparent)!important;
-  background:transparent!important;
-}
-.dashboard-lower .active-info-strip>#environment-line,
-.dashboard-lower .active-info-strip>.goal-strip,
-.dashboard-lower .active-info-strip>#upcoming-event{
-  grid-row:1!important;
-  order:0!important;
-  align-self:stretch!important;
-  height:70px!important;
-  min-height:70px!important;
-  max-height:70px!important;
-  overflow:hidden!important;
-  margin:0!important;
-  box-shadow:none!important;
-  border-radius:0!important;
-  background:transparent!important;
-}
-.dashboard-lower .active-info-strip>#environment-line{grid-column:1!important}
-.dashboard-lower .active-info-strip>.goal-strip{grid-column:2!important}
-.dashboard-lower .active-info-strip>#upcoming-event{grid-column:3!important}
+
+
+
+
+
+
 
 /* Weather: one compact reading plus sunrise / sunset. */
-.dashboard-lower .active-info-strip>#environment-line{
-  width:100%!important;
-  max-width:none!important;
-  min-width:0!important;
-  padding:9px 16px!important;
-  display:grid!important;
-  grid-template-columns:minmax(0,1fr)!important;
-  grid-template-rows:auto auto auto!important;
-  grid-template-areas:"eyebrow" "weather" "solar"!important;
-  align-content:center!important;
-  gap:4px!important;
-  border:0!important;
-  text-align:left!important;
-}
-.dashboard-lower .active-info-strip>#environment-line[hidden]{display:none!important}
-.dashboard-lower .active-info-strip>#environment-line::before{
-  content:"Meteo";grid-area:eyebrow;display:block;
-  color:var(--faint)!important;font-size:calc(8.5px * var(--ui-scale,1))!important;
-  font-weight:500!important;line-height:1!important;letter-spacing:.13em!important;text-transform:uppercase!important;
-}
-.dashboard-lower .active-info-strip .weather-line{
-  grid-area:weather!important;display:grid!important;
-  grid-template-columns:19px auto minmax(0,1fr)!important;
-  grid-template-areas:"icon temp condition" "icon temp place"!important;
-  align-items:center!important;gap:1px 7px!important;min-width:0!important;padding:0!important;text-align:left!important;
-}
-.dashboard-lower .active-info-strip .weather-line[hidden]{display:none!important}
-.dashboard-lower .active-info-strip .weather-line>.icon{grid-area:icon!important;width:18px!important;height:18px!important;color:var(--accent)!important}
-.dashboard-lower .active-info-strip #weather-text{grid-area:temp!important;font:400 calc(18px * var(--ui-scale,1))/1 var(--serif)!important;color:var(--ink)!important;letter-spacing:-.035em!important}
-.dashboard-lower .active-info-strip #weather-condition{grid-area:condition!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font-size:calc(10px * var(--ui-scale,1))!important;color:var(--muted)!important;line-height:1.1!important}
-.dashboard-lower .active-info-strip #weather-place{grid-area:place!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font-size:calc(8.5px * var(--ui-scale,1))!important;color:var(--faint)!important;line-height:1.1!important}
-.dashboard-lower .active-info-strip #weather-age{display:none!important}
-.dashboard-lower .active-info-strip .solar-line{
-  grid-area:solar!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;
-  gap:9px!important;min-width:0!important;width:100%!important;margin:0!important;padding:0!important;border:0!important;
-}
-.dashboard-lower .active-info-strip .solar-line[hidden]{display:none!important}
-.dashboard-lower .active-info-strip .solar-path,
-.dashboard-lower .active-info-strip .solar-note,
-.dashboard-lower .active-info-strip .moon-caption{display:none!important}
-.dashboard-lower .active-info-strip .solar-time{display:inline-flex!important;flex-direction:row!important;align-items:center!important;gap:4px!important;min-width:0!important}
-.dashboard-lower .active-info-strip .solar-time>.icon{display:inline-flex!important;width:12px!important;height:12px!important;color:var(--accent)!important}
-.dashboard-lower .active-info-strip .solar-label{font-size:calc(8px * var(--ui-scale,1))!important;color:var(--faint)!important}
-.dashboard-lower .active-info-strip .solar-time time{font-size:calc(9.5px * var(--ui-scale,1))!important;color:var(--muted)!important;font-variant-numeric:tabular-nums!important}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* Countdown: the 60% centre owns the hierarchy, but stays thin. */
-.dashboard-lower .active-info-strip>.goal-strip{
-  width:100%!important;max-width:none!important;min-width:0!important;
-  padding:8px 22px!important;
-  display:grid!important;
-  grid-template-columns:minmax(0,1fr) auto!important;
-  grid-template-rows:auto auto!important;
-  grid-template-areas:"heading countdown" "progress progress"!important;
-  align-items:center!important;align-content:center!important;
-  gap:6px 18px!important;
-  border:0!important;
-  border-left:1px solid color-mix(in srgb,var(--line) 58%,transparent)!important;
-  border-right:1px solid color-mix(in srgb,var(--line) 58%,transparent)!important;
-  text-align:left!important;
-}
-.dashboard-lower .active-info-strip .goal-heading{
-  grid-area:heading!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;
-  grid-template-areas:"label configure" "title title"!important;align-items:center!important;gap:2px 7px!important;min-width:0!important;
-}
-.dashboard-lower .active-info-strip .goal-heading .section-label{grid-area:label!important;margin:0!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font-size:calc(8.5px * var(--ui-scale,1))!important;line-height:1!important;letter-spacing:.12em!important;color:var(--faint)!important}
-.dashboard-lower .active-info-strip .goal-heading h2{grid-area:title!important;margin:0!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font:400 calc(15px * var(--ui-scale,1))/1.15 var(--serif)!important;letter-spacing:-.02em!important;color:var(--ink)!important;text-align:left!important}
-.dashboard-lower .active-info-strip .goal-configure{grid-area:configure!important;justify-self:end!important;width:25px!important;height:25px!important;min-height:25px!important;padding:0!important;margin:0!important;display:grid!important;place-items:center!important;border-radius:50%!important;opacity:.5!important}
-.dashboard-lower .active-info-strip .goal-configure:hover,.dashboard-lower .active-info-strip .goal-configure:focus-visible{opacity:1!important;background:var(--accent-soft)!important}
-.dashboard-lower .active-info-strip .goal-configure .icon{width:12px!important;height:12px!important}
-.dashboard-lower .active-info-strip .goal-configure span:not(.icon){display:none!important}
-.dashboard-lower .active-info-strip .countdown{grid-area:countdown!important;justify-self:end!important;display:flex!important;align-items:center!important;gap:10px!important;white-space:nowrap!important}
-.dashboard-lower .active-info-strip .countdown>div{display:flex!important;flex-direction:column!important;align-items:center!important;gap:1px!important;min-width:33px!important}
-.dashboard-lower .active-info-strip .countdown strong{font-size:calc(23px * var(--ui-scale,1))!important;font-weight:300!important;line-height:1!important;letter-spacing:-.04em!important;color:var(--ink)!important;font-variant-numeric:tabular-nums!important}
-.dashboard-lower .active-info-strip .countdown>div>span{font-size:calc(7.8px * var(--ui-scale,1))!important;line-height:1!important;color:var(--faint)!important}
-.dashboard-lower .active-info-strip .count-separator{font-size:12px!important;margin-top:-7px!important;color:var(--faint)!important;opacity:.42!important}
-.dashboard-lower .active-info-strip .goal-progress{grid-area:progress!important;width:100%!important;max-width:none!important;min-width:0!important;align-self:end!important}
-.dashboard-lower .active-info-strip .progress-labels{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;font-size:calc(8.5px * var(--ui-scale,1))!important;line-height:1!important;color:var(--faint)!important}
-.dashboard-lower .active-info-strip #progress-label{min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
-.dashboard-lower .active-info-strip #progress-value{flex:0 0 auto!important;color:var(--accent)!important}
-.dashboard-lower .active-info-strip .progress-track{height:2px!important;margin-top:5px!important;background:color-mix(in srgb,var(--line) 78%,transparent)!important}
-.dashboard-lower .active-info-strip .goal-date{display:none!important}
-.dashboard-lower .active-info-strip>.goal-strip.is-empty .countdown,
-.dashboard-lower .active-info-strip>.goal-strip.is-empty .goal-progress{display:none!important}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* Calendar: only the next useful cue. */
-.dashboard-lower .active-info-strip>#upcoming-event{
-  width:100%!important;max-width:none!important;min-width:0!important;
-  padding:9px 16px!important;
-  display:grid!important;grid-template-columns:16px minmax(0,1fr)!important;grid-template-areas:"icon copy" "icon time"!important;
-  align-content:center!important;align-items:center!important;gap:3px 8px!important;
-  border:0!important;color:var(--ink)!important;text-align:left!important;
-}
-.dashboard-lower .active-info-strip>#upcoming-event[hidden]{display:none!important}
-.dashboard-lower .active-info-strip>#upcoming-event:hover{background:transparent!important}
-.dashboard-lower .active-info-strip>#upcoming-event>.icon:first-child{grid-area:icon!important;width:15px!important;height:15px!important;color:var(--accent)!important}
-.dashboard-lower .active-info-strip .upcoming-copy{grid-area:copy!important;display:grid!important;gap:3px!important;min-width:0!important}
-.dashboard-lower .active-info-strip .upcoming-copy small{font-size:calc(8px * var(--ui-scale,1))!important;line-height:1!important;letter-spacing:.1em!important;text-transform:uppercase!important;color:var(--faint)!important}
-.dashboard-lower .active-info-strip #upcoming-title{min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font:400 calc(13px * var(--ui-scale,1))/1.15 var(--serif)!important;color:var(--ink)!important}
-.dashboard-lower .active-info-strip #upcoming-time{grid-area:time!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font-size:calc(9px * var(--ui-scale,1))!important;line-height:1!important;color:var(--muted)!important}
-.dashboard-lower .active-info-strip .upcoming-arrow{display:none!important}
 
-/* Legacy compact idle-ribbon implementation removed in 3.13.17. */
+
+
+
+
+
+
+
+
+
+
 
 .is-idle:not(.has-panel) .bottom-bar.chrome,
 .is-idle:not(.has-panel) .topbar.chrome{opacity:0!important;pointer-events:none!important}
@@ -228,25 +113,10 @@
    Responsive: keep 20/60/20 until the layout genuinely becomes too narrow.
    Typography never collapses to the old 5–7 px calendar/dashboard values.
    -------------------------------------------------------------------------- */
-@media(max-width:1180px){
-  .dashboard-lower{width:80vw!important;max-width:calc(100vw - 28px)!important}
-  .dashboard-lower .active-info-strip>.goal-strip{padding-inline:16px!important;gap-inline:12px!important}
-  .dashboard-lower .active-info-strip>#environment-line,.dashboard-lower .active-info-strip>#upcoming-event{padding-inline:11px!important}
-  .dashboard-lower .active-info-strip .solar-label{display:none!important}
-  
-}
-/* Phone portrait information-ribbon composition moved to responsive.css in 3.13.17. */
 
-@media(max-height:560px) and (orientation:landscape){
-  .dashboard-lower{width:80vw!important;max-width:calc(100vw - 30px)!important;gap:2px!important;margin-bottom:1px!important}
-  .active-info-strip{grid-template-rows:54px!important;min-height:54px!important;max-height:54px!important}
-  .dashboard-lower .active-info-strip>#environment-line,.dashboard-lower .active-info-strip>.goal-strip,.dashboard-lower .active-info-strip>#upcoming-event{height:54px!important;min-height:54px!important;max-height:54px!important;padding-top:5px!important;padding-bottom:5px!important}
-  .dashboard-lower .active-info-strip>#environment-line::before,.dashboard-lower .active-info-strip #weather-place,.dashboard-lower .active-info-strip .solar-line{display:none!important}
-  .dashboard-lower .active-info-strip .goal-heading h2{font-size:calc(11.5px * var(--ui-scale,1))!important}
-  .dashboard-lower .active-info-strip .countdown strong{font-size:calc(17px * var(--ui-scale,1))!important}
-  
-  
-}
+
+
+
 
 
 /* --------------------------------------------------------------------------
@@ -254,28 +124,27 @@
    -------------------------------------------------------------------------- */
 
 /* Information ribbon: readable micro-hierarchy without becoming a dashboard. */
-.dashboard-lower .active-info-strip>#environment-line::before,
-.dashboard-lower .active-info-strip .goal-heading .section-label{font-size:calc(10px * var(--ui-scale,1))!important}
-.dashboard-lower .active-info-strip #weather-condition{font-size:calc(11.5px * var(--ui-scale,1))!important}
-.dashboard-lower .active-info-strip #weather-place{font-size:calc(10px * var(--ui-scale,1))!important}
-.dashboard-lower .active-info-strip .solar-label{font-size:calc(9.5px * var(--ui-scale,1))!important}
-.dashboard-lower .active-info-strip .solar-time time{font-size:calc(10.5px * var(--ui-scale,1))!important}
-.dashboard-lower .active-info-strip .goal-heading h2{font-size:calc(16.5px * var(--ui-scale,1))!important}
-.dashboard-lower .active-info-strip .countdown>div>span{font-size:calc(9.5px * var(--ui-scale,1))!important}
-.dashboard-lower .active-info-strip .progress-labels{font-size:calc(10px * var(--ui-scale,1))!important}
-.dashboard-lower .active-info-strip .progress-track{height:4px!important;margin-top:6px!important;border-radius:999px!important;overflow:hidden!important}
-.dashboard-lower .active-info-strip #progress-fill{height:100%!important;border-radius:inherit!important;transition:width .42s cubic-bezier(.2,.8,.2,1)!important}
-.dashboard-lower .active-info-strip .upcoming-copy small{font-size:calc(9.5px * var(--ui-scale,1))!important}
-.dashboard-lower .active-info-strip #upcoming-title{font-size:calc(14px * var(--ui-scale,1))!important}
-.dashboard-lower .active-info-strip #upcoming-time{font-size:calc(10px * var(--ui-scale,1))!important}
-#environment-line[role=button]{cursor:pointer!important;outline-offset:4px!important}
-#environment-line[role=button]:hover{background:color-mix(in srgb,var(--accent-soft) 18%,transparent)!important}
-#environment-line[role=button]:focus-visible{outline:1px solid var(--accent)!important}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* Idle ribbon uses the same component as the active state; no separate styling. */
 
 /* Dynamic ribbon states. The countdown always owns the remaining space. */
-/* Information-strip columns are intentionally stable; state-dependent reflow removed in 3.13.17. */
+
 
 
 
@@ -349,16 +218,16 @@
 .is-idle:not(.has-panel) .topbar.chrome{transform:translateY(-7px)!important;filter:none!important}
 .is-idle:not(.has-panel) .bottom-bar.chrome{transform:translateY(7px)!important;filter:none!important}
 
-@media(max-width:740px){
-  .dashboard-lower .active-info-strip .solar-time time{font-size:calc(9.5px * var(--ui-scale,1))!important}
-  .dashboard-lower .active-info-strip .goal-heading .section-label{font-size:calc(9px * var(--ui-scale,1))!important}
-  .dashboard-lower .active-info-strip .goal-heading h2{font-size:calc(12.5px * var(--ui-scale,1))!important}
-  .dashboard-lower .active-info-strip .countdown>div>span{font-size:calc(8.8px * var(--ui-scale,1))!important}
-  .dashboard-lower .active-info-strip .progress-labels{font-size:calc(9px * var(--ui-scale,1))!important}
-  .dashboard-lower .active-info-strip .progress-track{height:3px!important}
-  .dashboard-lower .active-info-strip .upcoming-copy small{font-size:calc(8.8px * var(--ui-scale,1))!important}
-  .dashboard-lower .active-info-strip #upcoming-title{font-size:calc(10.5px * var(--ui-scale,1))!important}
-  .dashboard-lower .active-info-strip #upcoming-time{font-size:calc(9px * var(--ui-scale,1))!important}
+@media (max-width:740px){
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   
   .bottom-bar .toolbar{width:calc(100vw - 22px)!important;max-width:none!important;gap:5px!important}.toolbar-group-center{padding-inline:6px!important}.toolbar-group .icon-button{width:38px!important;height:38px!important;min-width:38px!important}.toolbar-group{gap:0!important}
@@ -367,35 +236,25 @@
   .share-format-row{grid-template-columns:1fr!important;gap:5px!important}.share-format-label{display:none!important}.share-formats button{min-height:38px!important;padding-inline:4px!important}.share-preview-wrap,.share-preview-wrap img{max-height:26dvh!important}.share-preview-wrap{min-height:140px!important}
 }
 
-@media(max-height:560px) and (orientation:landscape){
-  .dashboard-lower .active-info-strip .goal-heading .section-label,.dashboard-lower .active-info-strip .progress-labels{font-size:calc(8.8px * var(--ui-scale,1))!important}
-  .dashboard-lower .active-info-strip .countdown>div>span{font-size:calc(8.5px * var(--ui-scale,1))!important}
-  .dashboard-lower .active-info-strip .progress-track{height:3px!important;margin-top:3px!important}
+@media (max-height:560px) and (orientation:landscape){
+  
+  
+  
   .bottom-bar .toolbar{padding-block:1px 2px!important}.toolbar-group .icon-button{width:34px!important;height:34px!important;min-width:34px!important}
 }
 
 /* v3.12.6 — lower ribbon readability floor across compact screens. */
-.dashboard-lower .active-info-strip .section-label,.dashboard-lower .active-info-strip .progress-labels,.dashboard-lower .active-info-strip .countdown>div>span,.dashboard-lower .active-info-strip .upcoming-copy small,.dashboard-lower .active-info-strip #upcoming-time{
-  font-size:max(9.5px,calc(9.5px * var(--ui-scale,1)))!important;
-}
-.dashboard-lower .active-info-strip .progress-track{height:max(6px,calc(5px * var(--ui-scale,1)))!important}
 
-@media(max-width:740px), (max-height:560px) and (orientation:landscape){
-  .dashboard-lower .active-info-strip .section-label,.dashboard-lower .active-info-strip .progress-labels,.dashboard-lower .active-info-strip .countdown>div>span,.dashboard-lower .active-info-strip .upcoming-copy small,.dashboard-lower .active-info-strip #upcoming-time{
-    font-size:max(9.5px,calc(9.5px * var(--ui-scale,1)))!important;
-  }
-}
 
-.dashboard-lower .active-info-strip .progress-track{height:6px!important}
+
+
+
+
 
 
 /* v3.12.6 — final readable floor for information that carries meaning. */
-.dashboard-lower .active-info-strip>#environment-line::before,.dashboard-lower .active-info-strip #weather-place,.dashboard-lower .active-info-strip .solar-label,.dashboard-lower .active-info-strip .solar-time time,.dashboard-lower .active-info-strip .section-label,.dashboard-lower .active-info-strip .progress-labels,.dashboard-lower .active-info-strip .countdown>div>span,.dashboard-lower .active-info-strip .upcoming-copy small,.dashboard-lower .active-info-strip #upcoming-time{
-  font-size:max(10px,calc(10px * var(--ui-scale,1)))!important;
-}
-.dashboard-lower .active-info-strip #weather-condition{
-  font-size:max(11px,calc(11.5px * var(--ui-scale,1)))!important;
-}
+
+
 
 /* v3.12.6 — library final pass: two calm rows instead of three compressed columns. */
 .phrase-library-tools{
@@ -418,19 +277,18 @@
 /* Postcard preview: enough to understand the crop, never the dominant part of the dialog. */
 .share-preview-wrap{max-height:min(24dvh,240px)!important;min-height:145px!important}
 .share-preview-wrap img{max-height:min(24dvh,240px)!important}
-@media(max-width:740px){
+@media (max-width:740px){
   .share-preview-wrap,.share-preview-wrap img{max-height:22dvh!important}
   .share-preview-wrap{min-height:125px!important}
 }
 
 /* Very narrow phones still preserve all three toolbar groups without horizontal clipping. */
-@media(max-width:360px){
+@media (max-width:360px){
   .bottom-bar .toolbar{width:calc(100vw - 14px)!important;max-width:none!important;gap:2px!important}
   .toolbar-group-center{padding-inline:4px!important}
   .toolbar-group .icon-button{width:34px!important;height:36px!important;min-width:34px!important}
 }
 
 /* Production motion pass: avoid expensive live blur on frequently animated chrome. */
-.dashboard-lower .timer-chip,
-.istante-tooltip{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+
 .panel::backdrop{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(6,10,7,.72)!important}

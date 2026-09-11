@@ -1,5 +1,16 @@
 # Changelog
 
+## 3.13.18 — 11 settembre 2026
+
+- **Barra informativa ripulita alla radice:** Meteo, Traguardo e Calendario/Evento hanno ora un solo layout autorevole. Sono state eliminate altre 294 regole storiche o duplicate della ribbon dai vecchi fogli CSS; la composizione corrente vive in `responsive.css` e non cambia più quando altri comandi vengono nascosti.
+- **Calendario/Evento su telefono:** il gruppo mantiene la stessa gerarchia interna della versione ampia ma viene centrato come insieme; icona calendario, testo e scorciatoia Agenda restano vicini. Lo stato “Nessun impegno in vista” centra anche il contenuto interno.
+- **Scorciatoia Agenda:** sostituita con l’icona Material `arrow_forward_ios` e spostata più all’interno, così non tocca il bordo destro della barra nemmeno sui display grandi.
+- **Player audio:** aggiunto il terzo tab **Melodie**, accanto a Radio e Ambiente, con quattro composizioni procedurali originali generate sul dispositivo: Aurora lenta, Vetro e pioggia, Notturno e Orizzonte. Nessun file audio esterno è necessario.
+- **Condivisione:** meteo, obiettivo, colonna sonora e altri dettagli opzionali vengono inclusi solo quando il dato esiste realmente; le opzioni non disponibili vengono nascoste. La località non viene stampata quando esiste solo una posizione generica o delle coordinate senza nome.
+- **Calendario mobile:** il pulsante dei calendari mantiene l’icona visibile e resta vicino ai controlli correlati. Nel drawer “Le tue giornate” il titolo è a sinistra e i comandi a destra; sotto i 1000 px i calendari si dispongono su più elementi per riga invece di una lunga colonna. Le vecchie regole del drawer sono state spostate fuori dal foglio storico e rese autorevoli nel layer corrente.
+- Rimossa dall’interfaccia una vecchia dicitura di riferimento alla versione 3.8.
+- Refactoring del motore audio offline: stato, cambio sorgente, generazione buffer e restart sono stati separati in funzioni leggibili, con condizioni esplicite invece di catene di precedenze difficili da mantenere.
+
 ## 3.13.17 — 11 settembre 2026
 
 - Barra informativa mobile stabilizzata: Meteo, Traguardo e Prossimo impegno mantengono la stessa composizione durante stato attivo, pre-inattività e inattività; la scomparsa dei comandi superiore/inferiore non cambia più griglia, larghezze o ordine dei blocchi.

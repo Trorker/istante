@@ -44,27 +44,8 @@
 }
 
 /* Dashboard lower ribbon: Meteo and Il prossimo capitolo no longer animate on hover. */
-#environment-line[role=button],#goal-strip{transition:none!important}
-@media(hover:hover){
-  #environment-line[role=button]:hover,#goal-strip:hover{
-    background:transparent!important;
-    color:inherit!important;
-    transform:none!important;
-    box-shadow:none!important;
-  }
-}
 
-/* Calendar drawer: explicit close control and grouped right-side actions. */
-#calendar-view .calendar-sidebar-head{
-  display:flex!important;
-  align-items:center!important;
-  justify-content:space-between!important;
-  gap:12px!important;
-}
-#calendar-view .calendar-sidebar-head h2{display:block!important;margin:0!important}
-#calendar-view .calendar-sidebar-head-actions{display:flex!important;align-items:center!important;gap:4px!important;margin-left:auto!important}
-#calendar-view #cal-sidebar-close{display:grid!important;place-items:center!important}
-#calendar-view #cal-today{gap:0!important}
+
 
 /* Wizard text should breathe naturally at every step; no step-specific copy clamp. */
 #tour-dialog #tour-copy{max-width:none!important}

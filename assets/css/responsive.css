@@ -1,40 +1,234 @@
-/* Istante 3.13.17 - responsive layout authority.
- * This file intentionally replaces the 3.13.12/3.13.13/3.13.14 patch chain.
- * Breakpoints describe composition (tablet, phone portrait, phone landscape),
- * while feature state is expressed by classes/data attributes from JavaScript.
+/* Istante 3.13.18 — canonical responsive and lower-ribbon layout.
+ * Historical styles keep their visual foundations; current dashboard/calendar
+ * composition lives here so state changes cannot reactivate obsolete layouts.
  */
+
+/* --------------------------------------------------------------------------
+   Lower information ribbon — single source of truth
+   -------------------------------------------------------------------------- */
+.dashboard-lower{
+  grid-column:1!important;
+  grid-row:2!important;
+  align-self:end!important;
+  position:relative!important;
+  z-index:7!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-template-rows:auto auto!important;
+  gap:5px!important;
+  width:min(80vw,1600px)!important;
+  max-width:calc(100vw - 40px)!important;
+  min-width:0!important;
+  min-height:0!important;
+  margin:0 auto 5px!important;
+  padding:0!important;
+  border:0!important;
+}
+.dashboard-lower .timer-slot{
+  grid-column:1!important;
+  grid-row:1!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+}
+.dashboard-lower .timer-slot:has(.timer-chip[hidden]),
+.dashboard-lower .timer-chip[hidden]{display:none!important}
+.dashboard-lower .timer-chip{max-height:38px!important;margin:0 auto!important;box-shadow:none!important}
+
+.dashboard-lower .active-info-strip{
+  grid-column:1!important;
+  grid-row:2!important;
+  display:grid!important;
+  grid-template-columns:20% 60% 20%!important;
+  grid-template-rows:84px!important;
+  align-items:stretch!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:84px!important;
+  max-height:84px!important;
+  margin:0!important;
+  overflow:hidden!important;
+  border-top:1px solid color-mix(in srgb,var(--line) 68%,transparent)!important;
+  border-bottom:1px solid color-mix(in srgb,var(--line) 48%,transparent)!important;
+  background:transparent!important;
+  mask-image:none!important;
+  -webkit-mask-image:none!important;
+}
+.dashboard-lower .active-info-strip:not(:has(>:not([hidden]))){display:none!important}
+.dashboard-lower .active-info-strip>#environment-line,
+.dashboard-lower .active-info-strip>.goal-strip,
+.dashboard-lower .active-info-strip>#upcoming-event{
+  grid-row:1!important;
+  align-self:stretch!important;
+  width:100%!important;
+  height:84px!important;
+  min-width:0!important;
+  min-height:84px!important;
+  max-height:84px!important;
+  margin:0!important;
+  overflow:hidden!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  background:transparent!important;
+}
+.dashboard-lower .active-info-strip>#environment-line{grid-column:1!important}
+.dashboard-lower .active-info-strip>.goal-strip{grid-column:2!important}
+.dashboard-lower .active-info-strip>#upcoming-event{grid-column:3!important}
+.dashboard-lower .active-info-strip>#environment-line[hidden],
+.dashboard-lower .active-info-strip>.goal-strip[hidden],
+.dashboard-lower .active-info-strip>#upcoming-event[hidden]{display:none!important}
+
+/* Weather keeps the same icon / temperature / condition / daylight grammar. */
+.dashboard-lower .active-info-strip>#environment-line{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-template-rows:auto auto auto!important;
+  grid-template-areas:'eyebrow' 'weather' 'solar'!important;
+  align-content:center!important;
+  gap:4px!important;
+  max-width:none!important;
+  padding:9px 16px!important;
+  border:0!important;
+  text-align:left!important;
+}
+.dashboard-lower .active-info-strip>#environment-line::before{
+  content:'Meteo';
+  grid-area:eyebrow!important;
+  display:block!important;
+  margin:0!important;
+  color:var(--faint)!important;
+  font-size:calc(10px * var(--ui-scale,1))!important;
+  font-weight:500!important;
+  line-height:1!important;
+  letter-spacing:.13em!important;
+  text-transform:uppercase!important;
+}
+.dashboard-lower .active-info-strip .weather-line{
+  grid-area:weather!important;
+  display:grid!important;
+  grid-template-columns:19px auto minmax(0,1fr)!important;
+  grid-template-areas:'icon temp condition' 'icon temp place'!important;
+  align-items:center!important;
+  gap:1px 7px!important;
+  min-width:0!important;
+  padding:0!important;
+  text-align:left!important;
+}
+.dashboard-lower .active-info-strip .weather-line[hidden]{display:none!important}
+.dashboard-lower .active-info-strip .weather-line>.icon{grid-area:icon!important;width:18px!important;height:18px!important;color:var(--accent)!important}
+.dashboard-lower .active-info-strip #weather-text{grid-area:temp!important;font:400 calc(18px * var(--ui-scale,1))/1 var(--serif)!important;color:var(--ink)!important;letter-spacing:-.035em!important}
+.dashboard-lower .active-info-strip #weather-condition{grid-area:condition!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font-size:calc(11.5px * var(--ui-scale,1))!important;color:var(--muted)!important;line-height:1.1!important}
+.dashboard-lower .active-info-strip #weather-place{grid-area:place!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font-size:calc(10px * var(--ui-scale,1))!important;color:var(--faint)!important;line-height:1.1!important}
+.dashboard-lower .active-info-strip #weather-age{display:none!important}
+.dashboard-lower .active-info-strip .solar-line{
+  grid-area:solar!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:9px!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+}
+.dashboard-lower .active-info-strip .solar-line[hidden]{display:none!important}
+.dashboard-lower .active-info-strip .solar-path,
+.dashboard-lower .active-info-strip .solar-note,
+.dashboard-lower .active-info-strip .moon-caption{display:none!important}
+.dashboard-lower .active-info-strip .solar-time{display:inline-flex!important;align-items:center!important;gap:4px!important;min-width:0!important}
+.dashboard-lower .active-info-strip .solar-time>.icon{display:inline-flex!important;width:12px!important;height:12px!important;color:var(--accent)!important}
+.dashboard-lower .active-info-strip .solar-label{font-size:calc(9.5px * var(--ui-scale,1))!important;color:var(--faint)!important}
+.dashboard-lower .active-info-strip .solar-time time{font-size:calc(10.5px * var(--ui-scale,1))!important;color:var(--muted)!important;font-variant-numeric:tabular-nums!important}
+#environment-line[role=button]{cursor:pointer!important;outline-offset:4px!important}
+@media (hover:hover){#environment-line[role=button]:hover{background:color-mix(in srgb,var(--accent-soft) 18%,transparent)!important}}
+#environment-line[role=button]:focus-visible{outline:1px solid var(--accent)!important}
+
+/* Goal: copy at left, countdown at right, progress below. */
+.dashboard-lower .active-info-strip>.goal-strip{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  grid-template-rows:auto auto!important;
+  grid-template-areas:'heading countdown' 'progress progress'!important;
+  align-items:center!important;
+  align-content:center!important;
+  gap:6px 18px!important;
+  max-width:none!important;
+  padding:19px 22px 9px!important;
+  border:0!important;
+  border-left:1px solid color-mix(in srgb,var(--line) 58%,transparent)!important;
+  border-right:1px solid color-mix(in srgb,var(--line) 58%,transparent)!important;
+  text-align:left!important;
+  cursor:pointer!important;
+  transition:background .18s ease,border-color .18s ease,transform .18s cubic-bezier(.2,.8,.2,1)!important;
+}
+@media (hover:hover){.dashboard-lower .active-info-strip>.goal-strip:hover{background:color-mix(in srgb,var(--accent-soft) 22%,transparent)!important}}
+.dashboard-lower .active-info-strip>.goal-strip:focus-visible{outline:1px solid var(--accent)!important;outline-offset:4px!important}
+.dashboard-lower .active-info-strip>.goal-strip:active{transform:scale(.997)!important}
+.dashboard-lower .active-info-strip .goal-heading{grid-area:heading!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;grid-template-areas:'label configure' 'title title'!important;align-items:center!important;gap:2px 7px!important;min-width:0!important}
+.dashboard-lower .active-info-strip .goal-heading .section-label{grid-area:label!important;margin:0!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font-size:calc(10px * var(--ui-scale,1))!important;line-height:1!important;letter-spacing:.12em!important;color:var(--faint)!important}
+.dashboard-lower .active-info-strip .goal-heading h2{grid-area:title!important;margin:0!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font:400 calc(16.5px * var(--ui-scale,1))/1.15 var(--serif)!important;letter-spacing:-.02em!important;color:var(--ink)!important;text-align:left!important}
+.dashboard-lower .active-info-strip .goal-configure{grid-area:configure!important;justify-self:end!important;display:grid!important;place-items:center!important;width:25px!important;height:25px!important;min-height:25px!important;padding:0!important;margin:0!important;border-radius:50%!important;opacity:.5!important}
+.dashboard-lower .active-info-strip .goal-configure:hover,.dashboard-lower .active-info-strip .goal-configure:focus-visible{opacity:1!important;background:var(--accent-soft)!important}
+.dashboard-lower .active-info-strip .goal-configure .icon{width:12px!important;height:12px!important}
+.dashboard-lower .active-info-strip .goal-configure span:not(.icon){display:none!important}
+.dashboard-lower .active-info-strip .countdown{grid-area:countdown!important;justify-self:end!important;display:flex!important;align-items:center!important;gap:10px!important;white-space:nowrap!important}
+.dashboard-lower .active-info-strip .countdown>div{display:flex!important;flex-direction:column!important;align-items:center!important;gap:1px!important;min-width:33px!important}
+.dashboard-lower .active-info-strip .countdown strong{font-size:calc(23px * var(--ui-scale,1))!important;font-weight:300!important;line-height:1!important;letter-spacing:-.04em!important;color:var(--ink)!important;font-variant-numeric:tabular-nums!important}
+.dashboard-lower .active-info-strip .countdown>div>span{font-size:calc(9.5px * var(--ui-scale,1))!important;line-height:1!important;color:var(--faint)!important}
+.dashboard-lower .active-info-strip .count-separator{font-size:12px!important;margin-top:-7px!important;color:var(--faint)!important;opacity:.42!important}
+.dashboard-lower .active-info-strip .goal-progress{grid-area:progress!important;display:block!important;align-self:end!important;width:100%!important;max-width:none!important;min-width:0!important;min-height:18px!important;overflow:visible!important}
+.dashboard-lower .active-info-strip .progress-labels{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;font-size:calc(10px * var(--ui-scale,1))!important;line-height:1!important;color:var(--faint)!important}
+.dashboard-lower .active-info-strip #progress-label{min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+.dashboard-lower .active-info-strip #progress-value{flex:0 0 auto!important;color:var(--accent)!important}
+.dashboard-lower .active-info-strip .progress-track{display:block!important;flex:0 0 auto!important;height:4px!important;min-height:4px!important;margin-top:6px!important;overflow:hidden!important;border-radius:999px!important;background:color-mix(in srgb,var(--line) 78%,transparent)!important}
+.dashboard-lower .active-info-strip #progress-fill{height:100%!important;border-radius:inherit!important;transition:width .42s cubic-bezier(.2,.8,.2,1)!important}
+.dashboard-lower .active-info-strip .goal-date{display:none!important}
+.dashboard-lower .active-info-strip>.goal-strip.is-empty .countdown,
+.dashboard-lower .active-info-strip>.goal-strip.is-empty .goal-progress{display:none!important}
+
+/* Upcoming event typography is shared by real and empty states. */
+.dashboard-lower .active-info-strip .upcoming-copy small{font-size:calc(9.5px * var(--ui-scale,1))!important;line-height:1!important;letter-spacing:.1em!important;text-transform:uppercase!important;color:var(--faint)!important}
+.dashboard-lower .active-info-strip #upcoming-title{min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font:400 calc(14px * var(--ui-scale,1))/1.15 var(--serif)!important;color:var(--ink)!important}
+.dashboard-lower .active-info-strip #upcoming-time{font-size:calc(10px * var(--ui-scale,1))!important;line-height:1.5!important;padding:2px 0 4px!important;color:var(--muted)!important;overflow:visible!important;text-overflow:clip!important}
+
 
 /* --------------------------------------------------------------------------
    Dashboard event affordance
    -------------------------------------------------------------------------- */
-/* The event card has two sibling buttons: the main event opens details, while
-   the subtle arrow is an independent shortcut to Agenda. This avoids nested
-   interactive controls and keeps keyboard/touch behaviour predictable. */
+/* The event card has two sibling buttons. The main event opens details; the
+   inset iOS arrow opens Agenda and never touches the edge of the ribbon. */
 .dashboard-lower .active-info-strip>#upcoming-event{
   display:grid!important;
-  grid-template-columns:24px minmax(0,1fr) 24px!important;
+  grid-template-columns:minmax(0,1fr) 40px!important;
   position:relative!important;
   align-items:stretch!important;
   width:100%!important;
   min-width:0!important;
-  padding:0!important;
-  overflow:hidden!important;
+  padding:0 18px 0 0!important;
+  overflow:visible!important;
   background:transparent!important;
+  box-sizing:border-box!important;
 }
 .dashboard-lower .active-info-strip>#upcoming-event[hidden]{display:none!important}
 .dashboard-lower .active-info-strip>#upcoming-event>.upcoming-main{
-  grid-column:1 / -1!important;
+  grid-column:1!important;
   grid-row:1!important;
   display:grid!important;
-  grid-template-columns:24px minmax(0,1fr) 24px!important;
-  grid-template-areas:'icon copy spacer' 'icon time spacer'!important;
+  grid-template-columns:22px minmax(0,1fr)!important;
+  grid-template-areas:'icon copy' 'icon time'!important;
   align-content:center!important;
   align-items:center!important;
   gap:3px 8px!important;
   width:100%!important;
   height:100%!important;
   min-width:0!important;
-  padding:9px 16px!important;
+  padding:9px 8px 9px 15px!important;
   border:0!important;
   border-radius:0!important;
   background:transparent!important;
@@ -43,19 +237,21 @@
 }
 .dashboard-lower .active-info-strip>#upcoming-event>.upcoming-main:hover{background:transparent!important}
 .dashboard-lower .active-info-strip>#upcoming-event>.upcoming-main>.icon:first-child{grid-area:icon!important;width:15px!important;height:15px!important;color:var(--accent)!important;justify-self:center!important}
-.dashboard-lower .active-info-strip>#upcoming-event>.upcoming-main>.upcoming-copy{grid-area:copy!important;display:grid!important;gap:3px!important;min-width:0!important}
-.dashboard-lower .active-info-strip>#upcoming-event>.upcoming-main>#upcoming-time{grid-area:time!important;min-width:0!important}
+.dashboard-lower .active-info-strip>#upcoming-event>.upcoming-main>.upcoming-copy{grid-area:copy!important;display:grid!important;gap:3px!important;min-width:0!important;text-align:left!important;justify-items:start!important}
+.dashboard-lower .active-info-strip>#upcoming-event>.upcoming-main>#upcoming-time{grid-area:time!important;min-width:0!important;text-align:left!important}
 .dashboard-lower .active-info-strip>#upcoming-event>.upcoming-arrow{
-  grid-column:3!important;
+  grid-column:2!important;
   grid-row:1!important;
   z-index:2!important;
   display:grid!important;
   place-items:center!important;
   align-self:center!important;
   justify-self:center!important;
-  width:26px!important;
-  height:26px!important;
-  min-width:26px!important;
+  width:28px!important;
+  height:28px!important;
+  min-width:28px!important;
+  min-height:28px!important;
+  margin:0!important;
   padding:0!important;
   border-radius:999px!important;
   border:1px solid color-mix(in srgb,var(--line) 58%,transparent)!important;
@@ -66,37 +262,13 @@
   transition:opacity .18s ease,background .18s ease,color .18s ease,transform .18s ease!important;
 }
 .dashboard-lower .active-info-strip>#upcoming-event>.upcoming-arrow>.icon,
-.dashboard-lower .active-info-strip>#upcoming-event>.upcoming-arrow svg{width:14px!important;height:14px!important}
+.dashboard-lower .active-info-strip>#upcoming-event>.upcoming-arrow svg{width:11px!important;height:11px!important}
 .dashboard-lower .active-info-strip>#upcoming-event>.upcoming-arrow:hover,
 .dashboard-lower .active-info-strip>#upcoming-event>.upcoming-arrow:focus-visible{
-  opacity:1!important;
-  color:var(--ink)!important;
-  background:color-mix(in srgb,var(--accent-soft) 68%,transparent)!important;
-  outline:none!important;
-  transform:translateX(1px)!important;
-}
-/* Empty event states are centred against the whole card: the main button
-   reserves equal icon/arrow columns even though the Agenda button overlays the
-   right-hand visual slot. */
-#upcoming-event.is-empty>.upcoming-main{
-  text-align:center!important;
-}
-#upcoming-event.is-empty>.upcoming-main>.upcoming-copy,
-#upcoming-event.is-empty>.upcoming-main>#upcoming-time{
-  width:100%!important;
-  text-align:center!important;
-  justify-items:center!important;
+  opacity:1!important;color:var(--ink)!important;background:color-mix(in srgb,var(--accent-soft) 68%,transparent)!important;outline:none!important;transform:translateX(1px)!important;
 }
 #upcoming-event.is-empty>.upcoming-main>.upcoming-copy small,
-#upcoming-event.is-empty #upcoming-title{
-  display:block!important;
-  width:100%!important;
-  max-width:100%!important;
-  white-space:normal!important;
-  overflow:visible!important;
-  text-overflow:clip!important;
-  text-align:center!important;
-}
+#upcoming-event.is-empty #upcoming-title{white-space:normal!important;overflow:visible!important;text-overflow:clip!important}
 
 /* Screensaver inactivity now keeps the same information ribbon. There is only
    one dashboard layout to maintain; only the top/bottom controls fade away. */
@@ -179,6 +351,16 @@ body.is-idle-pre:not(.has-panel) .dashboard-lower .active-info-strip{
 #calendar-view .calendar-week-event .event-time{display:block!important;line-height:1.25!important;font-size:max(10.5px,calc(10.8px * var(--ui-scale,1)))!important}
 #calendar-view .calendar-agenda-time{line-height:1.35!important;font-size:max(10.5px,calc(11px * var(--ui-scale,1)))!important}
 
+/* Radio panel: three equal source tabs and matching offline controls. */
+.audio-source-switch button{min-width:0!important;padding-inline:7px!important}
+#ambient-status,#melody-status{font-size:11px;line-height:1.6;color:var(--muted);margin:8px 0 0}
+#ambient-volume-value,#melody-volume-value{font:11px var(--sans);min-width:32px;text-align:right;color:var(--muted)}
+@media (max-width:380px){
+  .audio-source-switch{gap:3px!important;padding:3px!important}
+  .audio-source-switch button{gap:4px!important;padding-inline:3px!important;font-size:10px!important}
+  .audio-source-switch button .icon{width:14px!important;height:14px!important}
+}
+
 /* --------------------------------------------------------------------------
    Tablet calendar: controls get their own second row; week uses day cards.
    -------------------------------------------------------------------------- */
@@ -217,6 +399,44 @@ body.is-idle-pre:not(.has-panel) .dashboard-lower .active-info-strip{
 @media (min-width:900px) and (max-width:1180px){
   #calendar-view #cal-content>.calendar-week{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;align-content:start!important}
   #calendar-view .calendar-week-day{min-height:190px!important;padding:10px!important}
+}
+
+/* Calendar source drawer/list authority below 1000px. Sources wrap in rows;
+   the drawer heading always keeps its title left and actions right. */
+/* --------------------------------------------------------------------------
+   Calendar drawer — canonical header and source layout
+   -------------------------------------------------------------------------- */
+#calendar-view .calendar-sidebar-head{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  width:100%!important;
+  text-align:left!important;
+}
+#calendar-view .calendar-sidebar-head h2{
+  display:block!important;
+  min-width:0!important;
+  margin:0!important;
+  text-align:left!important;
+}
+#calendar-view .calendar-sidebar-head-actions{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:5px!important;
+  margin-left:auto!important;
+  flex:0 0 auto!important;
+}
+#calendar-view #cal-sidebar-close{display:grid!important;place-items:center!important}
+
+@media (max-width:1000px){
+  #calendar-view .calendar-sidebar-head{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;width:100%!important;text-align:left!important}
+  #calendar-view .calendar-sidebar-head h2{margin:0!important;text-align:left!important;justify-self:start!important}
+  #calendar-view .calendar-sidebar-head-actions{display:flex!important;align-items:center!important;gap:5px!important;margin-left:auto!important;justify-content:flex-end!important}
+  #calendar-view #cal-source-list{display:flex!important;flex-flow:row wrap!important;align-items:stretch!important;align-content:flex-start!important;gap:6px 12px!important;width:100%!important}
+  #calendar-view .calendar-source-toggle{flex:1 1 165px!important;width:auto!important;min-width:0!important;padding:9px 3px!important}
+  #calendar-view .calendar-holidays-status{flex:1 1 165px!important;min-width:0!important}
 }
 
 /* --------------------------------------------------------------------------
@@ -267,9 +487,11 @@ body.is-idle-pre:not(.has-panel) .dashboard-lower .active-info-strip{
   #calendar-view.sidebar-open .calendar-shell>main,
   #calendar-view.sidebar-open .calendar-layout{overflow:visible!important}
   #calendar-view .calendar-sidebar-head,#calendar-view .calendar-local-note{display:flex!important}
+  #calendar-view .calendar-sidebar-head{flex:0 0 auto!important;justify-content:space-between!important;text-align:left!important}
+  #calendar-view .calendar-sidebar-head-actions{margin-left:auto!important}
   #calendar-view .calendar-local-note{flex:0 0 auto!important}
-  #calendar-view #cal-source-list{display:grid!important;grid-template-columns:1fr!important;gap:6px!important;align-content:start!important}
-  #calendar-view .calendar-source-toggle{width:100%!important;padding:9px 4px!important}
+  #calendar-view #cal-source-list{display:flex!important;flex-flow:row wrap!important;gap:6px 8px!important;align-content:flex-start!important}
+  #calendar-view .calendar-source-toggle{flex:1 1 140px!important;width:auto!important;min-width:0!important;padding:9px 4px!important}
   #calendar-view .calendar-sidebar-actions{margin-top:auto!important;padding-top:14px!important}
   #calendar-view .calendar-sidebar-actions #cal-manage{width:100%!important;justify-content:center!important}
 
@@ -464,27 +686,35 @@ body.is-idle-pre:not(.has-panel) .dashboard-lower .active-info-strip{
   .dashboard-lower .active-info-strip .progress-labels{font-size:7.2px!important}
   .dashboard-lower .active-info-strip .goal-date{display:none!important}
 
-  /* Upcoming event uses equal icon/action columns so the copy is geometrically
-     centred in the empty state and remains readable when a real event appears. */
+  /* Event keeps the desktop information grammar, but the whole icon/copy/time
+     group is centred on the phone. The Agenda shortcut stays close, not at the edge. */
   .dashboard-lower .active-info-strip>#upcoming-event{
     order:3!important;
+    grid-template-columns:minmax(0,max-content) 30px!important;
+    justify-content:center!important;
+    column-gap:6px!important;
     min-height:48px!important;
     height:auto!important;
+    padding:0 14px!important;
   }
   .dashboard-lower .active-info-strip>#upcoming-event>.upcoming-main{
+    grid-column:1!important;
+    width:auto!important;
+    max-width:min(285px,calc(100vw - 74px))!important;
     min-height:48px!important;
-    padding:7px 8px!important;
-    grid-template-columns:26px minmax(0,1fr) 26px!important;
+    padding:7px 6px!important;
+    grid-template-columns:18px minmax(0,1fr)!important;
+    grid-template-areas:'icon copy' 'icon time'!important;
     gap:2px 7px!important;
   }
   .dashboard-lower .active-info-strip>#upcoming-event>.upcoming-main>.icon:first-child{display:inline-flex!important;width:13px!important;height:13px!important}
-  .dashboard-lower .active-info-strip>#upcoming-event>.upcoming-main>.upcoming-copy{width:100%!important;justify-items:start!important;text-align:left!important}
+  .dashboard-lower .active-info-strip>#upcoming-event>.upcoming-main>.upcoming-copy{width:auto!important;max-width:235px!important;justify-items:start!important;text-align:left!important}
   .dashboard-lower .active-info-strip>#upcoming-event>.upcoming-main>.upcoming-copy small{font-size:7.4px!important}
-  .dashboard-lower .active-info-strip>#upcoming-event>.upcoming-main #upcoming-title{display:block!important;width:100%!important;max-width:100%!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;text-align:left!important;font-size:10px!important;line-height:1.22!important}
-  .dashboard-lower .active-info-strip>#upcoming-event>.upcoming-main>#upcoming-time{width:100%!important;text-align:left!important;font-size:8px!important;line-height:1.2!important}
-  .dashboard-lower .active-info-strip>#upcoming-event>.upcoming-arrow{width:26px!important;height:26px!important;min-width:26px!important}
-  .dashboard-lower .active-info-strip>#upcoming-event.is-empty>.upcoming-main>.upcoming-copy,
-  .dashboard-lower .active-info-strip>#upcoming-event.is-empty>.upcoming-main>#upcoming-time{justify-items:center!important;text-align:center!important}
+  .dashboard-lower .active-info-strip>#upcoming-event>.upcoming-main #upcoming-title{display:block!important;width:auto!important;max-width:235px!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;text-align:left!important;font-size:10px!important;line-height:1.22!important}
+  .dashboard-lower .active-info-strip>#upcoming-event>.upcoming-main>#upcoming-time{width:auto!important;max-width:235px!important;text-align:left!important;font-size:8px!important;line-height:1.2!important}
+  .dashboard-lower .active-info-strip>#upcoming-event>.upcoming-arrow{grid-column:2!important;width:26px!important;height:26px!important;min-width:26px!important;min-height:26px!important;justify-self:center!important;margin:0!important}
+  .dashboard-lower .active-info-strip>#upcoming-event.is-empty>.upcoming-main>.upcoming-copy{justify-items:center!important;text-align:center!important}
+  .dashboard-lower .active-info-strip>#upcoming-event.is-empty>.upcoming-main>#upcoming-time{text-align:center!important}
   .dashboard-lower .active-info-strip>#upcoming-event.is-empty>.upcoming-main>.upcoming-copy small,
   .dashboard-lower .active-info-strip>#upcoming-event.is-empty #upcoming-title{text-align:center!important}
 
@@ -497,44 +727,37 @@ body.is-idle-pre:not(.has-panel) .dashboard-lower .active-info-strip{
   .quote-wrap blockquote{font-size:clamp(20px,5.6vw,27px)!important;line-height:1.25!important}
   .phrase-meta{margin-top:8px!important;font-size:8px!important}
 
-  /* Stable first row: full Istante brand | period | navigation | actions.
-     Hidden contextual actions consume no width, keeping Oggi close to the
-     calendar-source button. */
+  /* Phone portrait header: same controls as the regular calendar, grouped and
+     centred rather than squeezed into a desktop row. Calendar-source action sits
+     immediately beside navigation; view tabs (including Agenda) stay together. */
   #calendar-view .calendar-heading-combined{
-    grid-template-columns:minmax(100px,110px) minmax(0,1fr) auto auto!important;
-    grid-template-areas:"brand title nav actions" "views views views views"!important;
+    grid-template-columns:1fr auto auto 1fr!important;
+    grid-template-areas:'brand brand brand brand' 'title title title title' '. nav actions .' 'views views views views'!important;
     align-items:center!important;
-    gap:7px 2px!important;
+    justify-items:center!important;
+    gap:5px 4px!important;
     padding-bottom:8px!important;
   }
-  #calendar-view .calendar-brand-lockup{grid-area:brand!important;min-width:100px!important;max-width:110px!important;justify-self:start!important;overflow:visible!important}
-  #calendar-view .calendar-brand-lockup .calendar-brand-home{display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:5px!important;width:auto!important;max-width:none!important;min-width:0!important;padding:0!important;white-space:nowrap!important;overflow:visible!important}
+  #calendar-view .calendar-brand-lockup{grid-area:brand!important;min-width:0!important;max-width:none!important;justify-self:center!important;overflow:visible!important}
+  #calendar-view .calendar-brand-lockup .calendar-brand-home{display:flex!important;align-items:center!important;justify-content:center!important;gap:6px!important;width:auto!important;max-width:none!important;padding:0!important;white-space:nowrap!important;overflow:visible!important}
   #calendar-view .calendar-brand-lockup .brand-logo-image{width:24px!important;height:24px!important;flex:0 0 24px!important;border-radius:7px!important}
-  #calendar-view .calendar-brand-lockup .brand-home-copy{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;gap:1px!important;min-width:0!important;min-height:0!important;overflow:visible!important}
+  #calendar-view .calendar-brand-lockup .brand-home-copy{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;gap:1px!important;min-width:0!important;overflow:visible!important}
   #calendar-view .calendar-brand-lockup .brand-home-name{display:block!important;font-size:14.5px!important;line-height:1!important;white-space:nowrap!important}
   #calendar-view .calendar-brand-lockup .brand-home-tagline{display:block!important;font-size:6px!important;line-height:1.05!important;white-space:nowrap!important;letter-spacing:.005em!important}
-  #calendar-view .calendar-title-copy{grid-area:title!important;min-width:0!important}
-  #calendar-view .calendar-period-button{width:100%!important;min-width:0!important;justify-content:center!important;padding:2px!important}
+  #calendar-view .calendar-title-copy{grid-area:title!important;min-width:0!important;justify-self:center!important}
+  #calendar-view .calendar-period-button{width:auto!important;max-width:min(92vw,360px)!important;min-width:0!important;justify-content:center!important;padding:2px 6px!important}
   #calendar-view .calendar-period-title{font-size:clamp(13px,3.6vw,15px)!important;line-height:1!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;text-align:center!important}
   #calendar-view .calendar-period-icon,#calendar-view .calendar-title-copy>.section-label,#calendar-view .calendar-subtitle{display:none!important}
   #calendar-view .calendar-toolbar{display:contents!important}
-  #calendar-view .calendar-navigation{grid-area:nav!important;justify-self:end!important;gap:0!important}
-  #calendar-view .calendar-navigation .icon-button{width:27px!important;height:27px!important;min-width:27px!important;min-height:27px!important}
-  #calendar-view .calendar-navigation .secondary-button{min-width:41px!important;height:27px!important;min-height:27px!important;padding:3px 6px!important;font-size:8.8px!important}
-  #calendar-view .calendar-heading-actions{
-    grid-area:actions!important;
-    display:flex!important;
-    width:auto!important;
-    gap:1px!important;
-    justify-self:end!important;
-    align-items:center!important;
-  }
+  #calendar-view .calendar-navigation{grid-area:nav!important;justify-self:end!important;display:flex!important;align-items:center!important;gap:2px!important}
+  #calendar-view .calendar-navigation .icon-button{width:28px!important;height:28px!important;min-width:28px!important;min-height:28px!important}
+  #calendar-view .calendar-navigation .secondary-button{min-width:43px!important;height:28px!important;min-height:28px!important;padding:3px 7px!important;font-size:9px!important}
+  #calendar-view .calendar-heading-actions{grid-area:actions!important;display:flex!important;width:auto!important;gap:0!important;justify-self:start!important;align-items:center!important}
   #calendar-view #cal-empty-add{display:none!important}
-  #calendar-view .calendar-heading-actions .calendar-sidebar-toggle{width:29px!important;height:29px!important;min-width:29px!important;min-height:29px!important;padding:0!important;display:grid!important;place-items:center!important;color:var(--accent)!important}
-  #calendar-view .calendar-heading-actions .calendar-sidebar-toggle .icon{display:inline-flex!important;visibility:visible!important;opacity:1!important;align-items:center!important;justify-content:center!important;width:14px!important;height:14px!important}
-  #calendar-view #cal-sidebar-toggle>.icon:last-child{display:inline-flex!important;visibility:visible!important;opacity:1!important;align-items:center!important;justify-content:center!important;width:14px!important;height:14px!important}
-  #calendar-view #cal-sidebar-toggle>.icon:last-child svg{display:block!important;visibility:visible!important;opacity:1!important;width:14px!important;height:14px!important}
-  #calendar-view .calendar-views{grid-area:views!important;width:100%!important;display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:2px!important;padding:3px!important;overflow:visible!important}
+  #calendar-view .calendar-heading-actions .calendar-sidebar-toggle{width:30px!important;height:30px!important;min-width:30px!important;min-height:30px!important;margin-left:0!important;padding:0!important;display:grid!important;place-items:center!important;color:var(--accent)!important}
+  #calendar-view #cal-sidebar-toggle>.icon{display:inline-flex!important;visibility:visible!important;opacity:1!important;align-items:center!important;justify-content:center!important;width:15px!important;height:15px!important}
+  #calendar-view #cal-sidebar-toggle>.icon svg{display:block!important;visibility:visible!important;opacity:1!important;width:15px!important;height:15px!important}
+  #calendar-view .calendar-views{grid-area:views!important;width:min(100%,410px)!important;justify-self:center!important;display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:2px!important;padding:3px!important;overflow:visible!important}
   #calendar-view .calendar-views button{width:100%!important;min-width:0!important;min-height:32px!important;padding:5px 2px!important;font-size:clamp(8.3px,2.5vw,10px)!important;overflow:hidden!important}
 
   /* Year: one real, self-contained month per row. */
@@ -551,16 +774,14 @@ body.is-idle-pre:not(.has-panel) .dashboard-lower .active-info-strip{
 }
 
 @media (max-width:380px) and (orientation:portrait){
-  #calendar-view .calendar-heading-combined{grid-template-columns:minmax(92px,102px) minmax(0,1fr) auto auto!important;gap:6px 2px!important}
+  #calendar-view .calendar-heading-combined{gap:4px 3px!important}
   #calendar-view .calendar-brand-lockup .brand-logo-image{width:21px!important;height:21px!important;flex-basis:21px!important}
-  #calendar-view .calendar-brand-lockup{min-width:92px!important;max-width:102px!important}
   #calendar-view .calendar-brand-lockup .brand-home-name{font-size:13.2px!important}
   #calendar-view .calendar-brand-lockup .brand-home-tagline{font-size:5.5px!important}
   #calendar-view .calendar-period-title{font-size:12.5px!important}
-  #calendar-view .calendar-navigation .icon-button{width:25px!important;height:25px!important;min-width:25px!important;min-height:25px!important}
-  #calendar-view .calendar-navigation .secondary-button{min-width:37px!important;height:25px!important;min-height:25px!important;font-size:8px!important;padding-inline:4px!important}
-  #calendar-view .calendar-heading-actions{width:auto!important;gap:1px!important}
-  #calendar-view .calendar-heading-actions .calendar-sidebar-toggle{width:27px!important;height:27px!important;min-width:27px!important;min-height:27px!important}
+  #calendar-view .calendar-navigation .icon-button{width:26px!important;height:26px!important;min-width:26px!important;min-height:26px!important}
+  #calendar-view .calendar-navigation .secondary-button{min-width:39px!important;height:26px!important;min-height:26px!important;font-size:8.2px!important;padding-inline:4px!important}
+  #calendar-view .calendar-heading-actions .calendar-sidebar-toggle{width:28px!important;height:28px!important;min-width:28px!important;min-height:28px!important}
   #calendar-view .calendar-views button{font-size:8px!important;padding-inline:1px!important}
   #calendar-view #cal-content[data-view="year"] .calendar-mini{min-height:244px!important;padding:11px 12px!important}
   #calendar-view #cal-content[data-view="year"] .calendar-mini-grid{grid-template-rows:repeat(6,28px)!important;grid-auto-rows:28px!important;min-height:168px!important}
@@ -625,8 +846,8 @@ body.is-idle-pre:not(.has-panel) .dashboard-lower .active-info-strip{
   #calendar-view .calendar-heading-actions{grid-area:actions!important;display:flex!important;width:auto!important;gap:1px!important;justify-self:end!important}
   #calendar-view #cal-empty-add{display:none!important}
   #calendar-view .calendar-heading-actions .calendar-sidebar-toggle{width:27px!important;height:27px!important;min-width:27px!important;min-height:27px!important;padding:0!important;display:grid!important;place-items:center!important;color:var(--accent)!important}
-  #calendar-view #cal-sidebar-toggle>.icon:last-child{display:inline-flex!important;visibility:visible!important;opacity:1!important;align-items:center!important;justify-content:center!important;width:13px!important;height:13px!important}
-  #calendar-view #cal-sidebar-toggle>.icon:last-child svg{display:block!important;visibility:visible!important;opacity:1!important;width:13px!important;height:13px!important}
+  #calendar-view #cal-sidebar-toggle>.icon{display:inline-flex!important;visibility:visible!important;opacity:1!important;align-items:center!important;justify-content:center!important;width:13px!important;height:13px!important}
+  #calendar-view #cal-sidebar-toggle>.icon svg{display:block!important;visibility:visible!important;opacity:1!important;width:13px!important;height:13px!important}
   #calendar-view .calendar-layout{padding-top:5px!important}
   #calendar-view #cal-content[data-view="year"]{height:100%!important;min-height:0!important;overflow-x:hidden!important;overflow-y:auto!important;padding:0 3px 40px 0!important;-webkit-overflow-scrolling:touch!important;touch-action:pan-y!important}
   #calendar-view #cal-content[data-view="year"]>.calendar-year{grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-template-rows:none!important;grid-auto-rows:max-content!important;height:auto!important;min-height:0!important;align-content:start!important;gap:9px!important;overflow:visible!important}

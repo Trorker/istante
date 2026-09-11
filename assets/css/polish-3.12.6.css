@@ -119,15 +119,15 @@ html[data-theme="light"] #toast{box-shadow:0 16px 42px rgba(41,48,43,.2),0 2px 8
 .text-size-setting{display:grid!important;gap:12px!important}.text-size-setting>legend{font-size:11px!important;color:var(--muted)!important;margin-bottom:2px!important}
 .text-size-range-wrap{display:grid!important;gap:6px!important}.text-size-range-wrap input[type="range"]{width:100%!important;accent-color:var(--accent)!important;cursor:pointer!important}.text-size-range-labels{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:6px!important;font-size:9.5px!important;color:var(--faint)!important}.text-size-range-labels span{text-align:center!important}.text-size-range-labels span:first-child{text-align:left!important}.text-size-range-labels span:last-child{text-align:right!important}
 /* Useful ribbon elements keep physical minimums even at the largest text step. */
-.dashboard-lower .active-info-strip .progress-track{height:6px!important;min-height:6px!important;display:block!important;overflow:hidden!important}
+
 
 
 /* --------------------------------------------------------------------------
    Goal absent: remove the component, not only its text, and redistribute space.
    -------------------------------------------------------------------------- */
-#goal-strip[hidden]{display:none!important}
-.active-info-strip:not(:has(>:not([hidden]))){display:none!important}
-/* State-dependent column reassignment removed in 3.13.17. */
+
+
+
 
 
 
@@ -213,17 +213,13 @@ button,[role="button"],summary{touch-action:manipulation}
    Text-scale resilience: larger reading modes reserve real room for progress.
    The ribbon grows only a few pixels instead of clipping its second row.
    -------------------------------------------------------------------------- */
-.dashboard-lower .active-info-strip>.goal-strip{grid-template-rows:minmax(0,1fr) auto!important}
-.dashboard-lower .active-info-strip .goal-progress{display:block!important;min-height:18px!important;overflow:visible!important}
-.dashboard-lower .active-info-strip .progress-track{display:block!important;flex:0 0 auto!important}
-body[data-text-size="large"] .active-info-strip{grid-template-rows:76px!important;min-height:76px!important;max-height:76px!important}
-body[data-text-size="large"] .dashboard-lower .active-info-strip>#environment-line,
-body[data-text-size="large"] .dashboard-lower .active-info-strip>.goal-strip,
-body[data-text-size="large"] .dashboard-lower .active-info-strip>#upcoming-event{height:76px!important;min-height:76px!important;max-height:76px!important}
-body[data-text-size="xlarge"] .active-info-strip{grid-template-rows:80px!important;min-height:80px!important;max-height:80px!important}
-body[data-text-size="xlarge"] .dashboard-lower .active-info-strip>#environment-line,
-body[data-text-size="xlarge"] .dashboard-lower .active-info-strip>.goal-strip,
-body[data-text-size="xlarge"] .dashboard-lower .active-info-strip>#upcoming-event{height:80px!important;min-height:80px!important;max-height:80px!important}
+
+
+
+
+
+
+
 
 
 

@@ -4,22 +4,8 @@
    Dashboard composition
    The center belongs to clock, thought and goal. Context lives at the edges.
    -------------------------------------------------------------------------- */
-.dashboard-lower{
-  width:100%!important;
-  display:grid!important;
-  grid-template-columns:minmax(250px,.82fr) minmax(520px,1.45fr) minmax(250px,.82fr)!important;
-  gap:clamp(24px,3.2vw,64px)!important;
-  align-items:end!important;
-  margin:0 auto 5px!important;
-  min-width:0!important
-}
-.dashboard-lower>.goal-strip{
-  grid-column:2!important;
-  margin:0!important;
-  width:100%!important;
-  max-width:none!important;
-  min-width:0!important
-}
+
+
 .corner-stack{
   min-width:0!important;
   display:flex!important;
@@ -32,71 +18,14 @@
 .corner-right{grid-column:3!important;align-items:flex-end!important;text-align:right!important}
 
 /* Left: next appointment + timer, one quiet editorial block. */
-.corner-left .upcoming-event{
-  display:grid!important;
-  grid-template-columns:19px minmax(0,1fr) auto!important;
-  grid-template-areas:'icon copy time'!important;
-  align-items:center!important;
-  gap:9px 11px!important;
-  width:min(100%,360px)!important;
-  max-width:360px!important;
-  min-height:0!important;
-  margin:0!important;
-  padding:0 0 10px!important;
-  border:0!important;
-  border-bottom:1px solid var(--line)!important;
-  border-radius:0!important;
-  background:transparent!important;
-  box-shadow:none!important;
-  color:var(--ink)!important;
-  text-align:left!important
-}
-.corner-left .upcoming-event:hover{
-  background:transparent!important;
-  border-color:color-mix(in srgb,var(--accent) 48%,var(--line))!important
-}
-.corner-left .upcoming-event>.icon{
-  grid-area:icon!important;
-  width:18px!important;height:18px!important;flex:0 0 18px!important;
-  color:var(--accent)!important
-}
-.corner-left .upcoming-copy{
-  grid-area:copy!important;
-  min-width:0!important;
-  display:flex!important;
-  flex-direction:column!important;
-  align-items:flex-start!important;
-  gap:3px!important
-}
-.corner-left .upcoming-copy small{
-  display:block!important;
-  margin:0!important;
-  color:var(--faint)!important;
-  font-size:8px!important;
-  font-weight:500!important;
-  letter-spacing:.11em!important;
-  line-height:1.15!important;
-  text-transform:uppercase!important
-}
-.corner-left #upcoming-title{
-  display:block!important;
-  max-width:245px!important;
-  overflow:hidden!important;
-  text-overflow:ellipsis!important;
-  white-space:nowrap!important;
-  font:400 15px/1.22 var(--serif)!important;
-  letter-spacing:-.018em!important;
-  color:var(--ink)!important
-}
-.corner-left #upcoming-time{
-  grid-area:time!important;
-  margin:0!important;
-  color:var(--muted)!important;
-  font-size:10.5px!important;
-  font-variant-numeric:tabular-nums!important;
-  white-space:nowrap!important
-}
-.corner-left .upcoming-arrow{display:none!important}
+
+
+
+
+
+
+
+
 .corner-left .timer-slot{
   width:min(100%,360px)!important;
   min-height:0!important;height:auto!important;
@@ -120,26 +49,13 @@
 .corner-left .timer-chip .icon-button .icon{width:15px!important;height:15px!important}
 
 /* Right: weather first, sun/moon as supporting context. */
-.corner-right #environment-line{
-  width:min(100%,360px)!important;
-  max-width:360px!important;
-  display:grid!important;
-  grid-template-columns:minmax(0,1fr) auto!important;
-  grid-template-areas:'weather weather' 'solar moon'!important;
-  align-items:center!important;
-  justify-content:stretch!important;
-  gap:7px 10px!important;
-  margin:0!important;
-  padding:0!important;
-  border:0!important;
-  color:var(--muted)!important
-}
-.corner-right #environment-line[hidden]{display:none!important}
+
+
 .corner-right .weather-line{
   grid-area:weather!important;
   display:grid!important;
   grid-template-columns:24px auto minmax(0,180px)!important;
-  grid-template-areas:'icon temp condition' 'icon temp place'!important;
+  grid-template-areas:"icon temp condition" "icon temp place"!important;
   justify-content:end!important;
   align-items:center!important;
   justify-content:stretch!important;
@@ -266,16 +182,13 @@
 #calendar-view #cal-content>.calendar-year .calendar-mini-grid button{font-size:10.2px!important}
 
 /* Tablet: preserve the successful layout and keep labels comfortably readable. */
-@media(max-width:1180px){
-  .dashboard-lower{
-    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
-    gap:9px 28px!important
-  }
-  .dashboard-lower>.goal-strip{grid-column:1/-1!important;grid-row:1!important;margin-bottom:2px!important}
+@media (max-width:1180px){
+  
+  
   .corner-left{grid-column:1!important;grid-row:2!important}
   .corner-right{grid-column:2!important;grid-row:2!important}
-  .corner-right #environment-line{max-width:350px!important}
-  #calendar-view .calendar-views button{font-size:10.5px!important}
+  
+  
   #calendar-view .calendar-weekdays span{font-size:10px!important}
   #calendar-view .calendar-day-number{font-size:13px!important}
   #calendar-view .calendar-event{font-size:11px!important}
@@ -285,29 +198,29 @@
 }
 
 /* Phones: keep the edges useful, but don't crowd the thought. */
-@media(max-width:740px){
-  .dashboard-lower{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:8px 14px!important;margin-bottom:2px!important}
-  .dashboard-lower>.goal-strip{grid-column:1/-1!important}
+@media (max-width:740px){
+  
+  
   .corner-stack{gap:5px!important;padding-bottom:0!important}
-  .corner-left .upcoming-event{width:100%!important;max-width:100%!important;grid-template-columns:15px minmax(0,1fr)!important;grid-template-areas:'icon copy' 'icon time'!important;gap:2px 7px!important;padding-bottom:6px!important}
-  .corner-left .upcoming-event>.icon{width:14px!important;height:14px!important;flex-basis:14px!important}
-  .corner-left .upcoming-copy small{font-size:6.8px!important}
-  .corner-left #upcoming-title{max-width:100%!important;font-size:11.5px!important}
-  .corner-left #upcoming-time{font-size:8.5px!important;justify-self:start!important}
+  
+  
+  
+  
+  
   .corner-left .timer-slot{width:100%!important}
   .corner-left .timer-chip{max-width:100%!important;padding-left:7px!important}
   .corner-left .timer-chip-main{font-size:9px!important;gap:5px!important}.corner-left #timer-chip-label{display:none!important}
   .corner-left .timer-chip-main strong{font-size:13.5px!important}.corner-left .timer-chip .icon-button{width:28px!important;height:28px!important}
-  .corner-right #environment-line{width:100%!important;max-width:100%!important;gap:4px 6px!important}
+  
   .corner-right .weather-line{grid-template-columns:17px auto minmax(0,110px)!important;column-gap:5px!important;padding-bottom:6px!important}
   .corner-right .weather-line>.icon{width:16px!important;height:16px!important}
   .corner-right #weather-text{font-size:13.5px!important}.corner-right #weather-condition{font-size:9px!important}.corner-right #weather-place,.corner-right #weather-age{display:none!important}
   .corner-right .solar-line{grid-template-columns:auto 32px auto!important;gap:4px!important}.corner-right .solar-label{display:none!important}.corner-right .solar-time time{font-size:8.5px!important}.corner-right .solar-time>.icon{width:11px!important;height:11px!important}.corner-right .solar-path{height:16px!important}
   .corner-right .moon-caption{font-size:7.8px!important}.corner-right .moon-phase-name{display:none!important}.corner-right .moon-phase-mini{width:15px!important;height:15px!important;flex-basis:15px!important}
-  #calendar-view .calendar-title-copy h1{font-size:20px!important}
+  
   #calendar-view .calendar-subtitle{font-size:9px!important}
-  #calendar-view .calendar-navigation .secondary-button{font-size:9.5px!important}
-  #calendar-view .calendar-views button{font-size:9.5px!important;padding-inline:7px!important}
+  
+  
   #calendar-view .calendar-weekdays span{font-size:9px!important}
   #calendar-view .calendar-day-number{font-size:12px!important}
   #calendar-view .calendar-more{font-size:8px!important}
@@ -320,22 +233,19 @@
 }
 
 /* Short landscape: retain the three-zone composition without dropping below readable sizes. */
-@media(max-height:560px) and (orientation:landscape){
-  .dashboard-lower{
-    grid-template-columns:minmax(0,.76fr) minmax(0,1.35fr) minmax(0,.76fr)!important;
-    gap:12px!important;margin:0!important;align-items:end!important
-  }
-  .dashboard-lower>.goal-strip{grid-column:2!important;grid-row:1!important}
+@media (max-height:560px) and (orientation:landscape){
+  
+  
   .corner-left{grid-column:1!important;grid-row:1!important}.corner-right{grid-column:3!important;grid-row:1!important}
-  .corner-left .upcoming-event{grid-template-columns:14px minmax(0,1fr)!important;grid-template-areas:'icon copy' 'icon time'!important;gap:1px 6px!important;padding-bottom:4px!important}
-  .corner-left .upcoming-copy small{display:none!important}.corner-left #upcoming-title{font-size:10.5px!important;max-width:100%!important}.corner-left #upcoming-time{font-size:8.5px!important;justify-self:start!important}.corner-left .upcoming-event>.icon{width:13px!important;height:13px!important;flex-basis:13px!important}
+  
+  
   .corner-left .timer-chip{padding:1px 3px 1px 7px!important}.corner-left #timer-chip-label{display:none!important}.corner-left .timer-chip-main{min-height:26px!important}.corner-left .timer-chip-main strong{font-size:12px!important}.corner-left .timer-chip .icon-button{width:25px!important;height:25px!important}
   .corner-right .weather-line{grid-template-columns:15px auto minmax(0,100px)!important;padding-bottom:4px!important;column-gap:4px!important}.corner-right .weather-line>.icon{width:14px!important;height:14px!important}.corner-right #weather-text{font-size:12px!important}.corner-right #weather-condition{font-size:8.5px!important}.corner-right #weather-place,.corner-right #weather-age{display:none!important}
   .corner-right .solar-line{grid-template-columns:auto 28px auto!important;gap:3px!important}.corner-right .solar-label{display:none!important}.corner-right .solar-time time{font-size:8px!important}.corner-right .solar-time>.icon{display:none!important}.corner-right .solar-path{height:14px!important}.corner-right .moon-caption{font-size:7.5px!important}.corner-right .moon-phase-mini{width:13px!important;height:13px!important;flex-basis:13px!important}.corner-right .moon-phase-name{display:none!important}
-  #calendar-view .calendar-title-copy h1{font-size:17px!important}
+  
   #calendar-view .calendar-subtitle{display:none!important}
-  #calendar-view .calendar-navigation .secondary-button{font-size:8.5px!important}
-  #calendar-view .calendar-views button{font-size:8.5px!important}
+  
+  
   #calendar-view .calendar-weekdays span{font-size:8.5px!important}
   #calendar-view .calendar-day-number{width:21px!important;height:21px!important;font-size:10.5px!important}
   #calendar-view .calendar-event{height:auto!important;min-height:0!important;margin:1px 0!important;padding:2px 4px!important;font-size:8.5px!important;line-height:1.12!important}
@@ -354,9 +264,9 @@
 
 /* 3.12.1 final legibility pass — edge information must read at a glance. */
 @media (min-width:1101px){
-  .corner-left .upcoming-copy small{font-size:9px!important}
-  .corner-left #upcoming-title{font-size:16.5px!important;max-width:250px!important}
-  .corner-left #upcoming-time{font-size:11.5px!important}
+  
+  
+  
   .corner-left .timer-chip-main{font-size:11.5px!important}
   .corner-left .timer-chip-main strong{font-size:17.5px!important}
   .corner-right .weather-line>.icon{width:24px!important;height:24px!important}
@@ -419,8 +329,8 @@
 
 /* Small landscape: use scrolling to keep information humane rather than microscopic. */
 @media (max-height:560px) and (orientation:landscape){
-  .corner-left #upcoming-title{font-size:12.5px!important}
-  .corner-left #upcoming-time{font-size:9.5px!important}
+  
+  
   .corner-left .timer-chip-main strong{font-size:14px!important}
   .corner-right #weather-text{font-size:15px!important}
   .corner-right #weather-condition{font-size:10px!important}

@@ -1,6 +1,6 @@
 # Istante
 
-**Versione corrente: 3.13.17**  
+**Versione corrente: 3.13.18**  
 **Un momento, per te.**  
 Un progetto di **Ruslan Dzyuba**.
 
@@ -18,7 +18,7 @@ stesso linguaggio visivo essenziale di Istante.
 
 ## Il cuore di Istante
 
-La linea grafica attuale resta costruita sui principi della **3.8.0**: superfici più pulite, tipografia più equilibrata, controlli
+La linea grafica attuale segue questi principi: superfici più pulite, tipografia più equilibrata, controlli
 coerenti, gerarchie più semplici e meno elementi che competono fra loro.
 Le funzioni introdotte in seguito sono state mantenute dove utili, ma riportate
 nello stesso sistema visivo.
@@ -54,8 +54,7 @@ riempire lo schermo con un numero enorme di giorni.
 
 ## Musica, relax e timer
 
-Il mini player supporta radio lo-fi e stazioni personali, preferiti,
-programmazioni multiple e scelta casuale. Dalla gestione delle stazioni puoi anche **spostare una radio più in alto o più in basso** nell’ordine del catalogo. Sui dispositivi touch le gesture audio sono attive di default nella sola zona destra della Dashboard: un doppio tap alterna Play/Pausa e uno swipe verticale modifica il volume di **10 punti esatti**. Le gesture possono essere disattivate dalle Impostazioni e non vengono mai applicate nel Calendario. In alternativa puoi usare il generatore audio offline: rumore rosa, marrone, pioggia o vento sintetizzati con Web Audio, senza file audio da scaricare.
+Il mini player ha tre sorgenti: **Radio**, **Ambiente** e **Melodie**. La Radio supporta stazioni lo-fi e personali, preferiti, programmazioni multiple e scelta casuale; dalla gestione delle stazioni puoi anche **spostare una radio più in alto o più in basso** nell’ordine del catalogo. Ambiente genera rumore rosa, marrone, pioggia o vento. Melodie aggiunge quattro composizioni originali procedurali — **Aurora lenta, Vetro e pioggia, Notturno e Orizzonte** — generate sul dispositivo con Web Audio, senza file audio da scaricare. Sui dispositivi touch le gesture audio sono attive di default nella sola zona destra della Dashboard: un doppio tap alterna Play/Pausa e uno swipe verticale modifica il volume di **10 punti esatti**. Le gesture possono essere disattivate dalle Impostazioni e non vengono mai applicate nel Calendario.
 
 Il timer rimane volutamente semplice: la durata principale si sceglie su un **quadrante circolare tipo orologio** da 1 a 60 minuti e può essere rifinita di un minuto alla volta con i pulsanti **− / +** esterni al cerchio. Per questa prima release pubblica il Timer usa una sola esperienza: una **modale** ottimizzata per mouse e touch. Durante il conto alla rovescia l’anello si riempie seguendo il tempo trascorso, un dot compie un giro ogni minuto seguendo i secondi e un alone più evidente respira attorno al cerchio. Non c’è una seconda progress bar: tutto l’avanzamento vive nel quadrante. Silenzio, radio o suono rilassante restano configurabili senza appesantire la schermata principale.
 
@@ -73,7 +72,7 @@ in fusi IANA quando possibile.
 
 ## Condivisione
 
-Istante può creare una cartolina PNG del momento: frase, tema, posizione del sole o della luna, stelle, effetti atmosferici e, se configurato, meteo. La cartolina rispetta lo stile **Classic / Excalifont** scelto nella Home. La località viene aggiunta soltanto quando esiste un nome significativo, come una città selezionata; le etichette generiche della geolocalizzazione o delle coordinate manuali non vengono stampate. La preview nella modale mantiene sempre l'intero rapporto d'aspetto, senza essere tagliata dalla superficie di anteprima. La cartolina non incorpora eventuali foto di sfondo personali o Picsum. Il QR apre il sito ufficiale e può portare con sé
+Istante può creare una cartolina PNG del momento: frase, tema, posizione del sole o della luna, stelle, effetti atmosferici e, quando realmente disponibili, meteo, obiettivo e colonna sonora. Le informazioni non disponibili non vengono proposte né disegnate nella cartolina. La cartolina rispetta lo stile **Classic / Excalifont** scelto nella Home. La località viene aggiunta soltanto quando esiste un nome significativo, come una città selezionata; le etichette generiche della geolocalizzazione o delle coordinate manuali non vengono stampate. La preview nella modale mantiene sempre l'intero rapporto d'aspetto, senza essere tagliata dalla superficie di anteprima. La cartolina non incorpora eventuali foto di sfondo personali o Picsum. Il QR apre il sito ufficiale e può portare con sé
 la frase condivisa. Firma e indirizzo ufficiale restano parte della composizione.
 
 ## Offline, privacy e backup
@@ -101,7 +100,7 @@ Su desktop con mouse o trackpad puoi attivare un **cursore personalizzato discre
 - `data/`: frasi, catalogo raccolte e stazioni predefinite.
 - `README.md`: descrizione del progetto e release corrente.
 - `CHANGELOG.md`: storico delle modifiche.
-- `docs/release/v3.13.17.md`: note dettagliate di questa release.
+- `docs/release/v3.13.18.md`: note dettagliate di questa release.
 - `docs/LICENZA.md`: licenza non commerciale con attribuzione obbligatoria.
 - `docs/TERZE-PARTI.md`: dipendenze, servizi e attribuzioni.
 - `docs/VISIONE-E-DESIGN.md`: valori, regole grafiche e criteri responsive da mantenere nelle release future.

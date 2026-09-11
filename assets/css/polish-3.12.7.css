@@ -15,7 +15,7 @@
 .brand-home-copy{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;gap:2px!important;min-width:0!important}
 .brand-home-name{font:500 23px/1 var(--serif)!important;letter-spacing:-.04em!important;color:var(--ink)!important}
 .brand-home-tagline{font:500 10px/1.15 var(--sans)!important;letter-spacing:.015em!important;color:var(--muted)!important;white-space:nowrap!important}
-@media(max-width:520px){
+@media (max-width:520px){
   .brand-logo-image{width:29px!important;height:29px!important;border-radius:8px!important}
   .brand-home-name{font-size:20px!important}.brand-home-tagline{font-size:9.5px!important}
 }
@@ -29,7 +29,7 @@
 #calendar-view .calendar-brand-copy{grid-column:2!important;grid-row:1!important}
 #calendar-view .calendar-brand-name{font-size:20px!important}
 #calendar-view .calendar-brand-tagline{font-size:max(9.5px,calc(9.5px * var(--ui-scale,1)))!important}
-@media(max-width:740px){#calendar-view .calendar-brand-button{grid-template-columns:27px auto!important}.calendar-brand-image{width:27px!important;height:27px!important}}
+
 
 /* --------------------------------------------------------------------------
    Library: search first, collection entry beside the count, tabs on the right
@@ -79,7 +79,7 @@
 }
 #collection-library-inline .collection-card-actions .icon-button{width:34px!important;height:34px!important;min-width:34px!important}
 .collection-active-note{margin-right:auto!important}
-@media(max-width:760px){
+@media (max-width:760px){
   .phrase-library-tools{grid-template-columns:1fr!important;grid-template-areas:"current" "searchrow" "tabs"!important;gap:9px!important}
   .library-search-row{grid-template-columns:minmax(0,1fr) auto!important;gap:8px!important}
   .library-search-actions{gap:6px!important}.library-search-actions .result-count{display:none!important}.library-collections-button{padding-inline:10px!important}.library-collections-button span:last-child{display:none!important}
@@ -100,15 +100,15 @@
 .timer-step-button:hover,.timer-step-button:focus-visible{background:var(--accent-soft)!important;border-color:color-mix(in srgb,var(--accent) 65%,var(--line))!important;transform:scale(1.04)!important}
 .timer-step-button:active{transform:scale(.96)!important}
 #timer-duration-display{min-width:0!important}
-@media(max-width:520px){.timer-duration-control{grid-template-columns:42px minmax(0,1fr) 42px!important;gap:8px!important}.timer-step-button{width:42px!important;height:42px!important;font-size:24px!important}}
+@media (max-width:520px){.timer-duration-control{grid-template-columns:42px minmax(0,1fr) 42px!important;gap:8px!important}.timer-step-button{width:42px!important;height:42px!important;font-size:24px!important}}
 
 /* --------------------------------------------------------------------------
    Goal affordance: it is a button-like surface, so make that obvious
    -------------------------------------------------------------------------- */
-#goal-strip{cursor:pointer!important}
-#goal-strip{transition:background .18s ease,border-color .18s ease,transform .18s cubic-bezier(.2,.8,.2,1)!important}
-#goal-strip:hover,#goal-strip:focus-visible{background:color-mix(in srgb,var(--accent-soft) 22%,transparent)!important}
-#goal-strip:active{transform:scale(.997)!important}
+
+
+
+
 
 
 /* --------------------------------------------------------------------------
@@ -134,7 +134,7 @@
 #calendar-view .week-event-title{display:block!important;font-size:max(11.8px,calc(12.3px * var(--ui-scale,1)))!important;line-height:1.25!important;font-weight:650!important;overflow-wrap:anywhere!important}
 #calendar-view .week-event-source{display:block!important;font-size:max(9.8px,calc(10px * var(--ui-scale,1)))!important;line-height:1.25!important;color:var(--muted)!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
 #calendar-view .calendar-week-day.is-today{background:color-mix(in srgb,var(--accent-soft) 16%,transparent)!important}
-@media(max-width:740px){
+@media (max-width:740px){
   #calendar-view .calendar-week-day .calendar-week-event{padding:7px 8px!important;margin:4px 0!important}
   #calendar-view .week-event-source{white-space:normal!important}
 }
@@ -155,12 +155,12 @@
 .istante-cursor-dot.is-visible,.istante-cursor-ring.is-visible{opacity:1!important}
 .istante-cursor-ring.is-action{width:34px!important;height:34px!important;background:color-mix(in srgb,var(--accent-soft) 32%,transparent)!important;border-color:var(--accent)!important}
 .istante-cursor-ring.is-pressed{width:20px!important;height:20px!important;background:color-mix(in srgb,var(--accent-soft) 48%,transparent)!important}
-@media(hover:hover) and (pointer:fine){
+@media (hover:hover) and (pointer:fine){
   html.istante-custom-cursor body,html.istante-custom-cursor a,html.istante-custom-cursor button,html.istante-custom-cursor [role="button"],html.istante-custom-cursor summary,html.istante-custom-cursor input[type="range"],html.istante-custom-cursor label.file-button{cursor:none!important}
   html.istante-custom-cursor input:not([type="range"]):not([type="button"]):not([type="submit"]),html.istante-custom-cursor textarea,html.istante-custom-cursor [contenteditable="true"]{cursor:text!important}
 }
-@media(hover:none),(pointer:coarse){.istante-cursor-dot,.istante-cursor-ring{display:none!important}}
-@media(prefers-reduced-motion:reduce){.istante-cursor-ring,.istante-cursor-dot{transition:opacity .08s linear!important}}
+@media (hover:none),(pointer:coarse){.istante-cursor-dot,.istante-cursor-ring{display:none!important}}
+@media (prefers-reduced-motion:reduce){.istante-cursor-ring,.istante-cursor-dot{transition:opacity .08s linear!important}}
 
 /* Collection downloads are a secondary action: compact and anchored to the card corner. */
 #collection-library-inline .collection-card-available{padding-bottom:58px!important}

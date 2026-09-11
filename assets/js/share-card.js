@@ -163,11 +163,10 @@
     rows.push(atmosphere?.label?(atmosphere.source==='manual'?'Atmosfera: ':'')+atmosphere.label+(skyInfo.isDay?'':' · '+(skyInfo.name||'Notte')):skyInfo.isDay?'Sotto la stessa luce.':skyInfo.name||'Un momento, sotto le stelle.');
    }
   }
-  if(opt.weather&&snapshot.weather?.configured){
+  if(opt.weather&&snapshot.weather?.available){
    const weather=snapshot.weather;
-   rows.push(weather.available
-    ? ['Meteo',weather.temperature,weather.condition,weather.place].filter(Boolean).join(' · ')
-    : ['Meteo','dati non disponibili',weather.place].filter(Boolean).join(' · '));
+   const row=['Meteo',weather.temperature,weather.condition,weather.place].filter(Boolean).join(' · ');
+   if(row)rows.push(row);
   }
   if(opt.goal&&snapshot.goal){
    const goal=snapshot.goal;
