@@ -1,4 +1,4 @@
-/* Istante 3.13.24 — legacy component refinements loaded after calendar.css.
+/* Istante 3.13.27 — legacy component refinements loaded after calendar.css.
  * Historical visual rules consolidated without changing their cascade order.
  */
 
@@ -400,7 +400,7 @@ body[data-viewport-shape="wide"] .tour-card{--tour-density:.92}
 #timer-duration-decrease>span::after{display:none}
 #timer-duration-increase>span::after{transform:translate(-50%,-50%) rotate(90deg)}
 
-html[data-font-style="excalifont"][data-font-scope="calendar"]{--serif:"Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,Georgia,serif}
+html[data-font-style="excalifont"][data-font-scope="calendar"]{--serif:"Istante Classic","Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,Georgia,serif}
 html[data-font-style="excalifont"][data-font-scope="all"] :is(.quote-wrap blockquote,.panel-head h2,.welcome-content h2,.tour-card h2,.goal-title,#goal-dialog-title,.library-phrase-text,.collection-card>strong,.timer-orbit strong){font-family:"Excalifont","Segoe Print","Bradley Hand",cursive!important}
 html[data-font-style="excalifont"] #calendar-view :is(.calendar-period-title,.calendar-mini h2 button,.calendar-day-date-number,.calendar-day-weekday,.calendar-day-month,.calendar-agenda-day h2,.week-event-title,.calendar-event){font-family:"Excalifont","Segoe Print","Bradley Hand",cursive!important}
 

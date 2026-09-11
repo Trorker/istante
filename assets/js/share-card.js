@@ -8,7 +8,7 @@
  function fontSet(snapshot){
   const editorial=snapshot?.fontStyle==='excalifont';
   return{
-   display:editorial?"'Excalifont','Segoe Print','Bradley Hand',cursive":"'Iowan Old Style','Palatino Linotype','Book Antiqua',Palatino,Georgia,serif",
+   display:editorial?"'Excalifont','Segoe Print','Bradley Hand',cursive":"'Istante Classic','Iowan Old Style','Palatino Linotype','Book Antiqua',Palatino,Georgia,serif",
    ui:"-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',Arial,sans-serif"
   };
  }

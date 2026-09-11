@@ -221,10 +221,16 @@
     const setPressed=(id,value)=>$(id)?.setAttribute('aria-pressed',String(value));
 
     function render(){
-      const settings=getSettings();
-      const source=settings.audioSource;
-      const offline=offlineSelected();
+      let settings=getSettings();
+      const available=['radio','ambient','melody'].filter(source=>enabled(source,settings));
+      let source=available.includes(settings.audioSource)?settings.audioSource:(available[0]||settings.audioSource);
+      if(available.length&&source!==settings.audioSource){
+        save('audioSource',source);
+        settings=getSettings();
+      }
+      const offline=['ambient','melody'].includes(source)&&enabled(source,settings);
       const mini=$('radio-mini');
+      const sourceSwitch=document.querySelector('.audio-source-switch');
       const radioTab=$('audio-source-radio');
       const ambientTab=$('audio-source-ambient');
       const melodyTab=$('audio-source-melody');
@@ -232,6 +238,10 @@
       if(radioTab)radioTab.hidden=!settings.radioEnabled;
       if(ambientTab)ambientTab.hidden=!settings.ambientEnabled;
       if(melodyTab)melodyTab.hidden=!settings.melodyEnabled;
+      if(sourceSwitch){
+        sourceSwitch.hidden=available.length<=1;
+        sourceSwitch.setAttribute('aria-hidden',String(available.length<=1));
+      }
       setPressed('audio-source-radio',source==='radio');
       setPressed('audio-source-ambient',source==='ambient');
       setPressed('audio-source-melody',source==='melody');

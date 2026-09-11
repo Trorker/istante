@@ -1,5 +1,22 @@
 # Changelog
 
+## 3.13.27 — 12 settembre 2026
+
+- **Font locali definitivi:** Classic usa Libre Baskerville 2.005 ed Excalifont usa Excalifont Regular 1.000, con sorgenti runtime esclusivamente locali.
+- **Niente download font a runtime:** rimossi gli URL remoti da `assets/css/fonts.css`.
+- **Installazione controllata:** sostituiti i vecchi helper di download con `tools/install-fonts.py`, `.ps1` e `.sh`, che installano i file originali forniti e rigenerano la cache offline.
+- **Terze parti:** aggiornato `docs/TERZE-PARTI.md` e aggiunti testo SIL OFL 1.1 e notice specifici per Libre Baskerville ed Excalifont.
+
+
+## 3.13.25 — 12 settembre 2026
+
+- **Player audio:** se nelle Impostazioni rimane attiva una sola sorgente tra Radio, Ambiente e Melodie, la barra delle tab viene nascosta e il player mostra direttamente i controlli dell'unica sorgente disponibile; riattivando una seconda sorgente le tab ricompaiono automaticamente.
+- **Sorgente audio valida:** se viene disabilitata la sorgente attualmente selezionata, il player passa alla prima sorgente ancora disponibile senza lasciare uno stato visivo incoerente.
+- **Tipografia:** aggiunto `assets/css/fonts.css` con famiglie reali per Classic ed Excalifont. Classic usa `Istante Classic` con Libre Baskerville come variante self-hosted multipiattaforma; Excalifont usa il vero Excalifont Regular. La cartolina attende il caricamento della famiglia selezionata prima del rendering.
+- **Self-hosting font:** aggiunti `assets/fonts/README.md` e gli helper `tools/vendor-fonts.py`, `.sh` e `.ps1`, che preparano i font locali e rigenerano `sw.js`.
+- **Terze parti:** aggiornato e mantenuto nel pacchetto `docs/TERZE-PARTI.md` con origine e licenze di Libre Baskerville ed Excalifont.
+- **Cache offline:** aggiunto `tools/rebuild-sw.py` per rigenerare in modo deterministico la cache verificata dalla struttura reale della release e includere automaticamente i font quando presenti localmente.
+
 ## 3.13.24 — 11 settembre 2026
 
 - **Traguardo su telefono:** riservato un margine interno reale alla percentuale sotto la progress bar, così anche l’ultimo carattere e il simbolo `%` restano interamente visibili sui display verticali più stretti.

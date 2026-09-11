@@ -1,0 +1,24 @@
+/* Istante typography — bundled vendor fonts.
+ * Runtime font files live under assets/vendor/fonts/ and are never fetched
+ * from a CDN, repository or installer endpoint. */
+@font-face{
+  font-family:"Istante Classic";
+  src:url("../vendor/fonts/libre-baskerville/LibreBaskerville-VariableFont_wght.ttf") format("truetype");
+  font-style:normal;
+  font-weight:400 700;
+  font-display:swap;
+}
+@font-face{
+  font-family:"Istante Classic";
+  src:url("../vendor/fonts/libre-baskerville/LibreBaskerville-Italic-VariableFont_wght.ttf") format("truetype");
+  font-style:italic;
+  font-weight:400 700;
+  font-display:swap;
+}
+@font-face{
+  font-family:"Excalifont";
+  src:url("../vendor/fonts/excalifont/Excalifont-Regular.woff2") format("woff2");
+  font-style:normal;
+  font-weight:400;
+  font-display:swap;
+}
