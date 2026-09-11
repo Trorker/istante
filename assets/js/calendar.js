@@ -1,14 +1,13 @@
 (function(){'use strict';
-function create({getSettings,notify}){
-const $=id=>document.getElementById(id),C=window.IstanteCalendarCore,KEY='istante.original1.calendars.v1',COLORS=['#a8b999','#c8a783','#8eaab6','#b899b2','#c4b97f','#8db7aa','#b99d96','#9d9bb8'];
+function create({getSettings,saveSetting,notify}){
+const $=id=>document.getElementById(id),C=window.IstanteCalendarCore,KEY='istante.original1.calendars.v1',COLORS=['#a8b999','#c8a783','#8eaab6','#b899b2','#c4b97f','#8db7aa','#b99d96','#9d9bb8'],HOLIDAY_COLOR='#b45f63';
 let settings=getSettings();
 let sources=[],cursor=new Date(),view='month',events=[],warnings=[],worker=null,workerTimer=0,dayCache=new Map(),ticket=0,refreshing=false,refreshAt=0,from=0,to=0,lastFocus=null;
 const VIEW_KEY='istante.original1.calendar.view.v1',VALID_VIEWS=['year','month','week','day','agenda'];
 function preferredView(){const mode=getSettings().calendarViewMode||'last';if(mode!=='last'&&VALID_VIEWS.includes(mode))return mode;try{const saved=localStorage.getItem(VIEW_KEY);if(VALID_VIEWS.includes(saved))return saved;}catch(_){}return 'month';}
 function rememberView(){try{localStorage.setItem(VIEW_KEY,view);}catch(_){}}
 cursor.setHours(12,0,0,0);view=preferredView();try{sources=C.cleanSources(JSON.parse(localStorage.getItem(KEY)||'[]'));}catch(e){$('cal-sync-status').textContent='Dati locali non leggibili. Importa nuovamente i calendari.';}
-const dayKey=d=>{const a=new Date(d);return a.getFullYear()+'-'+String(a.getMonth()+1).padStart(2,'0')+'-'+String(a.getDate()).padStart(2,'0');},plus=(d,n)=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+n),monthName=new Intl.DateTimeFormat('it-IT',{month:'long'}),fullDate=new Intl.DateTimeFormat('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'}),monthTitle=new Intl.DateTimeFormat('it-IT',{month:'long',year:'numeric'}),time={format:value=>window.IstanteTime.formatTime(value,getSettings().timeFormat)},days=['Lun','Mar','Mer','Gio','Ven','Sab','Dom'];
-$('cal-zone').textContent='Orari nel fuso del dispositivo: '+Intl.DateTimeFormat().resolvedOptions().timeZone;
+const dayKey=d=>{const a=new Date(d);return a.getFullYear()+'-'+String(a.getMonth()+1).padStart(2,'0')+'-'+String(a.getDate()).padStart(2,'0');},plus=(d,n)=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+n),monthName=new Intl.DateTimeFormat('it-IT',{month:'long'}),fullDate=new Intl.DateTimeFormat('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'}),monthTitle=new Intl.DateTimeFormat('it-IT',{month:'long',year:'numeric'}),shortDate=new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'short'}),time={format:value=>window.IstanteTime.formatTime(value,getSettings().timeFormat)},days=['Lun','Mar','Mer','Gio','Ven','Sab','Dom'];
 function node(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=String(text);return e;}
 function button(cls,label,fn){const b=node('button',cls,label);b.type='button';b.onclick=fn;return b;}
 function iconButton(name,label,fn){const b=button('icon-button','',fn);b.innerHTML='<span class="icon">'+window.IstanteIcons.render(name)+'</span>';b.dataset.istanteTooltip=label;b.setAttribute('aria-label',label);return b;}
@@ -19,10 +18,17 @@ function title(){const y=cursor.getFullYear();const picker=$('cal-date-picker');
 function intersects(e,day){const a=+plus(day,0),b=+plus(day,1);return e.start<b&&(e.end>a||e.start===e.end&&e.start>=a);}
 function dayEvents(day){const key=dayKey(day);if(!dayCache.has(key))dayCache.set(key,events.filter(e=>intersects(e,day)));return dayCache.get(key);}
 function eventTime(e){return e.allDay?'Tutto il giorno':time.format(e.start);}
+function eventRange(e,{includeEndDate=false}={}){
+ if(e.allDay){const last=new Date(Math.max(e.start,e.end-1));return dayKey(e.start)!==dayKey(last)?'Tutto il giorno \u00b7 fino al '+shortDate.format(last):'Tutto il giorno';}
+ const start=time.format(e.start);if(!(e.end>e.start))return start;const end=time.format(e.end);
+ if(dayKey(e.start)===dayKey(e.end))return start+' \u2013 '+end;
+ return includeEndDate?shortDate.format(e.start)+' \u00b7 '+start+' \u2192 '+shortDate.format(e.end)+' \u00b7 '+end:start+' \u2192 '+shortDate.format(e.end)+' \u00b7 '+end;
+}
 function sourceOf(e){return sources.find(x=>x.id===e.sourceId)||(e.sourceId==='cal-festivita-it'?{name:'Festivit\u00e0 italiane',color:4}:{name:'Calendario',color:0});}
+function colorOf(e,src=sourceOf(e)){return e.sourceId==='cal-festivita-it'?HOLIDAY_COLOR:COLORS[src.color]||COLORS[0];}
 function detail(e){const src=sourceOf(e);$('cal-event-title').textContent=e.title;$('cal-event-source').textContent=src.name+(e.recurring?' \u00b7 Ricorrente':'');$('cal-event-date').textContent=e.allDay?fullDate.format(e.start)+(dayKey(e.start)!==dayKey(e.end-1)?' \u2014 '+fullDate.format(e.end-1):'')+' \u00b7 Tutto il giorno':fullDate.format(e.start)+' \u00b7 '+time.format(e.start)+(e.end>e.start?' \u2014 '+(dayKey(e.start)!==dayKey(e.end)?fullDate.format(e.end)+' \u00b7 ':'')+time.format(e.end):'');$('cal-event-place').textContent=e.location;$('cal-event-place').hidden=!e.location;$('cal-event-description').textContent=e.description;$('cal-event-link').hidden=!e.url;if(e.url)$('cal-event-link').href=e.url;open('cal-event-dialog');}
-function eventButton(e,agenda=false,context='default'){const src=sourceOf(e),b=button(agenda?'calendar-agenda-row':context==='week'?'calendar-event calendar-week-event':'calendar-event','',()=>detail(e));b.style.setProperty('--event-color',COLORS[src.color]);b.setAttribute('aria-label',eventTime(e)+' '+e.title+' · '+src.name);b.dataset.istanteTooltip=eventTime(e)+' \u00b7 '+e.title+' \u00b7 '+src.name;
- if(agenda){b.append(node('time','',eventTime(e)));const info=node('span','event-info');info.append(node('strong','',e.title),node('small','',src.name+(e.location?' \u00b7 '+e.location:'')));b.append(info);}else if(context==='week'){const top=node('span','week-event-top'),dot=node('i','week-event-dot'),eventClock=node('span','event-time',eventTime(e));top.append(dot,eventClock);b.append(top,node('strong','week-event-title',e.title),node('small','week-event-source',src.name+(e.location?' \u00b7 '+e.location:'')));}else{b.append(node('span','event-time',eventTime(e)),document.createTextNode(e.title));}return b;}
+function eventButton(e,agenda=false,context='default'){const src=sourceOf(e),b=button(agenda?'calendar-agenda-row':context==='week'?'calendar-event calendar-week-event':'calendar-event','',()=>detail(e)),shownTime=agenda?eventRange(e,{includeEndDate:true}):context==='week'?eventRange(e):eventTime(e);b.style.setProperty('--event-color',colorOf(e,src));b.setAttribute('aria-label',shownTime+' '+e.title+' \u00b7 '+src.name);b.dataset.istanteTooltip=shownTime+' \u00b7 '+e.title+' \u00b7 '+src.name;
+ if(agenda){b.append(node('time','calendar-agenda-time',shownTime));const info=node('span','event-info');info.append(node('strong','',e.title),node('small','',src.name+(e.location?' \u00b7 '+e.location:'')));b.append(info);}else if(context==='week'){const top=node('span','week-event-top'),dot=node('i','week-event-dot'),eventClock=node('span','event-time',shownTime);top.append(dot,eventClock);b.append(top,node('strong','week-event-title',e.title),node('small','week-event-source',src.name+(e.location?' \u00b7 '+e.location:'')));}else{b.append(node('span','event-time',shownTime),document.createTextNode(e.title));}return b;}
 function goDate(d,mode='day'){cursor=new Date(d);cursor.setHours(12,0,0,0);view=mode;rememberView();load();}
 function monthEventLimit(){const w=innerWidth||1024,h=innerHeight||768;if(w<=520||h<=520)return 1;return 2;}
 function month(container){const box=node('div','calendar-month'),week=node('div','calendar-weekdays'),limit=monthEventLimit();days.forEach(d=>week.append(node('span','',d)));box.append(week);const grid=node('div','calendar-grid'),cells=Math.max(28,Math.round((to-from)/86400000)),weeks=Math.max(4,Math.min(6,Math.ceil(cells/7)));grid.style.setProperty('--month-weeks',String(weeks));for(let i=0;i<cells;i++){const d=plus(new Date(from),i),cell=node('div','calendar-cell'+(d.getMonth()!==cursor.getMonth()?' is-other':'')),b=button('calendar-day-number'+(dayKey(d)===dayKey(Date.now())?' is-today':''),d.getDate(),()=>goDate(d));b.setAttribute('aria-label',fullDate.format(d));cell.append(b);const list=dayEvents(d);list.slice(0,limit).forEach(e=>cell.append(eventButton(e)));if(list.length>limit){const left=list.length-limit,more=button('calendar-more',left===1?'1 altro evento':'Altri '+left+' eventi',()=>goDate(d,'day'));more.setAttribute('aria-label',(left===1?'Un altro evento':'Altri '+left+' eventi')+' il '+fullDate.format(d)+'. Apri il giorno.');cell.append(more);}grid.append(cell);}box.append(grid);container.append(box);}
@@ -30,13 +36,41 @@ function year(container){const grid=node('div','calendar-year');for(let m=0;m<12
 function week(container){const grid=node('div','calendar-week');for(let i=0;i<7;i++){const d=plus(new Date(from),i),box=node('section','calendar-week-day'+(dayKey(d)===dayKey(Date.now())?' is-today':'')),head=button('calendar-week-date',days[i],()=>goDate(d));head.append(node('strong','',d.getDate()));box.append(head);const list=dayEvents(d);list.forEach(e=>box.append(eventButton(e,false,'week')));if(!list.length)box.append(node('p','calendar-empty-day','Spazio libero.'));grid.append(box);}container.append(grid);}
 function agenda(container){const wrap=node('div','calendar-agenda');let count=0;for(let d=new Date(from);+d<to;d=plus(d,1)){const list=dayEvents(d);if(!list.length)continue;const group=node('section','calendar-agenda-day');group.append(node('h2','',fullDate.format(d)));for(const e of list){group.append(eventButton(e,true));if(++count>=600)break;}wrap.append(group);if(count>=600){wrap.append(node('p','field-note','Sono mostrati i primi 600 appuntamenti del periodo.'));break;}}if(!count)wrap.append(node('p','calendar-agenda-empty','Nessun impegno in questo periodo.'));container.append(wrap);}
 function day(container){const d=new Date(from),wrap=node('section','calendar-day-view'+(dayKey(d)===dayKey(Date.now())?' is-today':'')),head=node('div','calendar-day-view-head'),dateBox=node('div','calendar-day-date');dateBox.append(node('span','calendar-day-weekday',new Intl.DateTimeFormat('it-IT',{weekday:'long'}).format(d)),node('strong','calendar-day-date-number',d.getDate()),node('span','calendar-day-month',new Intl.DateTimeFormat('it-IT',{month:'long',year:'numeric'}).format(d)));head.append(dateBox);const list=dayEvents(d),summary=node('div','calendar-day-summary');summary.append(node('span','section-label','La tua giornata'),node('strong','',list.length?list.length+' '+(list.length===1?'impegno':'impegni'):'Nessun impegno'));head.append(summary);wrap.append(head);const timeline=node('div','calendar-day-events');if(list.length){list.forEach(e=>timeline.append(eventButton(e,true)));}else{const empty=node('div','calendar-day-empty');empty.append(node('strong','','Spazio libero.'),node('p','','Una giornata senza impegni nel calendario.'));timeline.append(empty);}wrap.append(timeline);container.append(wrap);}
-function render(){title();const root=$('cal-content');root.replaceChildren();const empty=!sources.length&&!getSettings().calendarHolidays;$('cal-empty').hidden=true;$('cal-empty-add').hidden=!empty;if(view==='year')year(root);else if(view==='month')month(root);else if(view==='week')week(root);else if(view==='day')day(root);else agenda(root);$('cal-warnings').hidden=!warnings.length;$('cal-warning-list').replaceChildren();warnings.forEach(w=>$('cal-warning-list').append(node('li','',w)));renderSources();}
+function render(){title();const root=$('cal-content');root.dataset.view=view;root.replaceChildren();const empty=!sources.length&&!getSettings().calendarHolidays;$('calendar-view').classList.toggle('calendar-is-empty',empty);$('cal-empty').hidden=true;$('cal-empty-add').hidden=!empty;if(view==='year')year(root);else if(view==='month')month(root);else if(view==='week')week(root);else if(view==='day')day(root);else agenda(root);$('cal-warnings').hidden=!warnings.length;$('cal-warning-list').replaceChildren();warnings.forEach(w=>$('cal-warning-list').append(node('li','',w)));renderSources();}
 function finish(id,result){if(id!==ticket)return;dayCache.clear();$('cal-content').setAttribute('aria-busy','false');document.querySelector('.calendar-main').classList.remove('is-loading');if(result.error){warnings=[result.error];events=[];}else{events=result.events;warnings=result.warnings;}render();}
 function load(){range();title();const id=++ticket;$('cal-content').setAttribute('aria-busy','true');document.querySelector('.calendar-main').classList.add('is-loading');clearTimeout(workerTimer);if(worker)worker.terminate();worker=null;
- if(typeof Worker==='function'&&location.protocol!=='file:'){try{worker=new Worker('assets/js/calendar-worker.js?v=3.13.11');const currentWorker=worker;workerTimer=setTimeout(()=>{currentWorker.terminate();finish(id,{error:'Il calendario richiede troppo tempo. Usa un file pi\u00f9 piccolo o restringi la vista.'});},6000);worker.onmessage=e=>{clearTimeout(workerTimer);currentWorker.terminate();finish(id,e.data);};worker.onerror=()=>{clearTimeout(workerTimer);currentWorker.terminate();worker=null;fallback();};worker.postMessage({id,sources:withHolidays(from,to),from,to});return;}catch(_){} }
+ if(typeof Worker==='function'&&location.protocol!=='file:'){try{worker=new Worker('assets/js/calendar-worker.js?v=3.13.24');const currentWorker=worker;workerTimer=setTimeout(()=>{currentWorker.terminate();finish(id,{error:'Il calendario richiede troppo tempo. Usa un file pi\u00f9 piccolo o restringi la vista.'});},6000);worker.onmessage=e=>{clearTimeout(workerTimer);currentWorker.terminate();finish(id,e.data);};worker.onerror=()=>{clearTimeout(workerTimer);currentWorker.terminate();worker=null;fallback();};worker.postMessage({id,sources:withHolidays(from,to),from,to});return;}catch(_){} }
  function fallback(){const input=withHolidays(from,to),rangeFrom=from,rangeTo=to;setTimeout(()=>{if(id!==ticket)return;try{finish(id,C.expand(input,rangeFrom,rangeTo));}catch(e){finish(id,{error:e.message});}},0);}fallback();
 }
-function renderSources(){const list=$('cal-source-list'),manager=$('cal-source-manager'),count=$('cal-source-count');if(count)count.textContent=String(sources.length);list.replaceChildren();manager.replaceChildren();for(const s of sources){const label=node('label','calendar-source-toggle'),check=document.createElement('input');check.type='checkbox';check.checked=s.enabled;check.onchange=()=>{try{persist(sources.map(x=>x.id===s.id?{...x,enabled:check.checked}:x));load();}catch(e){check.checked=s.enabled;message(e.message);}};label.style.setProperty('--event-color',COLORS[s.color]);label.append(check,node('i'),node('span','',s.name));list.append(label);const row=node('div','calendar-source-item'),info=node('div');info.append(node('strong','',s.name),node('small','',(s.url?'Collegato':'File locale')+' \u00b7 '+new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}).format(s.updatedAt)));row.append(info,iconButton('download','Esporta '+s.name,()=>download(s)),iconButton('trash','Elimina '+s.name,()=>{if(!confirm('Eliminare "'+s.name+'" da questo dispositivo?'))return;try{persist(sources.filter(x=>x.id!==s.id));load();message('Calendario rimosso.');}catch(e){message(e.message);}}));manager.append(row);}if(getSettings().calendarHolidays){const row=node('div','calendar-holidays-status');row.innerHTML='<span class="icon">'+window.IstanteIcons.render('calendar')+'</span>';row.append(document.createTextNode('Festivit\u00e0 italiane'));row.dataset.istanteTooltip='Attive. Puoi disattivarle nelle impostazioni del calendario.';list.append(row);}}
+function renderSources(){
+ const list=$('cal-source-list'),manager=$('cal-source-manager'),count=$('cal-source-count');
+ if(count)count.textContent=String(sources.length);
+ list.replaceChildren();manager.replaceChildren();
+
+ const holidayLabel=node('label','calendar-source-toggle calendar-holiday-toggle');
+ const holidayCheck=document.createElement('input');
+ holidayCheck.type='checkbox';holidayCheck.checked=!!getSettings().calendarHolidays;
+ holidayCheck.setAttribute('aria-label','Festività italiane');
+ holidayCheck.onchange=()=>{
+  const next=holidayCheck.checked;
+  if(typeof saveSetting==='function'&&!saveSetting('calendarHolidays',next)){holidayCheck.checked=!next;message('Preferenza non salvata.');return;}
+  settings=getSettings();load();queueUpcoming();message(next?'Festività italiane attive.':'Festività italiane nascoste.');
+ };
+ holidayLabel.style.setProperty('--event-color',HOLIDAY_COLOR);
+ holidayLabel.append(holidayCheck,node('i'),node('span','','Festività italiane'));
+ list.append(holidayLabel);
+
+ for(const s of sources){
+  const label=node('label','calendar-source-toggle'),check=document.createElement('input');
+  check.type='checkbox';check.checked=s.enabled;
+  check.onchange=()=>{try{persist(sources.map(x=>x.id===s.id?{...x,enabled:check.checked}:x));load();}catch(e){check.checked=s.enabled;message(e.message);}};
+  label.style.setProperty('--event-color',COLORS[s.color]);label.append(check,node('i'),node('span','',s.name));list.append(label);
+  const row=node('div','calendar-source-item'),info=node('div');
+  info.append(node('strong','',s.name),node('small','',(s.url?'Collegato':'File locale')+' · '+new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}).format(s.updatedAt)));
+  row.append(info,iconButton('download','Esporta '+s.name,()=>download(s)),iconButton('trash','Elimina '+s.name,()=>{if(!confirm('Eliminare "'+s.name+'" da questo dispositivo?'))return;try{persist(sources.filter(x=>x.id!==s.id));load();message('Calendario rimosso.');}catch(e){message(e.message);}}));
+  manager.append(row);
+ }
+}
 function download(s){const u=URL.createObjectURL(new Blob([s.ics],{type:'text/calendar;charset=utf-8'})),a=document.createElement('a');a.href=u;a.download=s.name.replace(/[^a-zA-Z0-9_-]/g,'-')+'.ics';a.click();setTimeout(()=>URL.revokeObjectURL(u),10000);}
 function add(ics,name,url=''){const parsed=C.parse(ics);if(sources.length>=8)throw Error('Raggiunto il limite di otto calendari.');if(sources.some(s=>s.ics===ics||url&&s.url===url))throw Error('Questo calendario \u00e8 gi\u00e0 presente. Usa Aggiorna per i calendari collegati.');const s={id:'cal-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,6),name:(name||parsed.title||'Il mio calendario').slice(0,80),url,ics,enabled:true,color:sources.length%8,updatedAt:Date.now()};persist([...sources,s]);load();message('Calendario aggiunto: '+parsed.events.length+' eventi di origine. Ricorrenze calcolate per la vista selezionata.');}
 function safeURL(raw){const value=String(raw).trim().replace(/^webcal:/i,'https:'),u=new URL(value);if(u.protocol!=='https:'||u.username||u.password)throw Error('Usa un indirizzo HTTPS o webcal senza credenziali.');return u.href;}
@@ -64,26 +98,45 @@ let touchStart=null;const calContent=$('cal-content'),calendarReturnDistance=()=
 window.addEventListener('storage',e=>{if(e.key===KEY){try{sources=C.cleanSources(JSON.parse(e.newValue||'[]'));load();queueUpcoming();}catch(_){}}});document.addEventListener('visibilitychange',()=>{if(!document.hidden&&getSettings().calendarEnabled)void refresh();});window.addEventListener('online',()=>void refresh(true));window.addEventListener('offline',()=>$('cal-sync-status').textContent='Offline \u00b7 ultima copia salvata.');setInterval(()=>{if(!document.hidden&&getSettings().calendarEnabled)void refresh();},60000);window.addEventListener('pagehide',()=>worker?.terminate());
 let upcomingWorker=null,upcomingTimer=0,upcomingVersion=0,nextEvent=null,upcomingRefresh=0;
 function withHolidays(a,b){return getSettings().calendarHolidays?[...sources,window.IstanteHolidays.source(new Date(a).getFullYear(),new Date(b).getFullYear())]:sources;}
-function renderIdleUpcoming(s){
- const box=$('idle-upcoming-event');if(!box)return;
- const label=$('idle-upcoming-label'),title=$('idle-upcoming-title'),whenNode=$('idle-upcoming-time');
- if(!s.calendarEnabled||!s.calendarUpcoming){box.hidden=true;label.textContent='Calendario';title.textContent='Disattivato';whenNode.textContent='';box.disabled=true;box.dataset.istanteTooltip='Calendario disattivato';box.setAttribute('aria-label',box.dataset.istanteTooltip);box.onclick=null;return;}
- box.hidden=false;box.disabled=false;
- if(!nextEvent){label.textContent='Prossimo evento';title.textContent='Nessun impegno in vista';whenNode.textContent='Apri calendario';box.dataset.istanteTooltip='Apri il calendario';box.setAttribute('aria-label',box.dataset.istanteTooltip);box.onclick=()=>$('calendar-open').click();return;}
+function setUpcomingState(box,{visible=true,empty=false,label='',title='',when='',tooltip='',onOpen=null}={}){
+ if(!box)return;
+ const main=box.querySelector('.upcoming-main');
+ box.hidden=!visible;
+ box.classList.toggle('is-empty',visible&&empty);
+ if(main)main.disabled=!visible;
+ if(!visible){if(main)main.onclick=null;return;}
+ const labelNode=box.querySelector('small'),titleNode=box.querySelector('[id$="upcoming-title"]'),timeNode=box.querySelector('time');
+ if(labelNode)labelNode.textContent=label;
+ if(titleNode)titleNode.textContent=title;
+ if(timeNode)timeNode.textContent=when;
+ if(main){main.dataset.istanteTooltip=tooltip;main.setAttribute('aria-label',tooltip);main.onclick=onOpen;}
+}
+function upcomingPresentation(labelWhenActive='Adesso',labelWhenNext='Prossimo evento'){
+ if(!nextEvent)return null;
  const now=Date.now(),active=nextEvent.start<=now&&nextEvent.end>now,when=new Date(nextEvent.start),same=dayKey(when)===dayKey(now);
- label.textContent=active?'Adesso':'Prossimo evento';title.textContent=nextEvent.title;whenNode.textContent=(same?'Oggi':new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'short'}).format(when))+' \u00b7 '+eventTime(nextEvent);
- box.dataset.istanteTooltip=nextEvent.title+' \u00b7 '+whenNode.textContent;box.setAttribute('aria-label',box.dataset.istanteTooltip);box.onclick=()=>detail(nextEvent);
+ const whenText=(same?'Oggi':new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'short'}).format(when))+' · '+eventTime(nextEvent);
+ return{label:active?labelWhenActive:labelWhenNext,title:nextEvent.title,when:whenText,tooltip:nextEvent.title+' · '+whenText};
 }
 function renderUpcoming(){
- const box=$('upcoming-event'),s=getSettings();renderIdleUpcoming(s);box.hidden=!s.calendarEnabled||!s.calendarUpcoming;
- if(box.hidden)return;
- const hasEvent=!!nextEvent;
- if(!hasEvent){$('upcoming-label').textContent='Calendario';$('upcoming-title').textContent=s.calendarUpcoming?'Nessun impegno in vista':'Il tuo calendario';$('upcoming-time').textContent='Apri calendario';box.dataset.istanteTooltip='Apri il calendario';box.setAttribute('aria-label',box.dataset.istanteTooltip);box.onclick=()=>$('calendar-open').click();return;}
- const now=Date.now(),active=nextEvent.start<=now&&nextEvent.end>now;
- $('upcoming-label').textContent=active?'Adesso':'Prossimo impegno';$('upcoming-title').textContent=nextEvent.title;
- const when=new Date(nextEvent.start),same=dayKey(when)===dayKey(now);
- $('upcoming-time').textContent=(same?'Oggi':new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'short'}).format(when))+' \u00b7 '+eventTime(nextEvent);
- box.dataset.istanteTooltip=nextEvent.title+' \u00b7 '+$('upcoming-time').textContent;box.setAttribute('aria-label',box.dataset.istanteTooltip);box.onclick=()=>detail(nextEvent);
+ const box=$('upcoming-event'),s=getSettings();
+ bindAgendaShortcut(box?.querySelector('.upcoming-arrow'));
+ const visible=!!(s.calendarEnabled&&s.calendarUpcoming);
+ if(!visible){setUpcomingState(box,{visible:false});return;}
+ const event=upcomingPresentation('Prossimo impegno','Prossimo impegno');
+ if(!event){setUpcomingState(box,{empty:true,label:'Calendario',title:'Nessun impegno in vista',when:'Apri calendario',tooltip:'Apri il calendario',onOpen:()=>$('calendar-open').click()});return;}
+ setUpcomingState(box,{...event,onOpen:()=>detail(nextEvent)});
+}
+
+function openAgendaFromDashboard(event){
+ if(event){event.preventDefault();event.stopPropagation();}
+ view='agenda';rememberView();
+ const trigger=$('calendar-open');
+ if(trigger)trigger.click();
+}
+function bindAgendaShortcut(el){
+ if(!el||el.dataset.agendaBound==='true')return;
+ el.dataset.agendaBound='true';el.setAttribute('aria-label','Apri Agenda');el.dataset.istanteTooltip='Apri Agenda';
+ el.addEventListener('click',openAgendaFromDashboard);
 }
 function queueUpcoming(){
  clearTimeout(upcomingTimer);upcomingTimer=setTimeout(updateUpcoming,100);
@@ -91,12 +144,12 @@ function queueUpcoming(){
 function updateUpcoming(){
  const v=++upcomingVersion;upcomingWorker?.terminate();upcomingWorker=null;
  if(!getSettings().calendarEnabled){nextEvent=null;renderUpcoming();return;}
- const now=Date.now(),a=+new Date(new Date().setHours(0,0,0,0)),b=now+90*86400000;
+ const now=Date.now(),a=+new Date(new Date().setHours(0,0,0,0)),b=now+90*86400000,input=withHolidays(a,b);
  const finish=result=>{if(v!==upcomingVersion)return;const candidates=(result.events||[]).filter(e=>e.end>now||e.start>=now);nextEvent=candidates[0]||null;upcomingRefresh=Date.now();renderUpcoming();};
  if(typeof Worker==='function'&&location.protocol!=='file:'){
-  try{const w=new Worker('assets/js/calendar-worker.js?v=3.13.11');upcomingWorker=w;const timeout=setTimeout(()=>{w.terminate();finish({events:[]});},6000);w.onmessage=e=>{clearTimeout(timeout);w.terminate();finish(e.data);};w.onerror=()=>{clearTimeout(timeout);w.terminate();try{finish(C.expand(sources,a,b));}catch(_){finish({events:[]});}};w.postMessage({id:v,sources,from:a,to:b});return;}catch(_){}
+  try{const w=new Worker('assets/js/calendar-worker.js?v=3.13.24');upcomingWorker=w;const timeout=setTimeout(()=>{w.terminate();finish({events:[]});},6000);w.onmessage=e=>{clearTimeout(timeout);w.terminate();finish(e.data);};w.onerror=()=>{clearTimeout(timeout);w.terminate();try{finish(C.expand(input,a,b));}catch(_){finish({events:[]});}};w.postMessage({id:v,sources:input,from:a,to:b});return;}catch(_){}
  }
- try{finish(C.expand(sources,a,b));}catch(_){finish({events:[]});}
+ try{finish(C.expand(input,a,b));}catch(_){finish({events:[]});}
 }
 function apply(){settings=getSettings();if(settings.calendarEnabled){if(settings.calendarViewMode!=='last'&&VALID_VIEWS.includes(settings.calendarViewMode))view=settings.calendarViewMode;load();void refresh();}else{ticket++;worker?.terminate();clearTimeout(workerTimer);}queueUpcoming();}
 const heartbeat=setInterval(()=>{if(!document.hidden&&getSettings().calendarEnabled){if(Date.now()-upcomingRefresh>60000)updateUpcoming();else renderUpcoming();}},60000);

@@ -1,5 +1,133 @@
 # Changelog
 
+## 3.13.24 — 11 settembre 2026
+
+- **Traguardo su telefono:** riservato un margine interno reale alla percentuale sotto la progress bar, così anche l’ultimo carattere e il simbolo `%` restano interamente visibili sui display verticali più stretti.
+- **Barra adattiva senza Traguardo:** quando resta soltanto il Prossimo impegno, il modulo Evento si contrae alla propria misura leggibile e viene centrato nella barra invece di distendersi verso sinistra; la coppia Meteo + Evento conserva il bilanciamento centrale introdotto nella release precedente.
+- **Impostazioni Traguardo:** la sezione usa ora l’icona **coppa**, separata visivamente dal Calendario.
+- **Condivisione Sole/Luna:** rimossa la reinterpretazione grafica dedicata alla cartolina. La condivisione usa lo stesso snapshot celeste della Dashboard, con la stessa fase lunare, lo stesso aspetto e la stessa posizione relativa nella scena.
+- **Pulizia per produzione:** rimossi ulteriori selettori CSS riferiti a vecchi componenti non più presenti (vecchio brand Calendario, pulsante Indietro, layout precedenti della libreria e altri controlli dismessi) e consolidate le regole correnti senza reintrodurre file `polish-*`.
+
+## 3.13.23 — 11 settembre 2026
+
+- **Barra informativa adattiva:** Meteo, Traguardo e Prossimo impegno cedono realmente la propria colonna quando sono nascosti. Le combinazioni a due moduli riempiono tutta la barra, Meteo+Evento diventano una coppia bilanciata, un modulo singolo usa l'intera larghezza e nessun modulo non lascia spazio fantasma.
+- **Traguardo mobile:** il valore sotto la progress bar ha una colonna minima dedicata e margine destro, così il simbolo `%` rimane sempre visibile anche sui telefoni stretti.
+- **Gestione stazioni:** “Aggiungi una stazione” resta in fondo al pannello, dopo l'elenco e le azioni sulle stazioni esistenti.
+- **Condivisione:** la cartolina riprende lo sfondo realmente visibile nella Dashboard, incluse fotografie personali/Picsum, oscuramento ed effetti. La scena usa un ritaglio proporzionale `cover` e Sole/Luna mantengono la posizione relativa della Dashboard senza deformare lo sfondo.
+- **Pulizia CSS:** eliminati tutti i 23 file `polish-*` dalla produzione e consolidate le regole ancora necessarie in `legacy-foundation.css` e `legacy-components.css`, mantenendo l'ordine della cascata. Rimossi anche blocchi vuoti/commenti storici e 22 regole esattamente duplicate; la pagina documentale non dipende più da fogli `polish-*`.
+
+## 3.13.22 — 11 settembre 2026
+
+- **Volume Melodie:** aumentato il livello reale delle melodie, con make-up gain dedicato a Respiro lento e Meditazione e compressione più morbida per mantenere headroom.
+- **Respiro lento:** sostituito il vecchio swell 5+5 con una guida **4-4-6**: 4 s inspira, 4 s trattieni, 6 s espira; il loop dura 28 secondi per contenere due cicli completi.
+- **Meditazione:** mantenuta nei registri bassi/medi e resa più presente senza reintrodurre toni acuti.
+- **Timer:** la scelta Relax durante un timer in corso forza correttamente il riavvio della sorgente Ambiente se era sospesa o non stava riproducendo.
+- **Traguardo mobile:** etichetta e percentuale sotto la progress bar sono ora contenute in una griglia `minmax(0,1fr) auto`, con overflow impedito anche sui telefoni stretti.
+- **Impostazioni Traguardo:** icona cambiata in una bandiera, nettamente diversa dal Calendario.
+- **Gestione stazioni:** descrizione spostata direttamente sotto il titolo, rimossa la nota sui preferiti separati e aumentato lo spazio sopra “Aggiungi al catalogo”.
+- **Condivisione cielo:** il sole viene ridisegnato con raggi/aloni e la luna con fase e superficie lunare anche quando la scena live è stata catturata; l'opzione cielo sparisce quando la scena celeste non è attiva.
+- **Pulizia tecnica:** rimossi i selettori morti `goal-configure` e il path `trophy`; esteso il renderer snapshot con esclusione selettiva dell'orbita, senza duplicare il resto della scena.
+
+## 3.13.21 — 11 settembre 2026
+
+- **Melodie nelle Impostazioni:** interruttore dedicato per attivare/disattivare completamente le melodie; il tab del player e la riproduzione seguono la preferenza senza lasciare stati intermedi.
+- **Respiro lento:** ciclo sonoro regolare di 10 secondi, con 5 secondi di crescita e 5 di rilascio, pensato come riferimento ritmico facoltativo. **Meditazione** usa ora solo registri bassi/medi e parziali molto più morbidi.
+- **Player audio:** rimosse le descrizioni permanenti dalle card Ambiente e Melodie e ridotte spaziature/altezze per una modale più compatta.
+- **Timer:** scegliendo il suono rilassante durante un timer in corso viene attivata esplicitamente la sorgente Ambiente; la riproduzione non resta bloccata sullo stato precedente. Quando il Timer è abilitato, il suo slot resta riservato in Dashboard per evitare spostamenti del testo all'avvio, in pausa e alla fine.
+- **Traguardo:** “Il percorso di quest'anno” e percentuale sono stati spostati sotto la progress bar; percentuale mantenuta più evidente. L'icona della sezione nelle Impostazioni è ora un trofeo.
+- **Festività italiane:** colore dedicato portato a un rosso spento (`#b45f63`) per distinguerle meglio dagli altri calendari senza usare un rosso acceso.
+- **Privacy locale:** aggiunto lo scudo alle etichette “Solo sul tuo dispositivo”.
+- **Wizard:** oltre alla scheda, ora animano anche rettangolo evidenziatore e freccia, interpolando posizione e forma fra gli elementi; il movimento viene disattivato con `prefers-reduced-motion`.
+- **Condivisione:** resa più lunare la fase della luna nella cartolina con earthshine, maria, crateri e grana deterministica, mantenendo la corretta geometria di fase.
+- **Pulizia tecnica:** rimossi 227 selettori CSS morti legati a vecchia modalità compatta, vecchia pagina Timer, corner action e altri componenti non più presenti. `timer-slot` è ora definito solo in `responsive.css`, le card Ambiente/Melodie solo in `scene.css`; rimosse anche le vecchie regole Meteo di `app.css` e l'override del wizard che ne forzava il layout a flex.
+
+## 3.13.20 — 11 settembre 2026
+
+- **Melodie offline:** mantenuto Notturno e riscritte le altre tre identità sonore per uso da sottofondo: Respiro lento con swell di circa 10 secondi, Meditazione con drone e rintocchi distanziati, Onde lente con movimenti alternati senza battito marcato.
+- **Player:** il titolo “La tua colonna sonora” è stato abbreviato in **“Il tuo suono”**, così resta leggibile su una sola riga anche negli spazi stretti.
+- **Traguardo:** invertita la gerarchia del riepilogo: percentuale e “Il percorso di quest’anno” precedono ora la riga “Il prossimo capitolo”; l’avanzamento rimane in fondo.
+- **Festività:** aggiunto nella sidebar del Calendario un interruttore dedicato a **Festività italiane**, persistente nelle impostazioni e applicato anche al prossimo impegno della Dashboard.
+- **Meteo:** le parole “Alba” e “Tramonto” sono nascoste nel ribbon standard; restano visibili soltanto sui display molto larghi e quando i widget sono impilati in colonna.
+- **Prossimo impegno:** il modulo è separato in due aree reali: dettagli a sinistra e scorciatoia Agenda a destra. I dettagli seguono tre righe — etichetta, evento, data/ora — con gerarchia coerente con il Meteo.
+- **Sidebar calendario:** eliminate le note verbose su sola lettura, copie e fuso orario. Resta soltanto **“Solo sul tuo dispositivo”** in basso, sopra l’azione di gestione.
+- **Condivisione:** le informazioni opzionali restano disponibili soltanto quando esistono davvero; anche la voce audio viene ora proposta solo se una Radio, un Ambiente o una Melodia è effettivamente in riproduzione.
+- **Wizard:** la scheda della visita guidata anima lo spostamento tra un elemento e l’altro con una transizione FLIP discreta, rispettando “Riduci movimento”.
+- **Impostazioni Traguardo:** sostituita l’icona calendario con una bandiera dedicata.
+- **Pulizia tecnica:** il drawer “Le tue giornate” è stato consolidato in `calendar.css`; rimossi gli override duplicati che ne definivano direzione e posizione in `polish-3.12.6.css` e `polish-3.13.4.css`. Eliminati anche il foglio non referenziato `polish-3.12.7.css` e tre vecchie immagini social non più utilizzate. Rimossi inoltre selettori obsoleti della vecchia sidebar e corretto l’aggiornamento della preferenza festività senza dipendere dall’esito della persistenza locale della sessione.
+
+## 3.13.19 — 11 settembre 2026
+
+- Melodie offline riscritte per avere quattro identità sonore realmente diverse: arpeggio luminoso, campane sparse, accordi notturni e pulsazioni calde.
+- Scorciatoia Agenda: rimossa la forma circolare, icona `arrow_forward_ios` leggermente più grande e mantenuta rientrata dal bordo.
+- Calendario telefono verticale: logo completo, periodo, navigazione/Oggi e pulsante Calendari sono ora sulla stessa riga; le viste restano nella riga inferiore.
+- Traguardo telefono verticale vincolato sempre al 100% della larghezza disponibile, con countdown flessibile che non può oltrepassare il contenitore.
+- Percentuale di avanzamento del Traguardo resa più grande e leggibile, anche sui display piccoli.
+
+## 3.13.18 — 11 settembre 2026
+
+- **Barra informativa ripulita alla radice:** Meteo, Traguardo e Calendario/Evento hanno ora un solo layout autorevole. Sono state eliminate altre 294 regole storiche o duplicate della ribbon dai vecchi fogli CSS; la composizione corrente vive in `responsive.css` e non cambia più quando altri comandi vengono nascosti.
+- **Calendario/Evento su telefono:** il gruppo mantiene la stessa gerarchia interna della versione ampia ma viene centrato come insieme; icona calendario, testo e scorciatoia Agenda restano vicini. Lo stato “Nessun impegno in vista” centra anche il contenuto interno.
+- **Scorciatoia Agenda:** sostituita con l’icona Material `arrow_forward_ios` e spostata più all’interno, così non tocca il bordo destro della barra nemmeno sui display grandi.
+- **Player audio:** aggiunto il terzo tab **Melodie**, accanto a Radio e Ambiente, con quattro composizioni procedurali originali generate sul dispositivo: Aurora lenta, Vetro e pioggia, Notturno e Orizzonte. Nessun file audio esterno è necessario.
+- **Condivisione:** meteo, obiettivo, colonna sonora e altri dettagli opzionali vengono inclusi solo quando il dato esiste realmente; le opzioni non disponibili vengono nascoste. La località non viene stampata quando esiste solo una posizione generica o delle coordinate senza nome.
+- **Calendario mobile:** il pulsante dei calendari mantiene l’icona visibile e resta vicino ai controlli correlati. Nel drawer “Le tue giornate” il titolo è a sinistra e i comandi a destra; sotto i 1000 px i calendari si dispongono su più elementi per riga invece di una lunga colonna. Le vecchie regole del drawer sono state spostate fuori dal foglio storico e rese autorevoli nel layer corrente.
+- Rimossa dall’interfaccia una vecchia dicitura di riferimento alla versione 3.8.
+- Refactoring del motore audio offline: stato, cambio sorgente, generazione buffer e restart sono stati separati in funzioni leggibili, con condizioni esplicite invece di catene di precedenze difficili da mantenere.
+
+## 3.13.17 — 11 settembre 2026
+
+- Barra informativa mobile stabilizzata: Meteo, Traguardo e Prossimo impegno mantengono la stessa composizione durante stato attivo, pre-inattività e inattività; la scomparsa dei comandi superiore/inferiore non cambia più griglia, larghezze o ordine dei blocchi.
+- Rimossi gli ultimi riadattamenti dinamici ereditati dalle vecchie prove di barra compatta (`:has()` e griglie 20/60/20 sui telefoni) e confinati i vecchi breakpoint della barra al solo tablet dove ancora necessari.
+- Telefono verticale: i tre moduli restano impilati, ma la gerarchia interna non viene reinventata. Il Meteo torna a usare nell’ordine etichetta, lettura meteo e Alba/Tramonto, con l’intero gruppo centrato; il Traguardo conserva titolo a sinistra, conto alla rovescia a destra e avanzamento sotto.
+- Stato “Nessun impegno in vista” mantenuto su una struttura simmetrica icona–testo–freccia, così testo e controlli restano centrati anche quando non esiste un evento.
+- Calendario mobile: corretta la regola legacy che nascondeva accidentalmente l’unica icona del pulsante **Le tue giornate**; l’icona calendario è ora esplicita e protetta dal layer responsive corrente.
+- Pulizia CSS mirata: rimosse dal percorso telefono le vecchie regole di compressione della barra, evitando che fogli storici possano riattivare il layout precedente con specificità superiore.
+
+## 3.13.16 — 11 settembre 2026
+
+- Rimossa completamente la modalità sintetica/compatta della barra informativa: durante l’inattività resta la stessa composizione normale, senza una seconda UI da mantenere. Rimossi impostazione, markup, logica JavaScript e selettori CSS dedicati.
+- Dashboard telefono verticale: Meteo conserva la stessa struttura della versione desktop con icona, temperatura, condizione, località e icone Alba/Tramonto; il Traguardo torna con titolo a sinistra e conto alla rovescia a destra.
+- Stato calendario vuoto riallineato: “Nessun impegno in vista”, icona e scorciatoia Agenda sono centrati geometricamente.
+- Prossimo evento rifattorizzato con due controlli fratelli validi: la card apre il dettaglio, la freccia apre Agenda, senza controlli interattivi annidati.
+- Header Calendario mobile: logo completo Istante reso indipendente dalle vecchie regole `wordmark`, icona Calendari resa esplicita e spazio tra Oggi e azioni ridotto; il pulsante `+` nascosto non riserva più una colonna vuota.
+- Condivisione: la cartolina usa lo stesso stack tipografico Classic/Excalifont della Home. La località viene mostrata solo quando esiste un nome utile (ad esempio una città scelta); le etichette generiche “La mia posizione” e “Coordinate personali” non vengono esportate.
+- Pulizia CSS: rimossi i selettori residui della vecchia modalità sintetica dai fogli storici caricati e centralizzato il comportamento responsive corrente in `responsive.css`.
+
+## 3.13.15 — 11 settembre 2026
+
+- Freccia Agenda del prossimo evento resa visibile e coerente anche su desktop e schermi grandi, senza cambiare il click sulla card che continua ad aprire il dettaglio.
+- Stato “Nessun impegno in vista” centrato geometricamente, inclusi icona calendario e collegamento Agenda.
+- Header Calendario telefono stabilizzato: l'area azioni riserva sempre lo spazio del pulsante Aggiungi e del pulsante calendari, quindi la comparsa di `+` non sposta periodo o navigazione.
+- Sidebar dei calendari trasformata in pannello a tutto schermo sui telefoni, con intestazione, sorgenti e azioni sempre accessibili.
+- Condivisione: nuovo interruttore Meteo, attivo di default quando meteo e località sono configurati; temperatura, condizioni e località vengono inserite nella cartolina.
+- Responsive consolidato: le regole introdotte nelle 3.13.12–3.13.14 sono state riordinate in un unico foglio `responsive.css`, eliminando la catena di tre override successivi.
+- Refactoring mirato di calendario e condivisione: stato del prossimo evento centralizzato, snapshot di condivisione separato e opzioni di share gestite da un'unica lista.
+- Versioni interne di worker, backup, documentazione e controllo aggiornamenti riallineate alla release.
+- Service worker ripulito dal vecchio percorso `calendario.html`: il Calendario è una vista interna di `index.html` e non viene più trattato come pagina separata.
+
+## 3.13.14 — 11 settembre 2026
+
+- Vista semplificata su telefono verticale corretta anche per viewport tra 640 e 740 px: Meteo, Traguardo e Calendario/Evento sono realmente impilati e centrati.
+- Testi della barra inferiore ulteriormente compattati; “Nessun impegno in vista” resta leggibile per intero.
+- Calendario: eliminato il pulsante Indietro circolare; il logo completo Istante con nome e payoff resta a sinistra e può tornare alla dashboard.
+- Vista Anno mobile ricostruita con mesi a tutta larghezza, altezza autonoma e scorrimento verticale; nessuna sovrapposizione tra i mini-calendari.
+- Vista Anno landscape mantenuta a due mesi per riga con altezza corretta delle settimane.
+
+## 3.13.13 — 11 settembre 2026
+
+- Vista semplificata mobile riallineata alla composizione verticale Meteo → Traguardo → Evento.
+- Tipografia telefono leggermente ridotta e centratura migliorata, incluso “Nessun impegno in vista”.
+- Freccia separata sul prossimo evento per aprire direttamente Calendario → Agenda, mantenendo il click sulla card per il dettaglio evento.
+- Header calendario telefono verticale ricomposto su due righe; landscape raccolto in una singola riga.
+- Vista Anno: un mese per riga in verticale, due mesi per riga in orizzontale.
+- Vista Mese preservata con spazio inferiore riservato alla paginazione.
+
+## 3.13.12 — 11 settembre 2026
+
+- Responsive di produzione: dashboard stretta ricomposta verticalmente in Meteo → Traguardo → Evento; calendario riorganizzato per telefono e tablet con controlli e tipografia touch-first.
+- Calendario Settimana: visualizzazione della fascia oraria completa degli eventi; eventi multi-giorno con indicazione della fine.
+- Calendario Giorno/Agenda: intervalli coerenti, inclusa data di fine per eventi che attraversano più giorni.
+
 ## 3.13.11 — 10 settembre 2026
 
 - Timer tablet landscape: la modale usa quasi tutta la larghezza del viewport touch, eliminando il vecchio limite da 760/800 px e sfruttando meglio 1024/1280/1366/1368 px.
@@ -160,7 +288,7 @@
 - condivisione alleggerita: rimossa l'etichetta visibile “Formato” e preview resa sempre contenuta, senza taglio dell'immagine;
 - **Biblioteca** ripensata con due soli livelli, Frasi e Raccolte: tutte le raccolte sono mostrate come card in un unico catalogo e possono essere filtrate per **In uso / Scaricate / Da scaricare**;
 - rimosso il comando permanente “Configura il prossimo capitolo” dalla fascia: il riepilogo del traguardo apre ora una **modale dedicata** con avanzamento, tempo residuo e accesso alle impostazioni;
-- **Timer** ridisegnato con impostazione principale tramite slider 1–120 minuti, durata precisa in un pannello secondario e stato in corso animato con orbita/progresso;
+- **Timer** ridisegnato con impostazione principale tramite slider 1–120 minuti, durata precisa in un pannello secondario è stato in corso animato con orbita/progresso;
 - toast reso più riconoscibile con superficie più piena, bordo e ombra dedicata anche nel tema Carta;
 - scala dei testi trasformata in uno **slider a quattro livelli**: Piccolo, Medio, Grande, Molto grande; la UI cresce più lentamente della frase e le barre di avanzamento mantengono una dimensione fisica minima;
 - calendario: logo ricostruito come **un unico pulsante** con simbolo centrato verticalmente tra `istante.` e `Un momento, per te.`;

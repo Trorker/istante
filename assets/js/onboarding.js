@@ -4,14 +4,14 @@
  function create({store,open}){
   const $=s=>document.querySelector(s),byId=id=>document.getElementById(id),M=window.IstanteMotion;
   const dialog=byId('tour-dialog'),card=byId('tour-card'),seenKey='welcome.3.10';
-  let ready=false,pending=false,index=0,steps=[],raf=0,target=null,virtualTarget='',transitioning=false,simulations=[],originView='dashboard',positionToken=0;
+  let ready=false,pending=false,index=0,steps=[],raf=0,target=null,virtualTarget='',transitioning=false,simulations=[],originView='dashboard',positionToken=0,cardMove=null,sketchFrame=0,paintedSketch=null;
   const isTouch=()=>navigator.maxTouchPoints>0||matchMedia('(pointer:coarse)').matches;
   const definitions=[
    {target:'.clock-block',fallback:'.clock-section',note:'inizia dal tuo ritmo',title:'Il tempo resta al centro.',copy:'Orologio e data sono la base di Istante: leggibili da vicino e da lontano, senza riempire lo schermo di informazioni inutili.'},
    {target:'.thought-block',note:'una frase, al momento giusto',title:'Un pensiero che lascia spazio.',copy:'Le frasi accompagnano la giornata e possono cambiare nel tempo senza trasformare Istante in una lista di notifiche o attività.'},
    {target:'#environment-line',fallback:'#active-info-strip',force:true,locationSetup:true,note:'il cielo resta leggero',title:'Meteo e luce della giornata.',copy:'Qui trovi temperatura, condizioni, alba e tramonto. Se il meteo non è ancora disponibile, la guida usa dati di esempio per mostrarti come apparirà; la posizione è l’unica configurazione che puoi fare direttamente dal wizard.'},
    {target:'#goal-strip',note:'una direzione, senza fretta',title:'Il prossimo capitolo resta vicino.',copy:'Qui puoi tenere visibile un traguardo e il suo avanzamento, con il tempo che manca mostrato in modo discreto e senza trasformarlo in una scadenza invadente.'},
-   {target:'#upcoming-event',fallback:'#idle-upcoming-event',force:true,note:'il prossimo impegno, senza aprire nulla',title:'Anche il calendario può farsi vedere qui.',copy:'Quando hai un calendario attivo, Istante può mostrarti il prossimo evento direttamente nella dashboard: titolo e orario restano a portata di sguardo, senza occupare il centro dello schermo.'},
+   {target:'#upcoming-event',force:true,note:'il prossimo impegno, senza aprire nulla',title:'Anche il calendario può farsi vedere qui.',copy:'Quando hai un calendario attivo, Istante può mostrarti il prossimo evento direttamente nella dashboard: titolo e orario restano a portata di sguardo, senza occupare il centro dello schermo.'},
    {target:'.collection-link',note:'qui ritrovi le tue parole',title:'La biblioteca conserva ciò che conta.',copy:'Da qui ritrovi raccolte, preferiti e pensieri personali. Puoi costruire nel tempo una biblioteca tutta tua.'},
    {target:'#next-phrase',note:'quando vuoi cambiare aria',title:'Un altro pensiero, subito.',copy:'Questo comando cambia soltanto la frase corrente quando vuoi qualcosa di diverso, senza modificare il resto della dashboard.'},
    {target:'#favorite-current',note:'questo cuore conserva',title:'Tieni vicino ciò che ti parla.',copy:'Il cuore salva il pensiero corrente tra i preferiti, così puoi ritrovarlo più avanti nella tua biblioteca.'},
@@ -49,19 +49,14 @@
   }
   function simulateUpcomingEvent(){
    const active=byId('upcoming-event'),activeTitle=byId('upcoming-title');
-   const idle=byId('idle-upcoming-event'),idleTitle=byId('idle-upcoming-title');
    const hasReal=active&&!active.hidden&&activeTitle?.textContent.trim()&&activeTitle.textContent.trim()!=='Nessun impegno in vista';
    if(hasReal||active?.classList.contains('tour-simulated-event'))return;
-   const nodes=[active,byId('upcoming-label'),activeTitle,byId('upcoming-time'),idle,byId('idle-upcoming-label'),idleTitle,byId('idle-upcoming-time')].map(snapshotNode).filter(Boolean);
+   const nodes=[active,byId('upcoming-label'),activeTitle,byId('upcoming-time')].map(snapshotNode).filter(Boolean);
    simulations.push(nodes);
    if(active){active.hidden=false;active.classList.add('tour-simulated-event');}
    if(byId('upcoming-label'))byId('upcoming-label').textContent='Evento di esempio';
    if(activeTitle)activeTitle.textContent='Riunione di progetto';
    if(byId('upcoming-time'))byId('upcoming-time').textContent='Oggi · 15:30';
-   if(idle){idle.hidden=false;idle.classList.add('tour-simulated-event');}
-   if(byId('idle-upcoming-label'))byId('idle-upcoming-label').textContent='Evento di esempio';
-   if(idleTitle)idleTitle.textContent='Riunione di progetto';
-   if(byId('idle-upcoming-time'))byId('idle-upcoming-time').textContent='Oggi · 15:30';
   }
   function preparePresentation(){simulateWeather();simulateUpcomingEvent();}
   function restoreSimulation(){
@@ -98,6 +93,32 @@
   function selectSteps(){return definitions.filter(d=>!d.touchOnly||isTouch());}
   const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
   function rectPath(x,y,w,h){const r=Math.min(16,w/3,h/3);return `M ${x+r} ${y} Q ${x+w*.55} ${y-2} ${x+w-r} ${y} Q ${x+w+1} ${y-1} ${x+w} ${y+r} L ${x+w} ${y+h-r} Q ${x+w+2} ${y+h+1} ${x+w-r} ${y+h} Q ${x+w*.4} ${y+h+2} ${x+r} ${y+h} Q ${x-1} ${y+h} ${x} ${y+h-r} L ${x} ${y+r} Q ${x-2} ${y-1} ${x+r} ${y}`;}
+  function paintSketch(g){
+   if(!g)return;
+   const cut=byId('tour-cutout');for(const [k,v]of Object.entries({x:g.x,y:g.y,width:g.w,height:g.h}))cut.setAttribute(k,v);
+   byId('tour-outline').setAttribute('d',rectPath(g.x,g.y,g.w,g.h));
+   const path=`M ${g.sx} ${g.sy} C ${g.c1x} ${g.c1y}, ${g.c2x} ${g.c2y}, ${g.ex} ${g.ey}`;
+   byId('tour-arrow').setAttribute('d',path);byId('tour-arrow-shadow').setAttribute('d',path);byId('tour-arrow-shadow').setAttribute('transform','translate(1.1 -1.1)');
+   const a=Math.atan2(g.ey-g.c2y,g.ex-g.c2x),tip=11;
+   byId('tour-arrow-tip').setAttribute('d',`M ${g.ex-tip*Math.cos(a-.48)} ${g.ey-tip*Math.sin(a-.48)} Q ${g.ex-2} ${g.ey+1} ${g.ex} ${g.ey} L ${g.ex-tip*Math.cos(a+.48)} ${g.ey-tip*Math.sin(a+.48)}`);
+   paintedSketch={...g};
+  }
+  function moveSketch(next){
+   if(sketchFrame){cancelAnimationFrame(sketchFrame);sketchFrame=0;}
+   const from=paintedSketch;
+   if(!from||!M.allowed?.()){paintSketch(next);return;}
+   const keys=['x','y','w','h','sx','sy','c1x','c1y','c2x','c2y','ex','ey'];
+   const distance=Math.max(...keys.map(k=>Math.abs((next[k]||0)-(from[k]||0))));
+   if(distance<1.5){paintSketch(next);return;}
+   const started=performance.now(),duration=320;
+   const frame=now=>{
+    const raw=Math.min(1,(now-started)/duration),eased=1-Math.pow(1-raw,3),current={};
+    for(const key of keys)current[key]=from[key]+(next[key]-from[key])*eased;
+    paintSketch(current);
+    if(raw<1)sketchFrame=requestAnimationFrame(frame);else sketchFrame=0;
+   };
+   sketchFrame=requestAnimationFrame(frame);
+  }
   function gestureZoneRect(){
    const w=window.visualViewport?.width||innerWidth,h=window.visualViewport?.height||innerHeight;
    const edge=Math.min(240,Math.max(136,w*.32)),top=Math.min(72,h*.085),bottom=Math.max(24,h*.028);
@@ -119,15 +140,15 @@
    const ch=card.offsetHeight,cw=card.offsetWidth,cx=r.x+r.w/2,cy=r.y+r.h/2,gap=48;
    const spots=[{x:cx-cw/2,y:r.y+r.h+gap},{x:cx-cw/2,y:r.y-ch-gap},{x:r.x+r.w+gap,y:cy-ch/2},{x:r.x-cw-gap,y:cy-ch/2}];
    function scored(p){const x=clamp(p.x,14,W-cw-14),y=clamp(p.y,14,H-ch-14),ox=Math.max(0,Math.min(x+cw,r.x+r.w+margin)-Math.max(x,r.x-margin)),oy=Math.max(0,Math.min(y+ch,r.y+r.h+margin)-Math.max(y,r.y-margin));return{x,y,score:ox*oy*100+Math.abs(x-p.x)+Math.abs(y-p.y)};}
-   const chosen=spots.map(scored).sort((a,b)=>a.score-b.score)[0];card.style.left=chosen.x+'px';card.style.top=chosen.y+'px';
-   const cut=byId('tour-cutout');for(const [k,v]of Object.entries({x:r.x,y:r.y,width:r.w,height:r.h}))cut.setAttribute(k,v);
-   byId('tour-outline').setAttribute('d',rectPath(r.x,r.y,r.w,r.h));
+   const chosen=spots.map(scored).sort((a,b)=>a.score-b.score)[0];
+   const previous=card.dataset.positioned==='true'?card.getBoundingClientRect():null;
+   card.style.left=chosen.x+'px';card.style.top=chosen.y+'px';card.dataset.positioned='true';
+   if(previous&&M.allowed?.()&&card.animate){const dx=previous.left-chosen.x,dy=previous.top-chosen.y;if(Math.hypot(dx,dy)>3){cardMove?.cancel();cardMove=card.animate([{transform:`translate(${dx}px,${dy}px)`},{transform:'translate(0,0)'}],{duration:320,easing:'cubic-bezier(.2,.8,.2,1)'});cardMove.onfinish=()=>{cardMove=null;};}}
    const ccx=chosen.x+cw/2,ccy=chosen.y+ch/2,dx=cx-ccx,dy=cy-ccy;let sx,sy,ex,ey;
    if(Math.abs(dx)/(cw/2)>Math.abs(dy)/(ch/2)){sx=dx>0?chosen.x+cw:chosen.x;sy=clamp(cy,chosen.y+25,chosen.y+ch-25);ex=dx>0?r.x-5:r.x+r.w+5;ey=cy;}
    else{sx=clamp(cx,chosen.x+30,chosen.x+cw-30);sy=dy>0?chosen.y+ch:chosen.y;ex=cx;ey=dy>0?r.y-5:r.y+r.h+5;}
-   const vx=ex-sx,vy=ey-sy,len=Math.max(1,Math.hypot(vx,vy)),nx=-vy/len,ny=vx/len,bend=Math.min(35,len*.2),c1x=sx+vx*.28+nx*bend,c1y=sy+vy*.28+ny*bend,c2x=sx+vx*.74+nx*bend*.7,c2y=sy+vy*.74+ny*bend*.7,path=`M ${sx} ${sy} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${ex} ${ey}`;
-   byId('tour-arrow').setAttribute('d',path);byId('tour-arrow-shadow').setAttribute('d',path);byId('tour-arrow-shadow').setAttribute('transform','translate(1.1 -1.1)');
-   const a=Math.atan2(ey-c2y,ex-c2x),tip=11;byId('tour-arrow-tip').setAttribute('d',`M ${ex-tip*Math.cos(a-.48)} ${ey-tip*Math.sin(a-.48)} Q ${ex-2} ${ey+1} ${ex} ${ey} L ${ex-tip*Math.cos(a+.48)} ${ey-tip*Math.sin(a+.48)}`);
+   const vx=ex-sx,vy=ey-sy,len=Math.max(1,Math.hypot(vx,vy)),nx=-vy/len,ny=vx/len,bend=Math.min(35,len*.2),c1x=sx+vx*.28+nx*bend,c1y=sy+vy*.28+ny*bend,c2x=sx+vx*.74+nx*bend*.7,c2y=sy+vy*.74+ny*bend*.7;
+   moveSketch({x:r.x,y:r.y,w:r.w,h:r.h,sx,sy,c1x,c1y,c2x,c2y,ex,ey});
   }
   function queue(){
    const token=++positionToken;if(raf)cancelAnimationFrame(raf);
@@ -168,7 +189,7 @@
   byId('tour-next').addEventListener('click',()=>{if(index>=steps.length-1)M.dismiss(dialog);else{index++;showStep();}});
   byId('tour-back').addEventListener('click',()=>{if(index>0){index--;showStep();}});
   dialog.addEventListener('keydown',e=>{if(e.key==='ArrowRight'){e.preventDefault();byId('tour-next').click();}else if(e.key==='ArrowLeft'){e.preventDefault();byId('tour-back').click();}});
-  dialog.addEventListener('close',()=>{document.body.classList.remove('is-touring');positionToken++;if(raf)cancelAnimationFrame(raf);raf=0;target=null;virtualTarget='';dialog.classList.remove('tour-virtual-target');setSidebarPreview(false);restoreSimulation();document.dispatchEvent(new CustomEvent('istante:onboarding-preview-view',{detail:{view:originView}}));store.write(seenKey,true);});
+  dialog.addEventListener('close',()=>{document.body.classList.remove('is-touring');positionToken++;if(raf)cancelAnimationFrame(raf);raf=0;if(sketchFrame)cancelAnimationFrame(sketchFrame);sketchFrame=0;paintedSketch=null;cardMove?.cancel();cardMove=null;delete card.dataset.positioned;target=null;virtualTarget='';dialog.classList.remove('tour-virtual-target');setSidebarPreview(false);restoreSimulation();document.dispatchEvent(new CustomEvent('istante:onboarding-preview-view',{detail:{view:originView}}));store.write(seenKey,true);});
   byId('welcome-dialog').addEventListener('close',()=>{store.write(seenKey,true);store.write('welcome.seen',true);});
   byId('welcome-reopen').addEventListener('click',()=>{const d=byId('settings-dialog');d.addEventListener('close',()=>showWelcome(true),{once:true});M.dismiss(d);});
   const brand=document.querySelector('.topbar .brand-home-link');brand?.addEventListener('click',e=>{e.preventDefault();if(document.querySelector('dialog[open]'))return;launchTour();});

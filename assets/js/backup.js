@@ -60,7 +60,7 @@
     data.phraseCollections=window.IstanteCollections.clean(store.read('phrase-collections.v1',{}),core);
     if($('backup-calendars').checked)data.calendars=window.IstanteCalendarCore.cleanSources(store.read('calendars.v1',[]));
     if($('backup-place').checked)data.place=store.read('place',null);
-    const payload={format:'istante-backup',schemaVersion:1,appVersion:'3.13.2',exportedAt:new Date().toISOString(),sourceOrigin:location.origin,data};
+    const payload={format:'istante-backup',schemaVersion:1,appVersion:'3.13.24',exportedAt:new Date().toISOString(),sourceOrigin:location.origin,data};
     validate(payload,dependencies);
     const text=JSON.stringify(payload,null,2)+'\n',blob=new Blob([text],{type:'application/json;charset=utf-8'});
     if(blob.size>MAX_BYTES)throw Error('Il backup supera 4 MB. Esporta separatamente la raccolta di frasi.');

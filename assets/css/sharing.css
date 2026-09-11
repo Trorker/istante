@@ -26,7 +26,7 @@
 .share-secondary button{display:flex;align-items:center;gap:8px;min-height:40px}
 .share-footer{flex-wrap:wrap!important;gap:12px!important}
 .share-footer button{flex:1;display:flex;justify-content:center;align-items:center;gap:8px;min-width:0;white-space:normal}
-@media(max-width:650px){.toolbar{gap:3px}.toolbar .icon-button{width:39px;height:42px;min-width:39px}.toolbar-separator{margin-inline:3px}.share-panel{width:calc(100vw - 16px);max-height:calc(100dvh - 16px)}.share-content{padding-inline:18px}.station-list-tools{flex-wrap:wrap}.station-list-tools .select-search-bar{flex:1 1 180px}.station-filter-chip{font-size:12px;padding-inline:12px}.share-panel .panel-head{padding-inline:20px}.share-panel .panel-head h2{font-size:28px}}
+@media(max-width:650px){.toolbar{gap:3px}.toolbar .icon-button{width:39px;height:42px;min-width:39px}.share-panel{width:calc(100vw - 16px);max-height:calc(100dvh - 16px)}.share-content{padding-inline:18px}.station-list-tools{flex-wrap:wrap}.station-list-tools .select-search-bar{flex:1 1 180px}.station-filter-chip{font-size:12px;padding-inline:12px}.share-panel .panel-head{padding-inline:20px}.share-panel .panel-head h2{font-size:28px}}
 @media(max-width:360px){.toolbar .icon-button{width:36px;min-width:36px}.toolbar{gap:0}.share-formats button{font-size:13px;padding-inline:8px}.share-footer{padding-inline:16px}}
 @media(prefers-reduced-motion:reduce){.material-heart path,.social-icon-link{transition:none!important}}
 .share-content{display:flex;flex-direction:column}.share-content>*{flex-shrink:0}.share-preview-wrap img{flex-shrink:0}.share-preview-wrap #share-status{display:block;flex-shrink:0}
@@ -36,6 +36,9 @@
  .bottom-bar .collection-link{grid-column:1;grid-row:1;justify-self:center;min-height:30px;font-size:11px}
  .bottom-bar .toolbar{grid-column:1;grid-row:2;justify-self:center;justify-content:center;gap:2px;min-width:0}
  .bottom-bar .toolbar .icon-button{width:40px;min-width:40px;height:42px}
- .bottom-bar .mode-link{display:none}
+ 
 }
-@media(max-width:360px){.bottom-bar .toolbar{gap:1px}.bottom-bar .toolbar .icon-button{width:36px;min-width:36px}.bottom-bar .toolbar-separator{margin:0 2px}}
+@media(max-width:360px){.bottom-bar .toolbar{gap:1px}.bottom-bar .toolbar .icon-button{width:36px;min-width:36px}}
+
+/* 3.13.18: optional data is not offered when its snapshot is unavailable. */
+.share-options .toggle-row[hidden]{display:none!important}

@@ -5,15 +5,15 @@
 html,body{width:100%;height:100%;overflow:hidden!important}
 body{user-select:none;-webkit-user-select:none}
 input,textarea{user-select:text;-webkit-user-select:text}
-.app-shell{max-width:1920px}
+
 .brand-lockup{display:grid;grid-template-columns:auto;gap:3px;align-items:start;min-width:max-content}
 .brand-lockup .wordmark{line-height:1}
-.brand-lockup .brand-tagline{padding-left:36px;font-size:10px;line-height:1.25;color:var(--muted)}
-.topbar>.brand-tagline{display:none}
+
+
 
 /* The v3.8 settings rhythm is the reference for every new option. */
 #settings-dialog{width:590px}
-#settings-dialog .panel-content{padding-top:4px}
+
 .settings-section>summary{padding-inline:2px}
 .settings-section-body{padding:2px 0 20px}
 .settings-section-body>.stacked-label,
@@ -43,16 +43,13 @@ input,textarea{user-select:text;-webkit-user-select:text}
 /* Standalone checkboxes use the same ink/paper geometry as the switches. */
 .check-field{display:flex;align-items:flex-start;gap:11px;margin-top:15px;color:var(--muted);font-size:11px;line-height:1.55;cursor:pointer}
 input[type=checkbox]:not([role=switch]){appearance:none;-webkit-appearance:none;width:19px;height:19px;min-width:19px;margin:0;border:1px solid var(--faint);border-radius:6px;background:var(--bg);display:grid;place-items:center;cursor:pointer;transition:background .18s,border-color .18s,transform .18s}
-input[type=checkbox]:not([role=switch])::after{content:'';width:8px;height:4px;border-left:1.8px solid var(--bg);border-bottom:1.8px solid var(--bg);transform:translateY(-1px) rotate(-45deg) scale(0);transition:transform .16s ease}
+input[type=checkbox]:not([role=switch])::after{content:"";width:8px;height:4px;border-left:1.8px solid var(--bg);border-bottom:1.8px solid var(--bg);transform:translateY(-1px) rotate(-45deg) scale(0);transition:transform .16s ease}
 input[type=checkbox]:not([role=switch]):checked{background:var(--accent);border-color:var(--accent)}
 input[type=checkbox]:not([role=switch]):checked::after{transform:translateY(-1px) rotate(-45deg) scale(1)}
 input[type=checkbox]:not([role=switch]):focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
 /* Goal / next chapter: visible but never dashboard-like. */
 .goal-heading{position:relative;min-width:0}
-.goal-configure{margin-top:9px;display:inline-flex;align-items:center;gap:6px;background:transparent;color:var(--muted);font:10px var(--sans);padding:4px 0;opacity:.58;transition:color .2s,opacity .2s}
-.goal-configure .icon{width:13px;height:13px}
-.goal-configure:hover,.goal-configure:focus-visible{color:var(--accent);opacity:1}
 .goal-quick{margin-top:18px;padding-top:17px;border-top:1px solid var(--line)}
 .goal-quick>.field-note{margin:0 0 11px}
 .goal-quick-row{display:grid;grid-template-columns:minmax(0,.75fr) minmax(0,1fr) auto;gap:9px;align-items:end}
@@ -64,19 +61,10 @@ input[type=checkbox]:not([role=switch]):focus-visible{outline:2px solid var(--ac
 #performance-setting>small{font-size:10px;line-height:1.55;color:var(--muted)}
 .backup-actions,.station-management-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
 .backup-actions>*{flex:1 1 180px}
-.audio-source-switch,.timer-sound-segments,.collection-library-tabs{display:flex;gap:5px;padding:5px;border-radius:10px;background:var(--bg);border:0}
-.audio-source-switch button,.timer-sound-segments button,.collection-library-tabs button{flex:1;min-height:38px;border-radius:7px;background:transparent;color:var(--muted);font:11px var(--sans);display:flex;align-items:center;justify-content:center;gap:7px}
-.audio-source-switch button[aria-pressed=true],.timer-sound-segments button[aria-pressed=true],.collection-library-tabs button[aria-pressed=true]{background:var(--surface-2);color:var(--ink)}
-.ambient-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:14px 0}
-.ambient-options button{min-width:0;border:1px solid var(--line);border-radius:11px;background:transparent;color:var(--muted);padding:12px;text-align:left;display:grid;grid-template-columns:22px 1fr;gap:3px 9px}
-.ambient-options button .icon{grid-row:1/3;width:18px;height:18px;color:var(--accent)}
-.ambient-options button strong{font-size:11px;font-weight:500;color:var(--ink)}
-.ambient-options button small{font-size:9px;line-height:1.4;color:var(--muted)}
-.ambient-options button[aria-pressed=true]{border-color:var(--accent);background:var(--accent-soft)}
+.audio-source-switch,.timer-sound-segments{display:flex;gap:5px;padding:5px;border-radius:10px;background:var(--bg);border:0}
+.audio-source-switch button,.timer-sound-segments button{flex:1;min-height:38px;border-radius:7px;background:transparent;color:var(--muted);font:11px var(--sans);display:flex;align-items:center;justify-content:center;gap:7px}
+.audio-source-switch button[aria-pressed=true],.timer-sound-segments button[aria-pressed=true]{background:var(--surface-2);color:var(--ink)}
 
-/* Timer: compact and visually stable. */
-.timer-slot{height:auto!important;min-height:8px!important;flex:0 0 auto;padding:6px 0 12px;margin:0}
-.timer-slot:has(.timer-chip[hidden]){height:4px!important;padding:0;margin:0}
 .timer-chip{border:1px solid var(--line);border-radius:24px;background:var(--surface);box-shadow:none;max-width:min(460px,92vw);margin:auto}
 .timer-chip-main{min-width:0}
 .timer-chip-delete{color:var(--faint)}
@@ -85,7 +73,7 @@ input[type=checkbox]:not([role=switch]):focus-visible{outline:2px solid var(--ac
 
 /* Welcome: the real mark stays visible; animation lives around it, not instead of it. */
 .welcome-emblem img{display:block;border-radius:16px;opacity:.98;position:relative;z-index:2;animation:welcome-logo-breathe 5.5s ease-in-out infinite}
-.welcome-emblem:before{content:'';position:absolute;inset:13px;border:1px solid color-mix(in srgb,var(--accent) 45%,transparent);border-radius:50%;opacity:.5;animation:welcome-inner 7s ease-in-out infinite}
+.welcome-emblem:before{content:"";position:absolute;inset:13px;border:1px solid color-mix(in srgb,var(--accent) 45%,transparent);border-radius:50%;opacity:.5;animation:welcome-inner 7s ease-in-out infinite}
 .welcome-orbit{z-index:1}
 @keyframes welcome-logo-breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
 @keyframes welcome-inner{0%,100%{transform:scale(.93);opacity:.34}50%{transform:scale(1.06);opacity:.68}}
@@ -99,28 +87,28 @@ input[type=checkbox]:not([role=switch]):focus-visible{outline:2px solid var(--ac
 @keyframes tour-card-step{from{opacity:.45;transform:translateY(8px) scale(.988)}to{opacity:1;transform:none}}
 
 /* Collections added after 3.8, styled like the original library. */
-.collection-library-panel{width:850px;height:min(760px,calc(100dvh - 36px))}
+
 .collection-library-toolbar{padding:18px 28px 0;display:grid;grid-template-columns:auto minmax(200px,1fr);gap:12px;align-items:center}
-.collection-library-tabs{min-width:235px}
+
 .collection-library-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:16px}
 .collection-card{border:1px solid var(--line);border-radius:12px;background:transparent;padding:15px;min-width:0}
 .collection-card:hover{background:var(--accent-soft)}
-.collection-library-launch{width:100%;display:flex;align-items:center;gap:13px;padding:14px 0;background:transparent;text-align:left;color:var(--ink);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.collection-library-launch>.icon{width:20px;height:20px;color:var(--accent)}
-.collection-library-launch>span{display:grid;gap:3px;flex:1;min-width:0}.collection-library-launch strong{font-size:12px;font-weight:500}.collection-library-launch small{font-size:10px;color:var(--muted)}
+
+
+
 
 /* Calendar: same-screen workspace with the quiet 3.8 hierarchy. */
 .virtual-calendar{background:var(--bg);color:var(--ink)}
 #calendar-view .calendar-shell{max-width:1680px;margin:0 auto;padding:28px 42px max(38px,env(safe-area-inset-bottom));height:var(--view-h,100dvh);display:flex;flex-direction:column;overflow:hidden}
 #calendar-view .calendar-heading-combined{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:28px;margin:0;padding:0 0 22px;border-bottom:1px solid var(--line);flex:0 0 auto}
 #calendar-view .calendar-heading-combined>.wordmark{background:transparent;padding:0;color:var(--ink);font-size:22px}
-#calendar-view .calendar-title-copy{min-width:0}
+
 #calendar-view .calendar-title-copy .section-label{margin:0 0 6px}
 #calendar-view .calendar-title-copy h1{font:400 clamp(30px,3.5vw,46px)/1.05 var(--serif);letter-spacing:-.035em;margin:0}
 #calendar-view .calendar-subtitle{font-size:11px;line-height:1.5;color:var(--muted);margin:7px 0 0}
 #calendar-view .calendar-heading-actions{display:flex;align-items:center;gap:8px}
 #calendar-view .calendar-heading-actions .primary-button,#calendar-view .calendar-heading-actions .secondary-button{min-height:40px}
-#calendar-view .calendar-back-button{display:none}
+
 #calendar-view .calendar-shell>main{min-height:0;flex:1;display:flex;flex-direction:column;overflow:hidden;padding:0}
 #calendar-view .calendar-toolbar{position:static;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:15px 0 13px;background:transparent;border-bottom:1px solid var(--line);flex:0 0 auto}
 #calendar-view .calendar-navigation,#calendar-view .calendar-views{display:flex;align-items:center;gap:5px}
@@ -132,7 +120,7 @@ input[type=checkbox]:not([role=switch]):focus-visible{outline:2px solid var(--ac
 #calendar-view .calendar-main{min-width:0;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;padding-right:3px}
 #calendar-view #cal-content{min-height:0}
 #calendar-view .calendar-warnings{flex:0 0 auto;max-height:108px;overflow:auto;margin:10px 0 0;padding:10px 14px;border:1px solid var(--line);border-radius:9px;color:var(--muted);font-size:10px}
-#calendar-view .calendar-footer{display:none}
+
 #calendar-view .calendar-cell{min-height:76px}
 #calendar-view .calendar-event{border-radius:4px}
 .view-dots{bottom:max(5px,env(safe-area-inset-bottom))}
@@ -146,53 +134,49 @@ input[type=checkbox]:not([role=switch]):focus-visible{outline:2px solid var(--ac
 .panel,.control-popup,.radio-panel,.tour-card,.calendar-source-panel,.calendar-event-panel{overflow-x:hidden!important}
 .panel-content,.control-popup,.custom-options,.calendar-main,.calendar-sidebar{overscroll-behavior-x:none}
 
-@media(max-width:900px){
+@media (max-width:900px){
  #calendar-view .calendar-shell{padding:22px 24px 38px}
- #calendar-view .calendar-heading-combined{grid-template-columns:minmax(0,1fr) auto;gap:14px}
- #calendar-view .calendar-heading-combined>.wordmark{display:none}
- #calendar-view .calendar-back-button{display:inline-flex}
+ 
+ 
+ 
  #calendar-view .calendar-layout{grid-template-columns:minmax(0,1fr);gap:10px;padding-top:10px}
- #calendar-view .calendar-sidebar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-right:0;border-bottom:1px solid var(--line);padding:0 0 9px;overflow:visible}
- #calendar-view .calendar-sidebar-head{margin:0}.calendar-local-note{display:none!important}
- #calendar-view #cal-source-list{display:flex;gap:10px;flex-wrap:wrap}
+ 
+
+ 
  .about-docs{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
-@media(max-width:740px){
- .brand-lockup .brand-tagline{padding-left:34px;font-size:9px}
- .goal-configure{opacity:1}
- #settings-dialog{width:min(590px,calc(100vw - 20px));max-height:calc(100dvh - 18px)}
+@media (max-width:740px){
+ 
+  #settings-dialog{width:min(590px,calc(100vw - 20px));max-height:calc(100dvh - 18px)}
  .goal-quick-row{grid-template-columns:repeat(2,minmax(0,1fr))}.goal-quick-row .secondary-button{grid-column:1/-1;width:100%;justify-content:center}
- .collection-library-toolbar{grid-template-columns:1fr;padding-inline:20px}.collection-library-tabs{min-width:0}.collection-library-grid{grid-template-columns:1fr}
+ .collection-library-toolbar{grid-template-columns:1fr;padding-inline:20px}.collection-library-grid{grid-template-columns:1fr}
  #calendar-view .calendar-shell{padding:17px 14px 34px}
- #calendar-view .calendar-heading-combined{padding-bottom:13px}.calendar-title-copy h1{font-size:30px!important}
- #calendar-view .calendar-heading-actions .primary-button{padding:9px 10px;font-size:10px}.calendar-heading-actions .primary-button .icon{display:none}
- #calendar-view .calendar-toolbar{gap:9px;padding:10px 0;align-items:stretch;flex-direction:column}
- #calendar-view .calendar-navigation{justify-content:space-between}
- #calendar-view .calendar-views{width:100%;overflow-x:auto;scrollbar-width:none}.calendar-views::-webkit-scrollbar{display:none}
- #calendar-view .calendar-views button{flex:1;white-space:nowrap;min-width:max-content}
+ 
+ 
+ 
+ 
+ 
+ 
  #calendar-view .calendar-layout{padding-top:8px}
- #calendar-view .calendar-sidebar{font-size:10px;gap:8px}.calendar-sidebar-head h2{display:none}
+ 
  #calendar-view .calendar-main{padding-right:0}
  #calendar-view .calendar-cell{min-height:68px}
  .about-docs{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
-@media(max-height:520px) and (orientation:landscape){
- .brand-lockup .brand-tagline{display:none}
- .goal-strip{display:grid!important;padding:11px 0 10px;margin-bottom:3px;gap:24px}.goal-heading h2{font-size:15px}.goal-configure{margin-top:3px}.countdown strong{font-size:20px}.goal-progress{max-width:230px}.goal-date{margin-top:4px}
+@media (max-height:520px) and (orientation:landscape){
+ 
+ .goal-heading h2{font-size:15px}.countdown strong{font-size:20px}.goal-progress{max-width:230px}.goal-date{margin-top:4px}
  #calendar-view .calendar-shell{padding:10px 16px 28px}
- #calendar-view .calendar-heading-combined{padding-bottom:8px}.calendar-title-copy .section-label,.calendar-subtitle{display:none}.calendar-title-copy h1{font-size:25px!important}
- #calendar-view .calendar-heading-actions .primary-button{min-height:34px;padding:7px 9px}.calendar-back-button{width:34px;height:34px}
- #calendar-view .calendar-toolbar{padding:6px 0;flex-direction:row;align-items:center}.calendar-views button{min-height:30px;padding:5px 8px}
- #calendar-view .calendar-sidebar{display:none}.calendar-layout{padding-top:6px!important}.calendar-main{overflow:auto!important}
+ 
+ 
+ 
+ .calendar-layout{padding-top:6px!important}.calendar-main{overflow:auto!important}
  .welcome-panel{max-height:calc(100dvh - 12px)}.welcome-content{padding:9px 26px 14px}.welcome-content .welcome-lead{line-height:1.55}.welcome-promises{display:none}.welcome-content .welcome-footnote{margin-top:10px}.welcome-emblem{display:grid!important;width:52px;height:52px;margin-bottom:8px}.welcome-emblem img{width:40px;height:40px}.welcome-content h2{font-size:31px;margin:8px 0 11px}
 }
-@media(max-width:360px){
+@media (max-width:360px){
  .settings-section>summary{gap:10px}.section-heading strong{font-size:13px}.section-heading small{font-size:10px}
  .goal-quick-row{grid-template-columns:1fr}
  .goal-quick-row .secondary-button{grid-column:auto}
  .about-docs{grid-template-columns:1fr}
 }
-@media(prefers-reduced-motion:reduce){.welcome-emblem img,.welcome-emblem:before,.tour-step-transition{animation:none!important}}
-/* Empty calendar keeps the 3.8 breathing room without reserving a blank sidebar. */
-#calendar-view .calendar-sidebar:has(#cal-source-list:empty){display:none}
-#calendar-view .calendar-layout:has(.calendar-sidebar #cal-source-list:empty){grid-template-columns:minmax(0,1fr);gap:0}
+@media (prefers-reduced-motion:reduce){.welcome-emblem img,.welcome-emblem:before,.tour-step-transition{animation:none!important}}

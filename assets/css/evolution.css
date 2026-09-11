@@ -3,7 +3,6 @@
 .sky-halo{left:0;top:0;transform:translate3d(var(--orbit-x,50vw),var(--orbit-y,12vh),0) translate(-50%,-50%);transition:transform 10s linear,opacity 1.8s ease;width:min(55vw,580px);height:min(55vw,580px)}
 .sky-twilight{position:absolute;inset:0;pointer-events:none;opacity:var(--twilight-strength,0);background:radial-gradient(ellipse at 8% 66%,#f4743259,transparent 57%),linear-gradient(0deg,#d66d211c,transparent 68%);transition:opacity 25s linear}
 [data-twilight=dusk] .sky-twilight{background:radial-gradient(ellipse at 92% 66%,#ee672d66,transparent 57%),linear-gradient(0deg,#bd572426,transparent 70%)}
-#environment-line{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 20px!important;margin:22px auto 0!important;max-width:900px;padding:10px 0 0;border-top:1px solid var(--line);width:fit-content}
 #weather-line{gap:7px;font-size:13px;margin:0;flex-wrap:nowrap}
 #weather-place{max-width:135px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #solar-line{display:flex;align-items:center;gap:16px;font-size:12px}
@@ -11,7 +10,7 @@
 #solar-line .solar-label{font-size:10px;opacity:.7}#solar-line .icon{width:15px;height:15px}
 #moon-caption{display:flex;align-items:center;gap:6px;margin:0;font:11px var(--sans);line-height:1.5;color:var(--muted)}
 .moon-phase-mini{width:24px;height:24px;flex:0 0 24px}.moon-phase-percent{opacity:.55}
-.timer-slot{height:auto;min-height:0;flex:0 0 auto;padding:7px 0 16px;margin-top:3px;isolation:isolate}.timer-slot:has(.timer-chip[hidden]){padding:0;margin:0;height:10px}
+
 .timer-chip{transform:none!important;border:1px solid var(--line);border-radius:30px;background:var(--surface);position:relative}
 .collection-picker{margin:0 0 16px;border:1px solid var(--line);border-radius:14px;overflow:hidden}
 .collection-picker>summary{display:flex;align-items:center;gap:10px;padding:13px 15px;cursor:pointer;font-size:13px;list-style:none}
@@ -19,15 +18,15 @@
 .collection-shelf{max-height:220px;overflow:auto;padding:0 10px 8px}.collection-picker .field-note{padding:0 14px 10px;margin:0;font-size:11px}
 .collection-row{display:flex;align-items:center;gap:6px;margin:3px 0}.collection-choice{flex:1;min-width:0;padding:10px;border-radius:10px;display:grid;gap:4px;text-align:left;background:transparent}.collection-choice strong{font:500 13px var(--sans);overflow:hidden;text-overflow:ellipsis}.collection-choice small{font-size:10px;color:var(--muted)}.collection-choice[aria-pressed=true]{background:var(--accent-soft)}.collection-row .icon-button{width:34px;height:34px;flex:0 0 34px}.collection-row svg{width:17px;height:17px}
 .received-panel{width:600px}#received-phrase{font:clamp(24px,4vw,38px)/1.5 var(--serif);margin:8px 0 30px;overflow-wrap:anywhere}.received-panel .panel-footer{gap:12px;flex-wrap:wrap}
-.paper-grain{display:none;position:fixed;inset:0;z-index:4;pointer-events:none;background:url('../images/paper-grain.svg') repeat;opacity:var(--grain-opacity,.18)}.has-paper-grain .paper-grain{display:block}
+.paper-grain{display:none;position:fixed;inset:0;z-index:4;pointer-events:none;background:url("../images/paper-grain.svg") repeat;opacity:var(--grain-opacity,.18)}.has-paper-grain .paper-grain{display:block}
 .performance-light .fx-halos i,.performance-light .fx-aurora,.performance-light .fx-clouds{filter:none!important;animation:none!important}
 .performance-light .wallpaper,.performance-light .ambient,.performance-light .breathing-light,.performance-light #sky-stars,.performance-light .sky-weather-veil{animation:none!important}
 .performance-light .panel::backdrop,.performance-light .radio-panel{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 .performance-light .typed-char::after{transition:none!important}
 .performance-light #sky-body{will-change:auto}
 body.has-panel .celestial-sky *,body.has-panel .ambient *,body.has-panel .wallpaper{animation-play-state:paused!important}
-@media(max-width:740px){#environment-line{gap:7px 12px!important;margin-top:14px!important;padding-top:9px}#solar-line{font-size:10px;gap:12px}#weather-line{font-size:11px}#moon-caption{font-size:10px}.moon-phase-percent{display:none}.moon-phase-mini{width:20px;height:20px;flex-basis:20px}#solar-line .solar-label{font-size:9px}}
-@media(max-height:540px) and (orientation:landscape){#environment-line{margin-top:5px!important;padding-top:4px;gap:6px 10px!important}#moon-caption{font-size:8px}.moon-phase-mini{width:18px;height:18px;flex-basis:18px}#solar-line{font-size:9px}.timer-slot{height:auto!important;flex-basis:auto!important;padding:3px 0 9px;margin-top:0}.timer-slot:has(.timer-chip[hidden]){padding:0;height:3px!important}.timer-chip{max-height:28px}.timer-chip-main{font-size:10px}#weather-line{font-size:10px}}
-@media(prefers-reduced-motion:reduce){#sky-body,.sky-halo,.sky-twilight{transition:none!important;will-change:auto}}
+@media (max-width:740px){#solar-line{font-size:10px;gap:12px}#weather-line{font-size:11px}#moon-caption{font-size:10px}.moon-phase-percent{display:none}.moon-phase-mini{width:20px;height:20px;flex-basis:20px}#solar-line .solar-label{font-size:9px}}
+@media (max-height:540px) and (orientation:landscape){#moon-caption{font-size:8px}.moon-phase-mini{width:18px;height:18px;flex-basis:18px}#solar-line{font-size:9px}.timer-chip{max-height:28px}.timer-chip-main{font-size:10px}#weather-line{font-size:10px}}
+@media (prefers-reduced-motion:reduce){#sky-body,.sky-halo,.sky-twilight{transition:none!important;will-change:auto}}
 
 .sky-orbit-reset #sky-body,.sky-orbit-reset .sky-halo{transition:none!important}

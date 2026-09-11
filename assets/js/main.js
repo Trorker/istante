@@ -1,4 +1,4 @@
-/* Istante v3.13.11 - application and local preferences. */
+/* Istante v3.13.24 - application and local preferences. */
 (function () {
 'use strict';
 const C = window.IstanteCore;
@@ -63,10 +63,70 @@ let appearanceReady=false;
 const moments=window.IstanteMoments.create({getSettings:()=>settings,getDraft:readDraftSettings,radio,ambient,notify:toast,openTimer:()=>openDialog('timer'),icon});
 const touchFeedback=window.IstanteTouchFeedback.create({getSettings:()=>settings});
 
-const calendar=window.IstanteCalendar.create({getSettings:()=>settings,notify:toast});
+const calendar=window.IstanteCalendar.create({getSettings:()=>settings,saveSetting:(key,value)=>{settings=C.cleanSettings({...settings,[key]:value});const ok=store.write('settings',settings);const field=$('#settings-form')?.elements?.namedItem(key);if(field?.type==='checkbox')field.checked=!!settings[key];saveNotice(ok);return true;},notify:toast});
 const pages=window.IstantePages.create({getSettings:()=>settings,calendar,onChange:()=>{radio.close();X.pause();effectHub.sync();if(!document.body.classList.contains('view-calendar')&&!document.body.classList.contains('view-timer'))X.resume();}});
 const scene=window.IstanteScene.create({getSettings:()=>settings,getSun:()=>X.solar(new Date()),getWeather:now=>X.weather(now),store,openGuide:which=>openDialog(which)});
-const sharing=window.IstanteShare.create({getSnapshot:()=>({phrase:current?.text||'Un momento, per te.',time:timeFormatter.format(new Date()),theme:document.documentElement.dataset.theme||'dark',date:dateFormatter.format(new Date()),greeting:$('#moment-greeting').textContent,clockStyle:settings.clockStyle,hours:new Date().getHours(),minutes:new Date().getMinutes(),sky:window.IstanteSceneSnapshot.capture(scene.describe(),settings),goal:C.getGoal(new Date(),settings),station:settings.audioSource==='ambient'&&settings.ambientEnabled?ambient.label():settings.radioEnabled?radio.station().name:''}),open:()=>openDialog('share'),notify:toast});
+
+function shareWeatherSnapshot(now){
+ const place=X.place();
+ if(!settings.weather||!place)return null;
+ const current=X.weather(now);
+ if(!current||!Number.isFinite(current.temperature_2m)||!Number.isFinite(current.weather_code))return null;
+ const [condition]=window.IstanteSolar.weather(current.weather_code,current.is_day===1);
+ const visiblePlace=X.placeLabel?.()||'';
+ return{available:true,temperature:Math.round(current.temperature_2m)+'°',condition,place:visiblePlace||undefined};
+}
+function shareSnapshot(){
+ const now=new Date();
+ return{
+  phrase:current?.text||'Un momento, per te.',
+  time:timeFormatter.format(now),
+  theme:document.documentElement.dataset.theme||'dark',
+  date:dateFormatter.format(now),
+  greeting:$('#moment-greeting').textContent,
+  clockStyle:settings.clockStyle,
+  fontStyle:settings.fontStyle||'current',
+  hours:now.getHours(),
+  minutes:now.getMinutes(),
+  sky:window.IstanteSceneSnapshot.capture(scene.describe(),settings),
+  weather:shareWeatherSnapshot(now),
+  goal:C.getGoal(now,settings),
+  station:(()=>{
+   if(settings.audioSource==='radio')return settings.radioEnabled&&radio.getState?.().state==='playing'?radio.station().name:'';
+   if(['ambient','melody'].includes(settings.audioSource)){
+    const enabled=settings.audioSource==='ambient'?settings.ambientEnabled:settings.melodyEnabled;
+    return enabled&&ambient.inspect?.().playing?ambient.label():'';
+   }
+   return '';
+  })()
+ };
+}
+const sharing=window.IstanteShare.create({getSnapshot:shareSnapshot,open:()=>openDialog('share'),notify:toast});
+
+/* Keep the lower information ribbon adaptive without layout ghosts. The three
+ * modules own their hidden state; this observer only translates that state into
+ * a stable layout descriptor used by the canonical responsive stylesheet. */
+const infoStrip=$('#active-info-strip');
+function syncInfoStripLayout(){
+ if(!infoStrip)return;
+ const modules=[['weather',$('#environment-line')],['goal',$('#goal-strip')],['event',$('#upcoming-event')]];
+ const visible=modules.filter(([,node])=>node&&!node.hidden);
+ infoStrip.dataset.layout=visible.map(([name])=>name).join('-')||'none';
+ infoStrip.dataset.visibleCount=String(visible.length);
+ modules.forEach(([,node])=>node?.classList.remove('is-ribbon-first','is-ribbon-last','is-ribbon-divider'));
+ visible.forEach(([,node],index)=>{
+  node.classList.toggle('is-ribbon-first',index===0);
+  node.classList.toggle('is-ribbon-last',index===visible.length-1);
+  node.classList.toggle('is-ribbon-divider',index<visible.length-1);
+ });
+}
+if(infoStrip){
+ const ribbonObserver=new MutationObserver(records=>{
+  if(records.some(record=>record.type==='attributes'&&record.attributeName==='hidden'))requestAnimationFrame(syncInfoStripLayout);
+ });
+ ['environment-line','goal-strip','upcoming-event'].forEach(id=>{const node=$('#'+id);if(node)ribbonObserver.observe(node,{attributes:true,attributeFilter:['hidden']});});
+ syncInfoStripLayout();
+}
 
 function toast(message) {
  const el=$('#toast'),host=$('#toast-host');
@@ -176,23 +236,17 @@ function applyAppearance(now) {
  if(appearanceReady&&old!==theme&&!document.documentElement.classList.contains('is-loading'))X.transition(theme);
  appearanceReady=true;
  $('meta[name="theme-color"]').content=theme==='light'?'#f1eee7':'#131615';
- document.body.dataset.compactIdleBar=settings.compactIdleBar?'true':'false';
  document.body.dataset.background=X.photoAvailable()?'photo':['photo','picsum'].includes(settings.background)?'ambient':settings.background;
  document.body.classList.toggle('no-motion',!settings.motion);document.body.classList.toggle('no-clock',!settings.showClock);
  document.body.style.setProperty('--photo-dim',String(settings.photoDim/100));$('#clock-seconds').hidden=!settings.showSeconds;
  const modeLabel=$('#mode-label');if(modeLabel)modeLabel.textContent=settings.mode==='interval'?'Ogni '+settings.interval+' minuti':modeNames[settings.mode];
  X.update(now);
 }
-function syncIdleGoal(now,goal,parts,value){
- const box=$('#idle-goal-summary'),track=$('#idle-goal-progress'),fill=$('#idle-goal-progress-fill'),count=$('#idle-goal-countdown');if(!box||!track||!fill||!count)return;
- if(!goal){box.hidden=true;$('#idle-goal-progress-value').textContent='';fill.style.width='0%';track.setAttribute('aria-valuenow','0');track.setAttribute('aria-valuetext','Nessun traguardo configurato');count.hidden=true;return;}
- box.hidden=false;count.hidden=false;$('#idle-goal-label').textContent=goal.done?'Traguardo raggiunto':goal.waiting?'Inizia presto':'Il prossimo capitolo';$('#idle-goal-title').textContent=goal.title;$('#idle-goal-progress-value').textContent=value+'%';fill.style.width=goal.progress.toFixed(3)+'%';track.setAttribute('aria-valuenow',goal.progress.toFixed(1));track.setAttribute('aria-valuetext',value+' per cento');['idle-goal-days','idle-goal-hours','idle-goal-minutes'].forEach((id,i)=>{$('#'+id).textContent=pad(parts[i].value);});
-}
 function syncGoal(now, force) {
  const stamp = now.getFullYear()+':'+now.getMonth()+':'+now.getDate()+':'+now.getHours()+':'+now.getMinutes();
  if (stamp === lastGoalMinute && !force) return; lastGoalMinute = stamp;
  const goal = C.getGoal(now,settings),strip=$('#goal-strip'),progress=strip.querySelector('.goal-progress'),countdown=$('#countdown');strip.hidden=!goal;strip.classList.toggle('is-empty',!goal);
- if(!goal){countdown.hidden=true;progress.hidden=true;syncIdleGoal(now,null,null,'');return;}
+ if(!goal){countdown.hidden=true;progress.hidden=true;return;}
  countdown.hidden=false;progress.hidden=false;
  $('#goal-title').textContent = goal.title; const parts=window.IstanteCompanion.goalParts(now,goal.end);['goal-days','goal-hours','goal-minutes'].forEach((id,i)=>{ $('#'+id).textContent=pad(parts[i].value);$('#goal-unit'+(i+1)).textContent=parts[i].unit;});
  $('#goal-label').textContent = goal.done ? 'Traguardo raggiunto' : goal.waiting ? 'Il percorso deve ancora iniziare' : 'Il prossimo capitolo';
@@ -200,7 +254,7 @@ function syncGoal(now, force) {
  const value = goal.progress.toLocaleString('it-IT',{minimumFractionDigits:1,maximumFractionDigits:1});
  $('#progress-value').textContent = value+'%'; $('#progress-fill').style.width = goal.progress.toFixed(3)+'%';
  $('#goal-progress').setAttribute('aria-valuenow',goal.progress.toFixed(1)); $('#goal-progress').setAttribute('aria-valuetext',value+' per cento');
- $('#goal-date').textContent = goalDateFormatter.format(goal.end)+' \u00b7 '+timeFormatter.format(goal.end);syncIdleGoal(now,goal,parts,value);
+ $('#goal-date').textContent = goalDateFormatter.format(goal.end)+' \u00b7 '+timeFormatter.format(goal.end);
 }
 function tick(force) {
  const now = new Date(), hhmm = pad(now.getHours())+':'+pad(now.getMinutes());
@@ -270,7 +324,7 @@ function syncFontSizeFromRange(){sectionSummaries();}
 function sectionSummaries(){
  const f=$('#settings-form').elements,choice=name=>{const field=f[name];if(!field)return'';if(field instanceof RadioNodeList){const checked=[...document.querySelectorAll('[name="'+name+'"]')].find(x=>x.checked);return checked?.closest('label')?.querySelector('span')?.textContent?.trim()||checked?.value||'';}return field.selectedOptions?.[0]?.textContent?.trim()||field.value||'';};
  const themes={dark:'Notte',light:'Carta',auto:'Tema del dispositivo',solar:'Segui il sole'};
- const fontNames={small:'Piccolo',medium:'Normale',large:'Grande'},fontStyles={current:'Classic',excalifont:'Excalifont'};const data={appearance:(themes[f.theme.value]||'Tema')+' \u00b7 '+choice('background')+' \u00b7 '+(fontNames[f.fontSize.value]||'Medio')+' \u00b7 '+(fontStyles[f.fontStyle.value]||'Attuale'),phrases:(modeNames[f.mode.value]||choice('mode'))+(f.typing.checked?' \u00b7 Macchina da scrivere':''),sky:$('#place-name').textContent,effects:f.effectsEnabled.checked?choice('effect')+(f.weatherFX.value!=='off'?' \u00b7 '+choice('weatherFX'):''):'Disattivati',radio:(f.radioEnabled.checked?'Radio':'')+(f.radioEnabled.checked&&f.ambientEnabled.checked?' \u00b7 ':'')+(f.ambientEnabled.checked?'Ambiente offline':!f.radioEnabled.checked?'Player nascosto':''),timer:f.timerEnabled.checked?f.timerMinutes.value+' min \u00b7 '+choice('timerAction'):'Disattivato',goal:choice('goalMode'),calendar:f.calendarEnabled.checked?(f.calendarUpcoming.checked?'Calendario e prossimo impegno':'Calendario attivo'):'Disattivato',screen:f.hideControls.checked?'Comandi a scomparsa':'Comandi sempre visibili'};
+ const fontNames={small:'Piccolo',medium:'Normale',large:'Grande'},fontStyles={current:'Classic',excalifont:'Excalifont'};const data={appearance:(themes[f.theme.value]||'Tema')+' \u00b7 '+choice('background')+' \u00b7 '+(fontNames[f.fontSize.value]||'Medio')+' \u00b7 '+(fontStyles[f.fontStyle.value]||'Attuale'),phrases:(modeNames[f.mode.value]||choice('mode'))+(f.typing.checked?' \u00b7 Macchina da scrivere':''),sky:$('#place-name').textContent,effects:f.effectsEnabled.checked?choice('effect')+(f.weatherFX.value!=='off'?' \u00b7 '+choice('weatherFX'):''):'Disattivati',radio:[f.radioEnabled.checked?'Radio':'',f.ambientEnabled.checked?'Ambiente offline':'',f.melodyEnabled.checked?'Melodie offline':''].filter(Boolean).join(' \u00b7 ')||'Player nascosto',timer:f.timerEnabled.checked?f.timerMinutes.value+' min \u00b7 '+choice('timerAction'):'Disattivato',goal:choice('goalMode'),calendar:f.calendarEnabled.checked?(f.calendarUpcoming.checked?'Calendario e prossimo impegno':'Calendario attivo'):'Disattivato',screen:f.hideControls.checked?'Comandi a scomparsa':'Comandi sempre visibili'};
  for(const [key,value]of Object.entries(data)){const el=$('[data-summary="'+key+'"]');if(el)el.textContent=value;}
 }
 function expandSection(target){
@@ -308,7 +362,7 @@ function updateSettingsFields() {
  group('#goal-fields',f.goalMode.value==='custom');group('#photo-fields',f.background.value==='photo');
  const notes={twice:'La frase non cambia ricaricando la pagina. La sera continua anche dopo mezzanotte, fino al mattino.',daily:'Un pensiero dal cambio mattutino fino alla stessa ora del giorno dopo, anche ricaricando la pagina.',interval:'Il cambio segue intervalli regolari dell\'orologio, non il tempo trascorso dall\'apertura.',opening:'La frase cambia a ogni apertura o ricaricamento della pagina. Non cambia da sola mentre resti qui.'};
  $('#schedule-note').textContent=notes[mode];group('#picsum-fields',f.background.value==='picsum');group('#photo-options',['photo','picsum'].includes(f.background.value));group('#typing-fields',f.typing.checked);group('#effects-fields',f.effectsEnabled.checked);group('#radio-fields',f.radioEnabled.checked);
- group('#ambient-settings-fields',f.ambientEnabled.checked);
+ group('#ambient-settings-fields',f.ambientEnabled.checked);group('#melody-settings-fields',f.melodyEnabled.checked);
  group('#radio-schedule-fields',f.radioEnabled.checked&&f.radioScheduleEnabled.checked);f.radioScheduleEnabled.disabled=!f.radioEnabled.checked;
  group('#timer-settings-fields',f.timerEnabled.checked);
  const calendarFont=$('#calendar-excalifont-setting');if(calendarFont){const visible=f.fontStyle.value!=='excalifont';calendarFont.hidden=!visible;calendarFont.querySelectorAll('input').forEach(el=>el.disabled=!visible);}
@@ -382,9 +436,9 @@ $$('dialog').forEach(dialog=>{
 });
 $$('[data-open]').forEach(b=>b.addEventListener('click',()=>openDialog(b.dataset.open)));
 function openWeatherFromSummary(event){if(event.type==='keydown'&&!['Enter',' '].includes(event.key))return;if(event.type==='keydown')event.preventDefault();openDialog('weather');}
-['#environment-line','.idle-weather-summary'].forEach(selector=>{const el=$(selector);if(el){el.addEventListener('click',openWeatherFromSummary);el.addEventListener('keydown',openWeatherFromSummary);}});
+{const el=$('#environment-line');if(el){el.addEventListener('click',openWeatherFromSummary);el.addEventListener('keydown',openWeatherFromSummary);}}
 function openGoalFromSummary(event){if(event.type==='keydown'&&!['Enter',' '].includes(event.key))return;if(event.type==='keydown')event.preventDefault();if(!C.getGoal(new Date(),settings))return;openDialog('goal');}
-['#goal-strip','#idle-goal-summary'].forEach(selector=>{const el=$(selector);if(el){el.addEventListener('click',openGoalFromSummary);el.addEventListener('keydown',openGoalFromSummary);}});
+{const el=$('#goal-strip');if(el){el.addEventListener('click',openGoalFromSummary);el.addEventListener('keydown',openGoalFromSummary);}}
 $('#goal-dialog-edit')?.addEventListener('click',()=>{const d=$('#goal-dialog');d.addEventListener('close',()=>requestAnimationFrame(openGoalSettings),{once:true});closeDialog(d);});
 $('#weather-configure')?.addEventListener('click',()=>{const d=$('#weather-dialog');d.addEventListener('close',()=>requestAnimationFrame(()=>{openDialog('settings');requestAnimationFrame(()=>{const summary=$('#section-sky summary');expandSection(summary);summary?.scrollIntoView({block:'start',behavior:settings.motion&&!matchMedia('(prefers-reduced-motion: reduce)').matches?'smooth':'auto'});});}),{once:true});closeDialog(d);});
 $('#quote-wrap')?.addEventListener('dblclick',event=>{event.preventDefault();void copyCurrentPhrase();});
@@ -413,7 +467,7 @@ $('#touch-sound-preview')?.addEventListener('click',()=>touchFeedback.preview(re
 $('#settings-form').addEventListener('submit',event=>{
  event.preventDefault();const f=event.currentTarget,values={...settings,...Object.fromEntries(new FormData(f))};
  values.radioSchedules=scheduleEditor.value();
- for(const key of ['calendarEnabled','calendarUpcoming','calendarHolidays','calendarExcalifont','mouseSwipe','audioVolumeGesture','customCursor','grain','chimeEnabled','chimeQuiet','ambientEnabled','celestialSky','showClock','showSeconds','motion','hideControls','compactIdleBar','wakeLock','touchSoundEnabled','typing','solarTimes','weather','transitionFX','photoMotion','breathe','typingErase','effectsEnabled','effectSunSync','radioEnabled','radioScheduleEnabled','timerEnabled'])values[key]=f.elements[key].checked;
+ for(const key of ['calendarEnabled','calendarUpcoming','calendarHolidays','calendarExcalifont','mouseSwipe','audioVolumeGesture','customCursor','grain','chimeEnabled','chimeQuiet','ambientEnabled','melodyEnabled','celestialSky','showClock','showSeconds','motion','hideControls','wakeLock','touchSoundEnabled','typing','solarTimes','weather','transitionFX','photoMotion','breathe','typingErase','effectsEnabled','effectSunSync','radioEnabled','radioScheduleEnabled','timerEnabled'])values[key]=f.elements[key].checked;
  values.interval=Number(values.interval);values.photoDim=Number(values.photoDim);let error='';if(!validateSettings(f))return;
  if(values.mode==='twice'&&C.minutes(values.morning,-1)>=C.minutes(values.evening,-1))error='L\'inizio della sera deve essere successivo all\'inizio della mattina.';
  if(values.goalMode==='custom'&&(!values.goalStart||!values.goalEnd||new Date(values.goalEnd)<=new Date(values.goalStart)))error='Inserisci una data finale successiva alla data di inizio.';
@@ -531,12 +585,12 @@ window.IstanteBackup.create({
 });
 document.addEventListener('istante:volume-gesture',event=>{
  const delta=Number(event.detail?.delta)||0;if(!delta||!settings.audioVolumeGesture)return;
- const ambientPlaying=!!ambient.inspect?.().playing,radioState=radio.getState?.();let key='';
- if(ambientPlaying)key='ambientVolume';else if(radioState?.wantsPlay||radioState?.state==='playing')key='radioVolume';else key=settings.audioSource==='ambient'?'ambientVolume':'radioVolume';
+ const offline=ambient.inspect?.()||{},radioState=radio.getState?.();let key='';
+ if(offline.playing)key=offline.source==='melody'?'melodyVolume':'ambientVolume';else if(radioState?.wantsPlay||radioState?.state==='playing')key='radioVolume';else key=settings.audioSource==='melody'?'melodyVolume':settings.audioSource==='ambient'?'ambientVolume':'radioVolume';
  const next=Math.max(0,Math.min(100,(Number(settings[key])||0)+delta));if(next===settings[key])return;settings=C.cleanSettings({...settings,[key]:next});store.write('settings',settings);radio.apply();ambient.apply();
- const field=$('#settings-form')?.elements?.[key];if(field){field.value=String(next);field.dispatchEvent(new Event('input',{bubbles:true}));}toast((key==='ambientVolume'?'Volume ambiente':'Volume radio')+' · '+next+'%');
+ const field=$('#settings-form')?.elements?.[key];if(field){field.value=String(next);field.dispatchEvent(new Event('input',{bubbles:true}));}const labels={ambientVolume:'Volume ambiente',melodyVolume:'Volume melodie',radioVolume:'Volume radio'};toast((labels[key]||'Volume')+' · '+next+'%');
 });
-function toggleAudioZone(){if(!settings.audioVolumeGesture)return false;const useAmbient=settings.audioSource==='ambient'&&settings.ambientEnabled;if(useAmbient){const was=!!ambient.inspect?.().playing;if(was)ambient.stop();else void ambient.start('manual');document.dispatchEvent(new CustomEvent('istante:ambient-manual',{detail:{playing:!was}}));toast((was?'Pausa':'Play')+' · suono ambiente');return true;}if(!settings.radioEnabled)return false;const state=radio.getState?.()||{};if(state.wantsPlay){radio.stop();document.dispatchEvent(new CustomEvent('istante:radio-manual',{detail:{playing:false}}));toast('Pausa · radio');}else{void radio.start('manual');document.dispatchEvent(new CustomEvent('istante:radio-manual',{detail:{playing:true}}));toast('Play · radio');}return true;}
+function toggleAudioZone(){if(!settings.audioVolumeGesture)return false;const source=settings.audioSource;if((source==='ambient'&&settings.ambientEnabled)||(source==='melody'&&settings.melodyEnabled)){const state=ambient.inspect?.()||{},was=!!state.playing&&state.source===source;if(was)ambient.stop();else void ambient.start('manual',source);document.dispatchEvent(new CustomEvent(source==='melody'?'istante:melody-manual':'istante:ambient-manual',{detail:{playing:!was}}));toast((was?'Pausa':'Play')+' · '+(source==='melody'?'melodia':'suono ambiente'));return true;}if(!settings.radioEnabled)return false;const state=radio.getState?.()||{};if(state.wantsPlay){radio.stop();document.dispatchEvent(new CustomEvent('istante:radio-manual',{detail:{playing:false}}));toast('Pausa · radio');}else{void radio.start('manual');document.dispatchEvent(new CustomEvent('istante:radio-manual',{detail:{playing:true}}));toast('Play · radio');}return true;}
 window.IstanteAudioZoneToggle=toggleAudioZone;document.addEventListener('istante:audio-zone-toggle',toggleAudioZone);
 document.addEventListener('istante:manage-stations',()=>openDialog('stations'));
 document.addEventListener('istante:stations-changed',()=>{if(!stationLibrary.list().length){settings.radioScheduleEnabled=false;if(settings.timerAction==='radio')settings.timerAction='sound';if(settings.timerDuring==='radio')settings.timerDuring='silent';store.write('settings',settings);}moments.apply();if($('#settings-dialog').open)updateSettingsFields();});

@@ -61,17 +61,13 @@ Nessun nuovo elemento deve competere con ora e frase.
 
 Il centro della dashboard appartiene a **ora e pensiero**. Le informazioni contestuali vivono in una fascia bassa unica e molto leggera, non in card laterali indipendenti.
 
-Su desktop la fascia occupa circa **l'80% del viewport** ed è suddivisa in modo stabile:
+Su desktop la fascia occupa circa **l'80% del viewport**. Quando tutti i moduli sono disponibili mantiene la gerarchia **20% Meteo / 60% Traguardo / 20% Calendario**. Questa proporzione non deve però creare colonne fantasma: ogni modulo assente cede il proprio spazio e quelli rimasti si ridistribuiscono sull'intera larghezza. Meteo + Calendario diventano una coppia bilanciata; con un solo modulo, quel modulo usa tutta la fascia.
 
-- **20% Meteo:** temperatura/condizione e, come secondo livello, alba e tramonto;
-- **60% Conto alla rovescia:** è il contenuto dominante della fascia, con titolo, tempo residuo e avanzamento;
-- **20% Calendario:** un solo prossimo evento o un accesso sintetico al calendario.
+La fascia attiva deve sembrare una riga editoriale: sfondo trasparente, separatori sottili solo tra moduli realmente presenti, nessuna ombra, nessun bordo da card. Il timer resta indipendente e centrato sopra di essa.
 
-La fascia attiva deve sembrare una riga editoriale: sfondo trasparente, separatori sottili, nessuna ombra, nessun bordo da card. Il timer resta indipendente e centrato sopra di essa.
+Dopo il timeout di inattività **la composizione non cambia**: scompaiono soltanto i comandi previsti dallo stato di inattività. Non esiste una seconda barra sintetica o compatta da mantenere.
 
-Dopo il timeout di inattività la fascia attiva **non viene semplicemente ridotta**: viene sostituita da una seconda fascia ancora più sottile. In questa modalità restano soltanto segnali glanceable: meteo + alba/tramonto, titolo breve del traguardo + percentuale/barra + tempo residuo essenziale, prossimo evento. I comandi e i metadati non necessari scompaiono.
-
-Su schermi stretti si può ricomporre la fascia, ma si preservano sempre l'ordine **Meteo → Conto alla rovescia → Calendario** e la priorità del traguardo. Prima si eliminano metadati secondari, poi si riduce la tipografia; non si torna a testi illeggibili solo per far entrare tutto.
+Su schermi stretti i moduli disponibili si ricompongono in verticale preservando l'ordine **Meteo → Traguardo → Calendario** e la stessa grammatica interna della versione larga, semplicemente centrata e ridimensionata. Un modulo nascosto non deve lasciare altezza o spazio riservato.
 
 ## 5. Calendario
 
