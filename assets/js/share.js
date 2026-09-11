@@ -125,9 +125,10 @@
     setAvailability('weather',{available:!!snapshot.weather?.available,checked:!!snapshot.weather?.available});
     setAvailability('goal',{available:!!snapshot.goal,checked:false});
     setAvailability('radio',{available:!!snapshot.station,checked:false});
-    if(snapshot.fontStyle==='excalifont'&&document.fonts?.load){
+    if(document.fonts?.load){
+     const family=snapshot.fontStyle==='excalifont'?'Excalifont':'Istante Classic';
      status('Preparo il carattere della tua cartolina...');
-     document.fonts.load('24px Excalifont').catch(()=>{}).finally(render);
+     Promise.allSettled([document.fonts.load(`24px "${family}"`),document.fonts.ready]).finally(render);
     }else render();
    }
   };

@@ -1,6 +1,6 @@
 # Istante
 
-**Versione corrente: 3.13.24**  
+**Versione corrente: 3.13.27**  
 **Un momento, per te.**  
 Un progetto di **Ruslan Dzyuba**.
 
@@ -41,7 +41,7 @@ e correzioni. Preferiti e storico restano locali.
 
 La dimensione dei testi usa tre tab semplici — **Piccolo, Normale, Grande** — così la scelta resta immediata anche su tablet.
 
-Per i contenuti editoriali puoi scegliere tra **Classic** ed **Excalifont**, più vicino a una scrittura a mano. Quando il font globale è Classic, il Calendario offre uno switch separato per usare Excalifont soltanto nelle date, nei titoli e negli eventi. Se Excalifont è già globale, lo switch dedicato scompare. Excalifont viene richiesto solo quando selezionato; senza rete o se non disponibile, Istante torna automaticamente al carattere Classic.
+Per i contenuti editoriali puoi scegliere tra **Classic** ed **Excalifont**, più vicino a una scrittura a mano. Classic usa la famiglia `Istante Classic`, basata su **Libre Baskerville** per avere la stessa resa anche fuori dai dispositivi Apple; Excalifont usa il font originale **Excalifont Regular**. Quando il font globale è Classic, il Calendario offre uno switch separato per usare Excalifont soltanto nelle date, nei titoli e negli eventi. Se Excalifont è già globale, lo switch dedicato scompare. La build di produzione usa i due font come asset vendor locali sotto `assets/vendor/fonts/` e non scarica caratteri da CDN o repository durante l’uso. Non è prevista alcuna fase di installazione: i file font fanno parte della distribuzione del sito come CSS, JavaScript e immagini.
 
 ## Il tuo prossimo capitolo
 
@@ -56,7 +56,7 @@ La barra inferiore della Dashboard è **adattiva**: Meteo, Traguardo e Prossimo 
 
 ## Musica, relax e timer
 
-Il mini player ha tre sorgenti: **Radio**, **Ambiente** e **Melodie**. La Radio supporta stazioni lo-fi e personali, preferiti, programmazioni multiple e scelta casuale; dalla gestione delle stazioni puoi anche **spostare una radio più in alto o più in basso** nell’ordine del catalogo. Ambiente genera rumore rosa, marrone, pioggia o vento. Melodie aggiunge quattro paesaggi sonori procedurali — **Respiro lento, Meditazione, Notturno e Onde lente** — generati sul dispositivo con Web Audio, senza file audio da scaricare. Le Melodie possono essere abilitate o disabilitate separatamente dalle Impostazioni. Respiro lento segue un ciclo guidato **4-4-6** (4 secondi di inspirazione, 4 di pausa piena, 6 di espirazione) come riferimento ritmico facoltativo; il livello delle melodie ha più margine sui diffusori piccoli e Meditazione resta volutamente nei registri bassi e morbidi; Notturno conserva gli accordi profondi e quasi immobili; Onde lente usa swell alternati senza un battito marcato. Sui dispositivi touch le gesture audio sono attive di default nella sola zona destra della Dashboard: un doppio tap alterna Play/Pausa e uno swipe verticale modifica il volume di **10 punti esatti**. Le gesture possono essere disattivate dalle Impostazioni e non vengono mai applicate nel Calendario.
+Il mini player ha tre sorgenti: **Radio**, **Ambiente** e **Melodie**. Se nelle Impostazioni ne rimane attiva soltanto una, la barra delle tab viene nascosta e il player mostra direttamente l'unica sorgente disponibile; con due o tre sorgenti torna automaticamente. La Radio supporta stazioni lo-fi e personali, preferiti, programmazioni multiple e scelta casuale; dalla gestione delle stazioni puoi anche **spostare una radio più in alto o più in basso** nell’ordine del catalogo. Ambiente genera rumore rosa, marrone, pioggia o vento. Melodie aggiunge quattro paesaggi sonori procedurali — **Respiro lento, Meditazione, Notturno e Onde lente** — generati sul dispositivo con Web Audio, senza file audio da scaricare. Le Melodie possono essere abilitate o disabilitate separatamente dalle Impostazioni. Respiro lento segue un ciclo guidato **4-4-6** (4 secondi di inspirazione, 4 di pausa piena, 6 di espirazione) come riferimento ritmico facoltativo; il livello delle melodie ha più margine sui diffusori piccoli e Meditazione resta volutamente nei registri bassi e morbidi; Notturno conserva gli accordi profondi e quasi immobili; Onde lente usa swell alternati senza un battito marcato. Sui dispositivi touch le gesture audio sono attive di default nella sola zona destra della Dashboard: un doppio tap alterna Play/Pausa e uno swipe verticale modifica il volume di **10 punti esatti**. Le gesture possono essere disattivate dalle Impostazioni e non vengono mai applicate nel Calendario.
 
 Il timer rimane volutamente semplice: la durata principale si sceglie su un **quadrante circolare tipo orologio** da 1 a 60 minuti e può essere rifinita di un minuto alla volta con i pulsanti **− / +** esterni al cerchio. Per questa prima release pubblica il Timer usa una sola esperienza: una **modale** ottimizzata per mouse e touch. Durante il conto alla rovescia l’anello si riempie seguendo il tempo trascorso, un dot compie un giro ogni minuto seguendo i secondi e un alone più evidente respira attorno al cerchio. Non c’è una seconda progress bar: tutto l’avanzamento vive nel quadrante. Silenzio, radio o suono rilassante restano configurabili senza appesantire la schermata principale.
 
@@ -98,11 +98,12 @@ Su desktop con mouse o trackpad puoi attivare un **cursore personalizzato discre
 ## Struttura del progetto
 
 - `index.html`: dashboard, viste e pannelli principali.
-- `assets/`: CSS, JavaScript, icone e immagine social. I vecchi fogli `polish-*` sono stati consolidati in `legacy-foundation.css` e `legacy-components.css`, mentre il comportamento responsive corrente vive in `responsive.css`.
+- `assets/`: CSS, JavaScript, icone, immagine social e dipendenze vendor. I vecchi fogli `polish-*` sono stati consolidati in `legacy-foundation.css` e `legacy-components.css`, mentre il comportamento responsive corrente vive in `responsive.css`. I caratteri editoriali sono asset vendor sotto `assets/vendor/fonts/`.
+- `tools/`: strumenti di manutenzione della release, compresa la rigenerazione deterministica della cache offline; non scaricano né installano font.
 - `data/`: frasi, catalogo raccolte e stazioni predefinite.
 - `README.md`: descrizione del progetto e release corrente.
 - `CHANGELOG.md`: storico delle modifiche.
-- `docs/release/v3.13.24.md`: note dettagliate di questa release.
+- `docs/release/v3.13.27.md`: note dettagliate di questa release.
 - `docs/LICENZA.md`: licenza non commerciale con attribuzione obbligatoria.
 - `docs/TERZE-PARTI.md`: dipendenze, servizi e attribuzioni.
 - `docs/VISIONE-E-DESIGN.md`: valori, regole grafiche e criteri responsive da mantenere nelle release future.
@@ -110,9 +111,7 @@ Su desktop con mouse o trackpad puoi attivare un **cursore personalizzato discre
 ## Pubblicazione
 
 Pubblica **tutto il contenuto della cartella** sullo stesso percorso HTTPS,
-compresi `sw.js`, `version.json`, `assets`, `data` e `docs`. Non mescolare file
-di release diverse: il controllo aggiornamenti e la cache verificano una copia
-coerente prima di attivarla.
+compresi `sw.js`, `version.json`, `assets`, `data` e `docs`. I font editoriali devono essere presenti nei percorsi `assets/vendor/fonts/` insieme agli altri asset della release: non serve alcun comando di installazione. Non mescolare file di release diverse: il controllo aggiornamenti e la cache verificano una copia coerente prima di attivarla.
 
 ## Autore e licenza
 

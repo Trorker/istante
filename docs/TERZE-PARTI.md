@@ -121,10 +121,20 @@ I nuovi pensieri motivazionali e poetici sono testi originali della raccolta di
 Istante, non citazioni falsamente attribuite.
 
 
-## Excalifont
+## Tipografia Classic ed Excalifont
 
-Istante offre **Excalifont** come stile tipografico facoltativo per i contenuti editoriali. Il font non è incluso nel pacchetto di Istante: viene richiesto soltanto quando selezionato, tramite una risorsa del progetto Excalidraw/CDN. Se la rete non è disponibile, l'interfaccia usa il carattere locale di fallback.
+Istante espone due stili editoriali self-hosted. **Classic** usa la famiglia CSS interna `Istante Classic`, basata su **Libre Baskerville**. I file verificati per la build sono Libre Baskerville 2.005, copyright 2012 The Libre Baskerville Project Authors, distribuiti con **SIL Open Font License 1.1**.
 
-Excalifont è distribuito dal progetto Excalidraw con licenza **SIL Open Font License 1.1**. Istante non modifica né ridistribuisce il file del font.
+**Excalifont** usa **Excalifont Regular** 1.000, copyright 2024 Excalidraw, distribuito anch'esso con **SIL Open Font License 1.1**.
 
-[Progetto Excalidraw](https://github.com/excalidraw/excalidraw) · [SIL Open Font License 1.1](https://openfontlicense.org/)
+Il runtime di produzione non usa endpoint remoti per scaricare i caratteri. I font sono normali asset vendor del progetto e `assets/css/fonts.css` li carica esclusivamente dai percorsi locali. Non è prevista alcuna installazione a riga di comando.
+
+File runtime vendor previsti:
+
+- `assets/vendor/fonts/libre-baskerville/LibreBaskerville-VariableFont_wght.ttf`;
+- `assets/vendor/fonts/libre-baskerville/LibreBaskerville-Italic-VariableFont_wght.ttf`;
+- `assets/vendor/fonts/excalifont/Excalifont-Regular.woff2`.
+
+`Istante Classic` è soltanto un alias CSS dell'applicazione: i file Libre Baskerville ed Excalifont non vengono rinominati internamente né modificati. Le rispettive licenze restano separate dalla licenza del progetto Istante.
+
+[Testo SIL Open Font License 1.1](licenses/SIL-OFL-1.1.txt) · [Notice Libre Baskerville](licenses/LIBRE-BASKERVILLE-NOTICE.txt) · [Notice Excalifont](licenses/EXCALIFONT-NOTICE.txt) · [Libre Baskerville](https://github.com/impallari/Libre-Baskerville) · [Excalifont / Excalidraw](https://github.com/excalidraw/excalidraw/tree/master/packages/excalidraw/fonts/Excalifont)
