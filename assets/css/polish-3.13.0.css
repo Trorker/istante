@@ -22,7 +22,7 @@
 .collection-compose-copy p{margin:0;line-height:1.45}
 .collection-composer-actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center}
 #collection-compose-empty{margin:0}
-.goal-strip,#goal-strip,#idle-goal-summary,#environment-line,#upcoming-event,.idle-weather-summary,.idle-upcoming-event{-webkit-mask-image:linear-gradient(90deg,transparent 0, #000 8%, #000 92%, transparent 100%);mask-image:linear-gradient(90deg,transparent 0, #000 8%, #000 92%, transparent 100%)}
+.goal-strip,#goal-strip,#environment-line,#upcoming-event{-webkit-mask-image:linear-gradient(90deg,transparent 0, #000 8%, #000 92%, transparent 100%);mask-image:linear-gradient(90deg,transparent 0, #000 8%, #000 92%, transparent 100%)}
 .chrome{transition:opacity .7s,transform .7s,filter .7s}
 .is-idle-pre:not(.has-panel) .chrome{opacity:.72;transform:translateY(1px) scale(.992);filter:saturate(.82)}
 .is-idle-pre:not(.has-panel) .bottom-bar.chrome{transform:translateY(2px) scale(.988)}

@@ -9,7 +9,7 @@
 #calendar-view .calendar-brand-lockup .brand-logo-image{width:36px!important;height:36px!important;flex:0 0 36px!important;border-radius:10px!important;margin:0!important;object-fit:contain!important}
 #calendar-view .calendar-brand-lockup .brand-home-copy{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;gap:2px!important;min-height:36px!important}
 #calendar-view .calendar-brand-lockup .brand-home-name{font:500 23px/1 var(--serif)!important;letter-spacing:-.04em!important;color:var(--ink)!important}
-#calendar-view .calendar-brand-lockup .brand-home-tagline{font:500 10px/1.15 -apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',Arial,sans-serif!important;color:var(--muted)!important;padding:0!important;white-space:nowrap!important}
+#calendar-view .calendar-brand-lockup .brand-home-tagline{font:500 10px/1.15 -apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI",Arial,sans-serif!important;color:var(--muted)!important;padding:0!important;white-space:nowrap!important}
 #calendar-view .calendar-brand-lockup .brand-home-link:hover,#calendar-view .calendar-brand-lockup .brand-home-link:focus-visible{background:color-mix(in srgb,var(--accent-soft) 72%,transparent)!important;transform:none!important}
 
 /* Calendar Day/Agenda must use the page width rather than floating in the centre. */
@@ -31,7 +31,7 @@
 
 /* Timer modal: one definitive experience, identical footprint before/after Start. */
 #timer-dialog{width:min(600px,calc(100vw - 24px))!important;max-height:calc(100dvh - 20px)!important}
-#timer-dialog .panel-head{padding-bottom:16px!important}.timer-modal-now{display:flex!important;align-items:baseline!important;gap:8px!important;margin-top:6px!important;color:var(--muted)!important}.timer-modal-now span{font:9px/1 -apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',Arial,sans-serif!important;text-transform:uppercase!important;letter-spacing:.13em!important}.timer-modal-now strong{font:400 16px/1 var(--serif)!important;font-variant-numeric:tabular-nums!important;color:var(--ink)!important}
+#timer-dialog .panel-head{padding-bottom:16px!important}.timer-modal-now{display:flex!important;align-items:baseline!important;gap:8px!important;margin-top:6px!important;color:var(--muted)!important}.timer-modal-now span{font:9px/1 -apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI",Arial,sans-serif!important;text-transform:uppercase!important;letter-spacing:.13em!important}.timer-modal-now strong{font:400 16px/1 var(--serif)!important;font-variant-numeric:tabular-nums!important;color:var(--ink)!important}
 #timer-dialog .timer-content{padding:8px 24px 4px!important;overflow-y:auto!important;overscroll-behavior:contain!important}
 #timer-dialog .timer-time-stage{height:382px!important;min-height:382px!important;flex-basis:382px!important}
 #timer-dialog .timer-duration,#timer-dialog .timer-running{height:100%!important;min-height:0!important;display:grid!important;place-items:center!important}
@@ -77,13 +77,13 @@
 }
 
 /* Calendar return gesture gets a subtle lower-screen affordance on coarse pointers. */
-@media(pointer:coarse){body.view-calendar #calendar-view::after{content:'';position:fixed;left:50%;bottom:max(6px,env(safe-area-inset-bottom));width:42px;height:3px;transform:translateX(-50%);border-radius:999px;background:color-mix(in srgb,var(--muted) 34%,transparent);pointer-events:none;z-index:8}}
+@media(pointer:coarse){body.view-calendar #calendar-view::after{content:"";position:fixed;left:50%;bottom:max(6px,env(safe-area-inset-bottom));width:42px;height:3px;transform:translateX(-50%);border-radius:999px;background:color-mix(in srgb,var(--muted) 34%,transparent);pointer-events:none;z-index:8}}
 
 /* Wizard: small touch screens must always fit the step card, especially step 2. */
 @media(max-width:740px), (max-height:650px){
  .tour-card{max-width:calc(100vw - 16px)!important;max-height:calc(100dvh - 12px)!important;padding:12px 14px 13px!important;border-radius:17px!important}
  .tour-topline{margin-bottom:5px!important}.tour-card .tour-note{font-size:11px!important;margin-bottom:5px!important}.tour-card h2{font-size:19px!important;line-height:1.08!important;margin:4px 0 7px!important}.tour-card #tour-copy{font-size:10.5px!important;line-height:1.38!important}.tour-navigation{margin-top:10px!important}.tour-navigation button{min-height:38px!important}.tour-choices{margin-top:9px!important;gap:5px!important}.tour-choice{min-height:34px!important;font-size:10px!important}
- #tour-dialog[data-step='2'] .tour-card{width:min(310px,calc(100vw - 16px))!important}#tour-dialog[data-step='2'] .tour-note{display:none!important}#tour-dialog[data-step='2'] #tour-copy{line-height:1.32!important}
+ #tour-dialog[data-step="2"] .tour-card{width:min(310px,calc(100vw - 16px))!important}#tour-dialog[data-step="2"] .tour-note{display:none!important}#tour-dialog[data-step="2"] #tour-copy{line-height:1.32!important}
 }
 
 /* Touch baseline: no undersized primary actions in dialogs. */
@@ -99,7 +99,7 @@
  .dashboard-lower .active-info-strip>#environment-line,.dashboard-lower .active-info-strip>.goal-strip,.dashboard-lower .active-info-strip>#upcoming-event{height:84px!important;min-height:84px!important;max-height:84px!important}
  .dashboard-lower .active-info-strip>.goal-strip{padding-top:19px!important;padding-bottom:9px!important}
 }
-.dashboard-lower #upcoming-time,.idle-summary-strip #idle-upcoming-time{line-height:1.5!important;padding-bottom:4px!important;overflow:visible!important}
+.dashboard-lower #upcoming-time{line-height:1.5!important;padding-bottom:4px!important;overflow:visible!important}
 
 /* Compact landscape is a real layout, not a cropped portrait modal. */
 @media(max-height:500px) and (orientation:landscape) and (pointer:coarse){
@@ -108,7 +108,7 @@
  #timer-dialog .panel-head .section-label{margin-bottom:3px!important;font-size:8px!important}
  #timer-dialog .panel-head h2{font-size:25px!important;line-height:1!important}
  #timer-dialog .timer-modal-now{margin-top:4px!important}.timer-modal-now span{font-size:8px!important}.timer-modal-now strong{font-size:14px!important}
- #timer-dialog .timer-content{display:grid!important;grid-template-columns:minmax(250px,.9fr) minmax(280px,1.1fr)!important;grid-template-rows:auto 1fr!important;grid-template-areas:'stage presets' 'stage options'!important;column-gap:18px!important;row-gap:7px!important;height:234px!important;min-height:234px!important;max-height:234px!important;padding:5px 16px!important;overflow:hidden!important}
+ #timer-dialog .timer-content{display:grid!important;grid-template-columns:minmax(250px,.9fr) minmax(280px,1.1fr)!important;grid-template-rows:auto 1fr!important;grid-template-areas:"stage presets" "stage options"!important;column-gap:18px!important;row-gap:7px!important;height:234px!important;min-height:234px!important;max-height:234px!important;padding:5px 16px!important;overflow:hidden!important}
  #timer-dialog .timer-time-stage,#timer-dialog[data-state=running] .timer-time-stage,#timer-dialog[data-state=paused] .timer-time-stage,#timer-dialog[data-state=done] .timer-time-stage{grid-area:stage!important;height:224px!important;min-height:224px!important;flex-basis:224px!important;align-self:center!important}
  #timer-dialog .timer-range-picker.timer-dial-picker{gap:2px!important}.timer-range-picker>.section-label{font-size:8px!important;margin-bottom:0!important}
  #timer-dialog .timer-dial-shell{--dial-size:198px;--dial-radius:-78px;width:246px!important}

@@ -1,6 +1,6 @@
 # Istante
 
-**Versione corrente: 3.13.15**  
+**Versione corrente: 3.13.17**  
 **Un momento, per te.**  
 Un progetto di **Ruslan Dzyuba**.
 
@@ -73,7 +73,7 @@ in fusi IANA quando possibile.
 
 ## Condivisione
 
-Istante può creare una cartolina PNG del momento: frase, tema, posizione del sole o della luna, stelle ed effetti atmosferici. La preview nella modale mantiene sempre l'intero rapporto d'aspetto, senza essere tagliata dalla superficie di anteprima. La cartolina non incorpora eventuali foto di sfondo personali o Picsum. Il QR apre il sito ufficiale e può portare con sé
+Istante può creare una cartolina PNG del momento: frase, tema, posizione del sole o della luna, stelle, effetti atmosferici e, se configurato, meteo. La cartolina rispetta lo stile **Classic / Excalifont** scelto nella Home. La località viene aggiunta soltanto quando esiste un nome significativo, come una città selezionata; le etichette generiche della geolocalizzazione o delle coordinate manuali non vengono stampate. La preview nella modale mantiene sempre l'intero rapporto d'aspetto, senza essere tagliata dalla superficie di anteprima. La cartolina non incorpora eventuali foto di sfondo personali o Picsum. Il QR apre il sito ufficiale e può portare con sé
 la frase condivisa. Firma e indirizzo ufficiale restano parte della composizione.
 
 ## Offline, privacy e backup
@@ -101,7 +101,7 @@ Su desktop con mouse o trackpad puoi attivare un **cursore personalizzato discre
 - `data/`: frasi, catalogo raccolte e stazioni predefinite.
 - `README.md`: descrizione del progetto e release corrente.
 - `CHANGELOG.md`: storico delle modifiche.
-- `docs/release/v3.13.4.md`: note dettagliate di questa release.
+- `docs/release/v3.13.17.md`: note dettagliate di questa release.
 - `docs/LICENZA.md`: licenza non commerciale con attribuzione obbligatoria.
 - `docs/TERZE-PARTI.md`: dipendenze, servizi e attribuzioni.
 - `docs/VISIONE-E-DESIGN.md`: valori, regole grafiche e criteri responsive da mantenere nelle release future.

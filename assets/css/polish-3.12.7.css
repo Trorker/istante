@@ -36,7 +36,7 @@
    -------------------------------------------------------------------------- */
 .phrase-library-tools{
   display:grid!important;grid-template-columns:minmax(160px,.7fr) minmax(0,1.5fr)!important;
-  grid-template-areas:'current searchrow' 'tabs tabs'!important;gap:10px 18px!important;align-items:center!important;
+  grid-template-areas:"current searchrow" "tabs tabs"!important;gap:10px 18px!important;align-items:center!important;
 }
 .library-current{grid-area:current!important}
 .library-search-row{grid-area:searchrow!important;display:grid!important;grid-template-columns:minmax(220px,1fr) auto!important;align-items:center!important;gap:12px!important;min-width:0!important}
@@ -69,7 +69,7 @@
   min-height:34px!important;padding:6px 11px!important;border:0!important;border-radius:8px!important;background:transparent!important;
   color:var(--muted)!important;font-size:max(10.5px,calc(10.5px * var(--ui-scale,1)))!important;white-space:nowrap!important;
 }
-.collection-status-filters button[aria-pressed='true']{
+.collection-status-filters button[aria-pressed="true"]{
   background:var(--surface-2)!important;color:var(--ink)!important;box-shadow:0 1px 0 color-mix(in srgb,var(--line) 70%,transparent)!important;
 }
 #collection-library-inline .collection-card{padding:16px!important;min-height:194px!important}
@@ -80,7 +80,7 @@
 #collection-library-inline .collection-card-actions .icon-button{width:34px!important;height:34px!important;min-width:34px!important}
 .collection-active-note{margin-right:auto!important}
 @media(max-width:760px){
-  .phrase-library-tools{grid-template-columns:1fr!important;grid-template-areas:'current' 'searchrow' 'tabs'!important;gap:9px!important}
+  .phrase-library-tools{grid-template-columns:1fr!important;grid-template-areas:"current" "searchrow" "tabs"!important;gap:9px!important}
   .library-search-row{grid-template-columns:minmax(0,1fr) auto!important;gap:8px!important}
   .library-search-actions{gap:6px!important}.library-search-actions .result-count{display:none!important}.library-collections-button{padding-inline:10px!important}.library-collections-button span:last-child{display:none!important}
   .collection-library-toolbar{grid-template-columns:1fr!important;gap:9px!important;padding-inline:20px!important}
@@ -105,11 +105,11 @@
 /* --------------------------------------------------------------------------
    Goal affordance: it is a button-like surface, so make that obvious
    -------------------------------------------------------------------------- */
-#goal-strip,#idle-goal-summary{cursor:pointer!important}
+#goal-strip{cursor:pointer!important}
 #goal-strip{transition:background .18s ease,border-color .18s ease,transform .18s cubic-bezier(.2,.8,.2,1)!important}
 #goal-strip:hover,#goal-strip:focus-visible{background:color-mix(in srgb,var(--accent-soft) 22%,transparent)!important}
 #goal-strip:active{transform:scale(.997)!important}
-#idle-goal-summary:hover,#idle-goal-summary:focus-visible{background:color-mix(in srgb,var(--accent-soft) 26%,transparent)!important}
+
 
 /* --------------------------------------------------------------------------
    Week events: source identity, clear time, title hierarchy and location
@@ -156,8 +156,8 @@
 .istante-cursor-ring.is-action{width:34px!important;height:34px!important;background:color-mix(in srgb,var(--accent-soft) 32%,transparent)!important;border-color:var(--accent)!important}
 .istante-cursor-ring.is-pressed{width:20px!important;height:20px!important;background:color-mix(in srgb,var(--accent-soft) 48%,transparent)!important}
 @media(hover:hover) and (pointer:fine){
-  html.istante-custom-cursor body,html.istante-custom-cursor a,html.istante-custom-cursor button,html.istante-custom-cursor [role='button'],html.istante-custom-cursor summary,html.istante-custom-cursor input[type='range'],html.istante-custom-cursor label.file-button{cursor:none!important}
-  html.istante-custom-cursor input:not([type='range']):not([type='button']):not([type='submit']),html.istante-custom-cursor textarea,html.istante-custom-cursor [contenteditable='true']{cursor:text!important}
+  html.istante-custom-cursor body,html.istante-custom-cursor a,html.istante-custom-cursor button,html.istante-custom-cursor [role="button"],html.istante-custom-cursor summary,html.istante-custom-cursor input[type="range"],html.istante-custom-cursor label.file-button{cursor:none!important}
+  html.istante-custom-cursor input:not([type="range"]):not([type="button"]):not([type="submit"]),html.istante-custom-cursor textarea,html.istante-custom-cursor [contenteditable="true"]{cursor:text!important}
 }
 @media(hover:none),(pointer:coarse){.istante-cursor-dot,.istante-cursor-ring{display:none!important}}
 @media(prefers-reduced-motion:reduce){.istante-cursor-ring,.istante-cursor-dot{transition:opacity .08s linear!important}}

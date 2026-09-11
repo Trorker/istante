@@ -1,5 +1,24 @@
 # Changelog
 
+## 3.13.17 — 11 settembre 2026
+
+- Barra informativa mobile stabilizzata: Meteo, Traguardo e Prossimo impegno mantengono la stessa composizione durante stato attivo, pre-inattività e inattività; la scomparsa dei comandi superiore/inferiore non cambia più griglia, larghezze o ordine dei blocchi.
+- Rimossi gli ultimi riadattamenti dinamici ereditati dalle vecchie prove di barra compatta (`:has()` e griglie 20/60/20 sui telefoni) e confinati i vecchi breakpoint della barra al solo tablet dove ancora necessari.
+- Telefono verticale: i tre moduli restano impilati, ma la gerarchia interna non viene reinventata. Il Meteo torna a usare nell’ordine etichetta, lettura meteo e Alba/Tramonto, con l’intero gruppo centrato; il Traguardo conserva titolo a sinistra, conto alla rovescia a destra e avanzamento sotto.
+- Stato “Nessun impegno in vista” mantenuto su una struttura simmetrica icona–testo–freccia, così testo e controlli restano centrati anche quando non esiste un evento.
+- Calendario mobile: corretta la regola legacy che nascondeva accidentalmente l’unica icona del pulsante **Le tue giornate**; l’icona calendario è ora esplicita e protetta dal layer responsive corrente.
+- Pulizia CSS mirata: rimosse dal percorso telefono le vecchie regole di compressione della barra, evitando che fogli storici possano riattivare il layout precedente con specificità superiore.
+
+## 3.13.16 — 11 settembre 2026
+
+- Rimossa completamente la modalità sintetica/compatta della barra informativa: durante l’inattività resta la stessa composizione normale, senza una seconda UI da mantenere. Rimossi impostazione, markup, logica JavaScript e selettori CSS dedicati.
+- Dashboard telefono verticale: Meteo conserva la stessa struttura della versione desktop con icona, temperatura, condizione, località e icone Alba/Tramonto; il Traguardo torna con titolo a sinistra e conto alla rovescia a destra.
+- Stato calendario vuoto riallineato: “Nessun impegno in vista”, icona e scorciatoia Agenda sono centrati geometricamente.
+- Prossimo evento rifattorizzato con due controlli fratelli validi: la card apre il dettaglio, la freccia apre Agenda, senza controlli interattivi annidati.
+- Header Calendario mobile: logo completo Istante reso indipendente dalle vecchie regole `wordmark`, icona Calendari resa esplicita e spazio tra Oggi e azioni ridotto; il pulsante `+` nascosto non riserva più una colonna vuota.
+- Condivisione: la cartolina usa lo stesso stack tipografico Classic/Excalifont della Home. La località viene mostrata solo quando esiste un nome utile (ad esempio una città scelta); le etichette generiche “La mia posizione” e “Coordinate personali” non vengono esportate.
+- Pulizia CSS: rimossi i selettori residui della vecchia modalità sintetica dai fogli storici caricati e centralizzato il comportamento responsive corrente in `responsive.css`.
+
 ## 3.13.15 — 11 settembre 2026
 
 - Freccia Agenda del prossimo evento resa visibile e coerente anche su desktop e schermi grandi, senza cambiare il click sulla card che continua ad aprire il dettaglio.

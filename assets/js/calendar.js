@@ -39,7 +39,7 @@ function day(container){const d=new Date(from),wrap=node('section','calendar-day
 function render(){title();const root=$('cal-content');root.dataset.view=view;root.replaceChildren();const empty=!sources.length&&!getSettings().calendarHolidays;$('calendar-view').classList.toggle('calendar-is-empty',empty);$('cal-empty').hidden=true;$('cal-empty-add').hidden=!empty;if(view==='year')year(root);else if(view==='month')month(root);else if(view==='week')week(root);else if(view==='day')day(root);else agenda(root);$('cal-warnings').hidden=!warnings.length;$('cal-warning-list').replaceChildren();warnings.forEach(w=>$('cal-warning-list').append(node('li','',w)));renderSources();}
 function finish(id,result){if(id!==ticket)return;dayCache.clear();$('cal-content').setAttribute('aria-busy','false');document.querySelector('.calendar-main').classList.remove('is-loading');if(result.error){warnings=[result.error];events=[];}else{events=result.events;warnings=result.warnings;}render();}
 function load(){range();title();const id=++ticket;$('cal-content').setAttribute('aria-busy','true');document.querySelector('.calendar-main').classList.add('is-loading');clearTimeout(workerTimer);if(worker)worker.terminate();worker=null;
- if(typeof Worker==='function'&&location.protocol!=='file:'){try{worker=new Worker('assets/js/calendar-worker.js?v=3.13.15');const currentWorker=worker;workerTimer=setTimeout(()=>{currentWorker.terminate();finish(id,{error:'Il calendario richiede troppo tempo. Usa un file pi\u00f9 piccolo o restringi la vista.'});},6000);worker.onmessage=e=>{clearTimeout(workerTimer);currentWorker.terminate();finish(id,e.data);};worker.onerror=()=>{clearTimeout(workerTimer);currentWorker.terminate();worker=null;fallback();};worker.postMessage({id,sources:withHolidays(from,to),from,to});return;}catch(_){} }
+ if(typeof Worker==='function'&&location.protocol!=='file:'){try{worker=new Worker('assets/js/calendar-worker.js?v=3.13.17');const currentWorker=worker;workerTimer=setTimeout(()=>{currentWorker.terminate();finish(id,{error:'Il calendario richiede troppo tempo. Usa un file pi\u00f9 piccolo o restringi la vista.'});},6000);worker.onmessage=e=>{clearTimeout(workerTimer);currentWorker.terminate();finish(id,e.data);};worker.onerror=()=>{clearTimeout(workerTimer);currentWorker.terminate();worker=null;fallback();};worker.postMessage({id,sources:withHolidays(from,to),from,to});return;}catch(_){} }
  function fallback(){const input=withHolidays(from,to),rangeFrom=from,rangeTo=to;setTimeout(()=>{if(id!==ticket)return;try{finish(id,C.expand(input,rangeFrom,rangeTo));}catch(e){finish(id,{error:e.message});}},0);}fallback();
 }
 function renderSources(){const list=$('cal-source-list'),manager=$('cal-source-manager'),count=$('cal-source-count');if(count)count.textContent=String(sources.length);list.replaceChildren();manager.replaceChildren();for(const s of sources){const label=node('label','calendar-source-toggle'),check=document.createElement('input');check.type='checkbox';check.checked=s.enabled;check.onchange=()=>{try{persist(sources.map(x=>x.id===s.id?{...x,enabled:check.checked}:x));load();}catch(e){check.checked=s.enabled;message(e.message);}};label.style.setProperty('--event-color',COLORS[s.color]);label.append(check,node('i'),node('span','',s.name));list.append(label);const row=node('div','calendar-source-item'),info=node('div');info.append(node('strong','',s.name),node('small','',(s.url?'Collegato':'File locale')+' \u00b7 '+new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}).format(s.updatedAt)));row.append(info,iconButton('download','Esporta '+s.name,()=>download(s)),iconButton('trash','Elimina '+s.name,()=>{if(!confirm('Eliminare "'+s.name+'" da questo dispositivo?'))return;try{persist(sources.filter(x=>x.id!==s.id));load();message('Calendario rimosso.');}catch(e){message(e.message);}}));manager.append(row);}if(getSettings().calendarHolidays){const row=node('div','calendar-holidays-status');row.innerHTML='<span class="icon">'+window.IstanteIcons.render('calendar')+'</span>';row.append(document.createTextNode('Festivit\u00e0 italiane'));row.dataset.istanteTooltip='Attive. Puoi disattivarle nelle impostazioni del calendario.';list.append(row);}}
@@ -72,17 +72,16 @@ let upcomingWorker=null,upcomingTimer=0,upcomingVersion=0,nextEvent=null,upcomin
 function withHolidays(a,b){return getSettings().calendarHolidays?[...sources,window.IstanteHolidays.source(new Date(a).getFullYear(),new Date(b).getFullYear())]:sources;}
 function setUpcomingState(box,{visible=true,empty=false,label='',title='',when='',tooltip='',onOpen=null}={}){
  if(!box)return;
+ const main=box.querySelector('.upcoming-main');
  box.hidden=!visible;
- box.disabled=!visible;
  box.classList.toggle('is-empty',visible&&empty);
- if(!visible){box.onclick=null;return;}
+ if(main)main.disabled=!visible;
+ if(!visible){if(main)main.onclick=null;return;}
  const labelNode=box.querySelector('small'),titleNode=box.querySelector('[id$="upcoming-title"]'),timeNode=box.querySelector('time');
  if(labelNode)labelNode.textContent=label;
  if(titleNode)titleNode.textContent=title;
  if(timeNode)timeNode.textContent=when;
- box.dataset.istanteTooltip=tooltip;
- box.setAttribute('aria-label',tooltip);
- box.onclick=onOpen;
+ if(main){main.dataset.istanteTooltip=tooltip;main.setAttribute('aria-label',tooltip);main.onclick=onOpen;}
 }
 function upcomingPresentation(labelWhenActive='Adesso',labelWhenNext='Prossimo evento'){
  if(!nextEvent)return null;
@@ -90,18 +89,8 @@ function upcomingPresentation(labelWhenActive='Adesso',labelWhenNext='Prossimo e
  const whenText=(same?'Oggi':new Intl.DateTimeFormat('it-IT',{day:'numeric',month:'short'}).format(when))+' · '+eventTime(nextEvent);
  return{label:active?labelWhenActive:labelWhenNext,title:nextEvent.title,when:whenText,tooltip:nextEvent.title+' · '+whenText};
 }
-function renderIdleUpcoming(s){
- const box=$('idle-upcoming-event');if(!box)return;
- bindAgendaShortcut(box.querySelector('.idle-upcoming-arrow'));
- const visible=!!(s.calendarEnabled&&s.calendarUpcoming);
- if(!visible){setUpcomingState(box,{visible:false});return;}
- const event=upcomingPresentation('Adesso','Prossimo evento');
- if(!event){setUpcomingState(box,{empty:true,label:'Prossimo evento',title:'Nessun impegno in vista',when:'Apri calendario',tooltip:'Apri il calendario',onOpen:()=>$('calendar-open').click()});return;}
- setUpcomingState(box,{...event,onOpen:()=>detail(nextEvent)});
-}
 function renderUpcoming(){
  const box=$('upcoming-event'),s=getSettings();
- renderIdleUpcoming(s);
  bindAgendaShortcut(box?.querySelector('.upcoming-arrow'));
  const visible=!!(s.calendarEnabled&&s.calendarUpcoming);
  if(!visible){setUpcomingState(box,{visible:false});return;}
@@ -118,9 +107,8 @@ function openAgendaFromDashboard(event){
 }
 function bindAgendaShortcut(el){
  if(!el||el.dataset.agendaBound==='true')return;
- el.dataset.agendaBound='true';el.setAttribute('role','button');el.setAttribute('tabindex','0');el.setAttribute('aria-label','Apri Agenda');el.dataset.istanteTooltip='Apri Agenda';
+ el.dataset.agendaBound='true';el.setAttribute('aria-label','Apri Agenda');el.dataset.istanteTooltip='Apri Agenda';
  el.addEventListener('click',openAgendaFromDashboard);
- el.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){openAgendaFromDashboard(event);}});
 }
 function queueUpcoming(){
  clearTimeout(upcomingTimer);upcomingTimer=setTimeout(updateUpcoming,100);
@@ -131,7 +119,7 @@ function updateUpcoming(){
  const now=Date.now(),a=+new Date(new Date().setHours(0,0,0,0)),b=now+90*86400000;
  const finish=result=>{if(v!==upcomingVersion)return;const candidates=(result.events||[]).filter(e=>e.end>now||e.start>=now);nextEvent=candidates[0]||null;upcomingRefresh=Date.now();renderUpcoming();};
  if(typeof Worker==='function'&&location.protocol!=='file:'){
-  try{const w=new Worker('assets/js/calendar-worker.js?v=3.13.15');upcomingWorker=w;const timeout=setTimeout(()=>{w.terminate();finish({events:[]});},6000);w.onmessage=e=>{clearTimeout(timeout);w.terminate();finish(e.data);};w.onerror=()=>{clearTimeout(timeout);w.terminate();try{finish(C.expand(sources,a,b));}catch(_){finish({events:[]});}};w.postMessage({id:v,sources,from:a,to:b});return;}catch(_){}
+  try{const w=new Worker('assets/js/calendar-worker.js?v=3.13.17');upcomingWorker=w;const timeout=setTimeout(()=>{w.terminate();finish({events:[]});},6000);w.onmessage=e=>{clearTimeout(timeout);w.terminate();finish(e.data);};w.onerror=()=>{clearTimeout(timeout);w.terminate();try{finish(C.expand(sources,a,b));}catch(_){finish({events:[]});}};w.postMessage({id:v,sources,from:a,to:b});return;}catch(_){}
  }
  try{finish(C.expand(sources,a,b));}catch(_){finish({events:[]});}
 }

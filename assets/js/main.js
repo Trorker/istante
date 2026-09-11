@@ -1,4 +1,4 @@
-/* Istante v3.13.15 - application and local preferences. */
+/* Istante v3.13.17 - application and local preferences. */
 (function () {
 'use strict';
 const C = window.IstanteCore;
@@ -70,11 +70,11 @@ const scene=window.IstanteScene.create({getSettings:()=>settings,getSun:()=>X.so
 function shareWeatherSnapshot(now){
  const place=X.place(),configured=!!(settings.weather&&place);
  if(!configured)return{configured:false,available:false};
- const current=X.weather(now);
+ const current=X.weather(now),visiblePlace=X.placeLabel?.()||'';
  const valid=current&&Number.isFinite(current.temperature_2m)&&Number.isFinite(current.weather_code);
- if(!valid)return{configured:true,available:false,place:place.name||''};
+ if(!valid)return{configured:true,available:false,place:visiblePlace};
  const [condition]=window.IstanteSolar.weather(current.weather_code,current.is_day===1);
- return{configured:true,available:true,temperature:Math.round(current.temperature_2m)+'°',condition,place:place.name||''};
+ return{configured:true,available:true,temperature:Math.round(current.temperature_2m)+'°',condition,place:visiblePlace};
 }
 function shareSnapshot(){
  const now=new Date();
@@ -85,6 +85,7 @@ function shareSnapshot(){
   date:dateFormatter.format(now),
   greeting:$('#moment-greeting').textContent,
   clockStyle:settings.clockStyle,
+  fontStyle:settings.fontStyle||'current',
   hours:now.getHours(),
   minutes:now.getMinutes(),
   sky:window.IstanteSceneSnapshot.capture(scene.describe(),settings),
@@ -203,23 +204,17 @@ function applyAppearance(now) {
  if(appearanceReady&&old!==theme&&!document.documentElement.classList.contains('is-loading'))X.transition(theme);
  appearanceReady=true;
  $('meta[name="theme-color"]').content=theme==='light'?'#f1eee7':'#131615';
- document.body.dataset.compactIdleBar=settings.compactIdleBar?'true':'false';
  document.body.dataset.background=X.photoAvailable()?'photo':['photo','picsum'].includes(settings.background)?'ambient':settings.background;
  document.body.classList.toggle('no-motion',!settings.motion);document.body.classList.toggle('no-clock',!settings.showClock);
  document.body.style.setProperty('--photo-dim',String(settings.photoDim/100));$('#clock-seconds').hidden=!settings.showSeconds;
  const modeLabel=$('#mode-label');if(modeLabel)modeLabel.textContent=settings.mode==='interval'?'Ogni '+settings.interval+' minuti':modeNames[settings.mode];
  X.update(now);
 }
-function syncIdleGoal(now,goal,parts,value){
- const box=$('#idle-goal-summary'),track=$('#idle-goal-progress'),fill=$('#idle-goal-progress-fill'),count=$('#idle-goal-countdown');if(!box||!track||!fill||!count)return;
- if(!goal){box.hidden=true;$('#idle-goal-progress-value').textContent='';fill.style.width='0%';track.setAttribute('aria-valuenow','0');track.setAttribute('aria-valuetext','Nessun traguardo configurato');count.hidden=true;return;}
- box.hidden=false;count.hidden=false;$('#idle-goal-label').textContent=goal.done?'Traguardo raggiunto':goal.waiting?'Inizia presto':'Il prossimo capitolo';$('#idle-goal-title').textContent=goal.title;$('#idle-goal-progress-value').textContent=value+'%';fill.style.width=goal.progress.toFixed(3)+'%';track.setAttribute('aria-valuenow',goal.progress.toFixed(1));track.setAttribute('aria-valuetext',value+' per cento');['idle-goal-days','idle-goal-hours','idle-goal-minutes'].forEach((id,i)=>{$('#'+id).textContent=pad(parts[i].value);});
-}
 function syncGoal(now, force) {
  const stamp = now.getFullYear()+':'+now.getMonth()+':'+now.getDate()+':'+now.getHours()+':'+now.getMinutes();
  if (stamp === lastGoalMinute && !force) return; lastGoalMinute = stamp;
  const goal = C.getGoal(now,settings),strip=$('#goal-strip'),progress=strip.querySelector('.goal-progress'),countdown=$('#countdown');strip.hidden=!goal;strip.classList.toggle('is-empty',!goal);
- if(!goal){countdown.hidden=true;progress.hidden=true;syncIdleGoal(now,null,null,'');return;}
+ if(!goal){countdown.hidden=true;progress.hidden=true;return;}
  countdown.hidden=false;progress.hidden=false;
  $('#goal-title').textContent = goal.title; const parts=window.IstanteCompanion.goalParts(now,goal.end);['goal-days','goal-hours','goal-minutes'].forEach((id,i)=>{ $('#'+id).textContent=pad(parts[i].value);$('#goal-unit'+(i+1)).textContent=parts[i].unit;});
  $('#goal-label').textContent = goal.done ? 'Traguardo raggiunto' : goal.waiting ? 'Il percorso deve ancora iniziare' : 'Il prossimo capitolo';
@@ -227,7 +222,7 @@ function syncGoal(now, force) {
  const value = goal.progress.toLocaleString('it-IT',{minimumFractionDigits:1,maximumFractionDigits:1});
  $('#progress-value').textContent = value+'%'; $('#progress-fill').style.width = goal.progress.toFixed(3)+'%';
  $('#goal-progress').setAttribute('aria-valuenow',goal.progress.toFixed(1)); $('#goal-progress').setAttribute('aria-valuetext',value+' per cento');
- $('#goal-date').textContent = goalDateFormatter.format(goal.end)+' \u00b7 '+timeFormatter.format(goal.end);syncIdleGoal(now,goal,parts,value);
+ $('#goal-date').textContent = goalDateFormatter.format(goal.end)+' \u00b7 '+timeFormatter.format(goal.end);
 }
 function tick(force) {
  const now = new Date(), hhmm = pad(now.getHours())+':'+pad(now.getMinutes());
@@ -409,9 +404,9 @@ $$('dialog').forEach(dialog=>{
 });
 $$('[data-open]').forEach(b=>b.addEventListener('click',()=>openDialog(b.dataset.open)));
 function openWeatherFromSummary(event){if(event.type==='keydown'&&!['Enter',' '].includes(event.key))return;if(event.type==='keydown')event.preventDefault();openDialog('weather');}
-['#environment-line','.idle-weather-summary'].forEach(selector=>{const el=$(selector);if(el){el.addEventListener('click',openWeatherFromSummary);el.addEventListener('keydown',openWeatherFromSummary);}});
+{const el=$('#environment-line');if(el){el.addEventListener('click',openWeatherFromSummary);el.addEventListener('keydown',openWeatherFromSummary);}}
 function openGoalFromSummary(event){if(event.type==='keydown'&&!['Enter',' '].includes(event.key))return;if(event.type==='keydown')event.preventDefault();if(!C.getGoal(new Date(),settings))return;openDialog('goal');}
-['#goal-strip','#idle-goal-summary'].forEach(selector=>{const el=$(selector);if(el){el.addEventListener('click',openGoalFromSummary);el.addEventListener('keydown',openGoalFromSummary);}});
+{const el=$('#goal-strip');if(el){el.addEventListener('click',openGoalFromSummary);el.addEventListener('keydown',openGoalFromSummary);}}
 $('#goal-dialog-edit')?.addEventListener('click',()=>{const d=$('#goal-dialog');d.addEventListener('close',()=>requestAnimationFrame(openGoalSettings),{once:true});closeDialog(d);});
 $('#weather-configure')?.addEventListener('click',()=>{const d=$('#weather-dialog');d.addEventListener('close',()=>requestAnimationFrame(()=>{openDialog('settings');requestAnimationFrame(()=>{const summary=$('#section-sky summary');expandSection(summary);summary?.scrollIntoView({block:'start',behavior:settings.motion&&!matchMedia('(prefers-reduced-motion: reduce)').matches?'smooth':'auto'});});}),{once:true});closeDialog(d);});
 $('#quote-wrap')?.addEventListener('dblclick',event=>{event.preventDefault();void copyCurrentPhrase();});
@@ -440,7 +435,7 @@ $('#touch-sound-preview')?.addEventListener('click',()=>touchFeedback.preview(re
 $('#settings-form').addEventListener('submit',event=>{
  event.preventDefault();const f=event.currentTarget,values={...settings,...Object.fromEntries(new FormData(f))};
  values.radioSchedules=scheduleEditor.value();
- for(const key of ['calendarEnabled','calendarUpcoming','calendarHolidays','calendarExcalifont','mouseSwipe','audioVolumeGesture','customCursor','grain','chimeEnabled','chimeQuiet','ambientEnabled','celestialSky','showClock','showSeconds','motion','hideControls','compactIdleBar','wakeLock','touchSoundEnabled','typing','solarTimes','weather','transitionFX','photoMotion','breathe','typingErase','effectsEnabled','effectSunSync','radioEnabled','radioScheduleEnabled','timerEnabled'])values[key]=f.elements[key].checked;
+ for(const key of ['calendarEnabled','calendarUpcoming','calendarHolidays','calendarExcalifont','mouseSwipe','audioVolumeGesture','customCursor','grain','chimeEnabled','chimeQuiet','ambientEnabled','celestialSky','showClock','showSeconds','motion','hideControls','wakeLock','touchSoundEnabled','typing','solarTimes','weather','transitionFX','photoMotion','breathe','typingErase','effectsEnabled','effectSunSync','radioEnabled','radioScheduleEnabled','timerEnabled'])values[key]=f.elements[key].checked;
  values.interval=Number(values.interval);values.photoDim=Number(values.photoDim);let error='';if(!validateSettings(f))return;
  if(values.mode==='twice'&&C.minutes(values.morning,-1)>=C.minutes(values.evening,-1))error='L\'inizio della sera deve essere successivo all\'inizio della mattina.';
  if(values.goalMode==='custom'&&(!values.goalStart||!values.goalEnd||new Date(values.goalEnd)<=new Date(values.goalStart)))error='Inserisci una data finale successiva alla data di inizio.';

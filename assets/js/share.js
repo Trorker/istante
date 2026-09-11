@@ -121,7 +121,10 @@
     setAvailability('weather',{available:!!snapshot.weather?.configured,checked:!!snapshot.weather?.configured});
     setAvailability('goal',{available:!!snapshot.goal,checked:false});
     setAvailability('radio',{available:!!snapshot.station,checked:false});
-    render();
+    if(snapshot.fontStyle==='excalifont'&&document.fonts?.load){
+     status('Preparo il carattere della tua cartolina...');
+     document.fonts.load('24px Excalifont').catch(()=>{}).finally(render);
+    }else render();
    }
   };
  }

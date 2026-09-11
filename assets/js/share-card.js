@@ -1,10 +1,17 @@
-/* Local, resolution-independent share artwork. No fonts, images or uploads from third parties. */
+/* Local, resolution-independent share artwork. It reuses the app typography and does not embed user or third-party images. */
 (function(){'use strict';
  const URL='https://istante.ruslan-dzyuba.it/';
  // QR has a four-module quiet zone on each side. Keep the matrix unmodified.
 
  const sizes={square:[1080,1080],story:[1080,1920],landscape:[1920,1080],cover:[1200,630]};
  const TAU=Math.PI*2;
+ function fontSet(snapshot){
+  const editorial=snapshot?.fontStyle==='excalifont';
+  return{
+   display:editorial?"'Excalifont','Segoe Print','Bradley Hand',cursive":"'Iowan Old Style','Palatino Linotype','Book Antiqua',Palatino,Georgia,serif",
+   ui:"-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI',Arial,sans-serif"
+  };
+ }
  function wrap(ctx,text,width){
   const lines=[];
   for(const paragraph of String(text).split(/\n/)){
@@ -175,7 +182,7 @@
   const [w,h]=sizes[format]||sizes.square,canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
   const c=canvas.getContext('2d');if(!c)throw Error('Canvas non disponibile');
   const scale=w/1080,W=1080,H=h/scale,land=w>h,story=h>w*1.5,pad=72,light=snapshot.theme==='light';
-  const P=palette(light,opt.sky&&snapshot.sky?!!snapshot.sky.isDay:true);
+  const P=palette(light,opt.sky&&snapshot.sky?!!snapshot.sky.isDay:true),F=fontSet(snapshot);
   if(opt.sky&&snapshot.sky?.capture)P.background=snapshot.sky.capture.background;
   const qrMatrix=opt.qr?window.IstanteQR.matrix(snapshot.shareURL||URL):null,qrTotal=qrMatrix?qrMatrix.length+8:0;
   const qrTarget=(format==='landscape'?96:format==='square'?112:148)*scale;
@@ -185,38 +192,38 @@
   if(opt.sky&&snapshot.sky){sky(c,snapshot.sky,P,W,H,land,story);if(!snapshot.sky.capture&&snapshot.sky.warmth>0){c.save();c.globalAlpha=Math.min(1,snapshot.sky.warmth)*.6;haze(c,W*.85,H*.5,W*.55,light?'#e7984c66':'#ee792f66',W,H);c.restore();}}
   c.strokeStyle=P.line;c.lineWidth=1;c.strokeRect(24,24,W-48,H-48);
   // Header: the same Istante mark, no repeated author credit.
-  mark(c,pad-16,28,75,P.accent);c.textAlign='left';c.fillStyle=P.ink;c.font='42px Georgia,serif';c.fillText('istante.',pad+59,80);
-  c.font='11px Arial,sans-serif';c.fillStyle=P.muted;c.textAlign='right';c.fillText('UN MOMENTO, PER TE.',W-pad,66);
+  mark(c,pad-16,28,75,P.accent);c.textAlign='left';c.fillStyle=P.ink;c.font='42px '+F.display;c.fillText('istante.',pad+59,80);
+  c.font='11px '+F.ui;c.fillStyle=P.muted;c.textAlign='right';c.fillText('UN MOMENTO, PER TE.',W-pad,66);
   // One vertical signature only, outside the text column and the QR quiet zone.
   c.save();c.translate(W-40,H*.50);c.rotate(-Math.PI/2);
   const credit='by  \u2661  Ruslan Dzyuba \u00b7 istante.ruslan-dzyuba.it';
-  let creditSize=land?10:12;c.font=creditSize+'px Arial,sans-serif';
-  while(c.measureText(credit).width>H-105&&creditSize>7){creditSize-=.25;c.font=creditSize+'px Arial,sans-serif';}
+  let creditSize=land?10:12;c.font=creditSize+'px '+F.ui;
+  while(c.measureText(credit).width>H-105&&creditSize>7){creditSize-=.25;c.font=creditSize+'px '+F.ui;}
   c.fillStyle=P.muted;c.textAlign='center';c.fillText(credit,0,0);c.restore();
-  if(opt.date&&snapshot.date){c.textAlign='center';c.fillStyle=P.muted;c.font=(land?13:16)+'px Arial,sans-serif';c.fillText(fitLine(c,snapshot.date,630),W/2,land?130:153);}
+  if(opt.date&&snapshot.date){c.textAlign='center';c.fillStyle=P.muted;c.font=(land?13:16)+'px '+F.ui;c.fillText(fitLine(c,snapshot.date,630),W/2,land?130:153);}
   let top=land?165:story?325:205;
   if(opt.clock){
    if(snapshot.clockStyle==='analog'){
     const r=land?35:story?82:54,y=land?186:story?290:248;
     analog(c,W/2,y,r,snapshot,P);top=y+r+(land?24:55);
    }else{
-    c.textAlign='center';c.fillStyle=P.ink;c.font=(land?48:story?102:78)+'px Arial,sans-serif';
+    c.textAlign='center';c.fillStyle=P.ink;c.font=(land?48:story?102:78)+'px '+F.display;
     const y=land?193:story?304:259;c.fillText(snapshot.time||'',W/2,y);top=y+(land?25:56);
    }
   }
   const footer=H-Math.max(land?182:207,qrSide/scale+45),metadata=cardMetadata(snapshot,opt);
   const rowH=land?22:30,metaSpace=metadata.length?metadata.length*rowH+22:0,bottom=footer-35-metaSpace;
   let font=land?44:story?78:61,lines;
-  do{c.font=font+'px Georgia,serif';lines=wrap(c,snapshot.phrase||'Prenditi un momento per te.',W-pad*2-60);if(lines.length*font*1.32<=bottom-top)break;font--;}while(font>8);
+  do{c.font=font+'px '+F.display;lines=wrap(c,snapshot.phrase||'Prenditi un momento per te.',W-pad*2-60);if(lines.length*font*1.32<=bottom-top)break;font--;}while(font>8);
   const lineH=font*1.32,start=top+(bottom-top-lines.length*lineH)/2+font;
   c.textAlign='center';c.fillStyle=P.ink;lines.forEach((text,i)=>c.fillText(text,W/2,start+i*lineH));
-  c.fillStyle=P.muted;c.font=(land?12:15)+'px Arial,sans-serif';
+  c.fillStyle=P.muted;c.font=(land?12:15)+'px '+F.ui;
   metadata.forEach((text,i)=>c.fillText(fitLine(c,text,W-pad*2-60),W/2,footer-24-(metadata.length-1-i)*rowH));
   // Footer is balanced independently of whether the QR is included.
   c.strokeStyle=P.line;c.beginPath();c.moveTo(pad,footer);c.lineTo(W-pad,footer);c.stroke();
   c.textAlign=opt.qr?'left':'center';const footX=opt.qr?pad:W/2;
-  c.fillStyle=P.ink;c.font=(land?18:26)+'px Georgia,serif';c.fillText('Prenditi il tuo tempo.',footX,footer+(land?43:64));
-  c.fillStyle=P.muted;c.font=(land?12:16)+'px Arial,sans-serif';c.fillText('Un piccolo spazio, tutto tuo.',footX,footer+(land?72:104));
+  c.fillStyle=P.ink;c.font=(land?18:26)+'px '+F.display;c.fillText('Prenditi il tuo tempo.',footX,footer+(land?43:64));
+  c.fillStyle=P.muted;c.font=(land?12:16)+'px '+F.ui;c.fillText('Un piccolo spazio, tutto tuo.',footX,footer+(land?72:104));
   if(opt.qr){
    // Same hue family as the artwork, dark modules on a uniformly light field.
    // Integer device pixels and an intact quiet zone keep the code sharp.

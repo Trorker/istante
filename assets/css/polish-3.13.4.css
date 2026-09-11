@@ -5,7 +5,7 @@
 #welcome-dialog *,
 #tour-dialog,
 #tour-dialog *{
-  font-family:'Excalifont','Segoe Print','Bradley Hand',cursive!important
+  font-family:"Excalifont","Segoe Print","Bradley Hand",cursive!important
 }
 #welcome-dialog .icon,
 #tour-dialog .icon{font-family:inherit!important}
@@ -148,30 +148,13 @@
 }
 
 /* Idle lower bar can now stay fully expanded from Settings. */
-body[data-compact-idle-bar='false'].is-idle:not(.has-panel) .active-info-strip{
-  display:grid!important;
-  opacity:1!important;
-  filter:none!important;
-  transform:none!important;
-  pointer-events:auto!important
-}
-body[data-compact-idle-bar='false'].is-idle:not(.has-panel) .idle-summary-strip{display:none!important}
-body[data-compact-idle-bar='false'].is-idle-pre .active-info-strip,
-body[data-compact-idle-bar='false'].is-idle-pre .active-info-strip *{
-  opacity:1!important;
-  filter:none!important;
-  transform:none!important
-}
+
+
+
 
 /* Only Meteo and Il prossimo capitolo react on hover in the dashboard ribbon. */
-.dashboard-lower #upcoming-event,
-.dashboard-lower .idle-upcoming-event{transition:none!important}
-.dashboard-lower #upcoming-event:hover,
-.dashboard-lower #upcoming-event:focus-visible,
-.dashboard-lower #upcoming-event:active,
-.dashboard-lower .idle-upcoming-event:hover,
-.dashboard-lower .idle-upcoming-event:focus-visible,
-.dashboard-lower .idle-upcoming-event:active{
+.dashboard-lower #upcoming-event{transition:none!important}
+.dashboard-lower #upcoming-event:hover,.dashboard-lower #upcoming-event:focus-visible,.dashboard-lower #upcoming-event:active{
   background:transparent!important;
   color:inherit!important;
   transform:none!important;

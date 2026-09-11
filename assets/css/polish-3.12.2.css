@@ -246,12 +246,7 @@
   color:var(--muted)!important
 }
 
-/* During screensaver idle only the command chrome fades; the information strip stays. */
-.is-idle:not(.has-panel) .dashboard-lower.chrome{
-  opacity:1!important;
-  transform:none!important;
-  filter:none!important
-}
+/* Lower-ribbon idle behavior is centralized in responsive.css. */
 
 /* --------------------------------------------------------------------------
    Text-size control: three clear choices, presented as a slicer/segmented row.

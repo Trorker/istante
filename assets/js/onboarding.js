@@ -11,7 +11,7 @@
    {target:'.thought-block',note:'una frase, al momento giusto',title:'Un pensiero che lascia spazio.',copy:'Le frasi accompagnano la giornata e possono cambiare nel tempo senza trasformare Istante in una lista di notifiche o attività.'},
    {target:'#environment-line',fallback:'#active-info-strip',force:true,locationSetup:true,note:'il cielo resta leggero',title:'Meteo e luce della giornata.',copy:'Qui trovi temperatura, condizioni, alba e tramonto. Se il meteo non è ancora disponibile, la guida usa dati di esempio per mostrarti come apparirà; la posizione è l’unica configurazione che puoi fare direttamente dal wizard.'},
    {target:'#goal-strip',note:'una direzione, senza fretta',title:'Il prossimo capitolo resta vicino.',copy:'Qui puoi tenere visibile un traguardo e il suo avanzamento, con il tempo che manca mostrato in modo discreto e senza trasformarlo in una scadenza invadente.'},
-   {target:'#upcoming-event',fallback:'#idle-upcoming-event',force:true,note:'il prossimo impegno, senza aprire nulla',title:'Anche il calendario può farsi vedere qui.',copy:'Quando hai un calendario attivo, Istante può mostrarti il prossimo evento direttamente nella dashboard: titolo e orario restano a portata di sguardo, senza occupare il centro dello schermo.'},
+   {target:'#upcoming-event',force:true,note:'il prossimo impegno, senza aprire nulla',title:'Anche il calendario può farsi vedere qui.',copy:'Quando hai un calendario attivo, Istante può mostrarti il prossimo evento direttamente nella dashboard: titolo e orario restano a portata di sguardo, senza occupare il centro dello schermo.'},
    {target:'.collection-link',note:'qui ritrovi le tue parole',title:'La biblioteca conserva ciò che conta.',copy:'Da qui ritrovi raccolte, preferiti e pensieri personali. Puoi costruire nel tempo una biblioteca tutta tua.'},
    {target:'#next-phrase',note:'quando vuoi cambiare aria',title:'Un altro pensiero, subito.',copy:'Questo comando cambia soltanto la frase corrente quando vuoi qualcosa di diverso, senza modificare il resto della dashboard.'},
    {target:'#favorite-current',note:'questo cuore conserva',title:'Tieni vicino ciò che ti parla.',copy:'Il cuore salva il pensiero corrente tra i preferiti, così puoi ritrovarlo più avanti nella tua biblioteca.'},
@@ -49,19 +49,14 @@
   }
   function simulateUpcomingEvent(){
    const active=byId('upcoming-event'),activeTitle=byId('upcoming-title');
-   const idle=byId('idle-upcoming-event'),idleTitle=byId('idle-upcoming-title');
    const hasReal=active&&!active.hidden&&activeTitle?.textContent.trim()&&activeTitle.textContent.trim()!=='Nessun impegno in vista';
    if(hasReal||active?.classList.contains('tour-simulated-event'))return;
-   const nodes=[active,byId('upcoming-label'),activeTitle,byId('upcoming-time'),idle,byId('idle-upcoming-label'),idleTitle,byId('idle-upcoming-time')].map(snapshotNode).filter(Boolean);
+   const nodes=[active,byId('upcoming-label'),activeTitle,byId('upcoming-time')].map(snapshotNode).filter(Boolean);
    simulations.push(nodes);
    if(active){active.hidden=false;active.classList.add('tour-simulated-event');}
    if(byId('upcoming-label'))byId('upcoming-label').textContent='Evento di esempio';
    if(activeTitle)activeTitle.textContent='Riunione di progetto';
    if(byId('upcoming-time'))byId('upcoming-time').textContent='Oggi · 15:30';
-   if(idle){idle.hidden=false;idle.classList.add('tour-simulated-event');}
-   if(byId('idle-upcoming-label'))byId('idle-upcoming-label').textContent='Evento di esempio';
-   if(idleTitle)idleTitle.textContent='Riunione di progetto';
-   if(byId('idle-upcoming-time'))byId('idle-upcoming-time').textContent='Oggi · 15:30';
   }
   function preparePresentation(){simulateWeather();simulateUpcomingEvent();}
   function restoreSimulation(){
