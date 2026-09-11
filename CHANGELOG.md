@@ -1,12 +1,25 @@
 # Changelog
 
+## 3.14.0 — 12 settembre 2026
+
+- **Aggiornamenti affidabili:** il service worker prepara ora una shell essenziale separata dai file accessori. Documentazione, note release e altri file non necessari all’avvio non possono più rendere `redundant` l’intero aggiornamento.
+- **Preparazione ripetibile:** se durante la pubblicazione un file essenziale non è ancora disponibile, la copia parziale rimane in attesa e può completarsi con nuovi tentativi mentre la versione corrente continua a funzionare.
+- **Verifica prima dell’attivazione:** il pulsante Aggiorna compare soltanto quando la shell essenziale della nuova release è completa e verificata.
+- **Compatibilità configurazione:** le release future possono dichiarare uno schema minimo. In caso di incompatibilità Istante avvisa chiaramente e offre comunque **Aggiorna comunque**, spiegando che alcune preferenze potrebbero tornare ai valori predefiniti.
+- **Backup calendario portabile:** il backup passa allo schema 2. I calendari collegati da URL vengono esportati come URL e configurazione, senza incorporare la copia ICS; al ripristino vengono risincronizzati dal collegamento originale. I vecchi backup schema 1 restano compatibili.
+- **Documentazione in nuova scheda:** Leggi il progetto, Tutte le novità, Questa release, Licenza, Terze parti e Visione e design aprono una nuova scheda/pagina senza sostituire la Dashboard.
+- **Pulizia manutenzione:** eliminato lo script Python di rigenerazione e rimossa la cartella `tools/` dalla distribuzione corrente.
+
 ## 3.13.27 — 12 settembre 2026
 
-- **Font locali definitivi:** Classic usa Libre Baskerville 2.005 ed Excalifont usa Excalifont Regular 1.000, con sorgenti runtime esclusivamente locali.
-- **Niente download font a runtime:** rimossi gli URL remoti da `assets/css/fonts.css`.
-- **Installazione controllata:** sostituiti i vecchi helper di download con `tools/install-fonts.py`, `.ps1` e `.sh`, che installano i file originali forniti e rigenerano la cache offline.
-- **Terze parti:** aggiornato `docs/TERZE-PARTI.md` e aggiunti testo SIL OFL 1.1 e notice specifici per Libre Baskerville ed Excalifont.
+- **Font come asset vendor:** Libre Baskerville ed Excalifont vengono trattati come normali asset del progetto sotto `assets/vendor/fonts/`, senza installer runtime.
+- **Runtime locale:** `assets/css/fonts.css` usa solo percorsi locali; nessun download font viene eseguito dal sito.
+- **Terze parti:** mantenuti `docs/TERZE-PARTI.md`, SIL OFL 1.1 e i notice specifici dei due font.
 
+## 3.13.26 — 12 settembre 2026
+
+- **Tipografia locale:** introdotta la gestione self-hosted di Libre Baskerville 2.005 ed Excalifont Regular 1.000.
+- **Licenze:** aggiunti testo SIL OFL 1.1 e notice specifici per Libre Baskerville ed Excalifont.
 
 ## 3.13.25 — 12 settembre 2026
 

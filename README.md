@@ -1,6 +1,6 @@
 # Istante
 
-**Versione corrente: 3.13.27**  
+**Versione corrente: 3.14.0**  
 **Un momento, per te.**  
 Un progetto di **Ruslan Dzyuba**.
 
@@ -81,9 +81,10 @@ la frase condivisa. Firma e indirizzo ufficiale restano parte della composizione
 
 Istante è un sito statico: **non richiede account né backend applicativo**.
 Preferenze, raccolte personali, calendari importati, stazioni e preferiti sono
-salvati nel browser. Puoi esportare e ripristinare un backup JSON.
+salvati nel browser. Puoi esportare e ripristinare un backup JSON. I calendari collegati tramite URL vengono esportati come **link di sorgente**, senza incorporare la copia ICS: dopo il ripristino su un altro dispositivo vengono risincronizzati dal collegamento originale. I calendari importati da file, invece, restano incorporati nel backup.
 
-L'interfaccia e i contenuti locali possono essere conservati dal service worker.
+L'interfaccia e i contenuti locali possono essere conservati dal service worker. Dalla 3.14.0 l'aggiornamento prepara una **shell essenziale verificata** senza rendere obbligatori documentazione e file accessori: la versione in uso rimane attiva finché la nuova copia non è pronta. Se durante la pubblicazione manca temporaneamente un asset, la preparazione può essere ripresa senza invalidare l'installazione. Le future release che richiedono una configurazione incompatibile possono essere installate comunque con un avviso esplicito.
+
 Radio live, nuove foto automatiche, sincronizzazione di calendari remoti e meteo
 aggiornato richiedono Internet; un errore di rete non deve bloccare la pagina.
 Dopo aver configurato una località, i dati astronomici principali possono
@@ -99,11 +100,10 @@ Su desktop con mouse o trackpad puoi attivare un **cursore personalizzato discre
 
 - `index.html`: dashboard, viste e pannelli principali.
 - `assets/`: CSS, JavaScript, icone, immagine social e dipendenze vendor. I vecchi fogli `polish-*` sono stati consolidati in `legacy-foundation.css` e `legacy-components.css`, mentre il comportamento responsive corrente vive in `responsive.css`. I caratteri editoriali sono asset vendor sotto `assets/vendor/fonts/`.
-- `tools/`: strumenti di manutenzione della release, compresa la rigenerazione deterministica della cache offline; non scaricano né installano font.
 - `data/`: frasi, catalogo raccolte e stazioni predefinite.
 - `README.md`: descrizione del progetto e release corrente.
 - `CHANGELOG.md`: storico delle modifiche.
-- `docs/release/v3.13.27.md`: note dettagliate di questa release.
+- `docs/release/v3.14.0.md`: note dettagliate di questa release.
 - `docs/LICENZA.md`: licenza non commerciale con attribuzione obbligatoria.
 - `docs/TERZE-PARTI.md`: dipendenze, servizi e attribuzioni.
 - `docs/VISIONE-E-DESIGN.md`: valori, regole grafiche e criteri responsive da mantenere nelle release future.
@@ -111,7 +111,7 @@ Su desktop con mouse o trackpad puoi attivare un **cursore personalizzato discre
 ## Pubblicazione
 
 Pubblica **tutto il contenuto della cartella** sullo stesso percorso HTTPS,
-compresi `sw.js`, `version.json`, `assets`, `data` e `docs`. I font editoriali devono essere presenti nei percorsi `assets/vendor/fonts/` insieme agli altri asset della release: non serve alcun comando di installazione. Non mescolare file di release diverse: il controllo aggiornamenti e la cache verificano una copia coerente prima di attivarla.
+compresi `sw.js`, `version.json`, `assets`, `data` e `docs`. I font editoriali devono essere presenti nei percorsi `assets/vendor/fonts/` insieme agli altri asset della release: non serve alcun comando di installazione. Non mescolare file di release diverse: il controllo aggiornamenti prepara e verifica i file essenziali prima di proporre l’attivazione. I documenti e gli asset accessori non possono più bloccare l’installazione della nuova shell.
 
 ## Autore e licenza
 
