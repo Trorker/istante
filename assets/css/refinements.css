@@ -1,0 +1,89 @@
+/* v3.3.0 - surfaces adapt to the available width; no horizontal modal scroll. */
+.panel,.control-popup,.radio-panel{box-sizing:border-box;overflow-x:hidden;max-width:calc(100vw - 24px);overscroll-behavior-x:none}
+.panel *,.control-popup *,.radio-panel *{box-sizing:border-box}
+.panel-content,.panel-head,.panel-footer,.panel form,.panel fieldset,.settings-section,.settings-section-body,.picker-body,.date-part,.time-part,.custom-options,.form-row,.form-row>*,.stacked-label{min-width:0;max-width:100%}
+.panel-content,.custom-options{overflow-x:hidden}
+.panel fieldset{margin-inline:0;padding-inline:0}
+.form-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+.panel input:not([type=checkbox]):not([type=radio]),.panel textarea,.panel select{max-width:100%;min-width:0}
+.panel input[type=url]{display:block;width:100%;min-height:46px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:11px 13px;font-size:16px}
+.panel-head>div{min-width:0}.panel-head h2{overflow-wrap:anywhere}.panel-head>.icon-button{flex-shrink:0}
+.control-head .section-label{min-width:0;overflow-wrap:anywhere}
+.calendar-grid,.calendar-weekdays{grid-template-columns:repeat(7,minmax(0,1fr))}
+.calendar-month{min-width:0;flex:1;overflow-wrap:anywhere;font-size:clamp(18px,4vw,23px)}
+.calendar-arrow{flex:0 0 38px;width:38px;height:38px}
+.date-popup.wide-picker .picker-body{grid-template-columns:repeat(2,minmax(0,1fr))}
+.clock-face{width:min(100%,270px)}.clock-number{font-size:16px}
+.control-footer{flex-wrap:wrap;gap:8px}.control-footer>button{min-width:0;max-width:100%}
+.control-footer .primary-button{padding:11px 14px}
+.month-menu{grid-template-columns:repeat(4,minmax(0,1fr))}
+.manual-picker input{width:100%;min-width:0}
+.custom-number{grid-template-columns:minmax(0,1fr) auto}
+.custom-option{min-width:0;max-width:100%;overflow-wrap:anywhere}
+.select-search-bar{position:relative;z-index:1;overflow:hidden;min-width:0}
+.select-popup .custom-options{scrollbar-gutter:stable}
+.clock-period{font:500 clamp(12px,1.4vw,18px) var(--sans);color:var(--muted);align-self:center;margin-left:10px;letter-spacing:.06em}
+.dial-periods{display:flex;justify-content:center;gap:6px;margin-bottom:10px}.dial-periods:empty{display:none}
+.period-button{border:1px solid var(--line);border-radius:16px;padding:6px 16px;min-height:36px;color:var(--muted);background:transparent;font-size:12px}
+.period-button[aria-pressed=true]{color:var(--accent);background:var(--accent-soft);border-color:var(--accent)}
+.schedule-row{border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0;background:var(--bg)}
+.schedule-row-head{display:flex;align-items:center;gap:8px;margin-bottom:14px;min-width:0}
+.schedule-row-head>input{flex:1;min-width:0;width:0!important;background:transparent!important;border-color:transparent!important;padding:7px!important;font-size:15px!important}
+.schedule-row-head>input:focus{border-color:var(--line)!important}
+.slot-toggle{display:flex;flex:none;align-items:center}.slot-toggle input{appearance:auto!important;width:19px!important;height:19px!important;accent-color:var(--accent)}
+.slot-toggle input:before{display:none!important}
+.schedule-row .icon-button{width:34px;height:34px;min-width:34px;flex:none}
+.slot-disabled .slot-fields{opacity:.48}
+.weekday-choices{gap:4px}.weekday-choices button{flex:1;min-width:0;max-width:38px;height:auto;min-height:32px;aspect-ratio:1}
+.schedule-row .form-row{gap:10px}.schedule-row .custom-trigger{padding:9px;gap:5px;font-size:14px}
+.schedule-row .custom-chevron{width:16px;height:16px}
+#schedule-add{margin-bottom:8px}
+.radio-actions{display:flex;align-items:center;gap:7px;margin:10px 0 3px}
+.radio-actions>.text-button{margin-right:auto;display:flex;align-items:center;gap:7px;padding-inline:0}
+.radio-actions .icon-button{width:36px;height:36px;min-width:36px;flex-shrink:0;border-radius:50%}
+.radio-actions .icon{width:18px;height:18px}
+button[aria-pressed=true].icon-button{color:var(--accent);background:var(--accent-soft)}
+.station-picker-tabs{display:flex;gap:6px;flex:none;margin:0 0 12px}
+.station-picker-tabs .tab-button{flex:1;border:1px solid var(--line);border-radius:20px;min-height:37px;color:var(--muted)}
+.station-picker-tabs .tab-button[aria-pressed=true]{background:var(--accent-soft);color:var(--accent)}
+.station-picker-manage{margin-top:10px;flex:none;border-top:1px solid var(--line);border-radius:0}
+.option-favorite{color:var(--accent);width:16px;height:16px;flex:none}
+.manage-stations-button,.station-add-details>summary{display:flex;align-items:center;gap:10px}
+.manage-stations-button .icon,.station-add-details .icon{width:19px;height:19px}
+.station-manager-panel{width:600px}
+.station-add-details{padding:14px 0;margin-bottom:10px;border-block:1px solid var(--line)}
+.station-add-details>summary{cursor:pointer;min-height:35px;color:var(--accent);font-size:14px;list-style:none}
+.station-add-details>summary::-webkit-details-marker{display:none}
+.station-add-details form{padding:10px 0}
+.station-list-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:18px 0 10px}
+.station-list-tools .select-search-bar{flex:1 1 200px;margin:0}
+.station-list-tools .text-button{display:flex;align-items:center;gap:6px;font-size:12px}
+.station-list-tools .icon{width:17px;height:17px}
+.station-list-tools .text-button[aria-pressed=true]{color:var(--accent);background:var(--accent-soft)}
+.station-manager-row{display:flex;gap:8px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line);min-width:0}
+.station-manager-title{flex:1;min-width:0}.station-manager-title strong{display:block;font-size:14px;line-height:1.45;font-weight:500;overflow-wrap:anywhere}
+.station-manager-title small{display:block;color:var(--muted);font-size:11px;margin-top:5px}
+.station-manager-row .icon-button{flex:0 0 36px;width:36px;height:36px;border-radius:50%}
+.station-management-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
+.about-intro{padding:12px 0}.about-wordmark{font:38px var(--serif);letter-spacing:-.05em}.about-intro>p{font:italic 22px var(--serif);color:var(--accent);margin-top:8px}
+.about-copy{font-size:14px;line-height:1.85;color:var(--muted);margin:4px 0 16px}
+.about-author{font-size:13px;color:var(--muted)}.about-author strong{font-weight:500;color:var(--ink)}
+.about-links{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 24px}
+.about-links a{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:22px;padding:10px 14px;font-size:12px;color:var(--ink)}
+.about-links a:hover{background:var(--accent-soft)}.about-links .icon{width:14px;height:14px}
+.update-panel{border-top:1px solid var(--line);padding-top:20px}
+.update-heading{display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-size:14px}.update-heading>.icon{width:20px;height:20px;color:var(--accent)}
+.update-heading strong{font-weight:500}.small-chip{font-size:10px;color:var(--accent);background:var(--accent-soft);border:1px solid var(--line);padding:5px 8px;border-radius:15px}
+.update-actions{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}.update-actions button{flex:1 1 auto}
+.about-docs{display:flex;gap:20px;flex-wrap:wrap;font-size:12px;margin-top:20px;color:var(--muted)}.about-docs a{text-decoration:underline;text-underline-offset:4px}
+#settings-open{position:relative;overflow:visible}
+.update-badge{position:absolute;right:-3px;bottom:calc(100% + 8px);padding:5px 8px;border-radius:12px;white-space:nowrap;font-size:10px;line-height:1.4;letter-spacing:.01em;background:var(--accent);color:var(--bg);border:1px solid var(--line);box-shadow:0 3px 16px rgba(0,0,0,.12)}
+@media(max-width:600px){.date-popup.wide-picker .picker-body{grid-template-columns:minmax(0,1fr)}.panel-content{padding-inline:20px}.panel-head,.panel-footer{padding-inline:20px}.panel-footer{flex-wrap:wrap;gap:10px}.schedule-row{padding:11px}.form-row{gap:12px}.control-popup{padding:16px}.station-manager-row{gap:5px}.station-manager-title strong{font-size:13px}.control-head{gap:8px}.radio-panel .radio-panel-head h2{font-size:23px}.station-manager-panel .panel-head h2{font-size:30px}}
+@media(max-width:360px){.schedule-row .form-row{grid-template-columns:minmax(0,1fr)}.date-popup .calendar-day{height:35px;font-size:13px}.calendar-arrow{flex-basis:32px;width:32px;height:32px}.custom-number{grid-template-columns:minmax(0,1fr)}.station-manager-row .icon-button{flex-basis:32px;width:32px;height:32px}.clock-number.inner{font-size:11px}.calendar-month{font-size:18px}}
+/* Rotated tick containers used to create a wider invisible overflow area. */
+.clock-face{overflow:hidden}
+.clock-marks{position:absolute;inset:0;overflow:hidden;border-radius:50%;pointer-events:none}
+.slot-toggle input{appearance:none!important;-webkit-appearance:none!important;position:relative!important;width:34px!important;height:20px!important;border:1px solid var(--line)!important;border-radius:20px;background:var(--surface-2);cursor:pointer;transition:background .2s}
+.slot-toggle input:before{content:'';display:block!important;position:absolute;width:12px;height:12px;left:3px;top:3px;border-radius:50%;background:var(--muted);transition:transform .2s}
+.slot-toggle input:checked{background:var(--accent-soft);border-color:var(--accent)!important}
+.slot-toggle input:checked:before{background:var(--accent);transform:translateX(14px)}

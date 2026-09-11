@@ -1,4 +1,4 @@
-/* Istante v4.1.0 - application service layer and local preferences. */
+/* Istante v3.13.12 - application and local preferences. */
 (function () {
 'use strict';
 const C = window.IstanteCore;

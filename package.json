@@ -1,7 +1,0 @@
-{
-  "name": "istante",
-  "version": "4.1.0",
-  "private": true,
-  "description": "Istante - Vue 3 component architecture based on v3.13.11",
-  "license": "SEE LICENSE IN docs/LICENZA.md"
-}

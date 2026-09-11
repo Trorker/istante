@@ -1,14 +1,10 @@
 # Changelog
 
-## 4.1.0 - 2026-09-10
+## 3.13.12 — 11 settembre 2026
 
-- Refactor UI in Vue 3 a componenti partendo dalla 3.13.11.
-- Nuovo responsive engine a quattro famiglie: Phone, Tablet, Computer, Display/TV.
-- Scala font/UI separata dalla sola aspect ratio.
-- Calendario mobile e toolbar home governati da un solo foglio responsive.
-- Timer su laptop/desktop mantenuto come modale centrata.
-- Feed ICS: tentativo diretto e fallback automatico al proxy remoto.
-- Service worker aggiornato per la nuova struttura Vue.
+- Responsive di produzione: dashboard stretta ricomposta verticalmente in Meteo → Traguardo → Evento; calendario riorganizzato per telefono e tablet con controlli e tipografia touch-first.
+- Calendario Settimana: visualizzazione della fascia oraria completa degli eventi; eventi multi-giorno con indicazione della fine.
+- Calendario Giorno/Agenda: intervalli coerenti, inclusa data di fine per eventi che attraversano più giorni.
 
 ## 3.13.11 — 10 settembre 2026
 

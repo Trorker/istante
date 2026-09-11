@@ -128,8 +128,3 @@ Istante offre **Excalifont** come stile tipografico facoltativo per i contenuti 
 Excalifont è distribuito dal progetto Excalidraw con licenza **SIL Open Font License 1.1**. Istante non modifica né ridistribuisce il file del font.
 
 [Progetto Excalidraw](https://github.com/excalidraw/excalidraw) · [SIL Open Font License 1.1](https://openfontlicense.org/)
-
-## Vue 3
-
-La UI della v4.1 usa Vue 3.5.13 incluso localmente in `vendor/vue.global.prod.js`.
-Licenza MIT: `docs/licenses/VUE-LICENSE.txt`.

@@ -1,0 +1,76 @@
+/* Istante v3.13.5 - touch, timer and calendar refinement */
+
+/* Timer: elapsed ring + one-second-orbit cadence + breathing halo, with no geometry wobble. */
+#timer-dialog .timer-orbit{
+  --timer-second-angle:0deg;
+  transform:none!important;
+  transition:none!important;
+}
+#timer-dialog .timer-orbit[data-state='running']{
+  animation:timer-halo-breathe 3.6s ease-in-out infinite!important;
+  filter:none!important;
+}
+#timer-dialog .timer-orbit[data-state='paused']{
+  animation:none!important;
+  filter:saturate(.62)!important;
+}
+#timer-dialog .timer-orbit[data-state='running']:after,
+#timer-dialog .timer-orbit[data-state='paused']:after{
+  opacity:1!important;
+  animation:none!important;
+  transform:rotate(var(--timer-second-angle,0deg))!important;
+  transition:transform .5s linear!important;
+  box-shadow:0 0 0 5px color-mix(in srgb,var(--accent) 12%,transparent),0 0 18px color-mix(in srgb,var(--accent) 44%,transparent)!important;
+}
+#timer-dialog .timer-orbit[data-state='done']:after{opacity:0!important;animation:none!important}
+@keyframes timer-halo-breathe{
+  0%,100%{box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 5%,transparent),0 18px 58px color-mix(in srgb,var(--bg) 70%,transparent)!important}
+  50%{box-shadow:0 0 0 15px color-mix(in srgb,var(--accent) 12%,transparent),0 24px 74px color-mix(in srgb,var(--accent) 14%,transparent)!important}
+}
+@media(prefers-reduced-motion:reduce){
+  #timer-dialog .timer-orbit[data-state='running']{animation:none!important}
+  #timer-dialog .timer-orbit:after{transition:none!important}
+}
+
+/* Minute selection stays typographic: no blue rectangle/capsule or tap highlight. */
+#timer-dialog .timer-duration-dial,
+#timer-dialog .timer-dial-mark,
+#timer-dialog .timer-presets button{-webkit-tap-highlight-color:transparent!important}
+#timer-dialog .timer-dial-mark.active{
+  background:transparent!important;
+  color:var(--accent)!important;
+  box-shadow:none!important;
+  outline:0!important;
+}
+
+/* Dashboard lower ribbon: Meteo and Il prossimo capitolo no longer animate on hover. */
+#environment-line[role=button],
+.idle-weather-summary[role=button],
+#goal-strip,
+#idle-goal-summary{transition:none!important}
+@media(hover:hover){
+  #environment-line[role=button]:hover,
+  .idle-weather-summary[role=button]:hover,
+  #goal-strip:hover,
+  #idle-goal-summary:hover{
+    background:transparent!important;
+    color:inherit!important;
+    transform:none!important;
+    box-shadow:none!important;
+  }
+}
+
+/* Calendar drawer: explicit close control and grouped right-side actions. */
+#calendar-view .calendar-sidebar-head{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+}
+#calendar-view .calendar-sidebar-head h2{display:block!important;margin:0!important}
+#calendar-view .calendar-sidebar-head-actions{display:flex!important;align-items:center!important;gap:4px!important;margin-left:auto!important}
+#calendar-view #cal-sidebar-close{display:grid!important;place-items:center!important}
+#calendar-view #cal-today{gap:0!important}
+
+/* Wizard text should breathe naturally at every step; no step-specific copy clamp. */
+#tour-dialog #tour-copy{max-width:none!important}

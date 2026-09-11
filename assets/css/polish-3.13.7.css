@@ -1,0 +1,203 @@
+/* Istante v3.13.7 - stronger timer breathing and a shorter tablet modal. */
+
+/*
+ * The countdown breath must be visible without moving the timer geometry.
+ * Colors derive from the active theme and stay inside Istante's sage/warm palette.
+ */
+#timer-dialog{
+  --timer-halo-main:color-mix(in srgb,var(--accent-strong) 88%,#c4a57e 12%);
+  --timer-halo-warm:color-mix(in srgb,var(--accent) 76%,#aa8068 24%)
+}
+html[data-theme='light'] #timer-dialog{
+  --timer-halo-main:color-mix(in srgb,var(--accent-strong) 91%,#9c7e60 9%);
+  --timer-halo-warm:color-mix(in srgb,var(--accent) 84%,#a57f65 16%)
+}
+
+#timer-dialog .timer-running{
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:visible!important
+}
+#timer-dialog .timer-running::before{
+  content:'';
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:calc(var(--timer-orbit-size,350px) + 26px);
+  height:calc(var(--timer-orbit-size,350px) + 26px);
+  border-radius:50%;
+  pointer-events:none;
+  z-index:0;
+  opacity:0;
+  transform:translate(-50%,-50%) scale(.93);
+  background:
+    radial-gradient(circle at 50% 50%,
+      transparent 48%,
+      color-mix(in srgb,var(--timer-halo-main) 22%,transparent) 54%,
+      color-mix(in srgb,var(--timer-halo-main) 46%,transparent) 60%,
+      color-mix(in srgb,var(--timer-halo-warm) 27%,transparent) 68%,
+      transparent 78%);
+  filter:blur(7px);
+  will-change:transform,opacity,filter
+}
+#timer-dialog .timer-orbit{
+  position:relative!important;
+  z-index:1!important
+}
+#timer-dialog .timer-orbit[data-state='running']{
+  animation:timer-ring-breathe-317 3.15s cubic-bezier(.45,0,.55,1) infinite!important
+}
+#timer-dialog[data-state='running'] .timer-running::before{
+  animation:timer-halo-breathe-317 3.15s cubic-bezier(.45,0,.55,1) infinite!important
+}
+#timer-dialog[data-state='paused'] .timer-running::before{
+  opacity:.25!important;
+  transform:translate(-50%,-50%) scale(.98)!important
+}
+#timer-dialog[data-state='done'] .timer-running::before{opacity:0!important}
+
+@keyframes timer-halo-breathe-317{
+  0%,100%{
+    opacity:.48;
+    transform:translate(-50%,-50%) scale(.93);
+    filter:blur(8px)
+  }
+  46%,54%{
+    opacity:1;
+    transform:translate(-50%,-50%) scale(1.075);
+    filter:blur(12px)
+  }
+}
+@keyframes timer-ring-breathe-317{
+  0%,100%{
+    box-shadow:
+      0 0 0 5px color-mix(in srgb,var(--timer-halo-main) 13%,transparent),
+      0 0 26px color-mix(in srgb,var(--timer-halo-main) 30%,transparent),
+      0 0 54px color-mix(in srgb,var(--timer-halo-warm) 18%,transparent)!important
+  }
+  46%,54%{
+    box-shadow:
+      0 0 0 14px color-mix(in srgb,var(--timer-halo-main) 26%,transparent),
+      0 0 44px color-mix(in srgb,var(--timer-halo-main) 54%,transparent),
+      0 0 82px color-mix(in srgb,var(--timer-halo-warm) 34%,transparent)!important
+  }
+}
+
+/* Quick durations are gone: the dial is already fast enough and the modal can stay shorter. */
+#timer-dialog #timer-presets,
+#timer-dialog .timer-presets{display:none!important}
+#timer-dialog .timer-content{
+  padding-bottom:5px!important
+}
+#timer-dialog .timer-session-options{
+  margin-top:2px!important;
+  padding-top:5px!important
+}
+
+/* Give tablets a compact, scroll-free timer composition. */
+@media (pointer:coarse) and (min-width:600px) and (max-width:1100px){
+  #timer-dialog{
+    width:min(590px,calc(100vw - 20px))!important;
+    max-height:calc(100dvh - 18px)!important
+  }
+  #timer-dialog .panel-head{padding:17px 20px 13px!important}
+  #timer-dialog .timer-content{padding:5px 20px 3px!important;overflow-y:hidden!important}
+  #timer-dialog .timer-time-stage,
+  #timer-dialog[data-state='running'] .timer-time-stage,
+  #timer-dialog[data-state='paused'] .timer-time-stage,
+  #timer-dialog[data-state='done'] .timer-time-stage{
+    height:326px!important;
+    min-height:326px!important;
+    flex-basis:326px!important
+  }
+  #timer-dialog .timer-dial-shell{
+    --dial-size:292px;
+    --dial-radius:-119px;
+    --timer-side:42px
+  }
+  #timer-dialog{--timer-orbit-size:292px}
+  #timer-dialog .timer-orbit{--timer-orbit-dot-origin:150px}
+  #timer-dialog .timer-actions{padding-top:10px!important;padding-bottom:max(10px,env(safe-area-inset-bottom))!important}
+}
+
+/* Low tablet heights still win over the width-based tablet rule. */
+@media (pointer:coarse) and (max-height:700px){
+  #timer-dialog .panel-head{padding-top:12px!important;padding-bottom:9px!important}
+  #timer-dialog .timer-content{padding-top:2px!important}
+  #timer-dialog .timer-time-stage,
+  #timer-dialog[data-state='running'] .timer-time-stage,
+  #timer-dialog[data-state='paused'] .timer-time-stage,
+  #timer-dialog[data-state='done'] .timer-time-stage{
+    height:246px!important;
+    min-height:246px!important;
+    flex-basis:246px!important
+  }
+  #timer-dialog .timer-dial-shell{
+    --dial-size:220px;
+    --dial-radius:-87px;
+    --timer-side:36px
+  }
+  #timer-dialog{--timer-orbit-size:220px}
+  #timer-dialog .timer-orbit{--timer-orbit-dot-origin:113px}
+  #timer-dialog .timer-session-options{padding-top:2px!important}
+  #timer-dialog .timer-actions{padding-top:7px!important;padding-bottom:max(7px,env(safe-area-inset-bottom))!important}
+}
+
+/* Landscape touch layout no longer reserves a row for the deleted presets. */
+@media(max-height:500px) and (orientation:landscape) and (pointer:coarse){
+  #timer-dialog .timer-content{
+    grid-template-rows:1fr!important;
+    grid-template-areas:'stage options'!important;
+    align-items:center!important;
+    row-gap:0!important
+  }
+  #timer-dialog .timer-session-options{
+    grid-area:options!important;
+    align-self:center!important
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  #timer-dialog .timer-orbit[data-state='running'],
+  #timer-dialog[data-state='running'] .timer-running::before{animation:none!important}
+  #timer-dialog[data-state='running'] .timer-running::before{
+    opacity:.58!important;
+    transform:translate(-50%,-50%) scale(1)!important
+  }
+}
+
+/* Keep the established compact geometry on very short touch landscapes. */
+@media(max-height:500px) and (orientation:landscape) and (pointer:coarse){
+  #timer-dialog .timer-time-stage,
+  #timer-dialog[data-state='running'] .timer-time-stage,
+  #timer-dialog[data-state='paused'] .timer-time-stage,
+  #timer-dialog[data-state='done'] .timer-time-stage{
+    height:224px!important;
+    min-height:224px!important;
+    flex-basis:224px!important
+  }
+  #timer-dialog .timer-dial-shell{
+    --dial-size:198px;
+    --dial-radius:-78px;
+    --timer-side:38px
+  }
+  #timer-dialog{--timer-orbit-size:198px}
+  #timer-dialog .timer-orbit{--timer-orbit-dot-origin:103px}
+}
+@media(max-width:620px) and (max-height:500px) and (orientation:landscape) and (pointer:coarse){
+  #timer-dialog .timer-time-stage,
+  #timer-dialog[data-state='running'] .timer-time-stage,
+  #timer-dialog[data-state='paused'] .timer-time-stage,
+  #timer-dialog[data-state='done'] .timer-time-stage{
+    height:196px!important;
+    min-height:196px!important;
+    flex-basis:196px!important
+  }
+  #timer-dialog .timer-dial-shell{
+    --dial-size:174px;
+    --dial-radius:-68px;
+    --timer-side:34px
+  }
+  #timer-dialog{--timer-orbit-size:174px}
+  #timer-dialog .timer-orbit{--timer-orbit-dot-origin:91px}
+}

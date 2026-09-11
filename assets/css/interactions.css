@@ -1,0 +1,104 @@
+/* Istante 3.2: interaction surfaces, clock dial, timer. No remote resources. */
+:root{--ease-out:cubic-bezier(.2,.7,.2,1)}
+.panel[open],.control-popup[open]{animation:none}
+.panel::backdrop,.control-popup::backdrop{animation:veil-in .28s ease-out}
+.panel.is-leaving::backdrop,.control-popup.is-leaving::backdrop{animation:veil-out .19s ease-in forwards}
+@keyframes veil-in{from{opacity:0}to{opacity:1}}
+@keyframes veil-out{from{opacity:1}to{opacity:0}}
+button{transition:background .2s,color .2s,box-shadow .2s,transform .2s}
+button:not(:disabled):active{transform:scale(.97)}
+button:disabled,input:disabled,select:disabled,.is-dependent-disabled{opacity:.42;cursor:not-allowed}
+.settings-section-body{will-change:height}
+.settings-section[open]>.settings-section-body{animation:none}
+.chrome{transition:opacity .65s var(--ease-out),transform .65s var(--ease-out),filter .65s var(--ease-out)}
+.is-idle:not(.has-panel) .topbar.chrome{transform:translateY(-10px);filter:blur(3px)}
+.is-idle:not(.has-panel) .bottom-bar.chrome{transform:translateY(10px);filter:blur(3px)}
+.radio-panel{transform-origin:top right;animation:none!important}
+.radio-expand{aspect-ratio:1/1;flex-shrink:0}
+#favorite-current[aria-pressed=true] .icon{animation:soft-heart .35s var(--ease-out)}
+@keyframes soft-heart{0%,100%{transform:scale(1)}45%{transform:scale(1.18)}}
+/* A fixed search area and an independently scrollable list: never overlap. */
+.select-popup[open]{display:flex;flex-direction:column;gap:0;overflow:hidden;width:440px;padding:18px;max-height:calc(100dvh - 32px)}
+.select-popup .control-head{flex:0 0 auto;margin:0 0 12px}
+.select-search-bar{flex:0 0 auto;display:flex;align-items:center;gap:10px;padding:11px 13px;border:1px solid var(--line);border-radius:12px;background:var(--bg);margin:0 0 16px;min-height:48px}
+.select-search-bar .icon{width:19px;height:19px;flex:none;color:var(--muted)}
+.select-search-bar input.select-search{display:block;width:100%;min-width:0;min-height:24px;height:24px;margin:0;padding:0;border:0;box-shadow:none;outline:0;border-radius:0;background:transparent;color:var(--ink);font:inherit;font-size:16px;line-height:24px}
+.select-search-bar:focus-within{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.select-popup .custom-options{flex:1 1 auto;min-height:0;max-height:400px;overflow-y:auto;display:flex;flex-direction:column;gap:5px;padding:2px 3px 4px 0;scroll-padding:8px}
+.custom-option{flex:0 0 auto;min-height:49px;gap:12px;line-height:1.45;justify-content:flex-start;padding:12px}
+.custom-option .station-no{flex:0 0 22px;margin:0;color:var(--faint);font-variant-numeric:tabular-nums}
+.custom-option .station-title,.custom-option .option-title{flex:1;min-width:0}
+.custom-option[aria-selected=true]:after{flex:none;margin-left:auto}
+.select-popup .custom-number{flex:none}.select-empty{flex:none;margin:0}
+/* Touch calendar -> clock, desktop side by side. */
+.date-popup{width:370px;padding:20px;overflow-y:auto;scrollbar-width:thin}
+.date-popup.wide-picker{width:740px}
+.picker-body{min-width:0}.wide-picker .picker-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}
+.date-popup .time-part{padding:0;margin:0;border:0}
+.picker-steps{display:flex;gap:8px;margin:0 0 16px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.picker-step{flex:1;min-height:38px;border-radius:20px;font-size:12px;letter-spacing:.03em;background:transparent;color:var(--muted)}
+.picker-step[aria-current=step]{background:var(--accent-soft);color:var(--accent)}
+.calendar-nav{gap:5px}.calendar-day{min-width:0;height:42px;font-size:15px}
+.dial-header{display:flex;justify-content:center;align-items:center;gap:8px;margin:3px 0 9px}
+.dial-digits{font-variant-numeric:tabular-nums;font-weight:300;font-size:37px;line-height:1.2;min-width:66px;padding:5px 8px;border-radius:12px;background:transparent;color:var(--faint)}
+.dial-digits[aria-pressed=true]{color:var(--accent);background:var(--accent-soft)}
+.dial-colon{font-size:27px;color:var(--faint)}
+.dial-note{text-align:center;font-size:11px;color:var(--muted);line-height:1.5;margin:0 0 12px;min-height:17px}
+.clock-face{position:relative;isolation:isolate;width:min(100%,280px);aspect-ratio:1;margin:0 auto;background:var(--bg);border:1px solid var(--line);border-radius:50%;touch-action:none;outline-offset:4px}
+.clock-number{position:absolute;z-index:2;transform:translate(-50%,-50%);width:34px;height:34px;padding:0;display:grid;place-items:center;border-radius:50%;font-size:17px;background:transparent;color:var(--ink);font-variant-numeric:tabular-nums}
+.clock-number.inner{font-size:13px;color:var(--muted);width:32px;height:32px}
+.clock-number[aria-pressed=true]{color:var(--bg);background:var(--accent)}
+.clock-number:not(:disabled):active{transform:translate(-50%,-50%) scale(.96)}
+.clock-hand{position:absolute;left:50%;bottom:50%;width:2px;height:var(--hand-length,40%);transform-origin:50% 100%;transform:translateX(-50%) rotate(var(--hand-angle,0deg));background:var(--accent);opacity:.6;pointer-events:none}
+.clock-hub{position:absolute;left:50%;top:50%;width:6px;height:6px;border-radius:50%;background:var(--accent);transform:translate(-50%,-50%);pointer-events:none}
+.clock-tick{position:absolute;inset:0;transform:rotate(var(--tick));pointer-events:none}
+.clock-tick:after{content:'';display:block;position:absolute;left:50%;top:5px;width:1px;height:3px;background:var(--line)}
+.clock-tick.major:after{height:5px;background:var(--faint);opacity:.4}
+.manual-picker{margin-top:18px;padding-top:12px;border-top:1px solid var(--line)}
+.manual-picker summary{font-size:12px;min-height:32px;cursor:pointer;color:var(--muted)}
+.manual-picker input{margin:8px 0 3px;width:100%;font-size:16px;min-height:44px}
+.control-footer{display:flex;justify-content:flex-end;align-items:center;gap:14px;margin-top:14px;padding-top:13px;border-top:1px solid var(--line)}
+.control-footer .primary-button{margin-left:auto;min-height:42px}.control-footer .text-button{font-size:12px}
+/* Scheduled audio remains subordinate to the radio setting. */
+.settings-subgroup{border-top:1px solid var(--line);margin-top:16px;padding-top:10px}
+.weekday-choices{display:flex;justify-content:space-between;gap:5px;margin:10px 0 12px}
+.weekday-choices button{width:39px;height:39px;border:1px solid var(--line);border-radius:50%;background:transparent;color:var(--muted);font-size:13px}
+.weekday-choices button[aria-pressed=true]{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}
+.radio-program-info{display:flex;align-items:center;gap:8px;padding:12px 0;border-top:1px solid var(--line);font-size:11px;line-height:1.5;color:var(--muted)}
+.radio-program-info .icon{width:16px;height:16px;flex:none}.radio-program-info>span:nth-child(2){flex:1}
+.radio-program-info button{font-size:11px;flex:none}.radio-program-info .text-button{padding:4px}
+/* A small persistent timer; no additional dashboard cards. */
+.timer-chip{display:flex;align-items:center;justify-content:center;gap:5px;width:max-content;max-width:100%;margin:0 auto 16px;padding:4px 7px 4px 12px;border-radius:40px;border:1px solid var(--line);background:var(--surface);box-shadow:0 6px 28px rgba(0,0,0,.04)}
+.timer-chip-main{display:flex;align-items:center;gap:10px;min-height:36px;background:transparent;color:var(--muted);font-size:12px;min-width:0}
+.timer-chip-main .icon{width:17px;height:17px;color:var(--accent);flex:none}
+.timer-chip-main strong{font-size:17px;color:var(--ink);font-weight:400;font-variant-numeric:tabular-nums}
+.timer-chip .icon-button{width:36px;height:36px}.timer-chip .icon{width:17px;height:17px}
+.timer-chip[data-state=done]{border-color:var(--accent)}.timer-chip[data-state=done] .timer-chip-main strong{color:var(--accent);font-size:13px}
+.timer-panel{width:480px}.timer-content{overflow:auto;overscroll-behavior:contain;padding:22px 28px 24px}
+.timer-intro{margin:0 0 25px;text-align:center}.timer-duration{display:flex;align-items:center;justify-content:center;gap:7px}
+.timer-duration label{display:flex;flex-direction:column;text-align:center;font-size:11px;letter-spacing:.06em;color:var(--muted);gap:10px}
+.timer-duration input{width:86px;height:68px;min-height:0;text-align:center;font-size:36px;font-weight:300;line-height:1.2;padding:6px 2px;border-radius:14px;font-variant-numeric:tabular-nums}
+.timer-duration>span{color:var(--faint);font-size:28px;margin-top:23px}
+.timer-duration input::-webkit-inner-spin-button{appearance:none}.timer-duration input{appearance:textfield;-moz-appearance:textfield}
+.timer-presets{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin:18px 0 26px}.timer-presets button{min-height:33px;padding:5px 12px;border-radius:18px;border:1px solid var(--line);background:transparent;color:var(--muted);font-size:12px}
+.timer-presets button.active{color:var(--accent);background:var(--accent-soft);border-color:var(--accent)}
+.timer-running{text-align:center;padding:10px 0 20px}.timer-running>strong{display:block;font-size:clamp(50px,9vw,72px);font-weight:250;line-height:1.5;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.timer-running>.section-label{color:var(--accent)}.timer-track{height:2px;width:78%;margin:18px auto 0;border-radius:2px;background:var(--line);overflow:hidden}.timer-track i{height:100%;display:block;background:var(--accent);width:0;transition:width .5s linear}
+.timer-finish-description{text-align:center;font-size:13px;line-height:1.7;color:var(--ink);margin:14px 0 6px}.timer-panel #timer-audio-hint{text-align:center;font-size:11px;margin:8px 0 0}
+.timer-result{color:var(--accent);font-size:14px;line-height:1.7;padding:12px 0 0;text-align:center}.timer-panel #timer-retry-audio{margin:16px auto 0;display:flex}.timer-actions{justify-content:space-between;gap:10px}.timer-actions>.primary-button{margin-left:auto;gap:8px}.timer-actions>.primary-button .icon{width:17px;height:17px}
+@media(max-width:740px){
+ .select-popup[open]{width:calc(100vw - 24px);padding:15px;max-height:calc(100dvh - 28px)}
+ .select-popup .custom-options{max-height:48dvh}.select-search-bar{margin-bottom:15px}
+ .date-popup{width:calc(100vw - 28px);max-width:380px;padding:16px}.date-popup.wide-picker{width:calc(100vw - 28px)}
+ .picker-steps{margin-bottom:12px}.clock-face{width:min(100%,264px)}.dial-digits{font-size:32px}
+ .date-popup .calendar-day{height:41px}.date-popup .control-head{margin-bottom:8px}
+ .timer-content{padding:20px}.timer-duration input{width:75px;height:66px;font-size:33px}.timer-actions{flex-wrap:wrap}
+ .bottom-bar{grid-template-columns:1fr;gap:5px;justify-items:center}.bottom-bar .collection-link{justify-self:center;min-height:32px;font-size:11px}.bottom-bar .toolbar{justify-content:center;gap:1px}
+ .bottom-bar .toolbar .icon-button{width:42px;height:42px}.bottom-bar .toolbar-separator{margin:0 2px}.bottom-bar .mode-link{display:none}
+ .timer-chip{margin-bottom:11px}.timer-chip-main{font-size:11px;gap:7px}.timer-chip-main strong{font-size:16px}
+ .weekday-choices button{width:36px;height:36px}.weekday-choices{gap:3px}
+}
+@media(max-width:360px){.bottom-bar .toolbar .icon-button{width:38px}.timer-duration input{width:66px}.clock-face{width:246px}.clock-number{font-size:15px;width:32px;height:32px}.clock-number.inner{font-size:12px;width:29px;height:29px}}
+@media(max-height:560px) and (orientation:landscape){.step-picker .clock-face{width:202px}.step-picker .clock-number{font-size:13px;width:26px;height:26px}.step-picker .clock-number.inner{font-size:10px;width:23px;height:23px}.step-picker .dial-header{margin:0}.step-picker .dial-digits{font-size:26px}.step-picker .dial-note{margin-bottom:5px}.step-picker .manual-picker{margin-top:8px}.step-picker .control-footer{margin-top:8px;padding-top:8px}}
+@media(prefers-reduced-motion:reduce){.panel::backdrop,.control-popup::backdrop,#favorite-current .icon{animation:none!important}.chrome,button,.timer-track i{transition:none!important}}
+.no-motion .panel::backdrop,.no-motion .control-popup::backdrop,.no-motion #favorite-current .icon{animation:none!important}

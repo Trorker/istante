@@ -1,26 +1,6 @@
-# Istante 4.1.0
-
-Questa release riparte dalla **3.13.11** e mantiene i motori funzionali esistenti, ma ricostruisce l'interfaccia come applicazione **Vue 3 a componenti**.
-
-## Struttura
-
-- `index.html`: shell e mount point Vue.
-- `src/vue/components/`: componenti dell'interfaccia.
-- `src/vue/core/viewport.js`: classificazione Phone / Tablet / Computer / Display-TV.
-- `assets/css/istante.css`: baseline visuale 3.13.11 consolidata.
-- `assets/css/responsive.css`: unica geometria responsive.
-- `assets/js/`: motori applicativi caricati dopo Vue.
-- `config/runtime.js`: endpoint ICS configurabile.
-
-L'app e pronta per hosting statico/GitHub Pages. L'API ICS puo restare separata su `https://api.istante.ruslan-dzyuba.it/calendar.php`.
-
-Per i dettagli vedere `docs/ARCHITETTURA-VUE.md` e `docs/RESPONSIVE-ARCHITECTURE.md`.
-
----
-
 # Istante
 
-**Versione corrente: 4.1.0**  
+**Versione corrente: 3.13.11**  
 **Un momento, per te.**  
 Un progetto di **Ruslan Dzyuba**.
 
@@ -38,9 +18,10 @@ stesso linguaggio visivo essenziale di Istante.
 
 ## Il cuore di Istante
 
-La linea grafica usa un unico sistema visivo: superfici pulite, tipografia equilibrata, controlli
-coerenti e gerarchie semplici. Le funzioni storiche sono mantenute dove utili, ma la composizione
-responsive della 4.1.0 è governata dalla nuova architettura a componenti Vue.
+La linea grafica attuale resta costruita sui principi della **3.8.0**: superfici più pulite, tipografia più equilibrata, controlli
+coerenti, gerarchie più semplici e meno elementi che competono fra loro.
+Le funzioni introdotte in seguito sono state mantenute dove utili, ma riportate
+nello stesso sistema visivo.
 
 La dashboard principale resta senza scroll. Puoi scegliere orologio digitale
 o analogico, formato 24/12 ore, tema Notte, Carta, tema del dispositivo oppure
