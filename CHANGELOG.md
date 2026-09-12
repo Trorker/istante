@@ -1,5 +1,28 @@
 # Changelog
 
+## 3.14.5 — 12 settembre 2026
+
+- **Calendario tablet su una sola riga:** logo, periodo, navigazione, viste e pulsante calendari restano nello stesso header senza andare a capo.
+- **Vista Anno stabilizzata:** i mesi non vengono più compressi dalla barra superiore; la griglia usa 3 colonne sui tablet più stretti e 4 sui tablet più larghi, con altezza indipendente e scroll verticale.
+- **Tablet piccoli ottimizzati:** ridotte in modo mirato dimensioni e spazi dei controlli tra 741 e 820 px, mantenendo tutte le viste disponibili.
+- **Telefono invariato:** resta il layout mobile dedicato, inclusa la vista Settimana nascosta sugli schermi piccoli.
+
+## 3.14.4 — 12 settembre 2026
+
+- **Badge update più compatto:** il badge diagonale sul logo mostra ora **“Update now”** invece di “Aggiorna alla nuova versione”.
+- **Stato compatto:** durante l'installazione il badge passa a **“Updating…”**.
+- **Accessibilità invariata:** aria-label e tooltip continuano a descrivere chiaramente l'azione in italiano.
+- **Politica update invariata:** scelta manuale per 72 ore, poi aggiornamento automatico.
+
+## 3.14.3 — 12 settembre 2026
+
+- **Aggiornamento su scelta dell’utente:** quando viene rilevata una nuova release, Istante mostra il badge **“Aggiorna alla nuova versione”** e il pulsante **Aggiorna ora**, ma non attiva subito la nuova versione.
+- **Finestra di 3 giorni:** il conto parte dalla prima rilevazione della release su quel dispositivo. Se l’utente non aggiorna manualmente, dopo 72 ore l’aggiornamento viene attivato automaticamente.
+- **Service worker in attesa:** disattivata l’attivazione automatica durante l’installazione del nuovo service worker; la release resta pronta in stato `waiting` fino alla scelta dell’utente o alla scadenza.
+- **Protezione della scadenza:** anche il service worker verifica la finestra di 72 ore, così un controllo periodico non può anticipare accidentalmente l’aggiornamento automatico.
+- **Passaggio dalla 3.14.2:** gestita la logica della release precedente, che tentava l’attivazione automatica. I tentativi automatici vengono riconosciuti e rinviati, mentre resta possibile aggiornare manualmente.
+- **Affidabilità invariata:** resta la logica anti-blocco della 3.14.2: file mancanti o temporaneamente non verificati non impediscono definitivamente il passaggio alla nuova release.
+
 ## 3.14.2 — 12 settembre 2026
 
 - **Aggiornamento automatico:** le release compatibili vengono attivate automaticamente dal nuovo service worker, senza richiedere che l'utente rimanga bloccato sulla vecchia versione.

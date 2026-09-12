@@ -376,7 +376,7 @@ body.is-idle-pre:not(.has-panel) .dashboard-lower .active-info-strip{
 }
 
 /* --------------------------------------------------------------------------
-   Tablet calendar: controls get their own second row; week uses day cards.
+   Tablet calendar baseline; the final v3.14.5 rules keep controls on one row. Week uses day cards.
    -------------------------------------------------------------------------- */
 @media (min-width:741px) and (max-width:1180px){
   #calendar-view .calendar-shell{padding:18px clamp(18px,2.6vw,30px) max(28px,calc(env(safe-area-inset-bottom) + 22px))!important}
@@ -909,7 +909,7 @@ body.is-idle-pre:not(.has-panel) .dashboard-lower .active-info-strip{
   html[data-touch-capable="true"] #timer-dialog .timer-dial-shell{align-self:center!important}
 }
 
-/* v3.14.2 - update ribbon anchored to the Istante logo. */
+/* v3.14.4 - update ribbon anchored to the Istante logo. */
 .topbar .brand-lockup{position:relative!important;overflow:visible!important}
 .topbar .brand-update-badge.update-badge{
   position:absolute!important;
@@ -955,4 +955,106 @@ body.is-idle-pre:not(.has-panel) .dashboard-lower .active-info-strip{
     font-size:7.5px!important;
     transform:rotate(-9deg)!important;
   }
+}
+
+
+/* v3.14.5 - tablet calendar: single-row header and stable Year grid. */
+@media (min-width:741px) and (max-width:1180px) and (min-height:561px){
+  #calendar-view .calendar-shell{
+    padding:16px clamp(16px,2.25vw,26px) max(28px,calc(env(safe-area-inset-bottom) + 22px))!important;
+  }
+  #calendar-view .calendar-heading-combined{
+    grid-template-columns:minmax(104px,auto) minmax(82px,.7fr) auto minmax(286px,1.45fr) 34px!important;
+    grid-template-areas:"brand title nav views actions"!important;
+    align-items:center!important;
+    column-gap:clamp(5px,.75vw,10px)!important;
+    row-gap:0!important;
+    padding-bottom:10px!important;
+  }
+  #calendar-view .calendar-brand-lockup{grid-area:brand!important;min-width:0!important;overflow:hidden!important}
+  #calendar-view .calendar-brand-lockup .calendar-brand-home{gap:6px!important;min-width:0!important;max-width:100%!important;padding:1px!important;overflow:hidden!important}
+  #calendar-view .calendar-brand-lockup .brand-logo-image{width:28px!important;height:28px!important;flex:0 0 28px!important;border-radius:8px!important}
+  #calendar-view .calendar-brand-lockup .brand-home-copy{gap:1px!important;min-height:0!important;min-width:0!important;overflow:hidden!important}
+  #calendar-view .calendar-brand-lockup .brand-home-name{font-size:17px!important;line-height:1!important}
+  #calendar-view .calendar-brand-lockup .brand-home-tagline{max-width:100%!important;font-size:6.8px!important;line-height:1.05!important;overflow:hidden!important;text-overflow:ellipsis!important}
+  #calendar-view .calendar-title-copy{grid-area:title!important;min-width:0!important;overflow:hidden!important}
+  #calendar-view .calendar-title-copy>.section-label,#calendar-view .calendar-subtitle,#calendar-view .calendar-period-icon{display:none!important}
+  #calendar-view .calendar-period-button{width:100%!important;min-width:0!important;max-width:100%!important;justify-content:center!important;padding:2px 3px!important;overflow:hidden!important}
+  #calendar-view .calendar-period-title{display:block!important;max-width:100%!important;font-size:clamp(12px,1.55vw,16px)!important;line-height:1!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;text-align:center!important}
+  #calendar-view .calendar-toolbar{display:contents!important}
+  #calendar-view .calendar-navigation{grid-area:nav!important;display:flex!important;align-items:center!important;gap:2px!important;min-width:0!important}
+  #calendar-view .calendar-navigation .icon-button{width:30px!important;height:30px!important;min-width:30px!important;min-height:30px!important}
+  #calendar-view .calendar-navigation .secondary-button{min-width:43px!important;height:30px!important;min-height:30px!important;padding:4px 6px!important;font-size:9.5px!important}
+  #calendar-view .calendar-views{grid-area:views!important;width:100%!important;min-width:0!important;margin:0!important;display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:2px!important;padding:3px!important;overflow:hidden!important}
+  #calendar-view .calendar-views button{width:100%!important;min-width:0!important;min-height:30px!important;padding:5px 3px!important;font-size:clamp(9px,1.08vw,11px)!important;line-height:1!important;overflow:hidden!important;text-overflow:ellipsis!important}
+  #calendar-view .calendar-heading-actions{grid-area:actions!important;width:34px!important;min-width:34px!important;justify-self:end!important}
+  #calendar-view #cal-empty-add{display:none!important}
+  #calendar-view .calendar-heading-actions .calendar-sidebar-toggle{width:32px!important;height:32px!important;min-width:32px!important;min-height:32px!important;padding:0!important;display:grid!important;place-items:center!important}
+  #calendar-view .calendar-layout{padding-top:9px!important}
+
+  #calendar-view #cal-content[data-view="year"]{
+    height:100%!important;min-height:0!important;overflow-x:hidden!important;overflow-y:auto!important;
+    padding:0 3px 34px 0!important;-webkit-overflow-scrolling:touch!important;touch-action:pan-y!important;
+  }
+  #calendar-view #cal-content[data-view="year"]>.calendar-year{
+    display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-template-rows:none!important;
+    grid-auto-rows:max-content!important;align-content:start!important;width:100%!important;height:auto!important;min-height:0!important;
+    gap:10px!important;padding:1px 1px 8px!important;overflow:visible!important;
+  }
+  #calendar-view #cal-content[data-view="year"] .calendar-mini{
+    display:grid!important;grid-template-rows:auto auto auto!important;width:100%!important;height:auto!important;min-height:204px!important;
+    padding:8px 7px!important;overflow:hidden!important;align-content:start!important;box-sizing:border-box!important;
+  }
+  #calendar-view #cal-content[data-view="year"] .calendar-mini h2{min-height:19px!important;margin:0 0 4px!important;padding:0 1px 4px!important}
+  #calendar-view #cal-content[data-view="year"] .calendar-mini h2 button{font-size:13px!important;line-height:1.05!important;margin:0!important}
+  #calendar-view #cal-content[data-view="year"] .calendar-mini-weekdays{min-height:12px!important;margin:0 0 3px!important;gap:1px!important}
+  #calendar-view #cal-content[data-view="year"] .calendar-mini-weekdays span{font-size:8.5px!important;line-height:1!important;padding:0!important}
+  #calendar-view #cal-content[data-view="year"] .calendar-mini-grid{
+    display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr))!important;grid-template-rows:repeat(6,24px)!important;
+    grid-auto-rows:24px!important;width:100%!important;height:auto!important;min-height:144px!important;gap:1px!important;align-items:center!important;align-content:start!important;
+  }
+  #calendar-view #cal-content[data-view="year"] .calendar-mini-grid button{
+    width:min(22px,100%)!important;height:min(22px,100%)!important;min-width:0!important;min-height:0!important;max-width:22px!important;max-height:22px!important;
+    font-size:9.5px!important;line-height:1!important;justify-self:center!important;align-self:center!important;
+  }
+}
+
+@media (min-width:960px) and (max-width:1180px) and (min-height:561px){
+  #calendar-view #cal-content[data-view="year"]>.calendar-year{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:9px 10px!important}
+  #calendar-view #cal-content[data-view="year"] .calendar-mini{min-height:194px!important;padding:7px 6px!important}
+  #calendar-view #cal-content[data-view="year"] .calendar-mini-grid{grid-template-rows:repeat(6,22px)!important;grid-auto-rows:22px!important;min-height:132px!important}
+  #calendar-view #cal-content[data-view="year"] .calendar-mini-grid button{width:min(21px,100%)!important;height:min(21px,100%)!important;max-width:21px!important;max-height:21px!important;font-size:9px!important}
+}
+
+@media (min-width:741px) and (max-width:820px) and (min-height:561px){
+  #calendar-view .calendar-heading-combined{
+    grid-template-columns:minmax(96px,auto) minmax(70px,.55fr) auto minmax(270px,1.35fr) 32px!important;
+    column-gap:4px!important;
+  }
+  #calendar-view .calendar-brand-lockup .brand-logo-image{width:25px!important;height:25px!important;flex-basis:25px!important}
+  #calendar-view .calendar-brand-lockup .brand-home-name{font-size:15px!important}
+  #calendar-view .calendar-brand-lockup .brand-home-tagline{font-size:6px!important}
+  #calendar-view .calendar-period-title{font-size:12px!important}
+  #calendar-view .calendar-navigation .icon-button{width:27px!important;height:29px!important;min-width:27px!important;min-height:29px!important}
+  #calendar-view .calendar-navigation .secondary-button{min-width:39px!important;height:29px!important;min-height:29px!important;padding-inline:4px!important;font-size:8.8px!important}
+  #calendar-view .calendar-views{padding:2px!important;gap:1px!important}
+  #calendar-view .calendar-views button{min-height:29px!important;padding-inline:2px!important;font-size:8.7px!important}
+  #calendar-view .calendar-heading-actions{width:32px!important;min-width:32px!important}
+  #calendar-view .calendar-heading-actions .calendar-sidebar-toggle{width:30px!important;height:30px!important;min-width:30px!important;min-height:30px!important}
+}
+
+
+@media (min-width:1001px) and (max-width:1180px) and (max-height:560px) and (orientation:landscape){
+  #calendar-view .calendar-heading-combined{
+    grid-template-columns:minmax(104px,auto) minmax(82px,.65fr) auto minmax(286px,1.35fr) 34px!important;
+    grid-template-areas:"brand title nav views actions"!important;
+    align-items:center!important;column-gap:6px!important;row-gap:0!important;padding-bottom:6px!important;
+  }
+  #calendar-view .calendar-toolbar{display:contents!important}
+  #calendar-view .calendar-views{grid-area:views!important;width:100%!important;display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:2px!important;padding:2px!important;margin:0!important}
+  #calendar-view .calendar-views button{width:100%!important;min-width:0!important;min-height:27px!important;padding:4px 2px!important;font-size:8.8px!important}
+  #calendar-view .calendar-navigation{grid-area:nav!important;gap:2px!important}
+  #calendar-view .calendar-heading-actions{grid-area:actions!important;width:32px!important;min-width:32px!important}
+  #calendar-view #cal-content[data-view="year"]{overflow-y:auto!important;overflow-x:hidden!important;padding-bottom:28px!important}
+  #calendar-view #cal-content[data-view="year"]>.calendar-year{grid-template-columns:repeat(4,minmax(0,1fr))!important;grid-auto-rows:max-content!important;height:auto!important;gap:7px 8px!important}
 }
