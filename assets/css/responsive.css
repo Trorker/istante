@@ -908,3 +908,51 @@ body.is-idle-pre:not(.has-panel) .dashboard-lower .active-info-strip{
   }
   html[data-touch-capable="true"] #timer-dialog .timer-dial-shell{align-self:center!important}
 }
+
+/* v3.14.2 - update ribbon anchored to the Istante logo. */
+.topbar .brand-lockup{position:relative!important;overflow:visible!important}
+.topbar .brand-update-badge.update-badge{
+  position:absolute!important;
+  z-index:80!important;
+  left:-12px!important;
+  top:-15px!important;
+  right:auto!important;
+  bottom:auto!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-height:23px!important;
+  max-width:min(210px,58vw)!important;
+  padding:4px 9px!important;
+  border:1px solid color-mix(in srgb,var(--accent) 64%,var(--line))!important;
+  border-radius:999px!important;
+  background:color-mix(in srgb,var(--bg) 88%,var(--accent-soft))!important;
+  color:var(--ink)!important;
+  box-shadow:0 5px 18px rgba(0,0,0,.15)!important;
+  font:700 9px/1.05 -apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI",Arial,sans-serif!important;
+  letter-spacing:.015em!important;
+  white-space:nowrap!important;
+  transform:rotate(-10deg)!important;
+  transform-origin:center!important;
+  cursor:pointer!important;
+  -webkit-tap-highlight-color:transparent!important;
+}
+.topbar .brand-update-badge.update-badge[hidden]{display:none!important}
+.topbar .brand-update-badge.update-badge:hover,
+.topbar .brand-update-badge.update-badge:focus-visible{
+  background:var(--accent)!important;
+  color:var(--bg)!important;
+  transform:rotate(-10deg) translateY(-1px)!important;
+  outline:none!important;
+}
+@media (max-width:640px){
+  .topbar .brand-update-badge.update-badge{
+    left:-7px!important;
+    top:-12px!important;
+    max-width:150px!important;
+    min-height:20px!important;
+    padding:3px 7px!important;
+    font-size:7.5px!important;
+    transform:rotate(-9deg)!important;
+  }
+}

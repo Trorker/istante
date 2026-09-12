@@ -1,6 +1,6 @@
 # Istante
 
-**Versione corrente: 3.14.1**  
+**Versione corrente: 3.14.2**  
 **Un momento, per te.**  
 Un progetto di **Ruslan Dzyuba**.
 
@@ -83,7 +83,7 @@ Istante è un sito statico: **non richiede account né backend applicativo**.
 Preferenze, raccolte personali, calendari importati, stazioni e preferiti sono
 salvati nel browser. Puoi esportare e ripristinare un backup JSON. I calendari collegati tramite URL vengono esportati come **link di sorgente**, senza incorporare la copia ICS: dopo il ripristino su un altro dispositivo vengono risincronizzati dal collegamento originale. I calendari importati da file, invece, restano incorporati nel backup.
 
-L'interfaccia e i contenuti locali possono essere conservati dal service worker. Dalla 3.14.1 l'aggiornamento prepara una **shell essenziale verificata** senza rendere obbligatori documentazione e file accessori: la versione in uso rimane attiva finché la nuova copia non è pronta. Se durante la pubblicazione manca temporaneamente un asset, la preparazione può essere ripresa senza invalidare l'installazione. Le future release che richiedono una configurazione incompatibile possono essere installate comunque con un avviso esplicito.
+L'interfaccia e i contenuti locali possono essere conservati dal service worker. Dalla 3.14.2 gli aggiornamenti compatibili vengono **attivati automaticamente** e la verifica di integrità non può più bloccare indefinitamente una release per un singolo file. I file mancanti o temporaneamente non verificati vengono recuperati di nuovo in background; nel frattempo Istante conserva anche una cache precedente come rete di sicurezza. Se una futura release dichiara una configurazione incompatibile, l'interfaccia avvisa chiaramente ma mantiene sempre disponibile **Aggiorna comunque**.
 
 Radio live, nuove foto automatiche, sincronizzazione di calendari remoti e meteo
 aggiornato richiedono Internet; un errore di rete non deve bloccare la pagina.
@@ -103,7 +103,7 @@ Su desktop con mouse o trackpad puoi attivare un **cursore personalizzato discre
 - `data/`: frasi, catalogo raccolte e stazioni predefinite.
 - `README.md`: descrizione del progetto e release corrente.
 - `CHANGELOG.md`: storico delle modifiche.
-- `docs/release/v3.14.1.md`: note dettagliate di questa release.
+- `docs/release/v3.14.2.md`: note dettagliate di questa release.
 - `docs/LICENZA.md`: licenza non commerciale con attribuzione obbligatoria.
 - `docs/TERZE-PARTI.md`: dipendenze, servizi e attribuzioni.
 - `docs/VISIONE-E-DESIGN.md`: valori, regole grafiche e criteri responsive da mantenere nelle release future.
@@ -111,7 +111,7 @@ Su desktop con mouse o trackpad puoi attivare un **cursore personalizzato discre
 ## Pubblicazione
 
 Pubblica **tutto il contenuto della cartella** sullo stesso percorso HTTPS,
-compresi `sw.js`, `version.json`, `assets`, `data` e `docs`. I font editoriali devono essere presenti nei percorsi `assets/vendor/fonts/` insieme agli altri asset della release: non serve alcun comando di installazione. Non mescolare file di release diverse: il controllo aggiornamenti prepara e verifica i file essenziali prima di proporre l’attivazione. I documenti e gli asset accessori non possono più bloccare l’installazione della nuova shell.
+compresi `sw.js`, `version.json`, `assets`, `data` e `docs`. I font editoriali devono essere presenti nei percorsi `assets/vendor/fonts/` insieme agli altri asset della release: non serve alcun comando di installazione. Se il pannello di hosting consente di controllare l’ordine, è preferibile caricare prima gli asset e lasciare `sw.js` e `version.json` per ultimi; la 3.14.2 è comunque progettata per non restare bloccata se la pubblicazione non è perfettamente atomica. La verifica SHA-256 non impedisce più l’attivazione: gli asset mancanti o temporaneamente diversi vengono ritentati in background e la cache della release precedente resta disponibile come fallback.
 
 ## Autore e licenza
 
