@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.14.6 — 12 settembre 2026
+
+- **Tablet senza scroll nelle viste principali:** Mese, Settimana e Anno restano interamente nel viewport; lo scroll verticale è consentito solo in Giorno/Oggi e Agenda.
+- **Anno realmente a pagina intera:** i 12 mesi usano una griglia 3×4 tra 741 e 899 px e 4×3 da 900 a 1180 px, con righe interne elastiche e densità adattata anche ai tablet in orizzontale.
+- **Settimana a sette colonne:** rimossi i vecchi layout tablet a 2/4 colonne che facevano crescere la pagina; i sette giorni restano sempre affiancati. Gli eventi in eccesso diventano **Altri N**, con accesso diretto al Giorno.
+- **Mese ad altezza reale:** la griglia usa soltanto le 4/5/6 settimane necessarie e distribuisce le righe nello spazio disponibile senza generare overflow.
+- **CSS del Calendario consolidato:** `calendar.css` è ora l'unica sorgente di verità per il Calendario principale ed è caricato per ultimo; eliminati gli override concorrenti da `workspace.css`, `rebuild.css`, `legacy-foundation.css`, `legacy-components.css` e `responsive.css`.
+- **Update invariato:** resta la politica **Update now** per i primi 3 giorni e aggiornamento automatico dopo 72 ore dalla prima rilevazione.
+
 ## 3.14.5 — 12 settembre 2026
 
 - **Calendario tablet su una sola riga:** logo, periodo, navigazione, viste e pulsante calendari restano nello stesso header senza andare a capo.

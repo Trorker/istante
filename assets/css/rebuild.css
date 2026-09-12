@@ -9,8 +9,6 @@ input,textarea{user-select:text;-webkit-user-select:text}
 .brand-lockup{display:grid;grid-template-columns:auto;gap:3px;align-items:start;min-width:max-content}
 .brand-lockup .wordmark{line-height:1}
 
-
-
 /* The v3.8 settings rhythm is the reference for every new option. */
 #settings-dialog{width:590px}
 
@@ -94,35 +92,6 @@ input[type=checkbox]:not([role=switch]):focus-visible{outline:2px solid var(--ac
 .collection-card{border:1px solid var(--line);border-radius:12px;background:transparent;padding:15px;min-width:0}
 .collection-card:hover{background:var(--accent-soft)}
 
-
-
-
-/* Calendar: same-screen workspace with the quiet 3.8 hierarchy. */
-.virtual-calendar{background:var(--bg);color:var(--ink)}
-#calendar-view .calendar-shell{max-width:1680px;margin:0 auto;padding:28px 42px max(38px,env(safe-area-inset-bottom));height:var(--view-h,100dvh);display:flex;flex-direction:column;overflow:hidden}
-#calendar-view .calendar-heading-combined{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:28px;margin:0;padding:0 0 22px;border-bottom:1px solid var(--line);flex:0 0 auto}
-#calendar-view .calendar-heading-combined>.wordmark{background:transparent;padding:0;color:var(--ink);font-size:22px}
-
-#calendar-view .calendar-title-copy .section-label{margin:0 0 6px}
-#calendar-view .calendar-title-copy h1{font:400 clamp(30px,3.5vw,46px)/1.05 var(--serif);letter-spacing:-.035em;margin:0}
-#calendar-view .calendar-subtitle{font-size:11px;line-height:1.5;color:var(--muted);margin:7px 0 0}
-#calendar-view .calendar-heading-actions{display:flex;align-items:center;gap:8px}
-#calendar-view .calendar-heading-actions .primary-button,#calendar-view .calendar-heading-actions .secondary-button{min-height:40px}
-
-#calendar-view .calendar-shell>main{min-height:0;flex:1;display:flex;flex-direction:column;overflow:hidden;padding:0}
-#calendar-view .calendar-toolbar{position:static;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:15px 0 13px;background:transparent;border-bottom:1px solid var(--line);flex:0 0 auto}
-#calendar-view .calendar-navigation,#calendar-view .calendar-views{display:flex;align-items:center;gap:5px}
-#calendar-view .calendar-views{padding:4px;background:var(--surface-2);border-radius:9px}
-#calendar-view .calendar-views button{min-height:34px;padding:8px 11px;border-radius:6px;background:transparent;color:var(--muted);font-size:10px}
-#calendar-view .calendar-views button[aria-pressed=true]{background:var(--surface);color:var(--ink)}
-#calendar-view .calendar-layout{min-height:0;flex:1;display:grid;grid-template-columns:190px minmax(0,1fr);gap:28px;padding-top:18px;overflow:hidden}
-#calendar-view .calendar-sidebar{min-height:0;padding-right:18px;border-right:1px solid var(--line);overflow:auto;scrollbar-width:thin}
-#calendar-view .calendar-main{min-width:0;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;padding-right:3px}
-#calendar-view #cal-content{min-height:0}
-#calendar-view .calendar-warnings{flex:0 0 auto;max-height:108px;overflow:auto;margin:10px 0 0;padding:10px 14px;border:1px solid var(--line);border-radius:9px;color:var(--muted);font-size:10px}
-
-#calendar-view .calendar-cell{min-height:76px}
-#calendar-view .calendar-event{border-radius:4px}
 .view-dots{bottom:max(5px,env(safe-area-inset-bottom))}
 
 /* About/docs: keep one line where possible. */
@@ -131,15 +100,15 @@ input[type=checkbox]:not([role=switch]):focus-visible{outline:2px solid var(--ac
 .about-docs a:hover{background:var(--accent-soft);color:var(--ink)}
 
 /* Dialogs and overlays must never create horizontal page movement. */
-.panel,.control-popup,.radio-panel,.tour-card,.calendar-source-panel,.calendar-event-panel{overflow-x:hidden!important}
-.panel-content,.control-popup,.custom-options,.calendar-main,.calendar-sidebar{overscroll-behavior-x:none}
+.panel,.control-popup,.radio-panel,.tour-card{overflow-x:hidden!important}
+.panel-content,.control-popup,.custom-options{overscroll-behavior-x:none}
 
 @media (max-width:900px){
- #calendar-view .calendar-shell{padding:22px 24px 38px}
  
  
  
- #calendar-view .calendar-layout{grid-template-columns:minmax(0,1fr);gap:10px;padding-top:10px}
+ 
+ 
  
 
  
@@ -150,27 +119,27 @@ input[type=checkbox]:not([role=switch]):focus-visible{outline:2px solid var(--ac
   #settings-dialog{width:min(590px,calc(100vw - 20px));max-height:calc(100dvh - 18px)}
  .goal-quick-row{grid-template-columns:repeat(2,minmax(0,1fr))}.goal-quick-row .secondary-button{grid-column:1/-1;width:100%;justify-content:center}
  .collection-library-toolbar{grid-template-columns:1fr;padding-inline:20px}.collection-library-grid{grid-template-columns:1fr}
- #calendar-view .calendar-shell{padding:17px 14px 34px}
  
  
  
  
  
  
- #calendar-view .calendar-layout{padding-top:8px}
  
- #calendar-view .calendar-main{padding-right:0}
- #calendar-view .calendar-cell{min-height:68px}
+ 
+ 
+ 
+ 
  .about-docs{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (max-height:520px) and (orientation:landscape){
  
  .goal-heading h2{font-size:15px}.countdown strong{font-size:20px}.goal-progress{max-width:230px}.goal-date{margin-top:4px}
- #calendar-view .calendar-shell{padding:10px 16px 28px}
  
  
  
- .calendar-layout{padding-top:6px!important}.calendar-main{overflow:auto!important}
+ 
+ 
  .welcome-panel{max-height:calc(100dvh - 12px)}.welcome-content{padding:9px 26px 14px}.welcome-content .welcome-lead{line-height:1.55}.welcome-promises{display:none}.welcome-content .welcome-footnote{margin-top:10px}.welcome-emblem{display:grid!important;width:52px;height:52px;margin-bottom:8px}.welcome-emblem img{width:40px;height:40px}.welcome-content h2{font-size:31px;margin:8px 0 11px}
 }
 @media (max-width:360px){

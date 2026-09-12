@@ -1,6 +1,6 @@
 # Istante
 
-**Versione corrente: 3.14.5**  
+**Versione corrente: 3.14.6**  
 **Un momento, per te.**  
 Un progetto di **Ruslan Dzyuba**.
 
@@ -65,7 +65,7 @@ Il timer rimane volutamente semplice: la durata principale si sceglie su un **qu
 Il calendario è **opzionale** e vive nella stessa istanza della dashboard: su
 dispositivi touch puoi passare alla vista calendario con uno swipe, oppure usare
 i controlli dedicati. Sono disponibili viste mese, settimana, anno, giorno e
-agenda; puoi scegliere una vista iniziale fissa oppure **riprendere l’ultima vista usata**. Il Mese usa solo le 4/5/6 settimane realmente necessarie. Nelle viste Mese e Settimana uno swipe breve cambia soltanto periodo; uno swipe lungo da sinistra verso destra torna alla Dashboard, senza confondersi con la navigazione del calendario. Sono supportati fino a 8 calendari ICS; le **Festività italiane** sono una sorgente integrata che puoi mostrare o nascondere direttamente dalla sidebar “Le tue giornate”. La vista Anno sfrutta lo spazio disponibile sui desktop normali senza dilatarsi sui monitor ultrawide. Sui tablet la barra superiore del Calendario resta su **una sola riga**; la vista Anno usa una griglia stabile a 3 colonne sui tablet più stretti e 4 su quelli più larghi, con scorrimento verticale senza comprimere i mesi. Nella vista Settimana l'elenco dei calendari è un **drawer richiamabile**: quando è chiuso, i sette giorni usano tutta la larghezza disponibile. Gli eventi usano superfici molto leggere con colore della sorgente, ora, titolo e calendario di origine, così restano distinguibili senza trasformare la Settimana in un mosaico di card.
+agenda; puoi scegliere una vista iniziale fissa oppure **riprendere l’ultima vista usata**. Il Mese usa solo le 4/5/6 settimane realmente necessarie. Nelle viste Mese e Settimana uno swipe breve cambia soltanto periodo; uno swipe lungo da sinistra verso destra torna alla Dashboard, senza confondersi con la navigazione del calendario. Sono supportati fino a 8 calendari ICS; le **Festività italiane** sono una sorgente integrata che puoi mostrare o nascondere direttamente dalla sidebar “Le tue giornate”. La vista Anno sfrutta lo spazio disponibile sui desktop normali senza dilatarsi sui monitor ultrawide. Sui tablet la barra superiore del Calendario resta su **una sola riga** e le viste **Mese, Settimana e Anno occupano sempre una singola pagina senza scroll**. L'Anno dispone i 12 mesi in una griglia 3×4 sui tablet più stretti e 4×3 su quelli più larghi, adattando spazi e tipografia all'altezza realmente disponibile. La Settimana mantiene sempre i sette giorni sulla stessa riga: se una giornata contiene più eventi di quanti ne possano entrare, mostra **Altri N** e apre la vista Giorno. Solo **Giorno/Oggi e Agenda** possono scorrere verticalmente. Nella vista Settimana l'elenco dei calendari è un **drawer richiamabile**: quando è chiuso, i sette giorni usano tutta la larghezza disponibile. Gli eventi usano superfici molto leggere con colore della sorgente, ora, titolo e calendario di origine, così restano distinguibili senza trasformare la Settimana in un mosaico di card.
 
 La vista torna alla dashboard dopo un periodo configurabile di inattività.
 Il prossimo impegno può comparire in modo discreto sulla hero. Nella vista mese, quando un giorno contiene più eventi di quanti possano essere mostrati con calma, compare **“altri eventi”**: apre direttamente quel giorno invece di comprimere il calendario. I feed ICS sono
@@ -83,7 +83,7 @@ Istante è un sito statico: **non richiede account né backend applicativo**.
 Preferenze, raccolte personali, calendari importati, stazioni e preferiti sono
 salvati nel browser. Puoi esportare e ripristinare un backup JSON. I calendari collegati tramite URL vengono esportati come **link di sorgente**, senza incorporare la copia ICS: dopo il ripristino su un altro dispositivo vengono risincronizzati dal collegamento originale. I calendari importati da file, invece, restano incorporati nel backup.
 
-L'interfaccia e i contenuti locali possono essere conservati dal service worker. Dalla 3.14.5 una nuova release viene prima **segnalata all'utente**: compare sul logo il badge compatto **Update now** e l'aggiornamento parte soltanto quando l'utente sceglie di installarla. Se l'utente non interviene, dopo **72 ore dalla prima rilevazione su quel dispositivo** l'aggiornamento viene attivato automaticamente. La verifica di integrità resta non bloccante: i file mancanti o temporaneamente non verificati vengono recuperati di nuovo in background, mantenendo anche una cache precedente come rete di sicurezza. Se una futura release dichiara una configurazione incompatibile, l'interfaccia avvisa chiaramente ma mantiene sempre disponibile **Aggiorna comunque**.
+L'interfaccia e i contenuti locali possono essere conservati dal service worker. Dalla 3.14.6 una nuova release viene prima **segnalata all'utente**: compare sul logo il badge compatto **Update now** e l'aggiornamento parte soltanto quando l'utente sceglie di installarla. Se l'utente non interviene, dopo **72 ore dalla prima rilevazione su quel dispositivo** l'aggiornamento viene attivato automaticamente. La verifica di integrità resta non bloccante: i file mancanti o temporaneamente non verificati vengono recuperati di nuovo in background, mantenendo anche una cache precedente come rete di sicurezza. Se una futura release dichiara una configurazione incompatibile, l'interfaccia avvisa chiaramente ma mantiene sempre disponibile **Aggiorna comunque**.
 
 Radio live, nuove foto automatiche, sincronizzazione di calendari remoti e meteo
 aggiornato richiedono Internet; un errore di rete non deve bloccare la pagina.
@@ -99,11 +99,11 @@ Su desktop con mouse o trackpad puoi attivare un **cursore personalizzato discre
 ## Struttura del progetto
 
 - `index.html`: dashboard, viste e pannelli principali.
-- `assets/`: CSS, JavaScript, icone, immagine social e dipendenze vendor. I vecchi fogli `polish-*` sono stati consolidati in `legacy-foundation.css` e `legacy-components.css`, mentre il comportamento responsive corrente vive in `responsive.css`. I caratteri editoriali sono asset vendor sotto `assets/vendor/fonts/`.
+- `assets/`: CSS, JavaScript, icone, immagine social e dipendenze vendor. I vecchi fogli `polish-*` sono stati consolidati in `legacy-foundation.css` e `legacy-components.css`; il comportamento responsive generale vive in `responsive.css`, mentre il Calendario ha un solo foglio canonico, `calendar.css`, caricato per ultimo e privo di override duplicati negli altri stylesheet. I caratteri editoriali sono asset vendor sotto `assets/vendor/fonts/`.
 - `data/`: frasi, catalogo raccolte e stazioni predefinite.
 - `README.md`: descrizione del progetto e release corrente.
 - `CHANGELOG.md`: storico delle modifiche.
-- `docs/release/v3.14.5.md`: note dettagliate di questa release.
+- `docs/release/v3.14.6.md`: note dettagliate di questa release.
 - `docs/LICENZA.md`: licenza non commerciale con attribuzione obbligatoria.
 - `docs/TERZE-PARTI.md`: dipendenze, servizi e attribuzioni.
 - `docs/VISIONE-E-DESIGN.md`: valori, regole grafiche e criteri responsive da mantenere nelle release future.
@@ -111,7 +111,7 @@ Su desktop con mouse o trackpad puoi attivare un **cursore personalizzato discre
 ## Pubblicazione
 
 Pubblica **tutto il contenuto della cartella** sullo stesso percorso HTTPS,
-compresi `sw.js`, `version.json`, `assets`, `data` e `docs`. I font editoriali devono essere presenti nei percorsi `assets/vendor/fonts/` insieme agli altri asset della release: non serve alcun comando di installazione. Se il pannello di hosting consente di controllare l’ordine, è preferibile caricare prima gli asset e lasciare `sw.js` e `version.json` per ultimi; la 3.14.5 è comunque progettata per non restare bloccata se la pubblicazione non è perfettamente atomica. La verifica SHA-256 non impedisce più l’attivazione: gli asset mancanti o temporaneamente diversi vengono ritentati in background e la cache della release precedente resta disponibile come fallback.
+compresi `sw.js`, `version.json`, `assets`, `data` e `docs`. I font editoriali devono essere presenti nei percorsi `assets/vendor/fonts/` insieme agli altri asset della release: non serve alcun comando di installazione. Se il pannello di hosting consente di controllare l’ordine, è preferibile caricare prima gli asset e lasciare `sw.js` e `version.json` per ultimi; la 3.14.6 è comunque progettata per non restare bloccata se la pubblicazione non è perfettamente atomica. La verifica SHA-256 non impedisce più l’attivazione: gli asset mancanti o temporaneamente diversi vengono ritentati in background e la cache della release precedente resta disponibile come fallback.
 
 ## Autore e licenza
 
