@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.14.2 — 12 settembre 2026
+
+- **Aggiornamento automatico:** le release compatibili vengono attivate automaticamente dal nuovo service worker, senza richiedere che l'utente rimanga bloccato sulla vecchia versione.
+- **Nessun blocco per un singolo file:** un asset mancante o non verificato non impedisce più l'attivazione; il recupero continua in background anche dopo il passaggio alla nuova release.
+- **Fallback di sicurezza:** viene conservata la cache della release precedente e usata temporaneamente se una risorsa nuova non è ancora disponibile.
+- **Forzatura sempre disponibile:** Aggiorna ora / Aggiorna comunque può attivare il worker in attesa anche con cache incompleta; le incompatibilità di configurazione vengono segnalate ma non rendono impossibile l'update.
+- **Badge aggiornamento:** nuovo badge diagonale sul logo con la scritta “Aggiorna alla nuova versione”, utilizzabile anche come azione rapida.
+- **Controllo più reattivo:** verifica al ritorno online, al ritorno sulla pagina e a intervalli regolari, con richieste no-cache per `version.json`.
+
 ## 3.14.1 — 12 settembre 2026
 
 - **Calendario telefono:** nascosta temporaneamente la vista Settimana sui layout phone; una preferenza salvata su Settimana viene normalizzata a Mese finché la vista mobile non verrà riprogettata.
