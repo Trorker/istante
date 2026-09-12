@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.14.1 — 12 settembre 2026
+
+- **Calendario telefono:** nascosta temporaneamente la vista Settimana sui layout phone; una preferenza salvata su Settimana viene normalizzata a Mese finché la vista mobile non verrà riprogettata.
+- **Player Radio:** aumentato lo spazio sopra lo stato della programmazione, separandolo meglio dal link al sito della stazione.
+- **Timer tablet:** riservata una riga stabile alla scritta sopra il quadrante, evitando che venga coperta o tagliata sui tablet touch.
+- **JavaScript vendor:** spostati i motori QR e solare derivati da terze parti sotto `assets/vendor/js/`, caricati localmente e inclusi nella shell offline.
+
 ## 3.14.0 — 12 settembre 2026
 
 - **Aggiornamenti affidabili:** il service worker prepara ora una shell essenziale separata dai file accessori. Documentazione, note release e altri file non necessari all’avvio non possono più rendere `redundant` l’intero aggiornamento.
