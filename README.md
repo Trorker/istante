@@ -1,6 +1,6 @@
 # Istante
 
-**Versione corrente: 3.14.0**  
+**Versione corrente: 3.14.1**  
 **Un momento, per te.**  
 Un progetto di **Ruslan Dzyuba**.
 
@@ -83,7 +83,7 @@ Istante è un sito statico: **non richiede account né backend applicativo**.
 Preferenze, raccolte personali, calendari importati, stazioni e preferiti sono
 salvati nel browser. Puoi esportare e ripristinare un backup JSON. I calendari collegati tramite URL vengono esportati come **link di sorgente**, senza incorporare la copia ICS: dopo il ripristino su un altro dispositivo vengono risincronizzati dal collegamento originale. I calendari importati da file, invece, restano incorporati nel backup.
 
-L'interfaccia e i contenuti locali possono essere conservati dal service worker. Dalla 3.14.0 l'aggiornamento prepara una **shell essenziale verificata** senza rendere obbligatori documentazione e file accessori: la versione in uso rimane attiva finché la nuova copia non è pronta. Se durante la pubblicazione manca temporaneamente un asset, la preparazione può essere ripresa senza invalidare l'installazione. Le future release che richiedono una configurazione incompatibile possono essere installate comunque con un avviso esplicito.
+L'interfaccia e i contenuti locali possono essere conservati dal service worker. Dalla 3.14.1 l'aggiornamento prepara una **shell essenziale verificata** senza rendere obbligatori documentazione e file accessori: la versione in uso rimane attiva finché la nuova copia non è pronta. Se durante la pubblicazione manca temporaneamente un asset, la preparazione può essere ripresa senza invalidare l'installazione. Le future release che richiedono una configurazione incompatibile possono essere installate comunque con un avviso esplicito.
 
 Radio live, nuove foto automatiche, sincronizzazione di calendari remoti e meteo
 aggiornato richiedono Internet; un errore di rete non deve bloccare la pagina.
@@ -103,7 +103,7 @@ Su desktop con mouse o trackpad puoi attivare un **cursore personalizzato discre
 - `data/`: frasi, catalogo raccolte e stazioni predefinite.
 - `README.md`: descrizione del progetto e release corrente.
 - `CHANGELOG.md`: storico delle modifiche.
-- `docs/release/v3.14.0.md`: note dettagliate di questa release.
+- `docs/release/v3.14.1.md`: note dettagliate di questa release.
 - `docs/LICENZA.md`: licenza non commerciale con attribuzione obbligatoria.
 - `docs/TERZE-PARTI.md`: dipendenze, servizi e attribuzioni.
 - `docs/VISIONE-E-DESIGN.md`: valori, regole grafiche e criteri responsive da mantenere nelle release future.
@@ -124,3 +124,7 @@ terze parti mantengono le rispettive licenze.
 [GitHub](https://github.com/Trorker) ·
 [Instagram](https://www.instagram.com/trorker/) ·
 [LinkedIn](https://www.linkedin.com/in/ruslan-dzyuba/)
+
+### Vendor JavaScript
+
+I motori derivati da componenti terze sono separati dai moduli applicativi e si trovano in `assets/vendor/js/`. La release 3.14.1 include il motore QR locale (`qrcode-engine.js`) e l'adattamento solare SunCalc (`suncalc-solar.js`); entrambi vengono caricati dal sito locale e inclusi nella shell offline, senza CDN JavaScript.

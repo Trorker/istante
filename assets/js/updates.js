@@ -2,7 +2,7 @@
  * current release keeps running. Activation always remains an explicit action. */
 (function(){
  'use strict';
- const VERSION='3.14.0';
+ const VERSION='3.14.1';
  const STORAGE_SCHEMA=1;
  const PREPARE_RETRY_MS=20000;
  function create({notify}){

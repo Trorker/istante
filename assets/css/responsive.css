@@ -868,3 +868,43 @@ body.is-idle-pre:not(.has-panel) .dashboard-lower .active-info-strip{
   .dashboard-lower .active-info-strip>#upcoming-event>.upcoming-arrow,
   #calendar-view .calendar-sidebar{transition:none!important}
 }
+
+
+/* 3.14.1 - focused responsive fixes */
+@media (max-width:740px) and (orientation:portrait),
+       (max-width:1000px) and (orientation:landscape) and (max-height:560px){
+  #calendar-view .calendar-views{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  #calendar-view .calendar-views [data-cal-view="week"]{display:none!important}
+}
+
+/* Give the scheduled-radio message its own breathing room below the station link. */
+.radio-panel #radio-program-info:not([hidden]){
+  margin-top:14px!important;
+  padding-top:13px!important;
+}
+
+/* On touch tablets keep the timer question in a dedicated visible row. */
+@media (pointer:coarse) and (min-width:600px) and (max-width:1500px) and (min-height:700px){
+  html[data-touch-capable="true"] #timer-dialog .timer-range-picker.timer-dial-picker{
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+    box-sizing:border-box!important;
+    grid-template-rows:max-content minmax(0,1fr)!important;
+    align-content:stretch!important;
+    justify-content:center!important;
+    padding-top:8px!important;
+    gap:7px!important;
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-range-picker>.section-label{
+    position:relative!important;
+    z-index:8!important;
+    display:block!important;
+    align-self:start!important;
+    min-height:15px!important;
+    margin:0 0 2px!important;
+    line-height:1.25!important;
+    overflow:visible!important;
+  }
+  html[data-touch-capable="true"] #timer-dialog .timer-dial-shell{align-self:center!important}
+}

@@ -16,7 +16,7 @@ Le sole icone di GitHub, Instagram e LinkedIn provengono da Bootstrap Icons, ver
 
 ## Sole e calcolo locale
 
-Il calcolo solare locale utilizza l'implementazione già inclusa nel progetto, basata su SunCalc. Le informazioni solari permettono il tema diurno e notturno anche senza una nuova risposta del servizio, quando le coordinate sono salvate.
+Il calcolo solare locale usa `assets/vendor/js/suncalc-solar.js`, un adattamento locale basato su SunCalc. Le informazioni solari permettono il tema diurno e notturno anche senza una nuova risposta del servizio, quando le coordinate sono salvate.
 
 [SunCalc](https://github.com/mourner/suncalc) · [Licenza SunCalc](licenses/SUNCALC-LICENSE.txt)
 
@@ -80,7 +80,7 @@ Riferimenti tecnici: [AudioContext](https://developer.mozilla.org/en-US/docs/Web
 
 ## QR dinamico e calendari (v3.9.0)
 
-Il modulo JavaScript `assets/js/qr.js` adatta tabelle Reed-Solomon e costruzione
+Il modulo JavaScript `assets/vendor/js/qrcode-engine.js` adatta tabelle Reed-Solomon e costruzione
 della matrice byte-mode da python-qrcode 8.2 (Lincoln Loop e contributori), sotto
 licenza BSD-3-Clause. Non esegue Python nel browser. Il testo integrale della
 licenza è conservato qui: [licenza QR](licenses/PYTHON-QRCODE-LICENSE.txt).
@@ -138,3 +138,8 @@ File runtime vendor previsti:
 `Istante Classic` è soltanto un alias CSS dell'applicazione: i file Libre Baskerville ed Excalifont non vengono rinominati internamente né modificati. Le rispettive licenze restano separate dalla licenza del progetto Istante.
 
 [Testo SIL Open Font License 1.1](licenses/SIL-OFL-1.1.txt) · [Notice Libre Baskerville](licenses/LIBRE-BASKERVILLE-NOTICE.txt) · [Notice Excalifont](licenses/EXCALIFONT-NOTICE.txt) · [Libre Baskerville](https://github.com/impallari/Libre-Baskerville) · [Excalifont / Excalidraw](https://github.com/excalidraw/excalidraw/tree/master/packages/excalidraw/fonts/Excalifont)
+
+
+## JavaScript vendor locale dalla v3.14.1
+
+I motori JavaScript derivati da componenti terze sono raccolti anche strutturalmente sotto `assets/vendor/js/`. La build carica da lì il motore QR e l'adattamento solare SunCalc; non esistono dipendenze JavaScript runtime da CDN. I moduli applicativi originali restano invece sotto `assets/js/`.
