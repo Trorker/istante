@@ -1,8 +1,8 @@
-# Istante 4.0.0-alpha.1
+# Istante 4.0.0-alpha.2
 
-> Prima alpha della nuova architettura Vue. Non sostituisce ancora la 3.14.1 in produzione.
+> Alpha Vue dedicata alla **parità visiva con Istante 3.14.1**. La 3.14.1 resta la versione stabile di produzione.
 
-Nuova architettura di **Istante**, riscritta da zero in Vue 3 + TypeScript.
+Istante 4 cambia architettura, non identità: colori, testi, gerarchie, menu, font e atmosfera restano quelli della 3.14.1. Il lavoro della nuova base Vue è soprattutto rendere l’interfaccia più solida e realmente responsive su telefono, tablet, laptop/PC e TV.
 
 ## Requisiti
 
@@ -21,21 +21,19 @@ Build produzione:
 npm run build
 ```
 
-La cartella `dist/` è pronta per hosting statico. `public/calendar.php` può essere pubblicato separatamente o sostituito dal proxy configurato in `public/config/runtime.js`.
+La cartella `dist/` è pronta per hosting statico. `public/calendar.php` può essere pubblicato insieme al frontend oppure sostituito dal proxy configurato in `public/config/runtime.js`.
 
 ## Architettura
 
 - Vue 3, Composition API, `<script setup>`
-- TypeScript
-- Vite
-- Pinia
-- Vue Router
-- Element Plus usato solo nei controlli complessi, senza `app.use(ElementPlus)`
+- TypeScript + Vite
+- Pinia + Vue Router
 - IndexedDB schema 4
 - Service Worker / PWA
-- 4 composizioni: phone, tablet, desktop, display
+- quattro composizioni responsive: phone, tablet, desktop, display
+- font e icone locali, nessuna CDN runtime obbligatoria
 
-La versione 3.14.1 è usata solo come riferimento e sorgente di **contenuti** (frasi, stazioni, font, icone). Il codice applicativo 3.x non è stato riutilizzato.
+La versione 3.14.1 è il riferimento funzionale **e visivo**. Il vecchio codice 3.x non viene riutilizzato come architettura applicativa.
 
 ## Test
 
@@ -44,4 +42,4 @@ npm run typecheck
 npm test
 ```
 
-Viewport di accettazione definiti in `docs/RESPONSIVE.md`.
+I viewport di accettazione sono definiti in `docs/RESPONSIVE.md`.

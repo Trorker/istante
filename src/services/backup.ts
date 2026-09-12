@@ -1,5 +1,5 @@
 import { dbClear, dbGetAll, dbPut, type StoreName } from './storage/db'
-export async function createBackup(appVersion='4.0.0-alpha.1'){
+export async function createBackup(appVersion='4.0.0-alpha.2'){
   const [settings,calendars,collections,radioStations,radioSchedules,timerPresets]=await Promise.all([
     dbGetAll('settings'),dbGetAll('calendars'),dbGetAll('collections'),dbGetAll('radioStations'),dbGetAll('radioSchedules'),dbGetAll('timerPresets')
   ])

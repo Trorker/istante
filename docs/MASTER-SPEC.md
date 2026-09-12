@@ -4,7 +4,7 @@
 **Documento:** Specifica funzionale, tecnica e architetturale  
 **Progetto:** Istante  
 **Tipo di intervento:** Riscrittura completa da zero  
-**Versione di riferimento funzionale/visiva:** 3.13.11  
+**Versione di riferimento funzionale/visiva:** 3.14.1  
 **Stack target:** Vue 3 + TypeScript + Vite + Element Plus + Pinia + PWA  
 **Stato documento:** Specifica master per sviluppo e collaudo
 
@@ -14,7 +14,7 @@
 
 Questo documento definisce in modo completo e tecnico come deve essere progettata e sviluppata la nuova versione di **Istante**.
 
-La nuova versione deve essere una **riscrittura reale da zero**. La versione 3.13.11 deve essere utilizzata esclusivamente come riferimento per:
+La nuova versione deve essere una **riscrittura reale da zero**. La versione 3.14.1 deve essere utilizzata esclusivamente come riferimento per:
 
 - funzionalità esistenti;
 - esperienza utente;
@@ -38,6 +38,10 @@ Non devono essere riutilizzati come base architetturale:
 La nuova applicazione deve essere pensata fin dall'inizio come prodotto moderno, mantenibile, modulare e adatto a evolvere nel tempo.
 
 ---
+
+## Vincolo di parità visiva
+
+La 4.x deve mantenere **pari pari l’identità grafica della 3.14.1**: palette, font, testi, menu, microcopy, gerarchie e atmosfera. La riscrittura può migliorare responsive, ergonomia e struttura tecnica, ma non deve proporre un redesign.
 
 # 2. Visione del prodotto
 
@@ -421,7 +425,7 @@ Usare:
 
 ## 8.3 Vietato preservare ID legacy
 
-Non mantenere centinaia di ID della 3.13.11 per compatibilità.
+Non mantenere centinaia di ID della 3.14.1 per compatibilità.
 
 La nuova architettura deve essere nativa Vue.
 
@@ -2055,7 +2059,7 @@ Mostrare stato nelle impostazioni avanzate se utile.
 
 ---
 
-# 67. Migrazione 3.13.11
+# 67. Migrazione 3.14.1
 
 Creare:
 
@@ -4112,6 +4116,6 @@ Cosa succede se il servizio esterno fallisce?
 
 Solo dopo queste risposte si deve implementare il componente.
 
-La versione 3.13.11 deve restare il riferimento per ciò che Istante deve saper fare e per l'atmosfera che deve trasmettere.
+La versione 3.14.1 deve restare il riferimento per ciò che Istante deve saper fare e per l'atmosfera che deve trasmettere.
 
 **Il nuovo codice, invece, deve nascere completamente da zero.**

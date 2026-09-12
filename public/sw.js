@@ -1,4 +1,4 @@
-const CACHE='istante-v4.0.0-alpha.1'
+const CACHE='istante-v4.0.0-alpha.2'
 const CORE=['/','/index.html','/manifest.webmanifest','/version.json','/config/runtime.js','/data/phrases.json','/data/stations.json','/icons/icon.svg','/icons/icon-192.png','/icons/icon-512.png','/fonts/libre-baskerville/LibreBaskerville-VariableFont_wght.ttf','/fonts/libre-baskerville/LibreBaskerville-Italic-VariableFont_wght.ttf','/fonts/excalifont/Excalifont-Regular.woff2']
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting())))
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())))
