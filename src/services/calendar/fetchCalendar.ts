@@ -1,0 +1,2 @@
+import { runtime } from '../../config/runtime'
+export async function fetchIcs(url:string){let directError:unknown;try{const r=await fetch(url,{cache:'no-store'});if(r.ok)return await r.text();directError=new Error(`HTTP ${r.status}`)}catch(e){directError=e}if(!runtime.calendarProxy)throw directError;const r=await fetch(runtime.calendarProxy,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url}),cache:'no-store'});if(!r.ok)throw new Error(`Proxy calendario: HTTP ${r.status}`);return r.text()}

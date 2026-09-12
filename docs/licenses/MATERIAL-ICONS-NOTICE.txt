@@ -1,8 +1,0 @@
-Material Icons SVG subset and local adaptations
-Copyright Google LLC and Material Design icon contributors.
-Licensed under the Apache License, Version 2.0.
-See MATERIAL-ICONS-LICENSE.txt and https://developers.google.com/fonts/docs/material_icons
-
-Istante includes a small SVG path map in icons.js, with local aliases and adaptations
-for weather, navigation and player controls. Wrapper code and these modifications
-are part of Istante. No font files or external icon requests are included.

@@ -1,5 +1,0 @@
-Excalifont
-Copyright (c) 2024 by Excalidraw. All rights reserved.
-Versione verificata sul file fornito per Istante: 1.000.
-Licenza: SIL Open Font License 1.1.
-Testo integrale: SIL-OFL-1.1.txt

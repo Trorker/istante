@@ -1,0 +1,1 @@
+<script setup lang="ts">import TimerDialog from './TimerDialog.vue';import RadioDrawer from './RadioDrawer.vue';import PhraseDrawer from './PhraseDrawer.vue'</script><template><TimerDialog/><RadioDrawer/><PhraseDrawer/></template>

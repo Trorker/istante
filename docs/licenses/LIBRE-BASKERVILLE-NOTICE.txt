@@ -1,5 +1,0 @@
-Libre Baskerville
-Copyright 2012 The Libre Baskerville Project Authors (https://github.com/impallari/Libre-Baskerville)
-Versione verificata sui file forniti per Istante: 2.005.
-Licenza: SIL Open Font License 1.1.
-Testo integrale: SIL-OFL-1.1.txt
