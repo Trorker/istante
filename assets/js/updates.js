@@ -1,7 +1,7 @@
-/* Istante 3.14.6 - user-first updates with a three-day automatic deadline. */
+/* Istante 3.14.5 - user-first updates with a three-day automatic deadline. */
 (function(){
  'use strict';
- const VERSION='3.14.6';
+ const VERSION='3.14.5';
  const STORAGE_SCHEMA=1;
  const CHECK_INTERVAL_MS=15*60*1000;
  const WAIT_FOR_WORKER_MS=9000;
