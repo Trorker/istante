@@ -1,1 +1,0 @@
-<script setup lang="ts">import { useRouter } from 'vue-router';const r=useRouter()</script><template><div class="screen-page"><div class="screen-shell empty"><div class="eyebrow">404</div><h1 class="screen-title">Qui non c'è niente.</h1><button class="quiet-button" @click="r.push('/')">Torna a Istante</button></div></div></template>

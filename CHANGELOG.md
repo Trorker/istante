@@ -1,39 +1,58 @@
 # Changelog
 
-## [4.0.0-alpha.2] - 2026-09-12
+## 4.0.0 — 2026-09-13
 
-Alpha di riallineamento grafico alla 3.14.1.
+### Fondamenta
+- Riscrittura completa in Vue 3.5.13 con componenti ES module.
+- Separazione esplicita fra View, Component, Store, Service e Composable.
+- Eliminazione dei globali applicativi `window.Istante*`.
+- I/O browser confinato nei service; gli store non accedono direttamente a `localStorage`.
+- Unica classificazione responsive Phone / Tablet / Desktop / TV.
+- Sorgenti separati da `dist/`, che viene rigenerata integralmente a ogni build.
+- Runtime Vue e font distribuiti localmente: nessuna CDN necessaria per avviare l'app.
 
-### Changed
-- Dashboard riportata alla composizione visiva della 3.14.1: brand, mini-player, orologio, pensiero, fascia informazioni, traguardo e toolbar.
-- Ripristinati i token colore esatti Carta/Notte della 3.14.1 e i font self-hosted Istante Classic/Excalifont.
-- Impostazioni riportate a **A modo tuo / Il tuo istante.** con le 12 sezioni e i relativi microtesti originali.
-- Calendario riportato a **Il tempo che scegli / Il tuo calendario. / Un po’ di ordine. Senza fretta.**.
-- Biblioteca riportata a **Parole da tenere con te / La tua biblioteca. / 1000 piccoli promemoria.**.
-- Player e Timer riallineati a testi, spaziature e gerarchie della 3.14.1.
-- Responsive rifatto per adattare composizione e interazione senza cambiare identità grafica.
+### Quality gate
+- Controlli automatici su sintassi JavaScript, import, ownership CSS e manifest PWA.
+- `!important` vietato dal gate.
+- Breakpoint CSS `min-width` / `max-width` vietati: il responsive passa dal device profile centrale.
+- Smoke test di import per tutti i moduli browser.
+- Test puri per ICS/ricorrenze, schedule radio, audio procedurale, backup, share link, typing e versioni.
 
-### Fixed
-- Vista **Settimana** esclusa dai telefoni anche nella nuova UI Vue.
-- Spazio della programmazione radio separato dal link della stazione.
-- Label sopra il quadrante Timer sempre visibile nella composizione tablet.
+### Dashboard e pensieri
+- Conservata l'identità carta/e-ink della 3.14.4.
+- Orologio, pensiero, meteo, traguardo, prossimo impegno e mini-player ricostruiti come componenti indipendenti.
+- 1.000 pensieri originali mantenuti.
+- Preferiti compatibili con il formato testuale della 3.x.
+- Storico dei pensieri esposto nella Biblioteca.
+- Raccolte personali con creazione, modifica, rimozione, import ed export.
+- Link condivisi `#p=` salvabili in `Pensieri ricevuti`.
+- Motore typing separato e testabile.
 
-## [4.0.0-alpha.1] - 2026-09-12
+### Calendario
+- `YearView`, `MonthView`, `WeekView`, `DayView`, `AgendaView` sono componenti separati.
+- Tablet: Anno/Mese/Settimana senza scroll; Giorno/Agenda con scroll.
+- WeekView usa sempre sette colonne reali.
+- Parser ICS/recurrence migrato come ES module puro.
+- Feed HTTPS con tentativo diretto e fallback al proxy `calendar.php`.
+- Festività italiane offline.
+- Backup dei calendari URL conserva il link e non la copia ICS.
 
-Prima alpha testabile della riscrittura Vue.
+### Audio e timer
+- Radio, Ambiente e Melodie condividono un unico dominio di stato.
+- Catalogo radio, stazioni personali, preferiti, ordine e programmazioni mantenuti.
+- Generatori offline per rumore rosa/marrone, pioggia, vento, Respiro lento 4-4-6, Meditazione, Notturno e Onde lente.
+- Il player si riallinea automaticamente quando una sorgente viene disabilitata.
+- Timer fino a 24 ore; sorgente durante il timer modificabile anche a sessione avviata.
+- Nel quadrante del timer resta soltanto il countdown.
 
-### Added
-- Riscrittura completa in Vue 3 + TypeScript + Vite.
-- Quattro esperienze responsive indipendenti: phone, tablet, desktop, display.
-- Pinia per stato applicativo.
-- IndexedDB schema 4.
-- Dashboard, 1.000 pensieri con ricerca e preferiti, radio con programmazione, timer preciso, calendario ICS, meteo opzionale, astronomia locale, condivisione, impostazioni e backup.
-- Runtime config esterna e PWA.
-- Fallback ICS diretto → proxy.
+### Backup e migrazione
+- Migrazione delle principali preferenze, calendari, raccolte e preferiti dalla 3.14.x.
+- Backup v4 portabile con ripristino transazionale.
+- Compatibilità di import con i backup 3.x supportati.
+- Cache, fotografie e copie temporanee dei feed remoti escluse dal backup portabile.
 
-### Changed
-- La vista Settimana del calendario non è disponibile sui telefoni nella 4.0.0-alpha.1.
-- Calendari nel backup come link ICS, mai come copia del file.
-
-### Removed
-- Vecchia manipolazione DOM, ID legacy, patch CSS progressive e architettura JavaScript 3.x.
+### Aggiornamenti PWA
+- Policy invariata: `Update now` manuale per 72 ore, quindi aggiornamento automatico.
+- `version.json`, manifest asset e service worker generati dalla build.
+- Installazione best-effort: un asset accessorio non blocca indefinitamente l'update.
+- Una cache precedente viene mantenuta temporaneamente come fallback durante il passaggio release.

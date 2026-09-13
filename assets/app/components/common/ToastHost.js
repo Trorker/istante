@@ -1,0 +1,1 @@
+export default { name: 'ToastHost', props: { message: String }, template: `<transition name="toast"><div v-if="message" class="toast-host" role="status" aria-live="polite">{{message}}</div></transition>` };

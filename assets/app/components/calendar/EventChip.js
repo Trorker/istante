@@ -1,0 +1,2 @@
+export default { name: 'EventChip', props: { event: Object, compact: Boolean }, emits: ['open'], computed: { time() { if (this.event.allDay)
+            return ''; return new Intl.DateTimeFormat('it-IT', { hour: '2-digit', minute: '2-digit' }).format(new Date(this.event.start)); } }, template: `<button class="event-chip" :class="{'is-all-day':event.allDay,'is-compact':compact}" type="button" @click.stop="$emit('open',event)"><span v-if="time" class="event-time">{{time}}</span><span class="event-title">{{event.title}}</span></button>` };

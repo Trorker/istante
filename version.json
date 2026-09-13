@@ -1,0 +1,10 @@
+{
+  "version": "4.0.0",
+  "date": "2026-09-13",
+  "storageSchema": 4,
+  "minCompatibleStorageSchema": 1,
+  "forceUpdateAllowed": true,
+  "autoActivate": false,
+  "autoUpdateDelayHours": 72,
+  "builtAt": "2026-09-13T10:53:25.726Z"
+}

@@ -1,1 +1,0 @@
-export async function registerPwa(){if(!('serviceWorker'in navigator)||import.meta.env.DEV)return;try{await navigator.serviceWorker.register('/sw.js',{scope:'/'})}catch(e){console.warn('[Istante] Service worker non registrato',e)}}

@@ -1,0 +1,14 @@
+import { computed, onMounted } from '../app/vue.js';
+import UpdateBadge from '../components/common/UpdateBadge.js';
+import BackdropScene from '../components/dashboard/BackdropScene.js';
+import ClockWidget from '../components/dashboard/ClockWidget.js';
+import PhraseWidget from '../components/dashboard/PhraseWidget.js';
+import WeatherWidget from '../components/dashboard/WeatherWidget.js';
+import GoalWidget from '../components/dashboard/GoalWidget.js';
+import NextEventWidget from '../components/dashboard/NextEventWidget.js';
+import ControlBar from '../components/dashboard/ControlBar.js';
+import { useAppStore } from '../stores/app-store.js';
+import { useCalendarStore } from '../stores/calendar-store.js';
+import { useSettingsStore } from '../stores/settings-store.js';
+import { useDashboardGestures } from '../composables/useDashboardGestures.js';
+export default { name: 'DashboardView', components: { UpdateBadge, BackdropScene, ClockWidget, PhraseWidget, WeatherWidget, GoalWidget, NextEventWidget, ControlBar }, setup() { const app = useAppStore(), cal = useCalendarStore(), s = useSettingsStore().state; useDashboardGestures(); onMounted(() => { cal.rebuild(); }); const modules = computed(() => [s.weather, s.goalMode !== 'off', s.calendarUpcoming].filter(Boolean).length); const openCalendar = () => app.openView('calendar'); return { app, s, modules, openCalendar }; }, template: `<main class="dashboard-screen"><BackdropScene/><div class="app-shell"><header class="topbar chrome"><div class="brand-wrap"><button class="wordmark" type="button" aria-label="Istante"><span>Istante<span class="brand-point">·</span></span></button><UpdateBadge/></div><p class="tagline">un momento per te</p></header><section class="main-stage"><ClockWidget/><PhraseWidget @library="app.openModal('library')"/></section><section v-if="modules" class="summary-strip" :data-count="modules"><WeatherWidget @open="app.openModal('weather')"/><GoalWidget @open="app.openModal('goal')"/><NextEventWidget @open="openCalendar"/></section><ControlBar @library="app.openModal('library')" @radio="app.openModal('radio')" @timer="app.openModal('timer')" @calendar="openCalendar" @share="app.openModal('share')" @settings="app.openModal('settings')"/></div></main>` };

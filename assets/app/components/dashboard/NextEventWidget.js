@@ -1,0 +1,5 @@
+import { computed } from '../../app/vue.js';
+import AppIcon from '../common/AppIcon.js';
+import { useCalendarStore } from '../../stores/calendar-store.js';
+import { useSettingsStore } from '../../stores/settings-store.js';
+export default { name: 'NextEventWidget', components: { AppIcon }, emits: ['open'], setup() { const cal = useCalendarStore(), s = useSettingsStore().state; const next = computed(() => cal.state.events.find(e => e.end > Date.now()) || null); const when = computed(() => next.value ? new Intl.DateTimeFormat('it-IT', { weekday: 'short', day: 'numeric', month: 'short', hour: next.value.allDay ? undefined : '2-digit', minute: next.value.allDay ? undefined : '2-digit' }).format(new Date(next.value.start)) : ''); return { cal, s, next, when }; }, template: `<button v-if="s.calendarUpcoming" class="summary-card event-card" type="button" @click="$emit('open')"><span class="summary-copy"><small>Prossimo impegno</small><strong>{{next?.title||'Nessun impegno in vista'}}</strong><em v-if="next">{{when}}</em></span><span class="summary-arrow"><AppIcon name="arrow_forward_ios"/></span></button>` };
